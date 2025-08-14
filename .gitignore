@@ -1,0 +1,54 @@
+# === Raíz: monorepo Flutter + Supabase ===
+
+# Entornos / secretos (mantener .env.example)
+**/.env
+**/.env.*
+!**/.env.example
+
+# Logs (mantener .gitkeep si se desea versionar carpetas vacías)
+**/logs/**
+!**/logs/.gitkeep
+*.log
+
+# Archivos temporales del sistema/IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.code-workspace
+*.swp
+*.swo
+
+# Node/Python tooling (opcional)
+node_modules/
+venv/
+__pycache__/
+*.pyc
+
+# Docker/Supabase CLI
+.supabase/
+supabase/.temp/
+**/.supabase/
+
+# Flutter común
+**/build/
+**/.dart_tool/
+**/.packages
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.metadata
+
+# Flutter iOS
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Flutter.podspec
+
+# Flutter Android
+**/android/.gradle/
+**/android/app/build/
+**/android/local.properties
+
+# Cobertura / reportes
+coverage/
+.nyc_output/
+
