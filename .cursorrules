@@ -9,6 +9,13 @@ alwaysApply: true
 - Optimiza consultas con índices en columnas de filtros/orden y valida con `EXPLAIN`.
 - Prefiere paginación por cursores sobre `OFFSET/LIMIT` para escalabilidad.
 
+## Nomenclatura y Documentación
+- **Archivos de documentación**: Usa nombres en castellano para archivos de documentación (ej: `guia_instalacion.md`, `manual_usuario.md`, `configuracion_bd.md`).
+- **Carpetas de documentación**: Nombra carpetas en castellano cuando contengan documentación (ej: `docs/guias/`, `docs/manuales/`, `docs/configuracion/`).
+- **README**: Mantén `README.md` como estándar, pero el contenido debe estar en castellano.
+- **Comentarios en código**: Usa castellano para comentarios en código SQL, funciones y configuraciones.
+- **Variables de entorno**: Usa nombres descriptivos en castellano para variables de entorno (ej: `URL_BASE_DATOS`, `CLAVE_API`).
+
 ## Esquema y Migraciones
 - Coloca migraciones en `backend/supabase/migrations`.
 - Tras `CREATE TABLE`, agrega:
@@ -73,6 +80,8 @@ alwaysApply: true
 - [ ] Sin claves ni secretos en el repo; `.env` solo local.
 - [ ] Tipos generados/actualizados si cambió el esquema.
 - [ ] Docs/README actualizados (endpoints, migraciones, variables).
+- [ ] Archivos de documentación con nombres en castellano.
+- [ ] Comentarios en código en castellano.
 
 ## Referencias
 - Optimización de consultas: [Guía oficial](https://supabase.com/docs/guides/database/query-optimization?utm_source=openai)
