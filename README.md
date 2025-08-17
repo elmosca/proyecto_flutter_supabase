@@ -93,7 +93,19 @@ flutter pub add supabase_flutter
 flutter run
 ```
 
-## 6. 🔐 Seguridad y cumplimiento
+## 6. 📋 Seguimiento del Proyecto
+
+### Checklists de Desarrollo
+- [📋 Checklist Detallado MVP](docs/desarrollo/checklist_mvp_detallado.md) - Seguimiento completo del plan MVP
+- [📅 Checklist Semanal](docs/desarrollo/checklist_seguimiento_semanal.md) - Seguimiento semanal del progreso
+- [📊 Estado Actual](docs/desarrollo/estado_actual_completo.md) - Estado completo del proyecto
+
+### Documentación Técnica
+- [🗄️ Backend Supabase](backend/supabase/README.md) - Guía completa del backend
+- [🔐 Configuración RLS](backend/supabase/rls_setup_guide.md) - Guía de configuración de seguridad
+- [✅ Verificación Migraciones](backend/supabase/verificacion_migraciones.md) - Estado de las migraciones
+
+## 7. 🔐 Seguridad y cumplimiento
 - RLS habilitado y políticas por rol/propiedad (p. ej., `auth.uid() = user_id`).
 - Datos sensibles protegidos y acceso a Storage controlado por políticas.
 - `.env` locales (no se suben); usar `.env.example` como plantilla.
