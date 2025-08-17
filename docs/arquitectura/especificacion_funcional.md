@@ -1,6 +1,8 @@
 # 📄 Documento Funcional del Proyecto
 # Sistema de Seguimiento de Proyectos TFG - Ciclo DAM
 
+> **Nota importante**: Este documento utiliza términos en español para la interfaz de usuario, pero el modelo de datos utiliza nomenclatura en inglés para mantener estándares de desarrollo. Los estados, roles y tipos se especifican en inglés en la base de datos.
+
 ## 1. 🎯 Objetivo General
 Facilitar la planificación, ejecución, seguimiento y evaluación del Trabajo de Fin de Grado (TFG) del ciclo formativo de Desarrollo de Aplicaciones Multiplataforma (DAM), mediante una plataforma digital colaborativa centrada en la gestión por tareas y el flujo de trabajo tipo Kanban.
 
@@ -26,25 +28,24 @@ Facilitar la planificación, ejecución, seguimiento y evaluación del Trabajo d
 ### 3.2. Proyecto
 - Título
 - Descripción
-- Estado (anteproyecto, planificación, en desarrollo, en revisión, finalizado)
+- Estado (draft, planning, development, review, completed)
 - Fecha de inicio
 - Fecha límite estimada
 - Tutor asignado
 - Alumnos asignados (uno o varios)
 
 **Datos del Anteproyecto:**
-- Tipo de proyecto (ejecución, investigación, bibliográfico, gestión)
+- Tipo de proyecto (execution, research, bibliographic, management)
 - Objetivos específicos
 - Resultados esperados (hitos)
 - Temporalización inicial
-- Estado de aprobación (pendiente, aprobado, rechazado)
+- Estado de aprobación (draft, submitted, under_review, approved, rejected)
 - Historial de cambios
 
 ### 3.3. Tarea
 - Título
 - Descripción
-- Estado (pendiente, en progreso, en revisión, completada)
-- Prioridad (baja, media, alta)
+- Estado (pending, in_progress, under_review, completed)
 - Responsable (usuario)
 - Fecha de creación
 - Fecha límite
@@ -68,12 +69,12 @@ Facilitar la planificación, ejecución, seguimiento y evaluación del Trabajo d
 ### 3.6. Anteproyecto
 - ID único
 - Título del proyecto
-- Tipo de proyecto (ejecución, investigación, bibliográfico, gestión)
+- Tipo de proyecto (execution, research, bibliographic, management)
 - Descripción/Justificación
 - Objetivos (lista de competencias seleccionadas)
 - Resultados esperados (hitos)
 - Temporalización (fechas clave)
-- Estado (borrador, enviado, en_revision, aprobado, rechazado)
+- Estado (draft, submitted, under_review, approved, rejected)
 - Alumno/s autor/es
 - Tutor asignado
 - Fecha de envío
@@ -99,7 +100,7 @@ Facilitar la planificación, ejecución, seguimiento y evaluación del Trabajo d
 - Descripción
 - Fecha prevista
 - Fecha real de completado
-- Estado (pendiente, en_progreso, completado, retrasado)
+- Estado (pending, in_progress, completed, delayed)
 - Proyecto asociado
 - Tareas relacionadas
 - Comentarios de revisión
@@ -177,11 +178,13 @@ Tablero dividido por estados:
 Arrastrar tareas entre columnas
 
 ### 5.5. Gestión de Tareas
-- Ficha de tarea generada automáticamente desde el anteproyecto
+- Ficha de tarea que se puede generar de múltiples formas:
+  - **MCP Server**: IA analiza el anteproyecto y propone tareas automáticamente
+  - **Definición manual**: El alumno define las tareas para su proyecto
+  - **Plantillas**: Tareas predefinidas de buenas prácticas para desarrollo de software
 - Añadir comentarios, archivos y etiquetas
 - Cambiar estado de progreso
 - Historial de cambios y actividad
-- Las tareas se crean automáticamente al aprobar el anteproyecto
 
 ### 5.6. Gestión de Anteproyectos (Tutor/Administrador)
 - Lista de anteproyectos pendientes de revisión
@@ -189,7 +192,7 @@ Arrastrar tareas entre columnas
 - Formulario de evaluación con criterios específicos
 - Sistema de comentarios para feedback
 - Aprobación/rechazo con justificación
-- Generación automática de tareas desde los hitos del anteproyecto una vez aprobado
+- Una vez aprobado, se crea un proyecto único asociado
 
 ## 6. 📈 Paneles y Estadísticas
 - Progreso por porcentaje de tareas completadas
@@ -225,8 +228,10 @@ Generar informes de:
 - Un proyecto puede tener uno o varios alumnos asignados
 - Un proyecto tiene un único tutor responsable
 - Todo proyecto debe comenzar con un anteproyecto aprobado
+- Un anteproyecto puede generar un solo proyecto (relación 1:1)
 - Los anteproyectos deben incluir objetivos SMART y temporalización realista
-- Las tareas pueden ser asignadas a alumnos específicos o al grupo completo
+- Los milestones solo pertenecen a proyectos, no a anteproyectos
+- Las tareas se pueden generar de múltiples formas: MCP Server, definición manual del alumno, o plantillas predefinidas
 - Cada usuario accede solo a su espacio de trabajo
 - No se permite que un usuario cree su propio proyecto sin anteproyecto previo
 
@@ -245,10 +250,10 @@ Generar informes de:
 - **Título:** "TituloDelProyecto"
 
 - **Tipo de proyecto:** (seleccionar uno)
-  - Proyecto de ejecución o realización de un producto
-  - Proyecto de investigación experimental o innovación
-  - Proyecto bibliográfico o documental
-  - Proyecto de gestión, análisis de mercado, viabilidad o mercadotecnia
+  - Proyecto de execution o realización de un producto
+  - Proyecto de research experimental o innovación
+  - Proyecto bibliographic o documental
+  - Proyecto de management, análisis de mercado, viabilidad o mercadotecnia
 
 - **Descripción:** Breve descripción o justificación del proyecto
 

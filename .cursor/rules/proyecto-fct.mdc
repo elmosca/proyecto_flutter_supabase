@@ -1,5 +1,6 @@
 ---
 description: Reglas de Cursor para trabajar con Supabase (CLI, migraciones, RLS, funciones, seguridad y rendimiento)
+globs:
 alwaysApply: true
 ---
 
@@ -57,7 +58,7 @@ alwaysApply: true
   - Documenta entrada/salida y aplica validación de entradas.
 
 ## Tipos y Cliente
-- Genera tipos a partir del esquema para evitar “type drift”.
+- Genera tipos a partir del esquema para evitar "type drift".
 - Mantén clientes con configuración estricta y URL/keys por entorno vía `.env` (no commitear).
 - Para operaciones complejas, considera RPC (funciones) para centralizar lógica y respetar RLS.
 
@@ -90,3 +91,4 @@ alwaysApply: true
 - RLS (conceptos y ejemplos): [supabase.wordpress.com - RLS](https://supabase.wordpress.com/2023/05/13/protegiendo-tus-datos-con-rls-como-definir-politicas-de-seguridad-en-supabase/?utm_source=openai)
 - Vistas con `security_invoker`: [supabase.wordpress.com - vistas](https://supabase.wordpress.com/2023/05/17/administracion-tablas-y-vistas-en-supabase/?utm_source=openai)
 - Claves `anon` vs `service_role`: [apidog.com](https://apidog.com/es/blog/supabase-api-2/?utm_source=openai)
+
