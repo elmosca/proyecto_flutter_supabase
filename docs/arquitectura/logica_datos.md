@@ -24,17 +24,22 @@ Este diseño permite validar la coherencia académica del proyecto antes de inic
 Es el proyecto activo tras la aprobación del anteproyecto. Incluye:
 
 - Referencia al anteproyecto (`anteproject_id`)
-- Estado (`planning`, `in_development`, etc.)
+- Estado (`draft`, `planning`, `development`, `review`, `completed`)
 - Tutor, fechas clave, y URL de repositorio GitHub para seguimiento técnico.
 - Relación con estudiantes (`project_students`) y sus tareas.
 
 ## 4. 🧱 Tareas y Hitos
 
 ### milestones
-Representan etapas clave del proyecto. Tienen tipo (`planning`, `execution`, `review`, `final`) y se vinculan a `projects`.
+Representan etapas clave del proyecto durante su ejecución. Tienen tipo (`planning`, `execution`, `review`, `final`) y se vinculan únicamente a `projects`. Incluyen estados (`pending`, `in_progress`, `completed`, `delayed`). Los anteproyectos no tienen milestones, solo definen resultados esperados en formato JSON.
 
 ### tasks
-Representan el trabajo granular que se genera automáticamente desde los hitos del anteproyecto. Relación con `milestones`, incluyen estado, fechas, horas estimadas, complejidad, y etiquetas (`tags`). Las tareas se crean automáticamente al aprobar el anteproyecto.
+Representan el trabajo granular del proyecto. Se pueden generar de múltiples formas:
+- **MCP Server**: IA analiza el anteproyecto y propone tareas automáticamente
+- **Definición manual**: El alumno define las tareas para su proyecto
+- **Plantillas**: Tareas predefinidas de buenas prácticas para desarrollo de software
+
+Relación con `milestones`, incluyen estado (`pending`, `in_progress`, `under_review`, `completed`), fechas, horas estimadas, complejidad, y etiquetas (`tags`).
 
 ### task_assignees
 Relaciona tareas con usuarios responsables, facilitando la trazabilidad del progreso.
@@ -45,7 +50,7 @@ Relaciona tareas con usuarios responsables, facilitando la trazabilidad del prog
 Permiten discusión en cada tarea. `is_internal` permite comentarios privados del tutor.
 
 ### files
-Relación polimórfica para asociar archivos a tareas, comentarios o anteproyectos. Se incluye versión de archivos (`file_versions`) para trazabilidad.
+Relación polimórfica única para asociar archivos a tareas, comentarios o anteproyectos. Se incluye versión de archivos (`file_versions`) para trazabilidad. La relación se establece mediante `attachable_type` y `attachable_id`.
 
 ## 6. 🔔 Notificaciones (notifications)
 Mecanismo para avisos automáticos: asignación de tareas, comentarios nuevos, cambios de estado, etc. Pueden extenderse a notificaciones por email.
