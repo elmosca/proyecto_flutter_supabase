@@ -55,17 +55,19 @@ CREATE TABLE anteprojects (
     status ENUM('draft', 'submitted', 'under_review', 'approved', 'rejected') NOT NULL DEFAULT 'draft',
     tutor_id INT NOT NULL,
     
-    -- Fechas específicas
+    -- Fechas simplificadas
     submitted_at TIMESTAMP NULL,
-    submission_date DATE NULL, -- Fecha específica de envío
     reviewed_at TIMESTAMP NULL,
-    evaluation_date DATE NULL, -- Fecha específica de evaluación
+    
+    -- Relación bidireccional con proyecto
+    project_id INT UNIQUE NULL,
     
     tutor_comments TEXT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
-    FOREIGN KEY (tutor_id) REFERENCES users(id) ON DELETE RESTRICT
+    FOREIGN KEY (tutor_id) REFERENCES users(id) ON DELETE RESTRICT,
+    FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL
 );
 ```
 
@@ -118,12 +120,12 @@ CREATE TABLE projects (
     id SERIAL PRIMARY KEY,
     title VARCHAR(500) NOT NULL,
     description TEXT NOT NULL,
-    status ENUM('anteproject', 'planning', 'in_development', 'under_review', 'completed') NOT NULL DEFAULT 'anteproject',
+    status ENUM('draft', 'planning', 'development', 'review', 'completed') NOT NULL DEFAULT 'draft',
     start_date DATE NULL,
     estimated_end_date DATE NULL,
     actual_end_date DATE NULL,
     tutor_id INT NOT NULL,
-    anteproject_id INT UNIQUE NULL,
+    anteproject_id INT UNIQUE NULL, -- Un anteproyecto genera un solo proyecto
     
     -- Campos adicionales
     github_repository_url VARCHAR(500) NULL, -- URL del repositorio GitHub del proyecto
@@ -157,7 +159,7 @@ CREATE TABLE project_students (
 ```sql
 CREATE TABLE milestones (
     id SERIAL PRIMARY KEY,
-    project_id INT NOT NULL,
+    project_id INT NOT NULL, -- Los milestones solo pertenecen a proyectos
     milestone_number INT NOT NULL,
     title VARCHAR(500) NOT NULL,
     description TEXT NOT NULL,
@@ -167,7 +169,6 @@ CREATE TABLE milestones (
     
     -- Campos adicionales
     milestone_type ENUM('planning', 'execution', 'review', 'final') DEFAULT 'execution',
-    is_from_anteproject BOOLEAN DEFAULT FALSE,
     expected_deliverables JSON NULL,
     
     review_comments TEXT NULL,
@@ -233,7 +234,6 @@ CREATE TABLE tasks (
     title VARCHAR(500) NOT NULL,
     description TEXT NOT NULL,
     status ENUM('pending', 'in_progress', 'under_review', 'completed') NOT NULL DEFAULT 'pending',
-    -- Se elimina priority ya que las tareas se generan automáticamente desde el anteproyecto
     due_date DATE NULL,
     completed_at TIMESTAMP NULL,
     kanban_position INT DEFAULT 0,
@@ -245,15 +245,14 @@ CREATE TABLE tasks (
     tags JSON NULL, -- Para etiquetas personalizadas
     
     -- Campos para generación automática
-    is_auto_generated BOOLEAN DEFAULT TRUE, -- Indica si la tarea se generó automáticamente
-    source_milestone_id INT NULL, -- Hito del anteproyecto del que se generó
+    is_auto_generated BOOLEAN DEFAULT FALSE, -- Indica si la tarea se generó automáticamente
+    generation_source VARCHAR(50) NULL, -- 'mcp_server', 'student_defined', 'template'
     
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
     FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
-    FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL,
-    FOREIGN KEY (source_milestone_id) REFERENCES milestones(id) ON DELETE SET NULL
+    FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL
 );
 ```
 
@@ -336,15 +335,11 @@ CREATE TABLE files (
     uploaded_by INT NOT NULL,
     uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
-    -- Relaciones polimórficas
+    -- Relación polimórfica única
     attachable_type ENUM('task', 'comment', 'anteproject') NOT NULL,
     attachable_id INT NOT NULL,
-
-    -- Relación directa con anteproyectos
-    anteproject_id INT NULL,
     
     FOREIGN KEY (uploaded_by) REFERENCES users(id) ON DELETE RESTRICT,
-    FOREIGN KEY (anteproject_id) REFERENCES anteprojects(id) ON DELETE SET NULL,
     INDEX idx_attachable (attachable_type, attachable_id)
 );
 ```
@@ -419,7 +414,9 @@ CREATE INDEX idx_file_versions_original ON file_versions(original_file_id, versi
 - Solo usuarios con rol 'student' pueden tener NRE
 - Un anteproyecto debe tener al menos un estudiante autor
 - Un proyecto solo puede tener un tutor responsable
-- Las tareas se generan automáticamente desde los hitos del anteproyecto aprobado
+- Un anteproyecto puede generar un solo proyecto (relación 1:1)
+- Los milestones solo pertenecen a proyectos, no a anteproyectos
+- Las tareas se pueden generar de múltiples formas: MCP Server, definición manual del alumno, o plantillas predefinidas
 - Los hitos deben estar ordenados secuencialmente dentro de un proyecto
 - La URL del repositorio GitHub debe ser válida cuando se proporcione
 - Solo los alumnos del proyecto pueden modificar la URL del repositorio GitHub
@@ -500,11 +497,6 @@ AFTER UPDATE ON anteprojects
 FOR EACH ROW
 BEGIN
     DECLARE project_id INT;
-    DECLARE done INT DEFAULT FALSE;
-    DECLARE milestone_id INT;
-    DECLARE milestone_title VARCHAR(500);
-    DECLARE milestone_desc TEXT;
-    DECLARE milestone_date DATE;
     
     -- Solo ejecutar cuando el anteproyecto cambia a 'approved'
     IF OLD.status != 'approved' AND NEW.status = 'approved' THEN
@@ -512,25 +504,18 @@ BEGIN
         -- Obtener el ID del proyecto asociado
         SELECT id INTO project_id FROM projects WHERE anteproject_id = NEW.id;
         
-        -- Crear tareas desde los hitos del anteproyecto
-        INSERT INTO tasks (project_id, title, description, due_date, is_auto_generated, source_milestone_id)
-        SELECT 
-            project_id,
-            CONCAT('Hito ', m.milestone_number, ': ', m.title),
-            m.description,
-            m.planned_date,
-            TRUE,
-            m.id
-        FROM milestones m
-        WHERE m.project_id = project_id AND m.is_from_anteproject = TRUE;
+        -- Las tareas se pueden generar de múltiples formas:
+        -- 1. MCP Server (IA) analiza el anteproyecto y propone tareas
+        -- 2. Alumno define tareas manualmente
+        -- 3. Plantilla predefinida de buenas prácticas para desarrollo de software
         
         -- Notificar a los estudiantes del proyecto
         INSERT INTO notifications (user_id, type, title, message, action_url)
         SELECT 
             ps.student_id,
-            'tasks_generated',
-            'Tareas generadas automáticamente',
-            CONCAT('Se han generado tareas automáticamente para el proyecto: ', NEW.title),
+            'project_approved',
+            'Proyecto aprobado',
+            CONCAT('El anteproyecto ha sido aprobado. Puedes comenzar a definir tareas para el proyecto: ', NEW.title),
             CONCAT('/projects/', project_id, '/tasks')
         FROM project_students ps
         WHERE ps.project_id = project_id;
