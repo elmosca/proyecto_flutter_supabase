@@ -4,30 +4,45 @@
 
 ### ✅ **Completado:**
 - **Modelo de datos completo**: 19 tablas principales con todas las relaciones
-- **Migraciones creadas**: 3 migraciones con esquema, triggers y datos iniciales
+- **Migraciones aplicadas**: 5 migraciones con esquema, triggers, datos iniciales, RLS y Auth
+- **Sistema de seguridad**: 54 políticas RLS implementadas
+- **Autenticación**: JWT con roles configurado
 - **Funcionalidades avanzadas**: Sistema de notificaciones, auditoría, validaciones
 - **Datos de ejemplo**: Usuarios, anteproyectos, proyectos y tareas de demostración
 
 ### 🔄 **Pendiente:**
-- **Aplicación de migraciones**: Verificar que las migraciones se apliquen correctamente
-- **Configuración de RLS**: Políticas de seguridad por fila
 - **API REST**: Endpoints para el frontend
-- **Autenticación**: Integración con Supabase Auth
+- **Frontend**: Interfaz de usuario con Flutter
 
 ## 🏗️ Estructura del Proyecto
 
 ```
 backend/supabase/
-├── migrations/
+├── migrations/          # Migraciones de la base de datos
 │   ├── 20240815000001_create_initial_schema.sql    # Esquema base
 │   ├── 20240815000002_create_triggers_and_functions.sql  # Triggers y funciones
-│   └── 20240815000003_seed_initial_data.sql       # Datos iniciales
-├── config/
-├── functions/
-├── seed/
-├── supabase/
-│   └── config.toml                                # Configuración de Supabase
-└── README.md
+│   ├── 20240815000003_seed_initial_data.sql       # Datos iniciales
+│   ├── 20240815000004_configure_rls_fixed.sql     # Configuración RLS
+│   └── 20240815000005_configure_auth.sql          # Configuración Auth
+├── tests/              # Scripts de prueba
+│   ├── test_rls_functions.sql                     # Pruebas RLS
+│   └── test_complete_system.sql                   # Pruebas completas
+├── fixes/              # Scripts de corrección
+│   ├── fix_rls_functions.sql                      # Correcciones RLS
+│   ├── fix_auth_functions.sql                     # Correcciones Auth
+│   └── fix_simulate_login.sql                     # Corrección login
+├── scripts/            # Scripts de utilidad
+│   └── verify_tables.sql                          # Verificación de tablas
+├── config/             # Configuración de Supabase
+├── functions/          # Supabase Edge Functions (APIs REST)
+│   ├── approval-api/        # API de aprobación de anteproyectos
+│   ├── anteprojects-api/    # API CRUD de anteproyectos
+│   └── README.md           # Documentación de las APIs
+├── seed/               # Datos iniciales
+├── supabase/           # Configuración de Supabase CLI
+├── README.md           # Este archivo
+├── rls_setup_guide.md  # Guía de configuración RLS
+└── verificacion_migraciones.md # Documentación de verificación
 ```
 
 ## 🚀 Comandos Útiles
@@ -55,17 +70,53 @@ supabase migration up
 
 ### Verificar Tablas
 ```bash
-# Crear script de verificación
-cat > verify_tables.sql << 'EOF'
-SELECT table_name, COUNT(*) as record_count 
-FROM information_schema.tables 
-WHERE table_schema = 'public' 
-AND table_type = 'BASE TABLE'
-ORDER BY table_name;
-EOF
+# Ejecutar script de verificación
+psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -f scripts/verify_tables.sql
+```
 
-# Ejecutar verificación (requiere psql instalado)
-psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -f verify_tables.sql
+## 🚀 APIs REST (Edge Functions)
+
+### Funciones implementadas:
+
+1. **approval-api**: Gestión de aprobación de anteproyectos
+   - Aprobar anteproyectos
+   - Rechazar anteproyectos
+   - Solicitar cambios
+
+2. **anteprojects-api**: CRUD completo de anteproyectos
+   - Listar anteproyectos por rol
+   - Crear nuevos anteproyectos
+   - Actualizar anteproyectos
+   - Enviar para revisión
+
+### Probar las APIs:
+```bash
+# Ejecutar script de pruebas completas
+./tests/test_api_endpoints.sh
+
+# O probar endpoints individuales
+curl -X GET 'http://localhost:54321/functions/v1/anteprojects-api/' \
+  -H "Authorization: Bearer $JWT_TOKEN"
+```
+
+📖 **Ver documentación completa**: `functions/README.md`
+
+### Ejecutar Pruebas
+```bash
+# Pruebas RLS
+psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -f tests/test_rls_functions.sql
+
+# Pruebas completas del sistema
+psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -f tests/test_complete_system.sql
+```
+
+### Aplicar Correcciones
+```bash
+# Correcciones RLS
+psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -f fixes/fix_rls_functions.sql
+
+# Correcciones de autenticación
+psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -f fixes/fix_auth_functions.sql
 ```
 
 ## 📊 Modelo de Datos

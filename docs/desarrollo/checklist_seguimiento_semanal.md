@@ -28,11 +28,14 @@
 ## 🎯 **OBJETIVOS PARA LA PRÓXIMA SEMANA**
 
 ### **Prioridad ALTA**
-- [ ] **Aplicar migración RLS**
+- [x] **Aplicar migración RLS** ✅ COMPLETADO
   ```bash
-  psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -f migrations/20240815000004_configure_rls.sql
+  psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -f migrations/20240815000004_configure_rls_fixed.sql
   ```
-- [ ] **Configurar Supabase Auth**
+- [x] **Configurar Supabase Auth** ✅ COMPLETADO
+  - [x] Funciones de autenticación creadas
+  - [x] JWT claims configurados
+  - [x] Políticas de login aplicadas
 - [ ] **Crear API REST básica**
 
 ### **Prioridad MEDIA**
@@ -78,7 +81,8 @@
 
 ### **Logros Destacados**
 - ✅ **Backend 100% funcional**: Supera expectativas del MVP
-- ✅ **Seguridad robusta**: RLS con 50+ políticas
+- ✅ **Seguridad robusta**: RLS con 54 políticas
+- ✅ **Sistema de autenticación**: JWT con roles implementado
 - ✅ **Documentación completa**: Código bien documentado
 - ✅ **Funcionalidades extra**: Sistema de versiones, auditoría, etc.
 
@@ -96,10 +100,10 @@
 
 ## 🎯 **PRÓXIMOS HITOS**
 
-### **Hito 1: RLS Aplicado** (Esta semana)
-- [ ] Aplicar migración RLS
-- [ ] Verificar políticas funcionando
-- [ ] Documentar configuración
+### **Hito 1: RLS Aplicado** ✅ COMPLETADO
+- [x] Aplicar migración RLS
+- [x] Verificar políticas funcionando
+- [x] Documentar configuración
 
 ### **Hito 2: API REST Básica** (Próxima semana)
 - [ ] Endpoints de usuarios
