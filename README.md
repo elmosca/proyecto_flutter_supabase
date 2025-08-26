@@ -99,6 +99,7 @@ flutter run
 - [📋 Checklist Detallado MVP](docs/desarrollo/checklist_mvp_detallado.md) - Seguimiento completo del plan MVP
 - [📅 Checklist Semanal](docs/desarrollo/checklist_seguimiento_semanal.md) - Seguimiento semanal del progreso
 - [📊 Estado Actual](docs/desarrollo/estado_actual_completo.md) - Estado completo del proyecto
+- [🎉 Logros de la Sesión](docs/desarrollo/logros_sesion_17_agosto.md) - Logros de la sesión del 17 de agosto
 
 ### Documentación Técnica
 - [🗄️ Backend Supabase](backend/supabase/README.md) - Guía completa del backend

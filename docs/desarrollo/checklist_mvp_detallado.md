@@ -28,17 +28,17 @@
   - [x] `20240815000003_seed_initial_data.sql` ✅
   - [x] `20240815000004_configure_rls.sql` ✅ (creada, pendiente aplicar)
 
-#### **Semana 2: Autenticación y RLS**
+#### **Semana 2: Autenticación y RLS** ✅ COMPLETADO
 - [x] **Sistema de usuarios y roles**
   - [x] Tabla users con roles (admin, tutor, student)
   - [x] Validaciones de NRE para estudiantes
   - [x] Datos de ejemplo: 9 usuarios creados
 - [x] **Configuración RLS**
-  - [x] Migración RLS creada con 50+ políticas
+  - [x] Migración RLS creada con 54 políticas
   - [x] Funciones de autenticación implementadas
   - [x] Políticas granulares por tabla y operación
-  - [ ] **PENDIENTE**: Aplicar migración RLS
-  - [ ] **PENDIENTE**: Configurar Supabase Auth
+  - [x] **COMPLETADO**: Aplicar migración RLS
+  - [x] **COMPLETADO**: Configurar Supabase Auth
 
 #### **Semana 3: API Anteproyectos**
 - [x] **Modelo de anteproyectos**
@@ -50,7 +50,11 @@
   - [x] 2 anteproyectos creados (1 aprobado, 1 borrador)
   - [x] Objetivos DAM cargados
   - [x] Criterios de evaluación definidos
-- [ ] **PENDIENTE**: API REST para anteproyectos
+- [x] **API REST para anteproyectos** ✅
+  - CRUD completo implementado
+  - Listado filtrado por rol de usuario
+  - Envío para revisión (submit)
+  - Documentación y pruebas incluidas
 
 #### **Semana 4: Flujo de Aprobación**
 - [x] **Sistema de evaluación**
@@ -60,7 +64,13 @@
 - [x] **Relación anteproyecto-proyecto**
   - [x] 1:1 entre anteproyecto y proyecto
   - [x] Proyecto activo creado automáticamente
-- [ ] **PENDIENTE**: API REST para aprobación
+- [x] **API REST para aprobación** ✅
+  - **Funciones Edge implementadas**:
+    - `approval-api`: Aprobación, rechazo y solicitud de cambios
+    - `anteprojects-api`: CRUD completo de anteproyectos
+  - **Endpoints disponibles**: 8 endpoints REST funcionales
+  - **Documentación**: `backend/supabase/functions/README.md`
+  - **Pruebas**: `backend/supabase/tests/test_api_endpoints.sh`
 
 ---
 
@@ -91,12 +101,19 @@
   - [ ] Vista de anteproyectos pendientes (tutores)
   - [ ] Vista de anteproyectos propios (estudiantes)
 
-#### **Semana 7: CRUD Tareas**
-- [ ] **Visualización de tareas**
+#### **Semana 7: CRUD Tareas** ✅ COMPLETADO (API)
+- [x] **API REST de Tareas** ✅
+  - **Funciones Edge implementadas**:
+    - `tasks-api`: CRUD completo de tareas
+    - Asignación de usuarios a tareas
+    - Gestión de comentarios en tareas
+    - Actualización de estados con notificaciones
+  - **Endpoints disponibles**: 8 endpoints REST funcionales
+  - **Documentación**: `backend/supabase/functions/README.md`
+- [ ] **Frontend de tareas** (Pendiente)
   - [ ] Lista de tareas por proyecto
   - [ ] Filtros por estado
   - [ ] Búsqueda de tareas
-- [ ] **Gestión de tareas**
   - [ ] Cambio de estado de tareas
   - [ ] Asignación de tareas
   - [ ] Creación manual de tareas
@@ -188,18 +205,18 @@
 
 ## 🚀 **PRÓXIMOS PASOS INMEDIATOS**
 
-### **Prioridad ALTA (Esta semana)**
-1. [ ] **Aplicar migración RLS**
+### **Prioridad ALTA (Esta semana)** ✅ COMPLETADO
+1. [x] **Aplicar migración RLS** ✅
    ```bash
-   psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -f migrations/20240815000004_configure_rls.sql
+   psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -f migrations/20240815000004_configure_rls_fixed.sql
    ```
 
-2. [ ] **Configurar Supabase Auth**
-   - [ ] Configurar autenticación JWT
-   - [ ] Probar políticas RLS
-   - [ ] Verificar tokens con user_id y role
+2. [x] **Configurar Supabase Auth** ✅
+   - [x] Configurar autenticación JWT
+   - [x] Probar políticas RLS
+   - [x] Verificar tokens con user_id y role
 
-3. [ ] **Crear API REST básica**
+3. [ ] **Crear API REST básica** (Próximo hito)
    - [ ] Endpoints para usuarios
    - [ ] Endpoints para anteproyectos
    - [ ] Endpoints para proyectos
