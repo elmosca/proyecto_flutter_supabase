@@ -106,6 +106,12 @@ flutter run
 - [🔐 Configuración RLS](backend/supabase/rls_setup_guide.md) - Guía de configuración de seguridad
 - [✅ Verificación Migraciones](backend/supabase/verificacion_migraciones.md) - Estado de las migraciones
 
+### Documentación Frontend
+- [🚀 Plan de Desarrollo Frontend](docs/desarrollo/plan_desarrollo_frontend.md) - Plan completo de desarrollo del frontend
+- [📅 Checklist Frontend Semanal](docs/desarrollo/checklist_frontend_semanal.md) - Seguimiento semanal del frontend
+- [⚡ Guía de Inicio Frontend](docs/desarrollo/guia_inicio_frontend.md) - Guía rápida para comenzar con Flutter
+- [📦 Entrega Backend para Frontend](backend/supabase/ENTREGA_BACKEND_FRONTEND.md) - Documentación de entrega del backend
+
 ## 7. 🔐 Seguridad y cumplimiento
 - RLS habilitado y políticas por rol/propiedad (p. ej., `auth.uid() = user_id`).
 - Datos sensibles protegidos y acceso a Storage controlado por políticas.
