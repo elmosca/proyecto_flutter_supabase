@@ -1,32 +1,44 @@
 # Proyecto TFG DAM – Plataforma colaborativa (Flutter + Supabase)
 
 ## 1. 🎯 Objetivo del Proyecto
-Desarrollar una plataforma colaborativa multiplataforma con Flutter (frontend) y Supabase (backend) para gestionar Trabajos de Fin de Grado (TFG) del ciclo DAM. La plataforma permitirá a estudiantes, tutores y administradores planificar y dar seguimiento al TFG con enfoque en gestión de tareas y metodología Kanban.
+Desarrollar una plataforma colaborativa **multiplataforma** con Flutter (frontend) y Supabase (backend) para gestionar Trabajos de Fin de Grado (TFG) del ciclo DAM. La plataforma permitirá a estudiantes, tutores y administradores planificar y dar seguimiento al TFG con enfoque en gestión de tareas y metodología Kanban, disponible en **Web, Android, iOS y Escritorio**.
 
-- Roles: estudiantes, tutores, administradores
-- Tableros Kanban, tareas, estados, prioridades
-- Seguimiento de entregas, comentarios y rúbricas de evaluación
-- Notificaciones y actividad reciente
-- Archivos adjuntos y versiones por tarea
-- Eventos en tiempo real (p. ej., actualizaciones de tablero, chat/comentarios)
+- **Roles**: estudiantes, tutores, administradores
+- **Plataformas**: Web, Android, iOS, Windows, macOS, Linux
+- **Funcionalidades**: Tableros Kanban, tareas, estados, prioridades
+- **Seguimiento**: Entregas, comentarios y rúbricas de evaluación
+- **Comunicación**: Notificaciones y actividad reciente
+- **Archivos**: Adjuntos y versiones por tarea
+- **Tiempo real**: Eventos (actualizaciones de tablero, chat/comentarios)
 
 ## 2. 🧱 Tecnologías Elegidas
-- Frontend: Flutter (iOS, Android, web, escritorio) desde una única base de código.
-- Backend: Supabase (PostgreSQL, Auth, Storage, Edge Functions, Realtime, CLI).
+- **Frontend**: Flutter **multiplataforma** (iOS, Android, web, escritorio) desde una única base de código
+- **Backend**: Supabase (PostgreSQL, Auth, Storage, Edge Functions, Realtime, CLI)
+
+### **Plataformas Soportadas**
+| Plataforma | Prioridad | Estado | Descripción |
+|------------|-----------|--------|-------------|
+| **🌐 Web** | ALTA | ⏳ Pendiente | Acceso universal desde navegadores |
+| **📱 Android** | ALTA | ⏳ Pendiente | Aplicación nativa en Google Play |
+| **🍎 iOS** | MEDIA | ⏳ Pendiente | Aplicación nativa en App Store |
+| **🖥️ Windows** | MEDIA | ⏳ Pendiente | Aplicación de escritorio |
+| **🍎 macOS** | BAJA | ⏳ Pendiente | Aplicación de escritorio |
+| **🐧 Linux** | BAJA | ⏳ Pendiente | Aplicación de escritorio |
 
 ## 3. 🚀 Funcionalidades previstas
-- Kanban por TFG (listas/estados y tarjetas/tareas)
-- Asignación de tareas y fechas límite
-- Entrega de archivos por tarea (Storage)
-- Comentarios y menciones
-- Rúbricas y calificaciones por tutor
-- Notificaciones y actividad
-- Realtime para colaboración (movimientos en tablero, chat)
-- Políticas de seguridad (RLS) por rol/propiedad de datos
+- **Kanban por TFG** (listas/estados y tarjetas/tareas)
+- **Asignación de tareas** y fechas límite
+- **Entrega de archivos** por tarea (Storage)
+- **Comentarios y menciones**
+- **Rúbricas y calificaciones** por tutor
+- **Notificaciones y actividad**
+- **Realtime** para colaboración (movimientos en tablero, chat)
+- **Políticas de seguridad** (RLS) por rol/propiedad de datos
+- **Experiencia multiplataforma** optimizada para cada plataforma
 
 ## 4. 📁 Estructura del repositorio
 - `backend/supabase/`: proyecto Supabase (migraciones, funciones, seed, config)
-- `frontend/`: proyecto Flutter (creado por el equipo de frontend)
+- `frontend/`: proyecto Flutter **multiplataforma** (creado por el equipo de frontend)
 - `scripts/`: utilidades de desarrollo
 - `.cursorrules`: reglas de mejores prácticas para Supabase y Cursor
 
@@ -75,22 +87,38 @@ Referencias:
 - Vistas y `security_invoker`: [supabase.wordpress.com – vistas](https://supabase.wordpress.com/2023/05/17/administracion-tablas-y-vistas-en-supabase/?utm_source=openai)
 - Claves `anon` vs `service_role`: [apidog.com](https://apidog.com/es/blog/supabase-api-2/?utm_source=openai)
 
-### Frontend (Flutter)
+### Frontend (Flutter Multiplataforma)
 Requisitos: Flutter SDK.
 
-1) Crear proyecto (equipo frontend)
+1) Crear proyecto **multiplataforma** (equipo frontend)
 ```bash
 cd frontend
-flutter create app
+flutter create app --platforms=web,android,ios,windows,macos,linux
 cd app
 flutter pub add supabase_flutter
 ```
 
 2) Configurar Supabase en `lib/main.dart` (URL y `anon key` del proyecto).
 
-3) Ejecutar
+3) Ejecutar en diferentes plataformas
 ```bash
-flutter run
+# Web (más rápido para desarrollo)
+flutter run -d chrome
+
+# Android
+flutter run -d android
+
+# iOS (requiere macOS)
+flutter run -d ios
+
+# Windows
+flutter run -d windows
+
+# macOS
+flutter run -d macos
+
+# Linux
+flutter run -d linux
 ```
 
 ## 6. 📋 Seguimiento del Proyecto
@@ -106,27 +134,89 @@ flutter run
 - [🔐 Configuración RLS](backend/supabase/rls_setup_guide.md) - Guía de configuración de seguridad
 - [✅ Verificación Migraciones](backend/supabase/verificacion_migraciones.md) - Estado de las migraciones
 
-### Documentación Frontend
-- [🚀 Plan de Desarrollo Frontend](docs/desarrollo/plan_desarrollo_frontend.md) - Plan completo de desarrollo del frontend
-- [📅 Checklist Frontend Semanal](docs/desarrollo/checklist_frontend_semanal.md) - Seguimiento semanal del frontend
-- [⚡ Guía de Inicio Frontend](docs/desarrollo/guia_inicio_frontend.md) - Guía rápida para comenzar con Flutter
+### Documentación Frontend Multiplataforma
+- [🚀 Plan de Desarrollo Frontend](docs/desarrollo/plan_desarrollo_frontend.md) - Plan completo de desarrollo del frontend **multiplataforma**
+- [📅 Checklist Frontend Semanal](docs/desarrollo/checklist_frontend_semanal.md) - Seguimiento semanal del frontend **multiplataforma**
+- [⚡ Guía de Inicio Frontend](docs/desarrollo/guia_inicio_frontend.md) - Guía rápida para comenzar con Flutter **multiplataforma**
 - [📦 Entrega Backend para Frontend](backend/supabase/ENTREGA_BACKEND_FRONTEND.md) - Documentación de entrega del backend
 
-## 7. 🔐 Seguridad y cumplimiento
+## 7. 🌐 Estrategia Multiplataforma
+
+### **Enfoque de Desarrollo**
+- **Código compartido**: 90% del código será común entre plataformas
+- **Adaptaciones específicas**: 10% del código será específico por plataforma
+- **Diseño responsive**: Adaptación automática según tamaño de pantalla
+- **Patrones de navegación**: Adaptados a cada plataforma (hamburger menu, bottom navigation, etc.)
+
+### **Configuración por Plataforma**
+```dart
+// Ejemplo de configuración multiplataforma
+if (kIsWeb) {
+  // Configuraciones específicas para web
+  // Optimizaciones para navegador
+  // Configuración de PWA
+} else if (Platform.isAndroid) {
+  // Configuraciones específicas para Android
+  // Permisos específicos de Android
+  // Integración con servicios de Google
+} else if (Platform.isIOS) {
+  // Configuraciones específicas para iOS
+  // Adaptaciones de Cupertino Design
+  // Integración con servicios de Apple
+} else if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
+  // Configuraciones específicas para escritorio
+  // Adaptaciones para mouse y teclado
+  // Ventanas y menús nativos
+}
+```
+
+### **Build Multiplataforma**
+```bash
+# Build para Web
+flutter build web --release
+
+# Build para Android
+flutter build apk --release
+flutter build appbundle --release
+
+# Build para iOS
+flutter build ios --release
+
+# Build para Windows
+flutter build windows --release
+
+# Build para macOS
+flutter build macos --release
+
+# Build para Linux
+flutter build linux --release
+```
+
+## 8. 🔐 Seguridad y cumplimiento
 - RLS habilitado y políticas por rol/propiedad (p. ej., `auth.uid() = user_id`).
 - Datos sensibles protegidos y acceso a Storage controlado por políticas.
 - `.env` locales (no se suben); usar `.env.example` como plantilla.
 - Revisión de migraciones y políticas en PR antes de desplegar.
 
-## 7. 🧪 Calidad y convenciones
+## 9. 🧪 Calidad y convenciones
 - Commits: Conventional Commits (`feat:`, `fix:`, `chore:`, `docs:`…).
 - Revisión de PR con checklist (.cursorrules).
 - Generación de tipos desde DB cuando aplique.
 - Documentar endpoints, funciones y políticas relevantes.
+- **Testing multiplataforma**: Tests unitarios, de widgets y de integración por plataforma.
 
-## 8. 📦 Entornos
+## 10. 📦 Entornos
 - Desarrollo local: Supabase CLI (`start/stop/status`) dentro de `backend/supabase`.
 - Variables por entorno (dev/staging/prod) via `.env` y secretos de Supabase (para Edge Functions).
+- **Desarrollo multiplataforma**: Configuración específica por plataforma durante desarrollo.
 
-## 9. 📜 Licencia
+## 11. 📜 Licencia
 Este repositorio se distribuye bajo licencia CC0-1.0 (ver `LICENSE`).
+
+---
+
+## 🚀 **¡LISTO PARA DESARROLLO MULTIPLATAFORMA!**
+
+**Estado del proyecto**: Backend 100% completado, Frontend en planificación  
+**Próximo hito**: Inicio del desarrollo frontend multiplataforma  
+**Confianza**: Alta - Proyecto técnicamente sólido con estrategia multiplataforma definida
