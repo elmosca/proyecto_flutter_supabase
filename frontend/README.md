@@ -69,9 +69,16 @@ start ms-settings:developers
 flutter run -d windows
 ```
 
-### **Android (si está disponible)**
+### **Android (Configurado)**
 ```bash
+# Requiere Android Studio instalado
 flutter run -d android
+
+# Build APK
+flutter build apk --debug
+
+# Build App Bundle para Google Play
+flutter build appbundle --release
 ```
 
 ## 📱 **Plataformas Soportadas**
@@ -79,8 +86,8 @@ flutter run -d android
 | Plataforma | Estado | Prioridad | Comandos |
 |------------|--------|-----------|----------|
 | **Web** | ✅ Funcional | ALTA | `flutter run -d edge` |
-| **Windows** | ⚠️ Requiere configuración | ALTA | `flutter run -d windows` |
-| **Android** | ⏳ Pendiente | ALTA | `flutter run -d android` |
+| **Windows** | ✅ Funcional | ALTA | `flutter run -d windows` |
+| **Android** | 🟡 Configurado (requiere Android Studio) | ALTA | `flutter run -d android` |
 | **iOS** | ⏳ Pendiente | MEDIA | `flutter run -d ios` |
 | **macOS** | ⏳ Pendiente | BAJA | `flutter run -d macos` |
 | **Linux** | ⏳ Pendiente | BAJA | `flutter run -d linux` |
@@ -245,6 +252,7 @@ telnet 192.168.1.9 54321
 - [Plan de Desarrollo](../docs/desarrollo/plan_desarrollo_frontend.md)
 - [Guía de Inicio](../docs/desarrollo/guia_inicio_frontend.md)
 - [Checklist Semanal](../docs/desarrollo/checklist_frontend_semanal.md)
+- [Configuración Android](ANDROID_SETUP.md)
 
 ---
 

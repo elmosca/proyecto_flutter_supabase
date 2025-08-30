@@ -196,7 +196,7 @@ final tasks = await supabase
 ### **Guías Principales**
 - 📄 `backend/supabase/README.md` - Guía principal del backend
 - 📄 `backend/supabase/functions/README.md` - Documentación de APIs
-- 📄 `backend/supabase/rls_setup_guide.md` - Guía de seguridad
+- 📄 `docs/desarrollo/rls_setup_guide.md` - Guía de seguridad
 - 📄 `docs/desarrollo/` - Seguimiento del proyecto
 
 ### **Archivos de Configuración**
