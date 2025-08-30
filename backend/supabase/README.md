@@ -41,8 +41,7 @@ backend/supabase/
 ├── seed/               # Datos iniciales
 ├── supabase/           # Configuración de Supabase CLI
 ├── README.md           # Este archivo
-├── rls_setup_guide.md  # Guía de configuración RLS
-└── verificacion_migraciones.md # Documentación de verificación
+└── README.md           # Este archivo
 ```
 
 ## 🚀 Comandos Útiles
