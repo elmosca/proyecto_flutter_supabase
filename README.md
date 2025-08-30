@@ -133,6 +133,8 @@ flutter run -d linux
 - [🗄️ Backend Supabase](backend/supabase/README.md) - Guía completa del backend
 - [🔐 Configuración RLS](backend/supabase/rls_setup_guide.md) - Guía de configuración de seguridad
 - [✅ Verificación Migraciones](backend/supabase/verificacion_migraciones.md) - Estado de las migraciones
+- [🚀 Opciones de Despliegue](docs/despliegue/opciones_backend.md) - Guía completa de opciones de backend (Local, Cloud, Servidor Independiente)
+- [🏠 Configuración Servidor Doméstico](docs/despliegue/configuracion_servidor_domestico.md) - Guía específica para tu servidor de red doméstica
 
 ### Documentación Frontend Multiplataforma
 - [🚀 Plan de Desarrollo Frontend](docs/desarrollo/plan_desarrollo_frontend.md) - Plan completo de desarrollo del frontend **multiplataforma**
@@ -205,7 +207,129 @@ flutter build linux --release
 - Documentar endpoints, funciones y políticas relevantes.
 - **Testing multiplataforma**: Tests unitarios, de widgets y de integración por plataforma.
 
-## 10. 📦 Entornos
+## 10. 📦 Entornos y Opciones de Despliegue
+
+### **Opciones de Backend Disponibles**
+
+#### **Opción 1: Supabase Local (Recomendado para Desarrollo)**
+- **Ubicación**: Servidor local o red doméstica
+- **Ventajas**: Control total, sin costos, sin límites de uso
+- **Configuración**: Supabase CLI con Docker
+- **Uso**: Desarrollo, testing, producción interna
+
+```bash
+# Configuración local
+cd backend/supabase
+supabase start
+supabase status
+```
+
+#### **Opción 2: Supabase Cloud (Alternativa a Firebase)**
+- **Ubicación**: Servidores de Supabase (AWS)
+- **Ventajas**: Sin mantenimiento, escalabilidad automática, backups automáticos
+- **Configuración**: Proyecto en [supabase.com](https://supabase.com)
+- **Uso**: Producción, aplicaciones públicas, cuando se requiere alta disponibilidad
+
+```bash
+# Configuración cloud
+supabase link --project-ref YOUR_PROJECT_REF
+supabase db push
+supabase functions deploy
+```
+
+#### **Opción 3: Servidor Independiente (Tu Red Doméstica)**
+- **Ubicación**: Tu servidor local/doméstico
+- **Ventajas**: Control total, sin dependencias externas, costos mínimos
+- **Configuración**: PostgreSQL + Supabase en tu infraestructura
+- **Uso**: Producción interna, aplicaciones corporativas
+
+### **Comparación de Opciones**
+
+| Aspecto | Local | Cloud | Servidor Independiente |
+|---------|-------|-------|----------------------|
+| **Costo** | Gratis | Freemium/Paid | Mínimo (electricidad) |
+| **Mantenimiento** | Manual | Automático | Manual |
+| **Escalabilidad** | Limitada | Automática | Manual |
+| **Backups** | Manual | Automático | Manual |
+| **Uptime** | Depende de tu infra | 99.9%+ | Depende de tu infra |
+| **Control** | Total | Limitado | Total |
+| **Configuración** | Compleja | Simple | Compleja |
+
+### **Configuración por Entorno**
+
+#### **Desarrollo Local**
+```bash
+# Variables de entorno para desarrollo
+SUPABASE_URL=http://localhost:54321
+SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+#### **Supabase Cloud**
+```bash
+# Variables de entorno para cloud
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+```
+
+#### **Servidor Independiente**
+```bash
+# Variables de entorno para servidor propio
+SUPABASE_URL=https://your-server.com:54321
+SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+```
+
+### **Migración Entre Entornos**
+
+#### **De Local a Cloud**
+```bash
+# 1. Crear proyecto en Supabase Cloud
+# 2. Vincular proyecto local con cloud
+supabase link --project-ref YOUR_PROJECT_REF
+
+# 3. Subir migraciones
+supabase db push
+
+# 4. Desplegar funciones
+supabase functions deploy
+
+# 5. Actualizar variables de entorno en frontend
+```
+
+#### **De Local a Servidor Independiente**
+```bash
+# 1. Configurar PostgreSQL en tu servidor
+# 2. Instalar Supabase en tu servidor
+# 3. Exportar datos locales
+supabase db dump
+
+# 4. Importar en servidor independiente
+psql -h your-server -U postgres -d postgres -f dump.sql
+
+# 5. Configurar variables de entorno
+```
+
+### **Recomendaciones por Caso de Uso**
+
+#### **Desarrollo y Testing**
+- **Recomendado**: Supabase Local
+- **Razón**: Control total, sin costos, desarrollo rápido
+
+#### **Producción Interna/Corporativa**
+- **Recomendado**: Servidor Independiente
+- **Razón**: Control de datos, sin dependencias externas
+
+#### **Aplicaciones Públicas/Startups**
+- **Recomendado**: Supabase Cloud
+- **Razón**: Escalabilidad, mantenimiento automático, alta disponibilidad
+
+#### **MVP y Prototipos**
+- **Recomendado**: Supabase Cloud (Plan Gratuito)
+- **Razón**: Configuración rápida, sin mantenimiento
+
+### **Variables por Entorno**
 - Desarrollo local: Supabase CLI (`start/stop/status`) dentro de `backend/supabase`.
 - Variables por entorno (dev/staging/prod) via `.env` y secretos de Supabase (para Edge Functions).
 - **Desarrollo multiplataforma**: Configuración específica por plataforma durante desarrollo.
