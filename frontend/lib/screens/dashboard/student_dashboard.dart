@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../utils/config.dart';
+import '../../l10n/app_localizations.dart';
 
 class StudentDashboard extends StatefulWidget {
   final User user;
@@ -27,9 +29,11 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dashboard Estudiante'),
+        title: Text(l10n.dashboardStudent),
         backgroundColor: Color(AppConfig.platformColor),
         foregroundColor: Colors.white,
         actions: [
@@ -46,8 +50,8 @@ class _StudentDashboardState extends State<StudentDashboard> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => _createAnteproject(),
         backgroundColor: Color(AppConfig.platformColor),
-        child: const Icon(Icons.add, color: Colors.white),
         tooltip: 'Crear anteproyecto',
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
@@ -181,30 +185,32 @@ class _StudentDashboardState extends State<StudentDashboard> {
   }
 
   Widget _buildAnteprojectsSection() {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              'Mis Anteproyectos',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Text(
+              l10n.myAnteprojects,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             TextButton(
               onPressed: () => _viewAllAnteprojects(),
-              child: const Text('Ver todos'),
+              child: Text(l10n.viewAll),
             ),
           ],
         ),
         const SizedBox(height: 8),
-        const Card(
+        Card(
           child: Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Text(
-              'No tienes anteproyectos creados. ¡Crea tu primer anteproyecto!',
+              l10n.noAnteprojects,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey),
+              style: const TextStyle(color: Colors.grey),
             ),
           ),
         ),
@@ -213,30 +219,32 @@ class _StudentDashboardState extends State<StudentDashboard> {
   }
 
   Widget _buildTasksSection() {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              'Tareas Pendientes',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Text(
+              l10n.pendingTasks,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             TextButton(
               onPressed: () => _viewAllTasks(),
-              child: const Text('Ver todas'),
+              child: Text(l10n.viewAllTasks),
             ),
           ],
         ),
         const SizedBox(height: 8),
-        const Card(
+        Card(
           child: Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Text(
-              'No tienes tareas pendientes. ¡Excelente trabajo!',
+              l10n.noPendingTasks,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey),
+              style: const TextStyle(color: Colors.grey),
             ),
           ),
         ),
@@ -245,6 +253,8 @@ class _StudentDashboardState extends State<StudentDashboard> {
   }
 
   Widget _buildServerInfo() {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Card(
       color: Colors.blue.shade50,
       child: Padding(
@@ -257,7 +267,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
                 Icon(Icons.info, color: Colors.blue.shade700),
                 const SizedBox(width: 8),
                 Text(
-                  'Información del Sistema',
+                  l10n.systemInfo,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.blue.shade700,
@@ -266,14 +276,14 @@ class _StudentDashboardState extends State<StudentDashboard> {
               ],
             ),
             const SizedBox(height: 12),
-            _buildInfoRow('Backend', AppConfig.supabaseUrl),
-            _buildInfoRow('Plataforma', AppConfig.platformName),
-            _buildInfoRow('Versión', AppConfig.appVersion),
-            _buildInfoRow('Usuario', widget.user.email ?? 'N/A'),
+            _buildInfoRow(l10n.backendLabel(AppConfig.supabaseUrl), ''),
+            _buildInfoRow(l10n.platformLabel(AppConfig.platformName), ''),
+            _buildInfoRow(l10n.versionLabel(AppConfig.appVersion), ''),
+            _buildInfoRow(l10n.emailLabel, widget.user.email ?? 'N/A'),
             const SizedBox(height: 8),
-            const Text(
-              'Estado: Conectado al servidor de red',
-              style: TextStyle(
+            Text(
+              l10n.connectedToServer,
+              style: const TextStyle(
                 color: Colors.green,
                 fontWeight: FontWeight.w500,
               ),
@@ -315,34 +325,38 @@ class _StudentDashboardState extends State<StudentDashboard> {
         Navigator.of(context).pushReplacementNamed('/login');
       }
     } catch (e) {
-      // ignore: avoid_print
-      print('Error al cerrar sesión: $e');
+      if (kDebugMode) {
+        debugPrint('Error al cerrar sesión: $e');
+      }
     }
   }
 
   void _createAnteproject() {
+    final l10n = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Funcionalidad de creación de anteproyectos en desarrollo'),
-        duration: Duration(seconds: 2),
+      SnackBar(
+        content: Text(l10n.anteprojectsDev),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
 
   void _viewAllAnteprojects() {
+    final l10n = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Lista de anteproyectos en desarrollo'),
-        duration: Duration(seconds: 2),
+      SnackBar(
+        content: Text(l10n.anteprojectsListDev),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
 
   void _viewAllTasks() {
+    final l10n = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Lista de tareas en desarrollo'),
-        duration: Duration(seconds: 2),
+      SnackBar(
+        content: Text(l10n.tasksListDev),
+        duration: const Duration(seconds: 2),
       ),
     );
   }

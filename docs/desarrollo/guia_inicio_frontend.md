@@ -104,6 +104,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
+import '../l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -116,51 +117,53 @@ class _LoginScreenState extends State<LoginScreen> {
   
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login TFG - ${_getPlatformName()}'),
+        title: Text('${l10n.login} TFG - ${_getPlatformName()}'),
         backgroundColor: _getPlatformColor(),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Mostrar información de plataforma
             Card(
               child: Padding(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
                     Icon(_getPlatformIcon(), size: 48, color: _getPlatformColor()),
-                    SizedBox(height: 8),
-                    Text('Plataforma: ${_getPlatformName()}'),
-                    Text('Versión: ${_getPlatformVersion()}'),
+                    const SizedBox(height: 8),
+                    Text(l10n.platformLabel(_getPlatformName())),
+                    Text(l10n.versionLabel(_getPlatformVersion())),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             TextField(
               controller: _emailController,
               decoration: InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
+                labelText: l10n.email,
+                border: const OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             TextField(
               controller: _passwordController,
               decoration: InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
+                labelText: l10n.password,
+                border: const OutlineInputBorder(),
               ),
               obscureText: true,
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             ElevatedButton(
               onPressed: _login,
-              child: Text('Iniciar Sesión'),
+              child: Text(l10n.login),
               style: ElevatedButton.styleFrom(
                 backgroundColor: _getPlatformColor(),
                 foregroundColor: Colors.white,
@@ -179,7 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (Platform.isWindows) return 'Windows';
     if (Platform.isMacOS) return 'macOS';
     if (Platform.isLinux) return 'Linux';
-    return 'Desconocida';
+    return 'Unknown';
   }
   
   Color _getPlatformColor() {
@@ -213,6 +216,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
   
   Future<void> _login() async {
+    final l10n = AppLocalizations.of(context)!;
+    
     try {
       final response = await Supabase.instance.client.auth.signInWithPassword(
         email: _emailController.text,
@@ -222,7 +227,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (response.user != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Login exitoso en ${_getPlatformName()}!'),
+            content: Text(l10n.loginSuccess(_getPlatformName())),
             backgroundColor: _getPlatformColor(),
           ),
         );
@@ -230,7 +235,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error: $e'),
+          content: Text(l10n.loginError(e.toString())),
           backgroundColor: Colors.red,
         ),
       );

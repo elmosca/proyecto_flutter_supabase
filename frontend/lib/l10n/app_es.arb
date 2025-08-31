@@ -1,0 +1,447 @@
+{
+  "@@locale": "es",
+  "appTitle": "Sistema de Gestión TFG",
+  "@appTitle": {
+    "description": "El título de la aplicación"
+  },
+  
+  "login": "Iniciar Sesión",
+  "@login": {
+    "description": "Texto del botón de inicio de sesión"
+  },
+  
+  "email": "Correo Electrónico",
+  "@email": {
+    "description": "Etiqueta del campo de correo electrónico"
+  },
+  
+  "password": "Contraseña",
+  "@password": {
+    "description": "Etiqueta del campo de contraseña"
+  },
+  
+  "loginError": "Error de inicio de sesión. Por favor, verifica tus credenciales.",
+  "@loginError": {
+    "description": "Mensaje de error para inicio de sesión fallido"
+  },
+  
+  "dashboard": "Panel Principal",
+  "@dashboard": {
+    "description": "Título de la pantalla del panel principal"
+  },
+  
+  "projects": "Proyectos",
+  "@projects": {
+    "description": "Título de la sección de proyectos"
+  },
+  
+  "tasks": "Tareas",
+  "@tasks": {
+    "description": "Título de la sección de tareas"
+  },
+  
+  "profile": "Perfil",
+  "@profile": {
+    "description": "Título de la sección de perfil"
+  },
+  
+  "logout": "Cerrar Sesión",
+  "@logout": {
+    "description": "Texto del botón de cerrar sesión"
+  },
+  
+  "student": "Estudiante",
+  "@student": {
+    "description": "Etiqueta del rol de estudiante"
+  },
+  
+  "tutor": "Tutor",
+  "@tutor": {
+    "description": "Etiqueta del rol de tutor"
+  },
+  
+  "admin": "Administrador",
+  "@admin": {
+    "description": "Etiqueta del rol de administrador"
+  },
+  
+  "welcome": "Bienvenido",
+  "@welcome": {
+    "description": "Mensaje de bienvenida"
+  },
+  
+  "loading": "Cargando...",
+  "@loading": {
+    "description": "Mensaje de carga"
+  },
+  
+  "error": "Error",
+  "@error": {
+    "description": "Mensaje de error"
+  },
+  
+  "success": "Éxito",
+  "@success": {
+    "description": "Mensaje de éxito"
+  },
+  
+  "cancel": "Cancelar",
+  "@cancel": {
+    "description": "Texto del botón cancelar"
+  },
+  
+  "save": "Guardar",
+  "@save": {
+    "description": "Texto del botón guardar"
+  },
+  
+  "edit": "Editar",
+  "@edit": {
+    "description": "Texto del botón editar"
+  },
+  
+  "delete": "Eliminar",
+  "@delete": {
+    "description": "Texto del botón eliminar"
+  },
+  
+  "create": "Crear",
+  "@create": {
+    "description": "Texto del botón crear"
+  },
+  
+  "search": "Buscar",
+  "@search": {
+    "description": "Placeholder del campo de búsqueda"
+  },
+  
+  "noData": "No hay datos disponibles",
+  "@noData": {
+    "description": "Mensaje cuando no hay datos disponibles"
+  },
+  
+  "connectionError": "Error de conexión. Por favor, verifica tu conexión a internet.",
+  "@connectionError": {
+    "description": "Mensaje de error de conexión"
+  },
+  
+  "serverInfo": "Información del Servidor",
+  "@serverInfo": {
+    "description": "Título de la sección de información del servidor"
+  },
+  
+  "serverUrl": "URL del Servidor",
+  "@serverUrl": {
+    "description": "Etiqueta de la URL del servidor"
+  },
+  
+  "platform": "Plataforma",
+  "@platform": {
+    "description": "Etiqueta de plataforma"
+  },
+  
+  "version": "Versión",
+  "@version": {
+    "description": "Etiqueta de versión"
+  },
+  
+  "testCredentials": "Credenciales de Prueba",
+  "@testCredentials": {
+    "description": "Título de la sección de credenciales de prueba"
+  },
+  
+  "studentEmail": "Correo del Estudiante",
+  "@studentEmail": {
+    "description": "Etiqueta del correo del estudiante"
+  },
+  
+  "tutorEmail": "Correo del Tutor",
+  "@tutorEmail": {
+    "description": "Etiqueta del correo del tutor"
+  },
+  
+  "adminEmail": "Correo del Administrador",
+  "@adminEmail": {
+    "description": "Etiqueta del correo del administrador"
+  },
+  
+  "testPassword": "Contraseña de Prueba",
+  "@testPassword": {
+    "description": "Etiqueta de la contraseña de prueba"
+  },
+  
+  "copyToClipboard": "Copiar al portapapeles",
+  "@copyToClipboard": {
+    "description": "Acción de copiar al portapapeles"
+  },
+  
+  "copied": "¡Copiado!",
+  "@copied": {
+    "description": "Mensaje de confirmación de copiado"
+  },
+  
+  "language": "Idioma",
+  "@language": {
+    "description": "Etiqueta de selección de idioma"
+  },
+  
+  "english": "Inglés",
+  "@english": {
+    "description": "Opción de idioma inglés"
+  },
+  
+  "spanish": "Español",
+  "@spanish": {
+    "description": "Opción de idioma español"
+  },
+  
+  "settings": "Configuración",
+  "@settings": {
+    "description": "Título de la pantalla de configuración"
+  },
+  
+  "theme": "Tema",
+  "@theme": {
+    "description": "Etiqueta de selección de tema"
+  },
+  
+  "light": "Claro",
+  "@light": {
+    "description": "Opción de tema claro"
+  },
+  
+  "dark": "Oscuro",
+  "@dark": {
+    "description": "Opción de tema oscuro"
+  },
+  
+  "system": "Sistema",
+  "@system": {
+    "description": "Opción de tema del sistema"
+  },
+  
+  "dashboardStudent": "Dashboard Estudiante",
+  "@dashboardStudent": {
+    "description": "Título del dashboard de estudiante"
+  },
+  
+  "welcomeUser": "Bienvenido, {email}",
+  "@welcomeUser": {
+    "description": "Mensaje de bienvenida con email del usuario",
+    "placeholders": {
+      "email": {
+        "type": "String",
+        "example": "usuario@ejemplo.com"
+      }
+    }
+  },
+  
+  "myAnteprojects": "Mis Anteproyectos",
+  "@myAnteprojects": {
+    "description": "Título de la sección de anteproyectos del usuario"
+  },
+  
+  "viewAll": "Ver todos",
+  "@viewAll": {
+    "description": "Botón para ver todos los elementos"
+  },
+  
+  "noAnteprojects": "No tienes anteproyectos creados. ¡Crea tu primer anteproyecto!",
+  "@noAnteprojects": {
+    "description": "Mensaje cuando no hay anteproyectos"
+  },
+  
+  "pendingTasks": "Tareas Pendientes",
+  "@pendingTasks": {
+    "description": "Título de la sección de tareas pendientes"
+  },
+  
+  "viewAllTasks": "Ver todas",
+  "@viewAllTasks": {
+    "description": "Botón para ver todas las tareas"
+  },
+  
+  "noPendingTasks": "No tienes tareas pendientes. ¡Excelente trabajo!",
+  "@noPendingTasks": {
+    "description": "Mensaje cuando no hay tareas pendientes"
+  },
+  
+  "systemInfo": "Información del Sistema",
+  "@systemInfo": {
+    "description": "Título de la sección de información del sistema"
+  },
+  
+  "connectedToServer": "Estado: Conectado al servidor de red",
+  "@connectedToServer": {
+    "description": "Estado de conexión al servidor"
+  },
+  
+  "anteprojectsDev": "Funcionalidad de creación de anteproyectos en desarrollo",
+  "@anteprojectsDev": {
+    "description": "Mensaje de funcionalidad en desarrollo"
+  },
+  
+  "anteprojectsListDev": "Lista de anteproyectos en desarrollo",
+  "@anteprojectsListDev": {
+    "description": "Mensaje de lista en desarrollo"
+  },
+  
+  "tasksListDev": "Lista de tareas en desarrollo",
+  "@tasksListDev": {
+    "description": "Mensaje de lista de tareas en desarrollo"
+  },
+  
+  "platformLabel": "Plataforma: {platform}",
+  "@platformLabel": {
+    "description": "Etiqueta de plataforma con valor",
+    "placeholders": {
+      "platform": {
+        "type": "String",
+        "example": "Android"
+      }
+    }
+  },
+  
+  "versionLabel": "Versión: {version}",
+  "@versionLabel": {
+    "description": "Etiqueta de versión con valor",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.0.0"
+      }
+    }
+  },
+  
+  "backendLabel": "Backend: {url}",
+  "@backendLabel": {
+    "description": "Etiqueta de backend con URL",
+    "placeholders": {
+      "url": {
+        "type": "String",
+        "example": "http://localhost:54321"
+      }
+    }
+  },
+  
+  "studio": "Studio",
+  "@studio": {
+    "description": "Etiqueta para Supabase Studio"
+  },
+  
+  "emailLabel": "Email",
+  "@emailLabel": {
+    "description": "Etiqueta de email"
+  },
+  
+  "loginSuccess": "✅ Login exitoso en {platform}!",
+  "@loginSuccess": {
+    "description": "Mensaje de login exitoso con plataforma",
+    "placeholders": {
+      "platform": {
+        "type": "String",
+        "example": "Android"
+      }
+    }
+  },
+  
+  "loginError": "❌ Error: {error}",
+  "@loginError": {
+    "description": "Mensaje de error de login con detalles",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Credenciales inválidas"
+      }
+    }
+  },
+  
+  "loginSuccessTitle": "✅ Login Exitoso",
+  "@loginSuccessTitle": {
+    "description": "Título de diálogo de login exitoso"
+  },
+  
+  "emailInfo": "Email: {email}",
+  "@emailInfo": {
+    "description": "Información de email con valor",
+    "placeholders": {
+      "email": {
+        "type": "String",
+        "example": "usuario@ejemplo.com"
+      }
+    }
+  },
+  
+  "idInfo": "ID: {id}",
+  "@idInfo": {
+    "description": "Información de ID con valor",
+    "placeholders": {
+      "id": {
+        "type": "String",
+        "example": "123456"
+      }
+    }
+  },
+  
+  "roleInfo": "Rol: {role}",
+  "@roleInfo": {
+    "description": "Información de rol con valor",
+    "placeholders": {
+      "role": {
+        "type": "String",
+        "example": "student"
+      }
+    }
+  },
+  
+  "createdInfo": "Creado: {date}",
+  "@createdInfo": {
+    "description": "Información de fecha de creación",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "2024-08-29"
+      }
+    }
+  },
+  
+  "nextSteps": "Próximos pasos:",
+  "@nextSteps": {
+    "description": "Título de sección de próximos pasos"
+  },
+  
+  "navigationRoles": "• Navegación por roles",
+  "@navigationRoles": {
+    "description": "Paso de navegación por roles"
+  },
+  
+  "personalDashboard": "• Dashboard personalizado",
+  "@personalDashboard": {
+    "description": "Paso de dashboard personalizado"
+  },
+  
+  "anteprojectsManagement": "• Gestión de anteproyectos",
+  "@anteprojectsManagement": {
+    "description": "Paso de gestión de anteproyectos"
+  },
+  
+  "continueButton": "Continuar",
+  "@continueButton": {
+    "description": "Botón de continuar"
+  },
+  
+  "tutorDashboardDev": "Dashboard de tutor en desarrollo",
+  "@tutorDashboardDev": {
+    "description": "Mensaje de dashboard de tutor en desarrollo"
+  },
+  
+  "adminDashboardDev": "Dashboard de admin en desarrollo",
+  "@adminDashboardDev": {
+    "description": "Mensaje de dashboard de admin en desarrollo"
+  },
+  
+  "roleNotSpecified": "No especificado",
+  "@roleNotSpecified": {
+    "description": "Mensaje cuando el rol no está especificado"
+  }
+}
