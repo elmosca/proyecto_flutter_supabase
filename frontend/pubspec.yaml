@@ -41,6 +41,14 @@ dependencies:
   build_runner: ^2.7.0
   json_serializable: ^6.11.0
   universal_platform: ^1.1.0
+  
+  # Internacionalización
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
+  
+  # Persistencia de datos
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:
@@ -94,3 +102,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+  # Configuración de internacionalización
+  generate: true
