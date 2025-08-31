@@ -5,25 +5,30 @@ import 'dart:io';
 class AppConfig {
   // Configuración de Supabase - Local Development
   static const String _localUrl = 'http://127.0.0.1:54321';
-  static const String _networkServerUrl = 'http://192.168.1.9:54321'; // Tu servidor de red
-  static const String _cloudUrl = 'https://your-project.supabase.co'; // Para futuro uso
+  static const String _androidEmulatorUrl = 'http://10.0.2.2:54321'; // Para emulador Android
   
   // Claves de Supabase
   static const String _localAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0';
-  static const String _networkServerAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0';
   
   // Configuración de Storage S3
   static const String _storageUrl = 'http://127.0.0.1:54321/storage/v1/s3';
+  static const String _androidStorageUrl = 'http://10.0.2.2:54321/storage/v1/s3';
   static const String _storageAccessKey = '625729a08b95bf1b7ff351a663f3a23c';
   static const String _storageSecretKey = '850181e4652dd023b7a98c58ae0d2d34bd487ee0cc3254aed6eda37307425907';
   static const String _storageRegion = 'local';
   
   // URLs de herramientas de desarrollo
   static const String _supabaseStudioUrl = 'http://127.0.0.1:54323';
+  static const String _androidStudioUrl = 'http://10.0.2.2:54323';
   static const String _inbucketUrl = 'http://127.0.0.1:54324';
+  static const String _androidInbucketUrl = 'http://10.0.2.2:54324';
   
   /// Obtiene la URL de Supabase según el entorno
   static String get supabaseUrl {
+    // Para emulador de Android, usar 10.0.2.2
+    if (Platform.isAndroid) {
+      return _androidEmulatorUrl;
+    }
     // Para desarrollo, usar localhost
     return _localUrl;
   }
@@ -34,7 +39,12 @@ class AppConfig {
   }
   
   /// Obtiene la URL de Storage S3
-  static String get storageUrl => _storageUrl;
+  static String get storageUrl {
+    if (Platform.isAndroid) {
+      return _androidStorageUrl;
+    }
+    return _storageUrl;
+  }
   
   /// Obtiene la clave de acceso de Storage
   static String get storageAccessKey => _storageAccessKey;
@@ -46,10 +56,20 @@ class AppConfig {
   static String get storageRegion => _storageRegion;
   
   /// Obtiene la URL de Supabase Studio
-  static String get supabaseStudioUrl => _supabaseStudioUrl;
+  static String get supabaseStudioUrl {
+    if (Platform.isAndroid) {
+      return _androidStudioUrl;
+    }
+    return _supabaseStudioUrl;
+  }
   
   /// Obtiene la URL de Inbucket (Email Testing)
-  static String get inbucketUrl => _inbucketUrl;
+  static String get inbucketUrl {
+    if (Platform.isAndroid) {
+      return _androidInbucketUrl;
+    }
+    return _inbucketUrl;
+  }
   
   /// Obtiene información de la plataforma actual
   static String get platformName {
@@ -84,15 +104,17 @@ class AppConfig {
     return '❓';
   }
   
-  /// Información de debug
+  /// Información de debug (solo en desarrollo)
   static void printConfig() {
-    print('🔧 Configuración de la aplicación:');
-    print('   Plataforma: ${platformName}');
-    print('   Backend URL: $supabaseUrl');
-    print('   Clave anónima: ${supabaseAnonKey.substring(0, 20)}...');
-    print('   Storage URL: $storageUrl');
-    print('   Supabase Studio: $supabaseStudioUrl');
-    print('   Inbucket (Email): $inbucketUrl');
+    if (isDevelopment) {
+      debugPrint('🔧 Configuración de la aplicación:');
+      debugPrint('   Plataforma: $platformName');
+      debugPrint('   Backend URL: $supabaseUrl');
+      debugPrint('   Clave anónima: ${supabaseAnonKey.substring(0, 20)}...');
+      debugPrint('   Storage URL: $storageUrl');
+      debugPrint('   Supabase Studio: $supabaseStudioUrl');
+      debugPrint('   Inbucket (Email): $inbucketUrl');
+    }
   }
   
   /// Configuración para desarrollo
