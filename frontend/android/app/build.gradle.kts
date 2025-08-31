@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "com.cifpcarlos3.tfg.frontend"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973" // Actualizado para compatibilidad con plugins
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -37,16 +37,16 @@ android {
     buildTypes {
         debug {
             // Configuración para desarrollo
-            debuggable = true
-            minifyEnabled = false
-            shrinkResources = false
+            isDebuggable = true
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
         
         release {
             // Configuración para producción
-            debuggable = false
-            minifyEnabled = true
-            shrinkResources = true
+            isDebuggable = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             
             // TODO: Add your own signing config for the release build.
@@ -58,10 +58,10 @@ android {
     // Configuración para diferentes densidades de pantalla
     splits {
         abi {
-            enable = true
+            isEnable = true
             reset()
             include("armeabi-v7a", "arm64-v8a", "x86_64")
-            universalApk = true
+            isUniversalApk = true
         }
     }
 }

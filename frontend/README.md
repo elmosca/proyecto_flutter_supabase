@@ -252,7 +252,7 @@ telnet 192.168.1.9 54321
 - [Plan de Desarrollo](../docs/desarrollo/plan_desarrollo_frontend.md)
 - [Guía de Inicio](../docs/desarrollo/guia_inicio_frontend.md)
 - [Checklist Semanal](../docs/desarrollo/checklist_frontend_semanal.md)
-- [Configuración Android](ANDROID_SETUP.md)
+- [Configuración Android](ANDROID_SETUP_GUIDE.md)
 
 ---
 
