@@ -113,3 +113,6 @@ analyzer:
     directives_ordering: info
     unawaited_futures: info
     unnecessary_lambdas: info
+    
+    # Excluir warnings de scripts de desarrollo
+    avoid_slow_async_io: ignore

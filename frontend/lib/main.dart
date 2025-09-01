@@ -7,6 +7,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'l10n/app_localizations.dart';
 import 'screens/dashboard/student_dashboard.dart';
+import 'screens/dashboard/tutor_dashboard.dart';
+import 'screens/dashboard/admin_dashboard.dart';
 import 'services/language_service.dart';
 import 'utils/config.dart';
 
@@ -60,29 +62,29 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) => ListenableBuilder(
-        listenable: _languageService,
-        builder: (context, child) => MaterialApp(
-          title: AppConfig.appName,
+    listenable: _languageService,
+    builder: (context, child) => MaterialApp(
+      title: AppConfig.appName,
 
-          // Configuración de internacionalización
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: LanguageService.supportedLocales,
-          locale: _languageService.currentLocale,
+      // Configuración de internacionalización
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: LanguageService.supportedLocales,
+      locale: _languageService.currentLocale,
 
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: Color(AppConfig.platformColor),
-            ),
-            useMaterial3: true,
-          ),
-          home: LoginScreen(languageService: _languageService),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Color(AppConfig.platformColor),
         ),
-      );
+        useMaterial3: true,
+      ),
+      home: LoginScreen(languageService: _languageService),
+    ),
+  );
 }
 
 class LoginScreen extends StatefulWidget {
@@ -310,26 +312,26 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildServerInfoRow(String label, String value) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: 100,
-              child: Text(
-                '$label:',
-                style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
-              ),
-            ),
-            Expanded(
-              child: Text(
-                value,
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
-              ),
-            ),
-          ],
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 100,
+          child: Text(
+            '$label:',
+            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
+          ),
         ),
-      );
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+        ),
+      ],
+    ),
+  );
 
   void _openUrl(String url) {
     // En una aplicación real, usaríamos url_launcher
@@ -449,18 +451,14 @@ class _LoginScreenState extends State<LoginScreen> {
         );
         break;
       case 'tutor':
-        // TODO: Implementar TutorDashboard
-        final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(l10n.tutorDashboardDev)));
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => TutorDashboard(user: user)),
+        );
         break;
       case 'admin':
-        // TODO: Implementar AdminDashboard
-        final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(l10n.adminDashboardDev)));
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => AdminDashboard(user: user)),
+        );
         break;
       default:
         // Por defecto, ir al dashboard de estudiante
