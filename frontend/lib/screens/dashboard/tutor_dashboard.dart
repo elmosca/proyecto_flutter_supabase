@@ -5,22 +5,21 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/config.dart';
 
-class StudentDashboard extends StatefulWidget {
+class TutorDashboard extends StatefulWidget {
   final User user;
 
-  const StudentDashboard({super.key, required this.user});
+  const TutorDashboard({super.key, required this.user});
 
   @override
-  State<StudentDashboard> createState() => _StudentDashboardState();
+  State<TutorDashboard> createState() => _TutorDashboardState();
 }
 
-class _StudentDashboardState extends State<StudentDashboard> {
+class _TutorDashboardState extends State<TutorDashboard> {
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    // Simular carga de datos
     _loadData();
   }
 
@@ -39,7 +38,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.dashboardStudent),
+        title: Text(l10n.tutorDashboardDev),
         backgroundColor: Color(AppConfig.platformColor),
         foregroundColor: Colors.white,
         actions: [
@@ -54,10 +53,10 @@ class _StudentDashboardState extends State<StudentDashboard> {
           ? const Center(child: CircularProgressIndicator())
           : _buildDashboardContent(),
       floatingActionButton: FloatingActionButton(
-        onPressed: _createAnteproject,
+        onPressed: _reviewAnteprojects,
         backgroundColor: Color(AppConfig.platformColor),
-        tooltip: 'Crear anteproyecto',
-        child: const Icon(Icons.add, color: Colors.white),
+        tooltip: 'Revisar anteproyectos',
+        child: const Icon(Icons.assignment, color: Colors.white),
       ),
     );
   }
@@ -67,23 +66,14 @@ class _StudentDashboardState extends State<StudentDashboard> {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Información del usuario
         _buildUserInfo(),
         const SizedBox(height: 24),
-
-        // Resumen de estadísticas
         _buildStatistics(),
         const SizedBox(height: 24),
-
-        // Anteproyectos
         _buildAnteprojectsSection(),
         const SizedBox(height: 24),
-
-        // Tareas pendientes
-        _buildTasksSection(),
+        _buildStudentsSection(),
         const SizedBox(height: 24),
-
-        // Información del servidor
         _buildServerInfo(),
       ],
     ),
@@ -98,7 +88,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
             radius: 30,
             backgroundColor: Color(AppConfig.platformColor),
             child: Text(
-              widget.user.email?.substring(0, 1).toUpperCase() ?? 'E',
+              widget.user.email?.substring(0, 1).toUpperCase() ?? 'T',
               style: const TextStyle(fontSize: 24, color: Colors.white),
             ),
           ),
@@ -108,7 +98,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.user.email ?? 'Estudiante',
+                  widget.user.email ?? 'Tutor',
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -119,7 +109,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
                   style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
                 Text(
-                  'Rol: Estudiante',
+                  'Rol: Tutor',
                   style: TextStyle(
                     color: Color(AppConfig.platformColor),
                     fontWeight: FontWeight.w500,
@@ -137,25 +127,25 @@ class _StudentDashboardState extends State<StudentDashboard> {
     children: [
       Expanded(
         child: _buildStatCard(
-          'Anteproyectos',
+          'Anteproyectos Pendientes',
           '0',
-          Icons.description,
-          Colors.blue,
-        ),
-      ),
-      const SizedBox(width: 8),
-      Expanded(
-        child: _buildStatCard(
-          'Tareas Pendientes',
-          '0',
-          Icons.pending,
+          Icons.pending_actions,
           Colors.orange,
         ),
       ),
       const SizedBox(width: 8),
       Expanded(
         child: _buildStatCard(
-          'Completadas',
+          'Estudiantes Asignados',
+          '0',
+          Icons.people,
+          Colors.blue,
+        ),
+      ),
+      const SizedBox(width: 8),
+      Expanded(
+        child: _buildStatCard(
+          'Revisados',
           '0',
           Icons.check_circle,
           Colors.green,
@@ -193,32 +183,30 @@ class _StudentDashboardState extends State<StudentDashboard> {
   }
 
   Widget _buildAnteprojectsSection() {
-    final l10n = AppLocalizations.of(context)!;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              l10n.myAnteprojects,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            const Text(
+              'Anteproyectos Pendientes',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             TextButton(
               onPressed: _viewAllAnteprojects,
-              child: Text(l10n.viewAll),
+              child: const Text('Ver todos'),
             ),
           ],
         ),
         const SizedBox(height: 8),
-        Card(
+        const Card(
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
             child: Text(
-              l10n.noAnteprojects,
+              'No hay anteproyectos pendientes de revisión.',
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.grey),
+              style: TextStyle(color: Colors.grey),
             ),
           ),
         ),
@@ -226,33 +214,31 @@ class _StudentDashboardState extends State<StudentDashboard> {
     );
   }
 
-  Widget _buildTasksSection() {
-    final l10n = AppLocalizations.of(context)!;
-
+  Widget _buildStudentsSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              l10n.pendingTasks,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            const Text(
+              'Estudiantes Asignados',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             TextButton(
-              onPressed: _viewAllTasks,
-              child: Text(l10n.viewAllTasks),
+              onPressed: _viewAllStudents,
+              child: const Text('Ver todos'),
             ),
           ],
         ),
         const SizedBox(height: 8),
-        Card(
+        const Card(
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
             child: Text(
-              l10n.noPendingTasks,
+              'No tienes estudiantes asignados actualmente.',
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.grey),
+              style: TextStyle(color: Colors.grey),
             ),
           ),
         ),
@@ -339,32 +325,31 @@ class _StudentDashboardState extends State<StudentDashboard> {
     }
   }
 
-  void _createAnteproject() {
-    final l10n = AppLocalizations.of(context)!;
+  void _reviewAnteprojects() {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.anteprojectsDev),
-        duration: const Duration(seconds: 2),
+      const SnackBar(
+        content: Text(
+          'Funcionalidad de revisión de anteproyectos en desarrollo',
+        ),
+        duration: Duration(seconds: 2),
       ),
     );
   }
 
   void _viewAllAnteprojects() {
-    final l10n = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.anteprojectsListDev),
-        duration: const Duration(seconds: 2),
+      const SnackBar(
+        content: Text('Lista de anteproyectos en desarrollo'),
+        duration: Duration(seconds: 2),
       ),
     );
   }
 
-  void _viewAllTasks() {
-    final l10n = AppLocalizations.of(context)!;
+  void _viewAllStudents() {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.tasksListDev),
-        duration: const Duration(seconds: 2),
+      const SnackBar(
+        content: Text('Lista de estudiantes en desarrollo'),
+        duration: Duration(seconds: 2),
       ),
     );
   }

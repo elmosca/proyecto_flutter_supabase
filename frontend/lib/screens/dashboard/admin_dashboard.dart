@@ -5,22 +5,21 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/config.dart';
 
-class StudentDashboard extends StatefulWidget {
+class AdminDashboard extends StatefulWidget {
   final User user;
 
-  const StudentDashboard({super.key, required this.user});
+  const AdminDashboard({super.key, required this.user});
 
   @override
-  State<StudentDashboard> createState() => _StudentDashboardState();
+  State<AdminDashboard> createState() => _AdminDashboardState();
 }
 
-class _StudentDashboardState extends State<StudentDashboard> {
+class _AdminDashboardState extends State<AdminDashboard> {
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    // Simular carga de datos
     _loadData();
   }
 
@@ -39,7 +38,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.dashboardStudent),
+        title: Text(l10n.adminDashboardDev),
         backgroundColor: Color(AppConfig.platformColor),
         foregroundColor: Colors.white,
         actions: [
@@ -54,10 +53,10 @@ class _StudentDashboardState extends State<StudentDashboard> {
           ? const Center(child: CircularProgressIndicator())
           : _buildDashboardContent(),
       floatingActionButton: FloatingActionButton(
-        onPressed: _createAnteproject,
+        onPressed: _manageUsers,
         backgroundColor: Color(AppConfig.platformColor),
-        tooltip: 'Crear anteproyecto',
-        child: const Icon(Icons.add, color: Colors.white),
+        tooltip: 'Gestionar usuarios',
+        child: const Icon(Icons.admin_panel_settings, color: Colors.white),
       ),
     );
   }
@@ -67,23 +66,14 @@ class _StudentDashboardState extends State<StudentDashboard> {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Información del usuario
         _buildUserInfo(),
         const SizedBox(height: 24),
-
-        // Resumen de estadísticas
         _buildStatistics(),
         const SizedBox(height: 24),
-
-        // Anteproyectos
-        _buildAnteprojectsSection(),
+        _buildSystemSection(),
         const SizedBox(height: 24),
-
-        // Tareas pendientes
-        _buildTasksSection(),
+        _buildUsersSection(),
         const SizedBox(height: 24),
-
-        // Información del servidor
         _buildServerInfo(),
       ],
     ),
@@ -98,7 +88,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
             radius: 30,
             backgroundColor: Color(AppConfig.platformColor),
             child: Text(
-              widget.user.email?.substring(0, 1).toUpperCase() ?? 'E',
+              widget.user.email?.substring(0, 1).toUpperCase() ?? 'A',
               style: const TextStyle(fontSize: 24, color: Colors.white),
             ),
           ),
@@ -108,7 +98,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.user.email ?? 'Estudiante',
+                  widget.user.email ?? 'Administrador',
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -119,7 +109,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
                   style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
                 Text(
-                  'Rol: Estudiante',
+                  'Rol: Administrador',
                   style: TextStyle(
                     color: Color(AppConfig.platformColor),
                     fontWeight: FontWeight.w500,
@@ -137,29 +127,24 @@ class _StudentDashboardState extends State<StudentDashboard> {
     children: [
       Expanded(
         child: _buildStatCard(
-          'Anteproyectos',
+          'Usuarios Totales',
           '0',
-          Icons.description,
+          Icons.people,
           Colors.blue,
         ),
       ),
       const SizedBox(width: 8),
       Expanded(
         child: _buildStatCard(
-          'Tareas Pendientes',
+          'Proyectos Activos',
           '0',
-          Icons.pending,
-          Colors.orange,
+          Icons.work,
+          Colors.green,
         ),
       ),
       const SizedBox(width: 8),
       Expanded(
-        child: _buildStatCard(
-          'Completadas',
-          '0',
-          Icons.check_circle,
-          Colors.green,
-        ),
+        child: _buildStatCard('Tutores', '0', Icons.school, Colors.orange),
       ),
     ],
   );
@@ -192,22 +177,20 @@ class _StudentDashboardState extends State<StudentDashboard> {
     );
   }
 
-  Widget _buildAnteprojectsSection() {
-    final l10n = AppLocalizations.of(context)!;
-
+  Widget _buildSystemSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              l10n.myAnteprojects,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            const Text(
+              'Estado del Sistema',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             TextButton(
-              onPressed: _viewAllAnteprojects,
-              child: Text(l10n.viewAll),
+              onPressed: _viewSystemStatus,
+              child: const Text('Ver detalles'),
             ),
           ],
         ),
@@ -215,10 +198,13 @@ class _StudentDashboardState extends State<StudentDashboard> {
         Card(
           child: Padding(
             padding: const EdgeInsets.all(16),
-            child: Text(
-              l10n.noAnteprojects,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.grey),
+            child: Column(
+              children: [
+                _buildStatusRow('Base de datos', 'Operativo', Colors.green),
+                _buildStatusRow('API REST', 'Operativo', Colors.green),
+                _buildStatusRow('Autenticación', 'Operativo', Colors.green),
+                _buildStatusRow('Almacenamiento', 'Operativo', Colors.green),
+              ],
             ),
           ),
         ),
@@ -226,33 +212,50 @@ class _StudentDashboardState extends State<StudentDashboard> {
     );
   }
 
-  Widget _buildTasksSection() {
-    final l10n = AppLocalizations.of(context)!;
+  Widget _buildStatusRow(String service, String status, Color color) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(service),
+          Row(
+            children: [
+              Icon(Icons.circle, color: color, size: 12),
+              const SizedBox(width: 8),
+              Text(status, style: TextStyle(color: color)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
+  Widget _buildUsersSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              l10n.pendingTasks,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            const Text(
+              'Gestión de Usuarios',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             TextButton(
-              onPressed: _viewAllTasks,
-              child: Text(l10n.viewAllTasks),
+              onPressed: _viewAllUsers,
+              child: const Text('Ver todos'),
             ),
           ],
         ),
         const SizedBox(height: 8),
-        Card(
+        const Card(
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
             child: Text(
-              l10n.noPendingTasks,
+              'Panel de administración de usuarios en desarrollo.',
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.grey),
+              style: TextStyle(color: Colors.grey),
             ),
           ),
         ),
@@ -339,32 +342,29 @@ class _StudentDashboardState extends State<StudentDashboard> {
     }
   }
 
-  void _createAnteproject() {
-    final l10n = AppLocalizations.of(context)!;
+  void _manageUsers() {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.anteprojectsDev),
-        duration: const Duration(seconds: 2),
+      const SnackBar(
+        content: Text('Panel de gestión de usuarios en desarrollo'),
+        duration: Duration(seconds: 2),
       ),
     );
   }
 
-  void _viewAllAnteprojects() {
-    final l10n = AppLocalizations.of(context)!;
+  void _viewSystemStatus() {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.anteprojectsListDev),
-        duration: const Duration(seconds: 2),
+      const SnackBar(
+        content: Text('Estado detallado del sistema en desarrollo'),
+        duration: Duration(seconds: 2),
       ),
     );
   }
 
-  void _viewAllTasks() {
-    final l10n = AppLocalizations.of(context)!;
+  void _viewAllUsers() {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.tasksListDev),
-        duration: const Duration(seconds: 2),
+      const SnackBar(
+        content: Text('Lista de usuarios en desarrollo'),
+        duration: Duration(seconds: 2),
       ),
     );
   }
