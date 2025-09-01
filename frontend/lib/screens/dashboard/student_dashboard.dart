@@ -1,12 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../utils/config.dart';
+
 import '../../l10n/app_localizations.dart';
+import '../../utils/config.dart';
 
 class StudentDashboard extends StatefulWidget {
   final User user;
-  
+
   const StudentDashboard({super.key, required this.user});
 
   @override
@@ -20,17 +21,22 @@ class _StudentDashboardState extends State<StudentDashboard> {
   void initState() {
     super.initState();
     // Simular carga de datos
-    Future.delayed(const Duration(seconds: 1), () {
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    await Future.delayed(const Duration(seconds: 1));
+    if (mounted) {
       setState(() {
         _isLoading = false;
       });
-    });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.dashboardStudent),
@@ -39,7 +45,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () => _logout(),
+            onPressed: _logout,
             tooltip: 'Cerrar sesión',
           ),
         ],
@@ -48,7 +54,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
           ? const Center(child: CircularProgressIndicator())
           : _buildDashboardContent(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _createAnteproject(),
+        onPressed: _createAnteproject,
         backgroundColor: Color(AppConfig.platformColor),
         tooltip: 'Crear anteproyecto',
         child: const Icon(Icons.add, color: Colors.white),
@@ -56,39 +62,36 @@ class _StudentDashboardState extends State<StudentDashboard> {
     );
   }
 
-  Widget _buildDashboardContent() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
+  Widget _buildDashboardContent() => SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Información del usuario
           _buildUserInfo(),
           const SizedBox(height: 24),
-          
+
           // Resumen de estadísticas
           _buildStatistics(),
           const SizedBox(height: 24),
-          
+
           // Anteproyectos
           _buildAnteprojectsSection(),
           const SizedBox(height: 24),
-          
+
           // Tareas pendientes
           _buildTasksSection(),
           const SizedBox(height: 24),
-          
+
           // Información del servidor
           _buildServerInfo(),
         ],
       ),
     );
-  }
 
-  Widget _buildUserInfo() {
-    return Card(
+  Widget _buildUserInfo() => Card(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Row(
           children: [
             CircleAvatar(
@@ -106,7 +109,10 @@ class _StudentDashboardState extends State<StudentDashboard> {
                 children: [
                   Text(
                     widget.user.email ?? 'Estudiante',
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   Text(
                     'ID: ${widget.user.id}',
@@ -126,10 +132,8 @@ class _StudentDashboardState extends State<StudentDashboard> {
         ),
       ),
     );
-  }
 
-  Widget _buildStatistics() {
-    return Row(
+  Widget _buildStatistics() => Row(
       children: [
         Expanded(
           child: _buildStatCard(
@@ -159,12 +163,16 @@ class _StudentDashboardState extends State<StudentDashboard> {
         ),
       ],
     );
-  }
 
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(12),
         child: Column(
           children: [
             Icon(icon, color: color, size: 32),
@@ -186,7 +194,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
   Widget _buildAnteprojectsSection() {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -198,7 +206,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             TextButton(
-              onPressed: () => _viewAllAnteprojects(),
+              onPressed: _viewAllAnteprojects,
               child: Text(l10n.viewAll),
             ),
           ],
@@ -206,7 +214,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
         const SizedBox(height: 8),
         Card(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16),
             child: Text(
               l10n.noAnteprojects,
               textAlign: TextAlign.center,
@@ -220,7 +228,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
   Widget _buildTasksSection() {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -232,7 +240,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             TextButton(
-              onPressed: () => _viewAllTasks(),
+              onPressed: _viewAllTasks,
               child: Text(l10n.viewAllTasks),
             ),
           ],
@@ -240,7 +248,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
         const SizedBox(height: 8),
         Card(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16),
             child: Text(
               l10n.noPendingTasks,
               textAlign: TextAlign.center,
@@ -254,11 +262,11 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
   Widget _buildServerInfo() {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Card(
       color: Colors.blue.shade50,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -296,7 +304,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
   Widget _buildInfoRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -318,7 +326,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
     );
   }
 
-  void _logout() async {
+  Future<void> _logout() async {
     try {
       await Supabase.instance.client.auth.signOut();
       if (mounted) {

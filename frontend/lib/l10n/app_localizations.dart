@@ -62,7 +62,8 @@ import 'app_localizations_es.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -70,7 +71,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -82,17 +84,18 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('es')
+    Locale('es'),
   ];
 
   /// The title of the application
@@ -245,7 +248,7 @@ abstract class AppLocalizations {
   /// **'Connection error. Please check your internet connection.'**
   String get connectionError;
 
-  /// Server information section title
+  /// Server information title
   ///
   /// In en, this message translates to:
   /// **'Server Information'**
@@ -269,61 +272,61 @@ abstract class AppLocalizations {
   /// **'Version'**
   String get version;
 
-  /// Test credentials section title
+  /// Test credentials title
   ///
   /// In en, this message translates to:
   /// **'Test Credentials'**
   String get testCredentials;
 
-  /// Student email label
+  /// Student test email
   ///
   /// In en, this message translates to:
-  /// **'Student Email'**
+  /// **'Student'**
   String get studentEmail;
 
-  /// Tutor email label
+  /// Tutor test email
   ///
   /// In en, this message translates to:
-  /// **'Tutor Email'**
+  /// **'Tutor'**
   String get tutorEmail;
 
-  /// Admin email label
+  /// Administrator test email
   ///
   /// In en, this message translates to:
-  /// **'Admin Email'**
+  /// **'Administrator'**
   String get adminEmail;
 
-  /// Test password label
+  /// Test password
   ///
   /// In en, this message translates to:
-  /// **'Test Password'**
+  /// **'Test password'**
   String get testPassword;
 
-  /// Copy to clipboard action
+  /// Copy to clipboard tooltip
   ///
   /// In en, this message translates to:
   /// **'Copy to clipboard'**
   String get copyToClipboard;
 
-  /// Copied confirmation message
+  /// Successful copy message
   ///
   /// In en, this message translates to:
-  /// **'Copied!'**
+  /// **'Copied'**
   String get copied;
 
-  /// Language selection label
+  /// Language label
   ///
   /// In en, this message translates to:
   /// **'Language'**
   String get language;
 
-  /// English language option
+  /// English language name
   ///
   /// In en, this message translates to:
   /// **'English'**
   String get english;
 
-  /// Spanish language option
+  /// Spanish language name
   ///
   /// In en, this message translates to:
   /// **'Spanish'**
@@ -371,7 +374,7 @@ abstract class AppLocalizations {
   /// **'Welcome, {email}'**
   String welcomeUser(String email);
 
-  /// User's anteprojects section title
+  /// User anteprojects section title
   ///
   /// In en, this message translates to:
   /// **'My Anteprojects'**
@@ -413,7 +416,7 @@ abstract class AppLocalizations {
   /// **'System Information'**
   String get systemInfo;
 
-  /// Server connection status
+  /// Server connection status message
   ///
   /// In en, this message translates to:
   /// **'Status: Connected to network server'**
@@ -425,7 +428,7 @@ abstract class AppLocalizations {
   /// **'Anteproject creation functionality in development'**
   String get anteprojectsDev;
 
-  /// Development list message
+  /// List development message
   ///
   /// In en, this message translates to:
   /// **'Anteprojects list in development'**
@@ -552,7 +555,8 @@ abstract class AppLocalizations {
   String get roleNotSpecified;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -561,25 +565,26 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'es'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'es'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en': return AppLocalizationsEn();
-    case 'es': return AppLocalizationsEs();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'es':
+      return AppLocalizationsEs();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
+    'that was used.',
   );
 }

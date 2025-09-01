@@ -83,7 +83,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noData => 'No hay datos disponibles';
 
   @override
-  String get connectionError => 'Error de conexión. Por favor, verifica tu conexión a internet.';
+  String get connectionError =>
+      'Error de conexión. Por favor, verifica tu conexión a internet.';
 
   @override
   String get serverInfo => 'Información del Servidor';
@@ -101,22 +102,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String get testCredentials => 'Credenciales de Prueba';
 
   @override
-  String get studentEmail => 'Correo del Estudiante';
+  String get studentEmail => 'Estudiante';
 
   @override
-  String get tutorEmail => 'Correo del Tutor';
+  String get tutorEmail => 'Tutor';
 
   @override
-  String get adminEmail => 'Correo del Administrador';
+  String get adminEmail => 'Administrador';
 
   @override
-  String get testPassword => 'Contraseña de Prueba';
+  String get testPassword => 'Contraseña de prueba';
 
   @override
   String get copyToClipboard => 'Copiar al portapapeles';
 
   @override
-  String get copied => '¡Copiado!';
+  String get copied => 'Copiado';
 
   @override
   String get language => 'Idioma';
@@ -157,7 +158,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get viewAll => 'Ver todos';
 
   @override
-  String get noAnteprojects => 'No tienes anteproyectos creados. ¡Crea tu primer anteproyecto!';
+  String get noAnteprojects =>
+      'No tienes anteproyectos creados. ¡Crea tu primer anteproyecto!';
 
   @override
   String get pendingTasks => 'Tareas Pendientes';
@@ -166,7 +168,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get viewAllTasks => 'Ver todas';
 
   @override
-  String get noPendingTasks => 'No tienes tareas pendientes. ¡Excelente trabajo!';
+  String get noPendingTasks =>
+      'No tienes tareas pendientes. ¡Excelente trabajo!';
 
   @override
   String get systemInfo => 'Información del Sistema';
@@ -175,7 +178,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get connectedToServer => 'Estado: Conectado al servidor de red';
 
   @override
-  String get anteprojectsDev => 'Funcionalidad de creación de anteproyectos en desarrollo';
+  String get anteprojectsDev =>
+      'Funcionalidad de creación de anteproyectos en desarrollo';
 
   @override
   String get anteprojectsListDev => 'Lista de anteproyectos en desarrollo';

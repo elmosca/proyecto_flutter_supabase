@@ -1,21 +1,23 @@
-import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'dart:io';
-import 'utils/config.dart';
-import 'services/language_service.dart';
-import 'screens/dashboard/student_dashboard.dart';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 import 'l10n/app_localizations.dart';
+import 'screens/dashboard/student_dashboard.dart';
+import 'services/language_service.dart';
+import 'utils/config.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Mostrar información de configuración
   // Configuración específica por plataforma (solo en desarrollo)
   if (kDebugMode) {
     AppConfig.printConfig();
-    
+
     if (kIsWeb) {
       debugPrint('🌐 Ejecutando en Web');
     } else if (Platform.isWindows) {
@@ -30,13 +32,13 @@ void main() async {
       debugPrint('🐧 Ejecutando en Linux');
     }
   }
-  
+
   // Configuración de Supabase para servidor de red
   await Supabase.initialize(
     url: AppConfig.supabaseUrl,
     anonKey: AppConfig.supabaseAnonKey,
   );
-  
+
   runApp(const MyApp());
 }
 
@@ -57,13 +59,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: _languageService,
-      builder: (context, child) {
-        return MaterialApp(
+  Widget build(BuildContext context) => ListenableBuilder(
+        listenable: _languageService,
+        builder: (context, child) => MaterialApp(
           title: AppConfig.appName,
-          
+
           // Configuración de internacionalización
           localizationsDelegates: const [
             AppLocalizations.delegate,
@@ -73,21 +73,21 @@ class _MyAppState extends State<MyApp> {
           ],
           supportedLocales: LanguageService.supportedLocales,
           locale: _languageService.currentLocale,
-          
+
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Color(AppConfig.platformColor)),
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Color(AppConfig.platformColor),
+            ),
             useMaterial3: true,
           ),
           home: LoginScreen(languageService: _languageService),
-        );
-      },
-    );
-  }
+        ),
+      );
 }
 
 class LoginScreen extends StatefulWidget {
   final LanguageService languageService;
-  
+
   const LoginScreen({super.key, required this.languageService});
 
   @override
@@ -99,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _isLoading = false;
   bool _showServerInfo = false;
-  
+
   @override
   void initState() {
     super.initState();
@@ -107,11 +107,11 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailController.text = AppConfig.testCredentials['student']!;
     _passwordController.text = AppConfig.testCredentials['password']!;
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: Text('${l10n.login} TFG - ${AppConfig.platformName}'),
@@ -164,60 +164,82 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Información de plataforma
             Card(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    Text(AppConfig.platformIcon, style: const TextStyle(fontSize: 48)),
+                    Text(
+                      AppConfig.platformIcon,
+                      style: const TextStyle(fontSize: 48),
+                    ),
                     const SizedBox(height: 8),
                     Text(l10n.platformLabel(AppConfig.platformName)),
                     Text(l10n.versionLabel(AppConfig.appVersion)),
                     const SizedBox(height: 8),
-                    Text(l10n.backendLabel(AppConfig.supabaseUrl), 
-                         style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                    Text(
+                      l10n.backendLabel(AppConfig.supabaseUrl),
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
                   ],
                 ),
               ),
             ),
-            
+
             // Información del servidor (expandible)
             if (_showServerInfo) ...[
               const SizedBox(height: 16),
               Card(
                 color: Colors.blue.shade50,
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                                              Row(
-                          children: [
-                            Icon(Icons.dns, color: Colors.blue.shade700),
-                            const SizedBox(width: 8),
-                            Text(l10n.serverInfo, 
-                                 style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue.shade700)),
-                          ],
-                        ),
+                      Row(
+                        children: [
+                          Icon(Icons.dns, color: Colors.blue.shade700),
+                          const SizedBox(width: 8),
+                          Text(
+                            l10n.serverInfo,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue.shade700,
+                            ),
+                          ),
+                        ],
+                      ),
                       const SizedBox(height: 12),
-                      _buildServerInfoRow(l10n.serverUrl, AppConfig.serverInfo['ip']!),
-                      _buildServerInfoRow(l10n.version, AppConfig.serverInfo['port']!),
+                      _buildServerInfoRow(
+                        l10n.serverUrl,
+                        AppConfig.serverInfo['ip']!,
+                      ),
+                      _buildServerInfoRow(
+                        l10n.version,
+                        AppConfig.serverInfo['port']!,
+                      ),
                       _buildServerInfoRow('Storage S3', AppConfig.storageUrl),
-                      _buildServerInfoRow('Supabase Studio', AppConfig.supabaseStudioUrl),
-                      _buildServerInfoRow('Email Testing', AppConfig.inbucketUrl),
+                      _buildServerInfoRow(
+                        'Supabase Studio',
+                        AppConfig.supabaseStudioUrl,
+                      ),
+                      _buildServerInfoRow(
+                        'Email Testing',
+                        AppConfig.inbucketUrl,
+                      ),
                     ],
                   ),
                 ),
               ),
             ],
-            
+
             const SizedBox(height: 24),
-            
+
             // Formulario de login
             TextField(
               controller: _emailController,
@@ -238,7 +260,7 @@ class _LoginScreenState extends State<LoginScreen> {
               obscureText: true,
             ),
             const SizedBox(height: 24),
-            
+
             // Botón de login
             SizedBox(
               width: double.infinity,
@@ -249,22 +271,22 @@ class _LoginScreenState extends State<LoginScreen> {
                   backgroundColor: Color(AppConfig.platformColor),
                   foregroundColor: Colors.white,
                 ),
-                child: _isLoading 
-                  ? const CircularProgressIndicator(color: Colors.white)
-                  : Text(l10n.login),
+                child: _isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : Text(l10n.login),
               ),
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Información adicional
             Text(
               '${l10n.testCredentials}: ${l10n.studentEmail}',
               style: const TextStyle(fontSize: 12, color: Colors.grey),
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Enlaces útiles
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -286,31 +308,29 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-  
-  Widget _buildServerInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 100,
-            child: Text(
-              '$label:',
-              style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
+
+  Widget _buildServerInfoRow(String label, String value) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 100,
+              child: Text(
+                '$label:',
+                style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
+              ),
             ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
+            Expanded(
+              child: Text(
+                value,
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-  
+          ],
+        ),
+      );
+
   void _openUrl(String url) {
     // En una aplicación real, usaríamos url_launcher
     if (kDebugMode) {
@@ -324,20 +344,20 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-  
+
   Future<void> _login() async {
     final l10n = AppLocalizations.of(context)!;
-    
+
     setState(() {
       _isLoading = true;
     });
-    
+
     try {
       final response = await Supabase.instance.client.auth.signInWithPassword(
         email: _emailController.text,
         password: _passwordController.text,
       );
-      
+
       if (response.user != null) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -346,13 +366,15 @@ class _LoginScreenState extends State<LoginScreen> {
               backgroundColor: Colors.green,
             ),
           );
-          
+
           // Aquí navegaríamos al dashboard según el rol
           if (kDebugMode) {
             debugPrint('Usuario logueado: ${response.user!.email}');
-            debugPrint('Rol: ${response.user!.userMetadata?['role'] ?? 'No especificado'}');
+            debugPrint(
+              'Rol: ${response.user!.userMetadata?['role'] ?? 'No especificado'}',
+            );
           }
-          
+
           // Mostrar información adicional del usuario
           _showUserInfo(response.user!);
         }
@@ -377,10 +399,10 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     }
   }
-  
+
   void _showUserInfo(User user) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -391,7 +413,11 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             Text(l10n.emailInfo(user.email ?? '')),
             Text(l10n.idInfo(user.id)),
-            Text(l10n.roleInfo(user.userMetadata?['role'] ?? l10n.roleNotSpecified)),
+            Text(
+              l10n.roleInfo(
+                user.userMetadata?['role'] ?? l10n.roleNotSpecified,
+              ),
+            ),
             Text(l10n.createdInfo(user.createdAt.toString())),
             const SizedBox(height: 16),
             Text(l10n.nextSteps),
@@ -415,39 +441,35 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _navigateToDashboard(User user) {
     final role = user.userMetadata?['role'] ?? 'student';
-    
+
     switch (role) {
       case 'student':
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => StudentDashboard(user: user),
-          ),
+          MaterialPageRoute(builder: (context) => StudentDashboard(user: user)),
         );
         break;
       case 'tutor':
         // TODO: Implementar TutorDashboard
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.tutorDashboardDev)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.tutorDashboardDev)));
         break;
       case 'admin':
         // TODO: Implementar AdminDashboard
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.adminDashboardDev)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.adminDashboardDev)));
         break;
       default:
         // Por defecto, ir al dashboard de estudiante
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => StudentDashboard(user: user),
-          ),
+          MaterialPageRoute(builder: (context) => StudentDashboard(user: user)),
         );
     }
   }
-  
+
   @override
   void dispose() {
     _emailController.dispose();

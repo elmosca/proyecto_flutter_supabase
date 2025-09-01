@@ -443,5 +443,184 @@
   "roleNotSpecified": "No especificado",
   "@roleNotSpecified": {
     "description": "Mensaje cuando el rol no está especificado"
+  },
+  
+  "dashboardStudent": "Dashboard Estudiante",
+  "@dashboardStudent": {
+    "description": "Título del dashboard de estudiante"
+  },
+  
+  "welcomeUser": "Bienvenido, {email}",
+  "@welcomeUser": {
+    "description": "Mensaje de bienvenida con email del usuario",
+    "placeholders": {
+      "email": {
+        "type": "String",
+        "example": "usuario@ejemplo.com"
+      }
+    }
+  },
+  
+  "myAnteprojects": "Mis Anteproyectos",
+  "@myAnteprojects": {
+    "description": "Título de la sección de anteproyectos del usuario"
+  },
+  
+  "viewAll": "Ver todos",
+  "@viewAll": {
+    "description": "Botón para ver todos los elementos"
+  },
+  
+  "noAnteprojects": "No tienes anteproyectos creados. ¡Crea tu primer anteproyecto!",
+  "@noAnteprojects": {
+    "description": "Mensaje cuando no hay anteproyectos"
+  },
+  
+  "pendingTasks": "Tareas Pendientes",
+  "@pendingTasks": {
+    "description": "Título de la sección de tareas pendientes"
+  },
+  
+  "viewAllTasks": "Ver todas",
+  "@viewAllTasks": {
+    "description": "Botón para ver todas las tareas"
+  },
+  
+  "noPendingTasks": "No tienes tareas pendientes. ¡Excelente trabajo!",
+  "@noPendingTasks": {
+    "description": "Mensaje cuando no hay tareas pendientes"
+  },
+  
+  "systemInfo": "Información del Sistema",
+  "@systemInfo": {
+    "description": "Título de la sección de información del sistema"
+  },
+  
+  "connectedToServer": "Estado: Conectado al servidor de red",
+  "@connectedToServer": {
+    "description": "Mensaje de estado de conexión al servidor"
+  },
+  
+  "anteprojectsDev": "Funcionalidad de creación de anteproyectos en desarrollo",
+  "@anteprojectsDev": {
+    "description": "Mensaje de funcionalidad en desarrollo"
+  },
+  
+  "anteprojectsListDev": "Lista de anteproyectos en desarrollo",
+  "@anteprojectsListDev": {
+    "description": "Mensaje de lista en desarrollo"
+  },
+  
+  "tasksListDev": "Lista de tareas en desarrollo",
+  "@tasksListDev": {
+    "description": "Mensaje de lista de tareas en desarrollo"
+  },
+  
+  "platformLabel": "Plataforma: {platform}",
+  "@platformLabel": {
+    "description": "Etiqueta de plataforma con valor",
+    "placeholders": {
+      "platform": {
+        "type": "String",
+        "example": "Windows"
+      }
+    }
+  },
+  
+  "versionLabel": "Versión: {version}",
+  "@versionLabel": {
+    "description": "Etiqueta de versión con valor",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.0.0"
+      }
+    }
+  },
+  
+  "backendLabel": "Backend: {url}",
+  "@backendLabel": {
+    "description": "Etiqueta de backend con URL",
+    "placeholders": {
+      "url": {
+        "type": "String",
+        "example": "http://localhost:54321"
+      }
+    }
+  },
+  
+  "studio": "Studio",
+  "@studio": {
+    "description": "Etiqueta para Supabase Studio"
+  },
+  
+  "emailLabel": "Email",
+  "@emailLabel": {
+    "description": "Etiqueta de email"
+  },
+  
+  "serverUrl": "URL del Servidor",
+  "@serverUrl": {
+    "description": "Etiqueta de URL del servidor"
+  },
+  
+  "version": "Versión",
+  "@version": {
+    "description": "Etiqueta de versión"
+  },
+  
+  "language": "Idioma",
+  "@language": {
+    "description": "Etiqueta de idioma"
+  },
+  
+  "spanish": "Español",
+  "@spanish": {
+    "description": "Nombre del idioma español"
+  },
+  
+  "english": "Inglés",
+  "@english": {
+    "description": "Nombre del idioma inglés"
+  },
+  
+  "serverInfo": "Información del Servidor",
+  "@serverInfo": {
+    "description": "Título de información del servidor"
+  },
+  
+  "testCredentials": "Credenciales de Prueba",
+  "@testCredentials": {
+    "description": "Título de credenciales de prueba"
+  },
+  
+  "studentEmail": "Estudiante",
+  "@studentEmail": {
+    "description": "Email de estudiante de prueba"
+  },
+  
+  "tutorEmail": "Tutor",
+  "@tutorEmail": {
+    "description": "Email de tutor de prueba"
+  },
+  
+  "adminEmail": "Administrador",
+  "@adminEmail": {
+    "description": "Email de administrador de prueba"
+  },
+  
+  "testPassword": "Contraseña de prueba",
+  "@testPassword": {
+    "description": "Contraseña de prueba"
+  },
+  
+  "copied": "Copiado",
+  "@copied": {
+    "description": "Mensaje de copiado exitoso"
+  },
+  
+  "copyToClipboard": "Copiar al portapapeles",
+  "@copyToClipboard": {
+    "description": "Tooltip para copiar al portapapeles"
   }
 }
