@@ -443,5 +443,184 @@
   "roleNotSpecified": "Not specified",
   "@roleNotSpecified": {
     "description": "Message when role is not specified"
+  },
+  
+  "dashboardStudent": "Student Dashboard",
+  "@dashboardStudent": {
+    "description": "Student dashboard title"
+  },
+  
+  "welcomeUser": "Welcome, {email}",
+  "@welcomeUser": {
+    "description": "Welcome message with user email",
+    "placeholders": {
+      "email": {
+        "type": "String",
+        "example": "user@example.com"
+      }
+    }
+  },
+  
+  "myAnteprojects": "My Anteprojects",
+  "@myAnteprojects": {
+    "description": "User anteprojects section title"
+  },
+  
+  "viewAll": "View all",
+  "@viewAll": {
+    "description": "Button to view all items"
+  },
+  
+  "noAnteprojects": "You don't have any anteprojects created. Create your first anteproject!",
+  "@noAnteprojects": {
+    "description": "Message when there are no anteprojects"
+  },
+  
+  "pendingTasks": "Pending Tasks",
+  "@pendingTasks": {
+    "description": "Pending tasks section title"
+  },
+  
+  "viewAllTasks": "View all",
+  "@viewAllTasks": {
+    "description": "Button to view all tasks"
+  },
+  
+  "noPendingTasks": "You don't have any pending tasks. Excellent work!",
+  "@noPendingTasks": {
+    "description": "Message when there are no pending tasks"
+  },
+  
+  "systemInfo": "System Information",
+  "@systemInfo": {
+    "description": "System information section title"
+  },
+  
+  "connectedToServer": "Status: Connected to network server",
+  "@connectedToServer": {
+    "description": "Server connection status message"
+  },
+  
+  "anteprojectsDev": "Anteproject creation functionality in development",
+  "@anteprojectsDev": {
+    "description": "Development functionality message"
+  },
+  
+  "anteprojectsListDev": "Anteprojects list in development",
+  "@anteprojectsListDev": {
+    "description": "List development message"
+  },
+  
+  "tasksListDev": "Tasks list in development",
+  "@tasksListDev": {
+    "description": "Tasks list development message"
+  },
+  
+  "platformLabel": "Platform: {platform}",
+  "@platformLabel": {
+    "description": "Platform label with value",
+    "placeholders": {
+      "platform": {
+        "type": "String",
+        "example": "Windows"
+      }
+    }
+  },
+  
+  "versionLabel": "Version: {version}",
+  "@versionLabel": {
+    "description": "Version label with value",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.0.0"
+      }
+    }
+  },
+  
+  "backendLabel": "Backend: {url}",
+  "@backendLabel": {
+    "description": "Backend label with URL",
+    "placeholders": {
+      "url": {
+        "type": "String",
+        "example": "http://localhost:54321"
+      }
+    }
+  },
+  
+  "studio": "Studio",
+  "@studio": {
+    "description": "Supabase Studio label"
+  },
+  
+  "emailLabel": "Email",
+  "@emailLabel": {
+    "description": "Email label"
+  },
+  
+  "serverUrl": "Server URL",
+  "@serverUrl": {
+    "description": "Server URL label"
+  },
+  
+  "version": "Version",
+  "@version": {
+    "description": "Version label"
+  },
+  
+  "language": "Language",
+  "@language": {
+    "description": "Language label"
+  },
+  
+  "spanish": "Spanish",
+  "@spanish": {
+    "description": "Spanish language name"
+  },
+  
+  "english": "English",
+  "@english": {
+    "description": "English language name"
+  },
+  
+  "serverInfo": "Server Information",
+  "@serverInfo": {
+    "description": "Server information title"
+  },
+  
+  "testCredentials": "Test Credentials",
+  "@testCredentials": {
+    "description": "Test credentials title"
+  },
+  
+  "studentEmail": "Student",
+  "@studentEmail": {
+    "description": "Student test email"
+  },
+  
+  "tutorEmail": "Tutor",
+  "@tutorEmail": {
+    "description": "Tutor test email"
+  },
+  
+  "adminEmail": "Administrator",
+  "@adminEmail": {
+    "description": "Administrator test email"
+  },
+  
+  "testPassword": "Test password",
+  "@testPassword": {
+    "description": "Test password"
+  },
+  
+  "copied": "Copied",
+  "@copied": {
+    "description": "Successful copy message"
+  },
+  
+  "copyToClipboard": "Copy to clipboard",
+  "@copyToClipboard": {
+    "description": "Copy to clipboard tooltip"
   }
 }

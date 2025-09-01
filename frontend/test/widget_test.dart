@@ -23,8 +23,11 @@ void main() {
     await tester.pumpWidget(const MyApp());
 
     // Verify that the form structure is correct
-    expect(find.byType(TextField), findsNWidgets(2)); // Email and Password fields
+    expect(
+      find.byType(TextField),
+      findsNWidgets(2),
+    ); // Email and Password fields
     expect(find.byType(ElevatedButton), findsOneWidget); // Login button
     expect(find.byType(AppBar), findsOneWidget); // App bar
   });
-} 
+}

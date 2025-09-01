@@ -83,7 +83,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noData => 'No data available';
 
   @override
-  String get connectionError => 'Connection error. Please check your internet connection.';
+  String get connectionError =>
+      'Connection error. Please check your internet connection.';
 
   @override
   String get serverInfo => 'Server Information';
@@ -101,22 +102,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get testCredentials => 'Test Credentials';
 
   @override
-  String get studentEmail => 'Student Email';
+  String get studentEmail => 'Student';
 
   @override
-  String get tutorEmail => 'Tutor Email';
+  String get tutorEmail => 'Tutor';
 
   @override
-  String get adminEmail => 'Admin Email';
+  String get adminEmail => 'Administrator';
 
   @override
-  String get testPassword => 'Test Password';
+  String get testPassword => 'Test password';
 
   @override
   String get copyToClipboard => 'Copy to clipboard';
 
   @override
-  String get copied => 'Copied!';
+  String get copied => 'Copied';
 
   @override
   String get language => 'Language';
@@ -157,7 +158,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewAll => 'View all';
 
   @override
-  String get noAnteprojects => 'You don\'t have any anteprojects created. Create your first anteproject!';
+  String get noAnteprojects =>
+      'You don\'t have any anteprojects created. Create your first anteproject!';
 
   @override
   String get pendingTasks => 'Pending Tasks';
@@ -166,7 +168,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewAllTasks => 'View all';
 
   @override
-  String get noPendingTasks => 'You don\'t have any pending tasks. Excellent work!';
+  String get noPendingTasks =>
+      'You don\'t have any pending tasks. Excellent work!';
 
   @override
   String get systemInfo => 'System Information';
@@ -175,7 +178,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get connectedToServer => 'Status: Connected to network server';
 
   @override
-  String get anteprojectsDev => 'Anteproject creation functionality in development';
+  String get anteprojectsDev =>
+      'Anteproject creation functionality in development';
 
   @override
   String get anteprojectsListDev => 'Anteprojects list in development';
