@@ -100,6 +100,31 @@
     "description": "Texto del botón editar"
   },
   
+  "taskCreatedSuccess": "Tarea creada exitosamente",
+  "@taskCreatedSuccess": {
+    "description": "Mensaje de éxito al crear una tarea"
+  },
+  
+  "taskUpdatedSuccess": "Tarea actualizada exitosamente",
+  "@taskUpdatedSuccess": {
+    "description": "Mensaje de éxito al actualizar una tarea"
+  },
+  
+  "taskStatusUpdatedSuccess": "Estado de tarea actualizado",
+  "@taskStatusUpdatedSuccess": {
+    "description": "Mensaje de éxito al actualizar el estado de una tarea"
+  },
+  
+  "taskDeletedSuccess": "Tarea eliminada exitosamente",
+  "@taskDeletedSuccess": {
+    "description": "Mensaje de éxito al eliminar una tarea"
+  },
+  
+  "taskNotFound": "Tarea no encontrada",
+  "@taskNotFound": {
+    "description": "Mensaje de error cuando no se encuentra una tarea"
+  },
+  
   "delete": "Eliminar",
   "@delete": {
     "description": "Texto del botón eliminar"
@@ -622,5 +647,100 @@
   "copyToClipboard": "Copiar al portapapeles",
   "@copyToClipboard": {
     "description": "Tooltip para copiar al portapapeles"
+  },
+  
+  "dashboardAdminTitle": "Panel de Administración",
+  "@dashboardAdminTitle": {
+    "description": "Título del dashboard de administrador"
+  },
+  
+  "dashboardAdminUsersManagement": "Gestión de Usuarios",
+  "@dashboardAdminUsersManagement": {
+    "description": "Título de la sección de gestión de usuarios"
+  },
+  
+  "dashboardAdminAnteprojectsManagement": "Gestión de Anteproyectos",
+  "@dashboardAdminAnteprojectsManagement": {
+    "description": "Título de la sección de gestión de anteproyectos"
+  },
+  
+  "dashboardAdminSystemStats": "Estadísticas del Sistema",
+  "@dashboardAdminSystemStats": {
+    "description": "Título de la sección de estadísticas del sistema"
+  },
+  
+  "dashboardAdminActiveUsers": "Usuarios Activos",
+  "@dashboardAdminActiveUsers": {
+    "description": "Título de la estadística de usuarios activos"
+  },
+  
+  "dashboardAdminPendingAnteproyectos": "Anteproyectos Pendientes",
+  "@dashboardAdminPendingAnteproyectos": {
+    "description": "Título de la estadística de anteproyectos pendientes"
+  },
+  
+  "dashboardAdminOngoingProjects": "Proyectos en Curso",
+  "@dashboardAdminOngoingProjects": {
+    "description": "Título de la estadística de proyectos en curso"
+  },
+  
+  "dashboardAdminCompletedTasks": "Tareas Completadas",
+  "@dashboardAdminCompletedTasks": {
+    "description": "Título de la estadística de tareas completadas"
+  },
+  
+  "dashboardTutorTitle": "Panel de Tutor",
+  "@dashboardTutorTitle": {
+    "description": "Título del dashboard de tutor"
+  },
+  
+  "dashboardTutorMyAnteprojects": "Mis Anteproyectos",
+  "@dashboardTutorMyAnteprojects": {
+    "description": "Título de la sección de mis anteproyectos"
+  },
+  
+  "dashboardTutorActiveProjects": "Proyectos Activos",
+  "@dashboardTutorActiveProjects": {
+    "description": "Título de la sección de proyectos activos"
+  },
+  
+  "dashboardTutorPendingTasks": "Tareas Pendientes",
+  "@dashboardTutorPendingTasks": {
+    "description": "Título de la sección de tareas pendientes"
+  },
+  
+  "dashboardTutorPersonalStats": "Estadísticas Personales",
+  "@dashboardTutorPersonalStats": {
+    "description": "Título de la sección de estadísticas personales"
+  },
+  
+  "errorAuthentication": "Error de Autenticación",
+  "@errorAuthentication": {
+    "description": "Mensaje de error de autenticación"
+  },
+  
+  "errorConnection": "Error de Conexión",
+  "@errorConnection": {
+    "description": "Mensaje de error de conexión"
+  },
+  
+  "errorUnknown": "Error Desconocido",
+  "@errorUnknown": {
+    "description": "Mensaje de error desconocido"
+  },
+  
+  "errorTitle": "Error",
+  "@errorTitle": {
+    "description": "Título del diálogo de error"
+  },
+  
+  "ok": "Aceptar",
+  "@ok": {
+    "description": "Texto del botón aceptar"
+  },
+  
+  "notAvailable": "No disponible",
+  "@notAvailable": {
+    "description": "Texto para valores no disponibles"
   }
 }

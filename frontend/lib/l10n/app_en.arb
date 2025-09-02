@@ -100,6 +100,31 @@
     "description": "Edit button text"
   },
   
+  "taskCreatedSuccess": "Task created successfully",
+  "@taskCreatedSuccess": {
+    "description": "Success message when creating a task"
+  },
+  
+  "taskUpdatedSuccess": "Task updated successfully",
+  "@taskUpdatedSuccess": {
+    "description": "Success message when updating a task"
+  },
+  
+  "taskStatusUpdatedSuccess": "Task status updated",
+  "@taskStatusUpdatedSuccess": {
+    "description": "Success message when updating task status"
+  },
+  
+  "taskDeletedSuccess": "Task deleted successfully",
+  "@taskDeletedSuccess": {
+    "description": "Success message when deleting a task"
+  },
+  
+  "taskNotFound": "Task not found",
+  "@taskNotFound": {
+    "description": "Error message when task is not found"
+  },
+  
   "delete": "Delete",
   "@delete": {
     "description": "Delete button text"
@@ -622,5 +647,100 @@
   "copyToClipboard": "Copy to clipboard",
   "@copyToClipboard": {
     "description": "Copy to clipboard tooltip"
+  },
+  
+  "dashboardAdminTitle": "Administration Panel",
+  "@dashboardAdminTitle": {
+    "description": "Administrator dashboard title"
+  },
+  
+  "dashboardAdminUsersManagement": "User Management",
+  "@dashboardAdminUsersManagement": {
+    "description": "User management section title"
+  },
+  
+  "dashboardAdminAnteprojectsManagement": "Anteprojects Management",
+  "@dashboardAdminAnteprojectsManagement": {
+    "description": "Anteprojects management section title"
+  },
+  
+  "dashboardAdminSystemStats": "System Statistics",
+  "@dashboardAdminSystemStats": {
+    "description": "System statistics section title"
+  },
+  
+  "dashboardAdminActiveUsers": "Active Users",
+  "@dashboardAdminActiveUsers": {
+    "description": "Active users statistics title"
+  },
+  
+  "dashboardAdminPendingAnteproyectos": "Pending Anteprojects",
+  "@dashboardAdminPendingAnteproyectos": {
+    "description": "Pending anteproyectos statistics title"
+  },
+  
+  "dashboardAdminOngoingProjects": "Ongoing Projects",
+  "@dashboardAdminOngoingProjects": {
+    "description": "Ongoing projects statistics title"
+  },
+  
+  "dashboardAdminCompletedTasks": "Completed Tasks",
+  "@dashboardAdminCompletedTasks": {
+    "description": "Completed tasks statistics title"
+  },
+  
+  "dashboardTutorTitle": "Tutor Panel",
+  "@dashboardTutorTitle": {
+    "description": "Tutor dashboard title"
+  },
+  
+  "dashboardTutorMyAnteprojects": "My Anteprojects",
+  "@dashboardTutorMyAnteprojects": {
+    "description": "My anteproyectos section title"
+  },
+  
+  "dashboardTutorActiveProjects": "Active Projects",
+  "@dashboardTutorActiveProjects": {
+    "description": "Active projects section title"
+  },
+  
+  "dashboardTutorPendingTasks": "Pending Tasks",
+  "@dashboardTutorPendingTasks": {
+    "description": "Pending tasks section title"
+  },
+  
+  "dashboardTutorPersonalStats": "Personal Statistics",
+  "@dashboardTutorPersonalStats": {
+    "description": "Personal statistics section title"
+  },
+  
+  "errorAuthentication": "Authentication Error",
+  "@errorAuthentication": {
+    "description": "Authentication error message"
+  },
+  
+  "errorConnection": "Connection Error",
+  "@errorConnection": {
+    "description": "Connection error message"
+  },
+  
+  "errorUnknown": "Unknown Error",
+  "@errorUnknown": {
+    "description": "Unknown error message"
+  },
+  
+  "errorTitle": "Error",
+  "@errorTitle": {
+    "description": "Error dialog title"
+  },
+  
+  "ok": "OK",
+  "@ok": {
+    "description": "OK button text"
+  },
+  
+  "notAvailable": "Not Available",
+  "@notAvailable": {
+    "description": "Text for unavailable values"
   }
 }

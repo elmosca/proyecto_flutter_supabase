@@ -45,7 +45,7 @@ class _TutorDashboardState extends State<TutorDashboard> {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: _logout,
-            tooltip: 'Cerrar sesión',
+            tooltip: l10n.logout,
           ),
         ],
       ),
@@ -55,7 +55,7 @@ class _TutorDashboardState extends State<TutorDashboard> {
       floatingActionButton: FloatingActionButton(
         onPressed: _reviewAnteprojects,
         backgroundColor: Color(AppConfig.platformColor),
-        tooltip: 'Revisar anteproyectos',
+        tooltip: l10n.dashboardTutorMyAnteprojects,
         child: const Icon(Icons.assignment, color: Colors.white),
       ),
     );
@@ -273,7 +273,7 @@ class _TutorDashboardState extends State<TutorDashboard> {
             _buildInfoRow(l10n.backendLabel(AppConfig.supabaseUrl), ''),
             _buildInfoRow(l10n.platformLabel(AppConfig.platformName), ''),
             _buildInfoRow(l10n.versionLabel(AppConfig.appVersion), ''),
-            _buildInfoRow(l10n.emailLabel, widget.user.email ?? 'N/A'),
+            _buildInfoRow(l10n.emailLabel, widget.user.email ?? l10n.notAvailable),
             const SizedBox(height: 8),
             Text(
               l10n.connectedToServer,

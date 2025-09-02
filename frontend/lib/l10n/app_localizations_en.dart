@@ -71,6 +71,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get edit => 'Edit';
 
   @override
+  String get taskCreatedSuccess => 'Task created successfully';
+
+  @override
+  String get taskUpdatedSuccess => 'Task updated successfully';
+
+  @override
+  String get taskStatusUpdatedSuccess => 'Task status updated';
+
+  @override
+  String get taskDeletedSuccess => 'Task deleted successfully';
+
+  @override
+  String get taskNotFound => 'Task not found';
+
+  @override
   String get delete => 'Delete';
 
   @override
@@ -83,8 +98,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noData => 'No data available';
 
   @override
-  String get connectionError =>
-      'Connection error. Please check your internet connection.';
+  String get connectionError => 'Connection error. Please check your internet connection.';
 
   @override
   String get serverInfo => 'Server Information';
@@ -158,8 +172,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewAll => 'View all';
 
   @override
-  String get noAnteprojects =>
-      'You don\'t have any anteprojects created. Create your first anteproject!';
+  String get noAnteprojects => 'You don\'t have any anteprojects created. Create your first anteproject!';
 
   @override
   String get pendingTasks => 'Pending Tasks';
@@ -168,8 +181,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewAllTasks => 'View all';
 
   @override
-  String get noPendingTasks =>
-      'You don\'t have any pending tasks. Excellent work!';
+  String get noPendingTasks => 'You don\'t have any pending tasks. Excellent work!';
 
   @override
   String get systemInfo => 'System Information';
@@ -178,8 +190,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get connectedToServer => 'Status: Connected to network server';
 
   @override
-  String get anteprojectsDev =>
-      'Anteproject creation functionality in development';
+  String get anteprojectsDev => 'Anteproject creation functionality in development';
 
   @override
   String get anteprojectsListDev => 'Anteprojects list in development';
@@ -259,4 +270,61 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get roleNotSpecified => 'Not specified';
+
+  @override
+  String get dashboardAdminTitle => 'Administration Panel';
+
+  @override
+  String get dashboardAdminUsersManagement => 'User Management';
+
+  @override
+  String get dashboardAdminAnteprojectsManagement => 'Anteprojects Management';
+
+  @override
+  String get dashboardAdminSystemStats => 'System Statistics';
+
+  @override
+  String get dashboardAdminActiveUsers => 'Active Users';
+
+  @override
+  String get dashboardAdminPendingAnteproyectos => 'Pending Anteprojects';
+
+  @override
+  String get dashboardAdminOngoingProjects => 'Ongoing Projects';
+
+  @override
+  String get dashboardAdminCompletedTasks => 'Completed Tasks';
+
+  @override
+  String get dashboardTutorTitle => 'Tutor Panel';
+
+  @override
+  String get dashboardTutorMyAnteprojects => 'My Anteprojects';
+
+  @override
+  String get dashboardTutorActiveProjects => 'Active Projects';
+
+  @override
+  String get dashboardTutorPendingTasks => 'Pending Tasks';
+
+  @override
+  String get dashboardTutorPersonalStats => 'Personal Statistics';
+
+  @override
+  String get errorAuthentication => 'Authentication Error';
+
+  @override
+  String get errorConnection => 'Connection Error';
+
+  @override
+  String get errorUnknown => 'Unknown Error';
+
+  @override
+  String get errorTitle => 'Error';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get notAvailable => 'Not Available';
 }

@@ -62,8 +62,7 @@ import 'app_localizations_es.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,8 +70,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -84,18 +82,17 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('es'),
+    Locale('es')
   ];
 
   /// The title of the application
@@ -217,6 +214,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit'**
   String get edit;
+
+  /// Success message when creating a task
+  ///
+  /// In en, this message translates to:
+  /// **'Task created successfully'**
+  String get taskCreatedSuccess;
+
+  /// Success message when updating a task
+  ///
+  /// In en, this message translates to:
+  /// **'Task updated successfully'**
+  String get taskUpdatedSuccess;
+
+  /// Success message when updating task status
+  ///
+  /// In en, this message translates to:
+  /// **'Task status updated'**
+  String get taskStatusUpdatedSuccess;
+
+  /// Success message when deleting a task
+  ///
+  /// In en, this message translates to:
+  /// **'Task deleted successfully'**
+  String get taskDeletedSuccess;
+
+  /// Error message when task is not found
+  ///
+  /// In en, this message translates to:
+  /// **'Task not found'**
+  String get taskNotFound;
 
   /// Delete button text
   ///
@@ -553,10 +580,123 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not specified'**
   String get roleNotSpecified;
+
+  /// Administrator dashboard title
+  ///
+  /// In en, this message translates to:
+  /// **'Administration Panel'**
+  String get dashboardAdminTitle;
+
+  /// User management section title
+  ///
+  /// In en, this message translates to:
+  /// **'User Management'**
+  String get dashboardAdminUsersManagement;
+
+  /// Anteprojects management section title
+  ///
+  /// In en, this message translates to:
+  /// **'Anteprojects Management'**
+  String get dashboardAdminAnteprojectsManagement;
+
+  /// System statistics section title
+  ///
+  /// In en, this message translates to:
+  /// **'System Statistics'**
+  String get dashboardAdminSystemStats;
+
+  /// Active users statistics title
+  ///
+  /// In en, this message translates to:
+  /// **'Active Users'**
+  String get dashboardAdminActiveUsers;
+
+  /// Pending anteproyectos statistics title
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Anteprojects'**
+  String get dashboardAdminPendingAnteproyectos;
+
+  /// Ongoing projects statistics title
+  ///
+  /// In en, this message translates to:
+  /// **'Ongoing Projects'**
+  String get dashboardAdminOngoingProjects;
+
+  /// Completed tasks statistics title
+  ///
+  /// In en, this message translates to:
+  /// **'Completed Tasks'**
+  String get dashboardAdminCompletedTasks;
+
+  /// Tutor dashboard title
+  ///
+  /// In en, this message translates to:
+  /// **'Tutor Panel'**
+  String get dashboardTutorTitle;
+
+  /// My anteproyectos section title
+  ///
+  /// In en, this message translates to:
+  /// **'My Anteprojects'**
+  String get dashboardTutorMyAnteprojects;
+
+  /// Active projects section title
+  ///
+  /// In en, this message translates to:
+  /// **'Active Projects'**
+  String get dashboardTutorActiveProjects;
+
+  /// Pending tasks section title
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Tasks'**
+  String get dashboardTutorPendingTasks;
+
+  /// Personal statistics section title
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Statistics'**
+  String get dashboardTutorPersonalStats;
+
+  /// Authentication error message
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication Error'**
+  String get errorAuthentication;
+
+  /// Connection error message
+  ///
+  /// In en, this message translates to:
+  /// **'Connection Error'**
+  String get errorConnection;
+
+  /// Unknown error message
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown Error'**
+  String get errorUnknown;
+
+  /// Error dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get errorTitle;
+
+  /// OK button text
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// Text for unavailable values
+  ///
+  /// In en, this message translates to:
+  /// **'Not Available'**
+  String get notAvailable;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -565,26 +705,25 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'es'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'es'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en':
-      return AppLocalizationsEn();
-    case 'es':
-      return AppLocalizationsEs();
+    case 'en': return AppLocalizationsEn();
+    case 'es': return AppLocalizationsEs();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.',
+    'that was used.'
   );
 }

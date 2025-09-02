@@ -1,4 +1,467 @@
+# 🚀 REGLAS DEL PROYECTO FLUTTER + SUPABASE FCT
+
+## 📋 DESCRIPCIÓN DEL PROYECTO
+Sistema de Gestión de TFG (Trabajo de Fin de Grado) desarrollado con Flutter para el frontend y Supabase como backend-as-a-service, incluyendo autenticación, gestión de proyectos, tareas y sistema de roles (Estudiante, Tutor, Administrador).
+
 ---
+
+## 🏗️ ARQUITECTURA Y PATRONES
+
+### **1. ARQUITECTURA GENERAL**
+- **Frontend**: Flutter con arquitectura BLoC (Business Logic Component)
+- **Backend**: Supabase (PostgreSQL + Auth + Real-time + Storage)
+- **Estado**: Flutter BLoC para gestión de estado
+- **Navegación**: GoRouter para routing declarativo
+- **Internacionalización**: Flutter Localizations + ARB files
+
+### **2. PATRONES DE DISEÑO**
+- **BLoC Pattern**: Para separación de lógica de negocio y UI
+- **Repository Pattern**: Para abstracción de servicios de datos
+- **Dependency Injection**: Para inyección de dependencias
+- **Observer Pattern**: Para notificaciones y actualizaciones en tiempo real
+
+### **3. ESTRUCTURA DE CARPETAS**
+```
+lib/
+├── blocs/           # Lógica de negocio (BLoCs)
+├── models/          # Modelos de datos
+├── screens/         # Pantallas de la aplicación
+├── services/        # Servicios (API, local storage)
+├── widgets/         # Widgets reutilizables
+├── utils/           # Utilidades y helpers
+├── themes/          # Temas y estilos
+└── l10n/            # Archivos de internacionalización
+```
+
+---
+
+## 🌍 INTERNACIONALIZACIÓN (I18N)
+
+### **4. CONFIGURACIÓN OBLIGATORIA**
+- **Idioma principal**: Español (es)
+- **Idiomas soportados**: Español, Inglés (en)
+- **Formato**: Archivos ARB (.arb) para cada idioma
+- **Ubicación**: `lib/l10n/`
+
+### **5. REGLAS DE I18N**
+- ✅ **SIEMPRE** usar `AppLocalizations.of(context)` para textos
+- ✅ **NUNCA** hardcodear strings en español o inglés
+- ✅ **SIEMPRE** incluir descripción en metadatos ARB
+- ✅ **SIEMPRE** usar claves descriptivas y consistentes
+- ✅ **SIEMPRE** considerar pluralización y formatos de fecha/número
+
+### **6. EJEMPLO DE USO CORRECTO**
+```dart
+// ✅ CORRECTO
+Text(AppLocalizations.of(context)!.welcome)
+
+// ❌ INCORRECTO
+Text('Bienvenido')
+Text('Welcome')
+```
+
+### **7. ESTRUCTURA DE ARCHIVOS ARB**
+```json
+{
+  "@@locale": "es",
+  "key": "Valor en español",
+  "@key": {
+    "description": "Descripción del contexto de uso"
+  }
+}
+```
+
+---
+
+## 🔧 DESARROLLO FLUTTER
+
+### **8. VERSIONES Y DEPENDENCIAS**
+- **Flutter SDK**: ^3.8.1 (última estable)
+- **Dart**: ^3.8.1
+- **Supabase**: ^2.10.0
+- **BLoC**: ^9.1.1
+- **GoRouter**: ^16.2.0
+
+### **9. REGLAS DE CÓDIGO**
+- **Null Safety**: Usar siempre null safety
+- **Const Constructors**: Usar `const` cuando sea posible
+- **Async/Await**: Preferir `async/await` sobre `.then()`
+- **Error Handling**: Siempre manejar errores con try-catch
+- **Type Safety**: Usar tipos explícitos, evitar `dynamic`
+
+### **10. ESTILO DE CÓDIGO**
+- **Indentación**: 2 espacios
+- **Longitud de línea**: Máximo 80 caracteres
+- **Nombres**: camelCase para variables, PascalCase para clases
+- **Comentarios**: Documentar funciones públicas y complejas
+
+### **11. EJEMPLO DE CÓDIGO CORRECTO**
+```dart
+class UserService {
+  static const String _baseUrl = 'api/users';
+  
+  Future<User?> getUserById(String id) async {
+    try {
+      final response = await _httpClient.get('$_baseUrl/$id');
+      return User.fromJson(response.data);
+    } catch (e) {
+      debugPrint('Error fetching user: $e');
+      return null;
+    }
+  }
+}
+```
+
+---
+
+## 🗄️ BACKEND SUPABASE
+
+### **12. CONFIGURACIÓN DE BASE DE DATOS**
+- **RLS (Row Level Security)**: SIEMPRE habilitado
+- **Políticas de seguridad**: Por rol y usuario
+- **Triggers**: Para auditoría y validaciones
+- **Funciones**: Para lógica de negocio compleja
+
+### **13. REGLAS DE SEGURIDAD**
+- ✅ **SIEMPRE** usar RLS en todas las tablas
+- ✅ **SIEMPRE** validar permisos por rol
+- ✅ **SIEMPRE** usar políticas granulares
+- ✅ **NUNCA** exponer datos sensibles sin autenticación
+
+### **14. EJEMPLO DE POLÍTICA RLS**
+```sql
+-- Política para proyectos (solo el propietario puede ver)
+CREATE POLICY "Users can view own projects" ON projects
+  FOR SELECT USING (auth.uid() = user_id);
+
+-- Política para tutores (pueden ver proyectos asignados)
+CREATE POLICY "Tutors can view assigned projects" ON projects
+  FOR SELECT USING (
+    auth.uid() IN (
+      SELECT tutor_id FROM project_assignments 
+      WHERE project_id = id
+    )
+  );
+```
+
+---
+
+## 📱 INTERFACES DE USUARIO
+
+### **15. PRINCIPIOS DE UI/UX**
+- **Material Design 3**: Usar componentes modernos
+- **Responsive Design**: Adaptar a diferentes tamaños de pantalla
+- **Accessibility**: Incluir soporte para lectores de pantalla
+- **Dark/Light Theme**: Soporte para temas (futuro)
+
+### **16. COMPONENTES REUTILIZABLES**
+- **Botones**: Usar `ElevatedButton`, `TextButton` consistentemente
+- **Campos de texto**: Usar `TextFormField` con validación
+- **Diálogos**: Usar `showDialog` con `AlertDialog`
+- **Loading**: Usar `CircularProgressIndicator` para operaciones asíncronas
+
+### **17. EJEMPLO DE WIDGET REUTILIZABLE**
+```dart
+class CustomButton extends StatelessWidget {
+  final String text;
+  final VoidCallback? onPressed;
+  final bool isLoading;
+  
+  const CustomButton({
+    super.key,
+    required this.text,
+    this.onPressed,
+    this.isLoading = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: isLoading ? null : onPressed,
+      child: isLoading 
+        ? const CircularProgressIndicator()
+        : Text(text),
+    );
+  }
+}
+```
+
+---
+
+## 🧪 TESTING Y CALIDAD
+
+### **18. TIPOS DE TESTING**
+- **Unit Tests**: Para lógica de negocio (BLoCs, servicios)
+- **Widget Tests**: Para componentes de UI
+- **Integration Tests**: Para flujos completos
+- **Golden Tests**: Para comparación visual (futuro)
+
+### **19. REGLAS DE TESTING**
+- ✅ **SIEMPRE** escribir tests para BLoCs
+- ✅ **SIEMPRE** mockear servicios externos
+- ✅ **SIEMPRE** probar casos de error
+- ✅ **SIEMPRE** mantener cobertura >80%
+
+### **20. REGLAS CRÍTICAS DE GENERACIÓN DE CÓDIGO**
+- ✅ **NUNCA** generar código que produzca errores, aunque compile
+- ✅ **SIEMPRE** usar la documentación oficial del lenguaje para generar código correcto
+- ✅ **SIEMPRE** verificar que el código generado sigue las mejores prácticas del lenguaje
+- ✅ **SIEMPRE** generar código que pase `flutter analyze` sin errores
+- ✅ **NUNCA** sacrificar calidad por velocidad de generación
+- ✅ **SIEMPRE** generar código que sea mantenible y legible
+- ✅ **SIEMPRE** usar patrones estándar y reconocidos del lenguaje
+- ✅ **NUNCA** generar código "que funciona" pero viola principios del lenguaje
+
+### **21. EJEMPLO DE TEST**
+```dart
+void main() {
+  group('UserBloc Tests', () {
+    late UserBloc userBloc;
+    late MockUserService mockUserService;
+
+    setUp(() {
+      mockUserService = MockUserService();
+      userBloc = UserBloc(userService: mockUserService);
+    });
+
+    test('emits [UserLoading, UserLoaded] when user is fetched', () async {
+      when(mockUserService.getUser()).thenAnswer(
+        (_) async => User(id: '1', name: 'Test'),
+      );
+
+      expect(userBloc.stream, emitsInOrder([
+        UserLoading(),
+        UserLoaded(User(id: '1', name: 'Test')),
+      ]));
+
+      userBloc.add(FetchUser());
+    });
+  });
+}
+```
+
+---
+
+## 📦 GESTIÓN DE DEPENDENCIAS
+
+### **22. REGLAS DE DEPENDENCIAS**
+- **Producción**: Solo dependencias necesarias
+- **Desarrollo**: Herramientas de testing y linting
+- **Versiones**: Usar rangos de versiones compatibles
+- **Actualizaciones**: Revisar mensualmente con `flutter pub outdated`
+
+### **23. DEPENDENCIAS OBLIGATORIAS**
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+  supabase_flutter: ^2.10.0      # Backend
+  flutter_bloc: ^9.1.1          # Estado
+  go_router: ^16.2.0            # Navegación
+  flutter_localizations:         # I18n
+    sdk: flutter
+  intl: ^0.20.2                 # Formateo I18n
+  shared_preferences: ^2.2.2     # Storage local
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0         # Linting
+  build_runner: ^2.7.0          # Code generation
+  json_serializable: ^6.11.0    # Serialización
+```
+
+---
+
+## 🔒 SEGURIDAD Y PRIVACIDAD
+
+### **24. PRINCIPIOS DE SEGURIDAD**
+- **Autenticación**: Usar Supabase Auth
+- **Autorización**: RLS + políticas de base de datos
+- **Validación**: Validar datos en frontend y backend
+- **Sanitización**: Sanitizar inputs del usuario
+- **HTTPS**: Siempre usar conexiones seguras
+
+### **25. MANEJO DE DATOS SENSIBLES**
+- **API Keys**: NUNCA en código fuente
+- **Variables de entorno**: Usar archivos .env
+- **Secrets**: Usar Supabase secrets management
+- **Logs**: NUNCA loggear datos sensibles
+
+---
+
+## 📊 MONITOREO Y LOGGING
+
+### **26. LOGGING**
+- **Niveles**: debug, info, warning, error
+- **Contexto**: Incluir información relevante
+- **Sensibilidad**: NUNCA loggear datos personales
+- **Performance**: Usar `kDebugMode` para logs de desarrollo
+
+### **27. EJEMPLO DE LOGGING**
+```dart
+if (kDebugMode) {
+  debugPrint('🔐 User authentication attempt: ${user.email}');
+}
+
+// Para errores
+try {
+  await _performOperation();
+} catch (e, stackTrace) {
+  debugPrint('❌ Operation failed: $e');
+  debugPrint('📚 Stack trace: $stackTrace');
+  rethrow;
+}
+```
+
+---
+
+## 🚀 DESPLIEGUE Y CI/CD
+
+### **28. ENTORNOS**
+- **Development**: Local con Supabase local
+- **Staging**: Supabase cloud con datos de prueba
+- **Production**: Supabase cloud con datos reales
+
+### **29. CONFIGURACIÓN POR ENTORNO**
+```dart
+class AppConfig {
+  static const String supabaseUrl = String.fromEnvironment(
+    'SUPABASE_URL',
+    defaultValue: 'http://localhost:54321',
+  );
+  
+  static const String supabaseAnonKey = String.fromEnvironment(
+    'SUPABASE_ANON_KEY',
+    defaultValue: 'your-anon-key',
+  );
+}
+```
+
+---
+
+## 📚 DOCUMENTACIÓN
+
+### **30. DOCUMENTACIÓN OBLIGATORIA**
+- **README.md**: Descripción del proyecto y setup
+- **API.md**: Documentación de endpoints
+- **ARCHITECTURE.md**: Decisiones de arquitectura
+- **DEPLOYMENT.md**: Guía de despliegue
+- **CONTRIBUTING.md**: Guía para contribuidores
+
+### **31. COMENTARIOS EN CÓDIGO**
+- **Funciones públicas**: Documentar parámetros y retorno
+- **Clases complejas**: Explicar propósito y uso
+- **Lógica de negocio**: Comentar decisiones importantes
+- **TODO**: Marcar tareas pendientes
+
+---
+
+## 🎯 CHECKLIST DE IMPLEMENTACIÓN
+
+### **32. ANTES DE COMMIT**
+- [ ] Código compila sin errores
+- [ ] Tests pasan
+- [ ] Linting sin warnings críticos
+- [ ] Internacionalización implementada
+- [ ] Documentación actualizada
+- [ ] Seguridad verificada
+
+### **33. ANTES DE MERGE**
+- [ ] Code review aprobado
+- [ ] Tests de integración pasan
+- [ ] Build exitoso en CI/CD
+- [ ] Documentación actualizada
+- [ ] Changelog actualizado
+
+---
+
+## 🔗 ENLACES OFICIALES
+
+### **34. DOCUMENTACIÓN FLUTTER**
+- **Flutter**: https://docs.flutter.dev/
+- **Dart**: https://dart.dev/guides
+- **Flutter Localizations**: https://docs.flutter.dev/development/accessibility-and-localization/internationalization
+
+### **35. DOCUMENTACIÓN SUPABASE**
+- **Supabase**: https://supabase.com/docs
+- **Supabase Flutter**: https://supabase.com/docs/reference/dart
+- **RLS**: https://supabase.com/docs/guides/auth/row-level-security
+
+### **36. DOCUMENTACIÓN BLoC**
+- **Flutter BLoC**: https://bloclibrary.dev/
+- **BLoC Pattern**: https://bloclibrary.dev/#/coreconcepts
+
+---
+
+## 🚨 VIOLACIONES CRÍTICAS
+
+### **37. NUNCA PERMITIR**
+- ❌ Hardcodear strings sin internacionalización
+- ❌ Deshabilitar RLS en producción
+- ❌ Exponer API keys en código
+- ❌ Ignorar errores de linting críticos
+- ❌ Committear archivos .env con credenciales reales
+- ❌ Usar `print()` en lugar de `debugPrint()`
+
+### **38. CONSECUENCIAS**
+- **Primera vez**: Advertencia y corrección
+- **Segunda vez**: Revisión de código obligatoria
+- **Tercera vez**: Bloqueo temporal de commits
+
+---
+
+## 📝 NOTAS IMPORTANTES
+
+### **39. ACTUALIZACIONES**
+- Este archivo se actualiza con cada cambio importante
+- Revisar mensualmente para mantener actualizado
+- Consultar documentación oficial para cambios
+
+### **40. EXCEPCIONES**
+- Las excepciones a estas reglas requieren aprobación del equipo
+- Documentar justificación de excepciones
+- Revisar excepciones en retrospectivas
+
+---
+
+## 🚨 **REGLAS CRÍTICAS DE CALIDAD DE CÓDIGO**
+
+### **41. PRINCIPIOS FUNDAMENTALES**
+- ✅ **NUNCA** generar código que viole las reglas del lenguaje
+- ✅ **SIEMPRE** usar la documentación oficial como fuente de verdad
+- ✅ **SIEMPRE** generar código que pase `flutter analyze` sin errores
+- ✅ **NUNCA** sacrificar calidad por velocidad de implementación
+
+### **42. ESTÁNDARES DE CÓDIGO GENERADO**
+- ✅ **Sintaxis**: 100% correcta según especificación del lenguaje
+- ✅ **Patrones**: Usar patrones estándar y reconocidos
+- ✅ **Estructura**: Seguir convenciones del lenguaje
+- ✅ **Nombres**: Usar nomenclatura estándar y descriptiva
+- ✅ **Documentación**: Incluir comentarios cuando sea necesario
+
+### **43. VERIFICACIÓN OBLIGATORIA**
+- ✅ **Antes de generar**: Consultar documentación oficial
+- ✅ **Después de generar**: Verificar con `flutter analyze`
+- ✅ **Antes de commit**: Código debe compilar sin warnings críticos
+- ✅ **Antes de merge**: Código debe pasar todos los tests
+
+### **44. RECURSOS OBLIGATORIOS PARA GENERACIÓN**
+- **Flutter**: https://docs.flutter.dev/
+- **Dart**: https://dart.dev/guides
+- **Supabase Flutter**: https://supabase.com/docs/reference/dart
+- **Flutter BLoC**: https://bloclibrary.dev/
+- **Material Design**: https://m3.material.io/
+
+### **45. CONSECUENCIAS DE VIOLACIÓN**
+- **Primera vez**: Corrección inmediata obligatoria
+- **Segunda vez**: Revisión de código obligatoria
+- **Tercera vez**: Bloqueo temporal de commits
+- **Reincidencia**: Revisión del proceso de desarrollo
+
+---
+
+**¡Recuerda: La calidad del código es responsabilidad de todos! 🚀**
 description:
 globs:
 alwaysApply: false
