@@ -45,7 +45,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: _logout,
-            tooltip: 'Cerrar sesión',
+            tooltip: l10n.logout,
           ),
         ],
       ),
@@ -55,7 +55,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
       floatingActionButton: FloatingActionButton(
         onPressed: _manageUsers,
         backgroundColor: Color(AppConfig.platformColor),
-        tooltip: 'Gestionar usuarios',
+        tooltip: l10n.dashboardAdminUsersManagement,
         child: const Icon(Icons.admin_panel_settings, color: Colors.white),
       ),
     );
@@ -290,7 +290,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
             _buildInfoRow(l10n.backendLabel(AppConfig.supabaseUrl), ''),
             _buildInfoRow(l10n.platformLabel(AppConfig.platformName), ''),
             _buildInfoRow(l10n.versionLabel(AppConfig.appVersion), ''),
-            _buildInfoRow(l10n.emailLabel, widget.user.email ?? 'N/A'),
+            _buildInfoRow(l10n.emailLabel, widget.user.email ?? l10n.notAvailable),
             const SizedBox(height: 8),
             Text(
               l10n.connectedToServer,

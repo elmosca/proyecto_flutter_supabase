@@ -71,6 +71,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get edit => 'Editar';
 
   @override
+  String get taskCreatedSuccess => 'Tarea creada exitosamente';
+
+  @override
+  String get taskUpdatedSuccess => 'Tarea actualizada exitosamente';
+
+  @override
+  String get taskStatusUpdatedSuccess => 'Estado de tarea actualizado';
+
+  @override
+  String get taskDeletedSuccess => 'Tarea eliminada exitosamente';
+
+  @override
+  String get taskNotFound => 'Tarea no encontrada';
+
+  @override
   String get delete => 'Eliminar';
 
   @override
@@ -83,8 +98,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noData => 'No hay datos disponibles';
 
   @override
-  String get connectionError =>
-      'Error de conexión. Por favor, verifica tu conexión a internet.';
+  String get connectionError => 'Error de conexión. Por favor, verifica tu conexión a internet.';
 
   @override
   String get serverInfo => 'Información del Servidor';
@@ -158,8 +172,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get viewAll => 'Ver todos';
 
   @override
-  String get noAnteprojects =>
-      'No tienes anteproyectos creados. ¡Crea tu primer anteproyecto!';
+  String get noAnteprojects => 'No tienes anteproyectos creados. ¡Crea tu primer anteproyecto!';
 
   @override
   String get pendingTasks => 'Tareas Pendientes';
@@ -168,8 +181,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get viewAllTasks => 'Ver todas';
 
   @override
-  String get noPendingTasks =>
-      'No tienes tareas pendientes. ¡Excelente trabajo!';
+  String get noPendingTasks => 'No tienes tareas pendientes. ¡Excelente trabajo!';
 
   @override
   String get systemInfo => 'Información del Sistema';
@@ -178,8 +190,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get connectedToServer => 'Estado: Conectado al servidor de red';
 
   @override
-  String get anteprojectsDev =>
-      'Funcionalidad de creación de anteproyectos en desarrollo';
+  String get anteprojectsDev => 'Funcionalidad de creación de anteproyectos en desarrollo';
 
   @override
   String get anteprojectsListDev => 'Lista de anteproyectos en desarrollo';
@@ -259,4 +270,61 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get roleNotSpecified => 'No especificado';
+
+  @override
+  String get dashboardAdminTitle => 'Panel de Administración';
+
+  @override
+  String get dashboardAdminUsersManagement => 'Gestión de Usuarios';
+
+  @override
+  String get dashboardAdminAnteprojectsManagement => 'Gestión de Anteproyectos';
+
+  @override
+  String get dashboardAdminSystemStats => 'Estadísticas del Sistema';
+
+  @override
+  String get dashboardAdminActiveUsers => 'Usuarios Activos';
+
+  @override
+  String get dashboardAdminPendingAnteproyectos => 'Anteproyectos Pendientes';
+
+  @override
+  String get dashboardAdminOngoingProjects => 'Proyectos en Curso';
+
+  @override
+  String get dashboardAdminCompletedTasks => 'Tareas Completadas';
+
+  @override
+  String get dashboardTutorTitle => 'Panel de Tutor';
+
+  @override
+  String get dashboardTutorMyAnteprojects => 'Mis Anteproyectos';
+
+  @override
+  String get dashboardTutorActiveProjects => 'Proyectos Activos';
+
+  @override
+  String get dashboardTutorPendingTasks => 'Tareas Pendientes';
+
+  @override
+  String get dashboardTutorPersonalStats => 'Estadísticas Personales';
+
+  @override
+  String get errorAuthentication => 'Error de Autenticación';
+
+  @override
+  String get errorConnection => 'Error de Conexión';
+
+  @override
+  String get errorUnknown => 'Error Desconocido';
+
+  @override
+  String get errorTitle => 'Error';
+
+  @override
+  String get ok => 'Aceptar';
+
+  @override
+  String get notAvailable => 'No disponible';
 }

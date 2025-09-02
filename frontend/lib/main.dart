@@ -4,12 +4,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'l10n/app_localizations.dart';
 import 'screens/dashboard/student_dashboard.dart';
 import 'screens/dashboard/tutor_dashboard.dart';
 import 'screens/dashboard/admin_dashboard.dart';
 import 'services/language_service.dart';
+import 'services/auth_service.dart';
+import 'services/anteprojects_service.dart';
+import 'services/tasks_service.dart';
+import 'blocs/blocs.dart';
 import 'utils/config.dart';
 
 void main() async {
@@ -63,26 +68,45 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: _languageService,
-    builder: (context, child) => MaterialApp(
-      title: AppConfig.appName,
-
-      // Configuración de internacionalización
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: LanguageService.supportedLocales,
-      locale: _languageService.currentLocale,
-
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Color(AppConfig.platformColor),
+    builder: (context, child) => MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthBloc>(
+          create: (context) => AuthBloc(
+            authService: AuthService(),
+          ),
         ),
-        useMaterial3: true,
+        BlocProvider<AnteprojectsBloc>(
+          create: (context) => AnteprojectsBloc(
+            anteprojectsService: AnteprojectsService(),
+          ),
+        ),
+        BlocProvider<TasksBloc>(
+          create: (context) => TasksBloc(
+            tasksService: TasksService(),
+          ),
+        ),
+      ],
+      child: MaterialApp(
+        title: AppConfig.appName,
+
+        // Configuración de internacionalización
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: LanguageService.supportedLocales,
+        locale: _languageService.currentLocale,
+
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Color(AppConfig.platformColor),
+          ),
+          useMaterial3: true,
+        ),
+        home: LoginScreen(languageService: _languageService),
       ),
-      home: LoginScreen(languageService: _languageService),
     ),
   );
 }
@@ -373,7 +397,7 @@ class _LoginScreenState extends State<LoginScreen> {
           if (kDebugMode) {
             debugPrint('Usuario logueado: ${response.user!.email}');
             debugPrint(
-              'Rol: ${response.user!.userMetadata?['role'] ?? 'No especificado'}',
+              'Rol: ${response.user!.userMetadata?['role'] ?? l10n.roleNotSpecified}',
             );
           }
 
