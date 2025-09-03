@@ -3,10 +3,10 @@
 ## 🎯 **ESTADO ACTUAL DEL PROYECTO**
 
 **Fecha de actualización**: 29 de agosto de 2024  
-**Versión**: 3.0.0  
-**Estado general**: 🟢 **BACKEND 100% COMPLETADO, FRONTEND 92% COMPLETADO**
+**Versión**: 3.1.0  
+**Estado general**: 🟢 **BACKEND 100% COMPLETADO, FRONTEND 94% COMPLETADO**
 
-El Sistema de Seguimiento de Proyectos TFG ha alcanzado un **hito excepcional** con la **completación del 100% del backend** y el **92% del frontend**. Las funcionalidades de negocio están implementadas y funcionando. El proyecto está en excelente posición para completar el MVP en las próximas semanas.
+El Sistema de Seguimiento de Proyectos TFG ha alcanzado un **hito excepcional** con la **completación del 100% del backend** y el **94% del frontend**. Las funcionalidades de negocio están implementadas y el testing unitario está avanzando. El proyecto está en excelente posición para completar el MVP en la próxima semana.
 
 ---
 
@@ -60,6 +60,7 @@ docs/
 - **Internacionalización** completa (español/inglés)
 - **Funcionalidades de negocio** implementadas (login/logout, CRUD básico)
 - **Código completamente limpio** (0 warnings)
+- **Testing unitario** implementado (AuthBloc y TasksBloc)
 
 ### **🔄 EN DESARROLLO**
 - **Testing completo** (unitarios, integración, widgets)
@@ -197,6 +198,6 @@ El proyecto TFG ha alcanzado un **hito excepcional** con la **completación del 
 
 ---
 
-**Fecha de actualización**: 29 de agosto de 2024  
+**Fecha de actualización**: 30 de agosto de 2024  
 **Estado general**: 🟢 **EXCELENTE PROGRESO**  
 **Próximo hito**: Testing completo y despliegue de producción
