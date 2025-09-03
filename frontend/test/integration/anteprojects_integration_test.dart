@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/foundation.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:frontend/services/auth_service.dart';
 import 'package:frontend/services/anteprojects_service.dart';
 import 'package:frontend/models/anteproject.dart';

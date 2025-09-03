@@ -134,49 +134,13 @@ void main() {
       debugPrint('✅ Creación de servicios es eficiente: ${stopwatch.elapsedMilliseconds}ms para 100 instancias');
     });
 
-    test('Service method availability consistency', () {
-      // Verificar que todos los servicios tienen métodos consistentes
-      final authMethods = [
-        'signIn',
-        'signOut',
-        'getCurrentUserProfile',
-        'updateProfile',
-      ];
+    test('Service type consistency', () {
+      // Verificar que los servicios son del tipo correcto
+      expect(authService.runtimeType.toString(), contains('AuthService'));
+      expect(anteprojectsService.runtimeType.toString(), contains('AnteprojectsService'));
+      expect(tasksService.runtimeType.toString(), contains('TasksService'));
       
-      final anteprojectMethods = [
-        'getAnteprojects',
-        'getAnteproject',
-        'getAnteprojectsByStatus',
-        'getTutorAnteprojects',
-        'createAnteproject',
-        'updateAnteproject',
-      ];
-      
-      final taskMethods = [
-        'getTasks',
-        'getTask',
-        'getTasksByProject',
-        'getTasksByStatus',
-        'getTasksByComplexity',
-        'createTask',
-        'updateTask',
-        'deleteTask',
-      ];
-      
-      // Verificar que los métodos están disponibles
-      for (final method in authMethods) {
-        expect(authService.runtimeType.toString(), contains('AuthService'));
-      }
-      
-      for (final method in anteprojectMethods) {
-        expect(anteprojectsService.runtimeType.toString(), contains('AnteprojectsService'));
-      }
-      
-      for (final method in taskMethods) {
-        expect(tasksService.runtimeType.toString(), contains('TasksService'));
-      }
-      
-      debugPrint('✅ Consistencia en disponibilidad de métodos verificada');
+      debugPrint('✅ Consistencia en tipos de servicios verificada');
     });
   });
 }

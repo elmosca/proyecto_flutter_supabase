@@ -1,9 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/foundation.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:frontend/models/task.dart';
 import 'package:frontend/services/auth_service.dart';
 import 'package:frontend/services/tasks_service.dart';
-import 'package:frontend/models/task.dart';
 import 'integration_test_setup.dart';
 
 void main() {

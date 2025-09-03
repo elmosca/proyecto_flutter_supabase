@@ -1,9 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:frontend/services/auth_service.dart';
-import 'package:frontend/services/anteprojects_service.dart';
-import 'package:frontend/services/tasks_service.dart';
 
 /// Configuración para tests de integración
 class IntegrationTestSetup {
@@ -29,11 +26,9 @@ class IntegrationTestSetup {
   /// Limpiar datos de testing
   static Future<void> cleanupTestData() async {
     try {
-      final client = Supabase.instance.client;
-      
       // Limpiar datos de testing (opcional)
-      // await client.from('tasks').delete().eq('is_test_data', true);
-      // await client.from('anteprojects').delete().eq('is_test_data', true);
+      // await Supabase.instance.client.from('tasks').delete().eq('is_test_data', true);
+      // await Supabase.instance.client.from('anteprojects').delete().eq('is_test_data', true);
       
       debugPrint('✅ Datos de testing limpiados');
     } catch (e) {
@@ -44,10 +39,8 @@ class IntegrationTestSetup {
   /// Crear usuario de testing
   static Future<AuthResponse> createTestUser() async {
     try {
-      final client = Supabase.instance.client;
-      
       // Crear usuario temporal para testing
-      final response = await client.auth.signUp(
+      final response = await Supabase.instance.client.auth.signUp(
         email: 'test_${DateTime.now().millisecondsSinceEpoch}@test.com',
         password: 'testpassword123',
       );
@@ -63,8 +56,7 @@ class IntegrationTestSetup {
   /// Eliminar usuario de testing
   static Future<void> deleteTestUser(String userId) async {
     try {
-      final client = Supabase.instance.client;
-      await client.auth.admin.deleteUser(userId);
+      await Supabase.instance.client.auth.admin.deleteUser(userId);
       debugPrint('✅ Usuario de testing eliminado');
     } catch (e) {
       debugPrint('⚠️ Error eliminando usuario de testing: $e');
@@ -74,10 +66,8 @@ class IntegrationTestSetup {
   /// Verificar conexión con backend
   static Future<bool> testBackendConnection() async {
     try {
-      final client = Supabase.instance.client;
-      
       // Intentar una consulta simple
-      final response = await client.from('users').select('count').limit(1);
+      await Supabase.instance.client.from('users').select('count').limit(1);
       
       debugPrint('✅ Conexión con backend verificada');
       return true;
