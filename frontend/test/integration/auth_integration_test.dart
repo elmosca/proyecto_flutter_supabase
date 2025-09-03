@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:frontend/services/auth_service.dart';
-import 'package:frontend/models/user.dart';
 import 'integration_test_setup.dart';
 
 void main() {
@@ -124,9 +123,7 @@ void main() {
       
       // Escuchar cambios de estado
       final states = <AuthState>[];
-      final subscription = authService.authStateChanges.listen((state) {
-        states.add(state);
-      });
+      final subscription = authService.authStateChanges.listen(states.add);
       
       // Esperar un poco para capturar el estado inicial
       await Future.delayed(const Duration(milliseconds: 100));

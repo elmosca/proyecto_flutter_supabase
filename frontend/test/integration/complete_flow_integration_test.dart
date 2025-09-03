@@ -171,9 +171,7 @@ void main() {
         
         // Verificar que el stream de cambios de estado funciona
         final states = <AuthState>[];
-        final subscription = authService.authStateChanges.listen((state) {
-          states.add(state);
-        });
+        final subscription = authService.authStateChanges.listen(states.add);
         
         // Esperar un poco para capturar estados
         await Future.delayed(const Duration(milliseconds: 100));
