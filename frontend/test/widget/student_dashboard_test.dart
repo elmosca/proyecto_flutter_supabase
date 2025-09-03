@@ -7,12 +7,6 @@ import 'package:frontend/screens/dashboard/student_dashboard.dart';
 import 'package:frontend/blocs/auth_bloc.dart';
 import 'package:frontend/blocs/anteprojects_bloc.dart';
 import 'package:frontend/blocs/tasks_bloc.dart';
-import 'package:frontend/services/auth_service.dart';
-import 'package:frontend/services/anteprojects_service.dart';
-import 'package:frontend/services/tasks_service.dart';
-import 'package:frontend/models/user.dart';
-import 'package:frontend/models/anteproject.dart';
-import 'package:frontend/models/task.dart';
 import 'widget_test_utils.dart';
 import 'widget_test_utils.mocks.dart';
 

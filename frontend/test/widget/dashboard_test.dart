@@ -5,8 +5,6 @@ import 'package:mockito/mockito.dart';
 
 import 'package:frontend/screens/dashboard/student_dashboard.dart';
 import 'package:frontend/blocs/auth_bloc.dart';
-import 'package:frontend/services/auth_service.dart';
-import 'package:frontend/models/user.dart';
 import 'widget_test_utils.dart';
 import 'widget_test_utils.mocks.dart';
 
