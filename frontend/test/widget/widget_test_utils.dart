@@ -3,24 +3,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:frontend/services/auth_service.dart';
 import 'package:frontend/services/anteprojects_service.dart';
 import 'package:frontend/services/tasks_service.dart';
-import 'package:frontend/blocs/auth_bloc.dart';
-import 'package:frontend/blocs/anteprojects_bloc.dart';
-import 'package:frontend/blocs/tasks_bloc.dart';
 import 'package:frontend/models/user.dart';
 import 'package:frontend/models/anteproject.dart';
 import 'package:frontend/models/task.dart';
 import 'package:frontend/l10n/app_localizations.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' as supabase; // Import Supabase AuthState
 import 'widget_test_utils.mocks.dart';
 
 // Generar mocks
 @GenerateMocks([AuthService, AnteprojectsService, TasksService])
-import 'widget_test_utils.mocks.dart';
 
 /// Utilidades comunes para tests de widgets
 class WidgetTestUtils {
