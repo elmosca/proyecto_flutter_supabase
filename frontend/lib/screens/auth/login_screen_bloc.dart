@@ -1,8 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/auth_bloc.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/config.dart';
+import '../../screens/dashboard/student_dashboard.dart';
+import '../../screens/dashboard/tutor_dashboard.dart';
+import '../../screens/dashboard/admin_dashboard.dart';
+import '../../models/user.dart' as app_user;
 
 class LoginScreenBloc extends StatefulWidget {
   const LoginScreenBloc({super.key});
@@ -14,6 +19,7 @@ class LoginScreenBloc extends StatefulWidget {
 class _LoginScreenBlocState extends State<LoginScreenBloc> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _showServerInfo = false;
 
   @override
   void initState() {
@@ -39,6 +45,50 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
         title: Text('${l10n.login} TFG - ${AppConfig.platformName}'),
         backgroundColor: Color(AppConfig.platformColor),
         foregroundColor: Colors.white,
+        actions: [
+          // Botón de cambio de idioma
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.language),
+            tooltip: l10n.language,
+            onSelected: (String value) {
+              // Aquí implementaríamos el cambio de idioma
+              if (kDebugMode) {
+                debugPrint('Cambiar idioma a: $value');
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              PopupMenuItem<String>(
+                value: 'es',
+                child: Row(
+                  children: [
+                    const Icon(Icons.flag, color: Colors.green),
+                    const SizedBox(width: 8),
+                    Text(l10n.spanish),
+                  ],
+                ),
+              ),
+              PopupMenuItem<String>(
+                value: 'en',
+                child: Row(
+                  children: [
+                    const Icon(Icons.flag, color: Colors.blue),
+                    const SizedBox(width: 8),
+                    Text(l10n.english),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          IconButton(
+            icon: Icon(_showServerInfo ? Icons.info : Icons.info_outline),
+            onPressed: () {
+              setState(() {
+                _showServerInfo = !_showServerInfo;
+              });
+            },
+            tooltip: l10n.serverInfo,
+          ),
+        ],
       ),
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
@@ -56,7 +106,8 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
                 backgroundColor: Colors.green,
               ),
             );
-            // Aquí navegaríamos al dashboard correspondiente
+            // Navegar al dashboard correspondiente
+            _navigateToDashboard(state.user);
           }
         },
         child: Padding(
@@ -88,6 +139,78 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
                   ),
                 ),
               ),
+              const SizedBox(height: 16),
+              
+              // Información de plataforma
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      Text(
+                        AppConfig.platformIcon,
+                        style: const TextStyle(fontSize: 24),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(l10n.platformLabel(AppConfig.platformName)),
+                      Text(l10n.versionLabel(AppConfig.appVersion)),
+                      const SizedBox(height: 8),
+                      Text(
+                        l10n.backendLabel(AppConfig.supabaseUrl),
+                        style: const TextStyle(fontSize: 12, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Información del servidor (expandible)
+              if (_showServerInfo) ...[
+                const SizedBox(height: 16),
+                Card(
+                  color: Colors.blue.shade50,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.dns, color: Colors.blue.shade700),
+                            const SizedBox(width: 8),
+                            Text(
+                              l10n.serverInfo,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue.shade700,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        _buildServerInfoRow(
+                          l10n.serverUrl,
+                          AppConfig.serverInfo['ip']!,
+                        ),
+                        _buildServerInfoRow(
+                          l10n.version,
+                          AppConfig.serverInfo['port']!,
+                        ),
+                        _buildServerInfoRow('Storage S3', AppConfig.storageUrl),
+                        _buildServerInfoRow(
+                          'Supabase Studio',
+                          AppConfig.supabaseStudioUrl,
+                        ),
+                        _buildServerInfoRow(
+                          'Email Testing',
+                          AppConfig.inbucketUrl,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+
               const SizedBox(height: 32),
               
               // Formulario de login
@@ -138,13 +261,68 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
               
               // Información adicional
               Text(
-                'Usa las credenciales de prueba configuradas',
+                '${l10n.testCredentials}: ${l10n.studentEmail}',
                 style: Theme.of(context).textTheme.bodySmall,
                 textAlign: TextAlign.center,
+              ),
+              
+              const SizedBox(height: 16),
+
+              // Enlaces útiles
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton.icon(
+                    onPressed: () => _openUrl(AppConfig.supabaseStudioUrl),
+                    icon: const Icon(Icons.dashboard, size: 16),
+                    label: Text(l10n.studio),
+                  ),
+                  TextButton.icon(
+                    onPressed: () => _openUrl(AppConfig.inbucketUrl),
+                    icon: const Icon(Icons.email, size: 16),
+                    label: Text(l10n.emailLabel),
+                  ),
+                ],
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildServerInfoRow(String label, String value) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 100,
+          child: Text(
+            '$label:',
+            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  void _openUrl(String url) {
+    // En una aplicación real, usaríamos url_launcher
+    if (kDebugMode) {
+      debugPrint('Abrir URL: $url');
+    }
+    final l10n = AppLocalizations.of(context)!;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${l10n.loading} $url'),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
@@ -157,6 +335,28 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
           password: _passwordController.text,
         ),
       );
+    }
+  }
+
+  void _navigateToDashboard(app_user.User user) {
+    final role = user.role;
+
+    switch (role) {
+      case app_user.UserRole.student:
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => StudentDashboard(user: user)),
+        );
+        break;
+      case app_user.UserRole.tutor:
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => TutorDashboard(user: user)),
+        );
+        break;
+      case app_user.UserRole.admin:
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => AdminDashboard(user: user)),
+        );
+        break;
     }
   }
 }

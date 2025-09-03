@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../utils/config.dart';
+import '../../models/user.dart';
+import '../../blocs/auth_bloc.dart';
 
 class StudentDashboard extends StatefulWidget {
   final User user;
@@ -98,7 +100,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
             radius: 30,
             backgroundColor: Color(AppConfig.platformColor),
             child: Text(
-              widget.user.email?.substring(0, 1).toUpperCase() ?? 'E',
+              widget.user.email.substring(0, 1).toUpperCase(),
               style: const TextStyle(fontSize: 24, color: Colors.white),
             ),
           ),
@@ -108,7 +110,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.user.email ?? 'Estudiante',
+                  widget.user.email,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -287,7 +289,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
             _buildInfoRow(l10n.backendLabel(AppConfig.supabaseUrl), ''),
             _buildInfoRow(l10n.platformLabel(AppConfig.platformName), ''),
             _buildInfoRow(l10n.versionLabel(AppConfig.appVersion), ''),
-            _buildInfoRow(l10n.emailLabel, widget.user.email ?? 'N/A'),
+            _buildInfoRow(l10n.emailLabel, widget.user.email),
             const SizedBox(height: 8),
             Text(
               l10n.connectedToServer,
@@ -328,7 +330,8 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
   Future<void> _logout() async {
     try {
-      await Supabase.instance.client.auth.signOut();
+      // Usar nuestro AuthBloc para logout
+      context.read<AuthBloc>().add(AuthLogoutRequested());
       if (mounted) {
         Navigator.of(context).pushReplacementNamed('/login');
       }
