@@ -98,7 +98,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noData => 'No data available';
 
   @override
-  String get connectionError => 'Connection error. Please check your internet connection.';
+  String get connectionError =>
+      'Connection error. Please check your internet connection.';
 
   @override
   String get serverInfo => 'Server Information';
@@ -172,7 +173,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewAll => 'View all';
 
   @override
-  String get noAnteprojects => 'You don\'t have any anteprojects created. Create your first anteproject!';
+  String get noAnteprojects =>
+      'You don\'t have any anteprojects created. Create your first anteproject!';
 
   @override
   String get pendingTasks => 'Pending Tasks';
@@ -181,7 +183,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewAllTasks => 'View all';
 
   @override
-  String get noPendingTasks => 'You don\'t have any pending tasks. Excellent work!';
+  String get noPendingTasks =>
+      'You don\'t have any pending tasks. Excellent work!';
 
   @override
   String get systemInfo => 'System Information';
@@ -190,7 +193,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get connectedToServer => 'Status: Connected to network server';
 
   @override
-  String get anteprojectsDev => 'Anteproject creation functionality in development';
+  String get anteprojectsDev =>
+      'Anteproject creation functionality in development';
 
   @override
   String get anteprojectsListDev => 'Anteprojects list in development';
@@ -327,4 +331,115 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notAvailable => 'Not Available';
+
+  @override
+  String get anteprojectFormTitle => 'Crear Anteproyecto';
+
+  @override
+  String get anteprojectEditFormTitle => 'Editar Anteproyecto';
+
+  @override
+  String get anteprojectTitle => 'Título';
+
+  @override
+  String get anteprojectType => 'Tipo de proyecto';
+
+  @override
+  String get anteprojectDescription => 'Descripción';
+
+  @override
+  String get anteprojectAcademicYear => 'Año académico (e.g., 2024-2025)';
+
+  @override
+  String get anteprojectExpectedResults => 'Resultados esperados (JSON)';
+
+  @override
+  String get anteprojectTimeline => 'Temporalización (JSON)';
+
+  @override
+  String get anteprojectTutorId => 'Tutor ID';
+
+  @override
+  String get anteprojectStatus => 'Estado';
+
+  @override
+  String get anteprojectCreateButton => 'Crear anteproyecto';
+
+  @override
+  String get anteprojectUpdateButton => 'Actualizar anteproyecto';
+
+  @override
+  String get anteprojectDeleteButton => 'Eliminar';
+
+  @override
+  String get anteprojectDeleteTitle => 'Eliminar Anteproyecto';
+
+  @override
+  String get anteprojectDeleteMessage =>
+      '¿Estás seguro de que quieres eliminar este anteproyecto? Esta acción no se puede deshacer.';
+
+  @override
+  String get anteprojectCreatedSuccess => 'Anteproyecto creado exitosamente';
+
+  @override
+  String get anteprojectUpdatedSuccess =>
+      'Anteproyecto actualizado exitosamente';
+
+  @override
+  String get anteprojectInvalidTutorId => 'Tutor ID inválido';
+
+  @override
+  String get anteprojectTitleRequired => 'El título es obligatorio';
+
+  @override
+  String get anteprojectDescriptionRequired => 'La descripción es obligatoria';
+
+  @override
+  String get anteprojectAcademicYearRequired =>
+      'El año académico es obligatorio';
+
+  @override
+  String get anteprojectTutorIdRequired => 'El Tutor ID es obligatorio';
+
+  @override
+  String get anteprojectTutorIdNumeric => 'El Tutor ID debe ser numérico';
+
+  @override
+  String get anteprojectsListTitle => 'Mis Anteproyectos';
+
+  @override
+  String get anteprojectsListRefresh => 'Actualizar lista';
+
+  @override
+  String get anteprojectsListError => 'Error al cargar anteproyectos';
+
+  @override
+  String get anteprojectsListRetry => 'Reintentar';
+
+  @override
+  String get anteprojectsListEmpty => 'No tienes anteproyectos';
+
+  @override
+  String get anteprojectsListEmptySubtitle =>
+      'Crea tu primer anteproyecto para comenzar';
+
+  @override
+  String get anteprojectsListUnknownState => 'Estado no reconocido';
+
+  @override
+  String get anteprojectsListEdit => 'Editar';
+
+  @override
+  String get anteprojectDeleteTooltip => 'Eliminar anteproyecto';
+
+  @override
+  String anteprojectStatusLabel(String status) {
+    return 'Estado: $status';
+  }
+
+  @override
+  String get anteprojectExpectedResultsHint => 'milestone1: Descripción';
+
+  @override
+  String get anteprojectTimelineHint => 'phase1: Descripción';
 }

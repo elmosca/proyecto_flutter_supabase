@@ -742,5 +742,186 @@
   "notAvailable": "No disponible",
   "@notAvailable": {
     "description": "Texto para valores no disponibles"
+  },
+
+  "anteprojectFormTitle": "Crear Anteproyecto",
+  "@anteprojectFormTitle": {
+    "description": "Título del formulario de creación de anteproyecto"
+  },
+
+  "anteprojectEditFormTitle": "Editar Anteproyecto",
+  "@anteprojectEditFormTitle": {
+    "description": "Título del formulario de edición de anteproyecto"
+  },
+
+  "anteprojectTitle": "Título",
+  "@anteprojectTitle": {
+    "description": "Etiqueta del campo título del anteproyecto"
+  },
+
+  "anteprojectType": "Tipo de proyecto",
+  "@anteprojectType": {
+    "description": "Etiqueta del campo tipo de proyecto"
+  },
+
+  "anteprojectDescription": "Descripción",
+  "@anteprojectDescription": {
+    "description": "Etiqueta del campo descripción del anteproyecto"
+  },
+
+  "anteprojectAcademicYear": "Año académico (e.g., 2024-2025)",
+  "@anteprojectAcademicYear": {
+    "description": "Etiqueta del campo año académico"
+  },
+
+  "anteprojectExpectedResults": "Resultados esperados (JSON)",
+  "@anteprojectExpectedResults": {
+    "description": "Etiqueta del campo resultados esperados"
+  },
+
+  "anteprojectTimeline": "Temporalización (JSON)",
+  "@anteprojectTimeline": {
+    "description": "Etiqueta del campo temporalización"
+  },
+
+  "anteprojectTutorId": "Tutor ID",
+  "@anteprojectTutorId": {
+    "description": "Etiqueta del campo ID del tutor"
+  },
+
+  "anteprojectStatus": "Estado",
+  "@anteprojectStatus": {
+    "description": "Etiqueta del campo estado del anteproyecto"
+  },
+
+  "anteprojectCreateButton": "Crear anteproyecto",
+  "@anteprojectCreateButton": {
+    "description": "Texto del botón crear anteproyecto"
+  },
+
+  "anteprojectUpdateButton": "Actualizar anteproyecto",
+  "@anteprojectUpdateButton": {
+    "description": "Texto del botón actualizar anteproyecto"
+  },
+
+  "anteprojectDeleteButton": "Eliminar",
+  "@anteprojectDeleteButton": {
+    "description": "Texto del botón eliminar anteproyecto"
+  },
+
+  "anteprojectDeleteTitle": "Eliminar Anteproyecto",
+  "@anteprojectDeleteTitle": {
+    "description": "Título del diálogo de eliminación"
+  },
+
+  "anteprojectDeleteMessage": "¿Estás seguro de que quieres eliminar este anteproyecto? Esta acción no se puede deshacer.",
+  "@anteprojectDeleteMessage": {
+    "description": "Mensaje de confirmación de eliminación"
+  },
+
+  "anteprojectCreatedSuccess": "Anteproyecto creado exitosamente",
+  "@anteprojectCreatedSuccess": {
+    "description": "Mensaje de éxito al crear anteproyecto"
+  },
+
+  "anteprojectUpdatedSuccess": "Anteproyecto actualizado exitosamente",
+  "@anteprojectUpdatedSuccess": {
+    "description": "Mensaje de éxito al actualizar anteproyecto"
+  },
+
+  "anteprojectInvalidTutorId": "Tutor ID inválido",
+  "@anteprojectInvalidTutorId": {
+    "description": "Mensaje de error para ID de tutor inválido"
+  },
+
+  "anteprojectTitleRequired": "El título es obligatorio",
+  "@anteprojectTitleRequired": {
+    "description": "Mensaje de validación para título requerido"
+  },
+
+  "anteprojectDescriptionRequired": "La descripción es obligatoria",
+  "@anteprojectDescriptionRequired": {
+    "description": "Mensaje de validación para descripción requerida"
+  },
+
+  "anteprojectAcademicYearRequired": "El año académico es obligatorio",
+  "@anteprojectAcademicYearRequired": {
+    "description": "Mensaje de validación para año académico requerido"
+  },
+
+  "anteprojectTutorIdRequired": "El Tutor ID es obligatorio",
+  "@anteprojectTutorIdRequired": {
+    "description": "Mensaje de validación para ID de tutor requerido"
+  },
+
+  "anteprojectTutorIdNumeric": "El Tutor ID debe ser numérico",
+  "@anteprojectTutorIdNumeric": {
+    "description": "Mensaje de validación para ID de tutor numérico"
+  },
+
+  "anteprojectsListTitle": "Mis Anteproyectos",
+  "@anteprojectsListTitle": {
+    "description": "Título de la lista de anteproyectos"
+  },
+
+  "anteprojectsListRefresh": "Actualizar lista",
+  "@anteprojectsListRefresh": {
+    "description": "Tooltip del botón actualizar lista"
+  },
+
+  "anteprojectsListError": "Error al cargar anteproyectos",
+  "@anteprojectsListError": {
+    "description": "Mensaje de error al cargar anteproyectos"
+  },
+
+  "anteprojectsListRetry": "Reintentar",
+  "@anteprojectsListRetry": {
+    "description": "Texto del botón reintentar"
+  },
+
+  "anteprojectsListEmpty": "No tienes anteproyectos",
+  "@anteprojectsListEmpty": {
+    "description": "Mensaje cuando no hay anteproyectos"
+  },
+
+  "anteprojectsListEmptySubtitle": "Crea tu primer anteproyecto para comenzar",
+  "@anteprojectsListEmptySubtitle": {
+    "description": "Subtítulo cuando no hay anteproyectos"
+  },
+
+  "anteprojectsListUnknownState": "Estado no reconocido",
+  "@anteprojectsListUnknownState": {
+    "description": "Mensaje para estado no reconocido"
+  },
+
+  "anteprojectsListEdit": "Editar",
+  "@anteprojectsListEdit": {
+    "description": "Texto del botón editar en la lista"
+  },
+
+  "anteprojectDeleteTooltip": "Eliminar anteproyecto",
+  "@anteprojectDeleteTooltip": {
+    "description": "Tooltip del botón eliminar anteproyecto"
+  },
+
+  "anteprojectStatusLabel": "Estado: {status}",
+  "@anteprojectStatusLabel": {
+    "description": "Etiqueta de estado con valor",
+    "placeholders": {
+      "status": {
+        "type": "String",
+        "example": "Borrador"
+      }
+    }
+  },
+
+  "anteprojectExpectedResultsHint": "milestone1: Descripción",
+  "@anteprojectExpectedResultsHint": {
+    "description": "Hint para el campo de resultados esperados"
+  },
+
+  "anteprojectTimelineHint": "phase1: Descripción",
+  "@anteprojectTimelineHint": {
+    "description": "Hint para el campo de temporalización"
   }
 }
