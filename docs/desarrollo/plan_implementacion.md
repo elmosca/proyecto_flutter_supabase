@@ -30,7 +30,7 @@
 #### **Semana 1: Formularios de Anteproyectos (20 horas)**
 - [x] **Día 1-2**: Implementar `AnteprojectForm` - Crear anteproyectos ✅ COMPLETADO
 - [x] **Día 3-4**: Implementar `AnteprojectEditForm` - Editar anteproyectos ✅ COMPLETADO
-- **Día 5**: Implementar validaciones y manejo de errores
+- [x] **Día 5**: Implementar validaciones y manejo de errores ✅ COMPLETADO
 - **Día 6-7**: Testing y corrección de bugs
 
 #### **Semana 2: Formularios de Tareas y Listas (20 horas)**

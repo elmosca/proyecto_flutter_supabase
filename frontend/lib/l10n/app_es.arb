@@ -415,5 +415,129 @@
   "copied": "¡Copiado!",
   "@copied": {
     "description": "Mensaje de confirmación de copiado"
+  },
+  "viewAll": "Ver todos",
+  "@viewAll": {
+    "description": "Botón para ver todos los elementos"
+  },
+  "viewDetails": "Ver detalles",
+  "@viewDetails": {
+    "description": "Botón para ver detalles"
+  },
+  "anteprojectsListInDevelopment": "Lista de anteproyectos en desarrollo",
+  "@anteprojectsListInDevelopment": {
+    "description": "Mensaje de funcionalidad en desarrollo"
+  },
+  "studentsListInDevelopment": "Lista de estudiantes en desarrollo",
+  "@studentsListInDevelopment": {
+    "description": "Mensaje de funcionalidad en desarrollo"
+  },
+  "userManagementInDevelopment": "Panel de gestión de usuarios en desarrollo",
+  "@userManagementInDevelopment": {
+    "description": "Mensaje de funcionalidad en desarrollo"
+  },
+  "systemStatusInDevelopment": "Estado detallado del sistema en desarrollo",
+  "@systemStatusInDevelopment": {
+    "description": "Mensaje de funcionalidad en desarrollo"
+  },
+  "usersListInDevelopment": "Lista de usuarios en desarrollo",
+  "@usersListInDevelopment": {
+    "description": "Mensaje de funcionalidad en desarrollo"
+  },
+  "validationError": "Error de validación",
+  "@validationError": {
+    "description": "Título de error de validación"
+  },
+  "formValidationError": "Por favor, corrige los errores en el formulario",
+  "@formValidationError": {
+    "description": "Mensaje de error de validación de formulario"
+  },
+  "networkError": "Error de red",
+  "@networkError": {
+    "description": "Título de error de red"
+  },
+  "networkErrorMessage": "No se pudo conectar al servidor. Verifica tu conexión a internet.",
+  "@networkErrorMessage": {
+    "description": "Mensaje de error de red"
+  },
+  "serverError": "Error del servidor",
+  "@serverError": {
+    "description": "Título de error del servidor"
+  },
+  "serverErrorMessage": "El servidor no pudo procesar la solicitud. Inténtalo de nuevo más tarde.",
+  "@serverErrorMessage": {
+    "description": "Mensaje de error del servidor"
+  },
+  "unknownError": "Error desconocido",
+  "@unknownError": {
+    "description": "Título de error desconocido"
+  },
+  "unknownErrorMessage": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo.",
+  "@unknownErrorMessage": {
+    "description": "Mensaje de error desconocido"
+  },
+  "retry": "Reintentar",
+  "@retry": {
+    "description": "Botón para reintentar operación"
+  },
+  "close": "Cerrar",
+  "@close": {
+    "description": "Botón para cerrar"
+  },
+  "confirm": "Confirmar",
+  "@confirm": {
+    "description": "Botón para confirmar"
+  },
+  "yes": "Sí",
+  "@yes": {
+    "description": "Respuesta afirmativa"
+  },
+  "no": "No",
+  "@no": {
+    "description": "Respuesta negativa"
+  },
+  "ok": "OK",
+  "@ok": {
+    "description": "Botón de confirmación"
+  },
+  "fieldRequired": "Este campo es obligatorio",
+  "@fieldRequired": {
+    "description": "Mensaje de campo obligatorio genérico"
+  },
+  "fieldTooShort": "Este campo es demasiado corto",
+  "@fieldTooShort": {
+    "description": "Mensaje de campo demasiado corto"
+  },
+  "fieldTooLong": "Este campo es demasiado largo",
+  "@fieldTooLong": {
+    "description": "Mensaje de campo demasiado largo"
+  },
+  "invalidEmail": "El formato del email no es válido",
+  "@invalidEmail": {
+    "description": "Mensaje de email inválido"
+  },
+  "invalidUrl": "La URL no tiene un formato válido",
+  "@invalidUrl": {
+    "description": "Mensaje de URL inválida"
+  },
+  "invalidNumber": "El valor debe ser un número válido",
+  "@invalidNumber": {
+    "description": "Mensaje de número inválido"
+  },
+  "invalidJson": "El formato JSON no es válido",
+  "@invalidJson": {
+    "description": "Mensaje de JSON inválido"
+  },
+  "operationInProgress": "Operación en progreso...",
+  "@operationInProgress": {
+    "description": "Mensaje de operación en progreso"
+  },
+  "operationCompleted": "Operación completada",
+  "@operationCompleted": {
+    "description": "Mensaje de operación completada"
+  },
+  "operationFailed": "La operación falló",
+  "@operationFailed": {
+    "description": "Mensaje de operación fallida"
   }
 }

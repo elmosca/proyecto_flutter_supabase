@@ -197,7 +197,7 @@ class _TutorDashboardState extends State<TutorDashboard> {
             ),
             TextButton(
               onPressed: _viewAllAnteprojects,
-              child: const Text('Ver todos'),
+              child: Text(AppLocalizations.of(context)!.viewAll),
             ),
           ],
         ),
@@ -229,7 +229,7 @@ class _TutorDashboardState extends State<TutorDashboard> {
             ),
             TextButton(
               onPressed: _viewAllStudents,
-              child: const Text('Ver todos'),
+              child: Text(AppLocalizations.of(context)!.viewAll),
             ),
           ],
         ),
@@ -341,18 +341,18 @@ class _TutorDashboardState extends State<TutorDashboard> {
 
   void _viewAllAnteprojects() {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Lista de anteproyectos en desarrollo'),
-        duration: Duration(seconds: 2),
+      SnackBar(
+        content: Text(AppLocalizations.of(context)!.anteprojectsListInDevelopment),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
 
   void _viewAllStudents() {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Lista de estudiantes en desarrollo'),
-        duration: Duration(seconds: 2),
+      SnackBar(
+        content: Text(AppLocalizations.of(context)!.studentsListInDevelopment),
+        duration: const Duration(seconds: 2),
       ),
     );
   }

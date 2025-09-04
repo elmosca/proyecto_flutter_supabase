@@ -497,10 +497,10 @@ abstract class AppLocalizations {
   /// **'Mis Anteproyectos'**
   String get myAnteprojects;
 
-  /// Enlace para ver todos los elementos
+  /// Button to view all items
   ///
   /// In en, this message translates to:
-  /// **'Ver todos'**
+  /// **'View all'**
   String get viewAll;
 
   /// Mensaje cuando no hay anteproyectos
@@ -671,17 +671,197 @@ abstract class AppLocalizations {
   /// **'✅ Login Exitoso'**
   String get loginSuccessTitle;
 
-  /// Acción de copiar al portapapeles
+  /// Copy to clipboard action
   ///
   /// In en, this message translates to:
-  /// **'Copiar al portapapeles'**
+  /// **'Copy to clipboard'**
   String get copyToClipboard;
 
-  /// Mensaje de confirmación de copiado
+  /// Copy confirmation message
   ///
   /// In en, this message translates to:
-  /// **'¡Copiado!'**
+  /// **'Copied!'**
   String get copied;
+
+  /// Button to view details
+  ///
+  /// In en, this message translates to:
+  /// **'View details'**
+  String get viewDetails;
+
+  /// Development feature message
+  ///
+  /// In en, this message translates to:
+  /// **'Anteprojects list in development'**
+  String get anteprojectsListInDevelopment;
+
+  /// Development feature message
+  ///
+  /// In en, this message translates to:
+  /// **'Students list in development'**
+  String get studentsListInDevelopment;
+
+  /// Development feature message
+  ///
+  /// In en, this message translates to:
+  /// **'User management panel in development'**
+  String get userManagementInDevelopment;
+
+  /// Development feature message
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed system status in development'**
+  String get systemStatusInDevelopment;
+
+  /// Development feature message
+  ///
+  /// In en, this message translates to:
+  /// **'Users list in development'**
+  String get usersListInDevelopment;
+
+  /// Validation error title
+  ///
+  /// In en, this message translates to:
+  /// **'Validation Error'**
+  String get validationError;
+
+  /// Form validation error message
+  ///
+  /// In en, this message translates to:
+  /// **'Please correct the errors in the form'**
+  String get formValidationError;
+
+  /// Network error title
+  ///
+  /// In en, this message translates to:
+  /// **'Network Error'**
+  String get networkError;
+
+  /// Network error message
+  ///
+  /// In en, this message translates to:
+  /// **'Could not connect to server. Check your internet connection.'**
+  String get networkErrorMessage;
+
+  /// Server error title
+  ///
+  /// In en, this message translates to:
+  /// **'Server Error'**
+  String get serverError;
+
+  /// Server error message
+  ///
+  /// In en, this message translates to:
+  /// **'The server could not process the request. Please try again later.'**
+  String get serverErrorMessage;
+
+  /// Unknown error title
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown Error'**
+  String get unknownError;
+
+  /// Unknown error message
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error occurred. Please try again.'**
+  String get unknownErrorMessage;
+
+  /// Retry operation button
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// Close button
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// Confirm button
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// Affirmative response
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yes;
+
+  /// Negative response
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get no;
+
+  /// Confirmation button
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// Generic required field message
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required'**
+  String get fieldRequired;
+
+  /// Field too short message
+  ///
+  /// In en, this message translates to:
+  /// **'This field is too short'**
+  String get fieldTooShort;
+
+  /// Field too long message
+  ///
+  /// In en, this message translates to:
+  /// **'This field is too long'**
+  String get fieldTooLong;
+
+  /// Invalid email message
+  ///
+  /// In en, this message translates to:
+  /// **'The email format is not valid'**
+  String get invalidEmail;
+
+  /// Invalid URL message
+  ///
+  /// In en, this message translates to:
+  /// **'The URL format is not valid'**
+  String get invalidUrl;
+
+  /// Invalid number message
+  ///
+  /// In en, this message translates to:
+  /// **'The value must be a valid number'**
+  String get invalidNumber;
+
+  /// Invalid JSON message
+  ///
+  /// In en, this message translates to:
+  /// **'The JSON format is not valid'**
+  String get invalidJson;
+
+  /// Operation in progress message
+  ///
+  /// In en, this message translates to:
+  /// **'Operation in progress...'**
+  String get operationInProgress;
+
+  /// Operation completed message
+  ///
+  /// In en, this message translates to:
+  /// **'Operation completed'**
+  String get operationCompleted;
+
+  /// Operation failed message
+  ///
+  /// In en, this message translates to:
+  /// **'The operation failed'**
+  String get operationFailed;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
