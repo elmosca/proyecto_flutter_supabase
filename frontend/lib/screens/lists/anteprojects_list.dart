@@ -222,7 +222,7 @@ class _AnteprojectsListState extends State<AnteprojectsList> {
 
   Widget _buildStatusChip(AnteprojectStatus status) {
     Color backgroundColor;
-    Color textColor = Colors.white;
+    const Color textColor = Colors.white;
 
     switch (status) {
       case AnteprojectStatus.draft:
@@ -250,7 +250,7 @@ class _AnteprojectsListState extends State<AnteprojectsList> {
       ),
       child: Text(
         status.displayName,
-        style: TextStyle(
+        style: const TextStyle(
           color: textColor,
           fontSize: 12,
           fontWeight: FontWeight.w500,

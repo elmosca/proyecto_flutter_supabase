@@ -207,7 +207,7 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
               children: <Widget>[
                 // Información del estado actual
                 Card(
-                  color: _getStatusColor().withOpacity(0.1),
+                  color: _getStatusColor().withValues(alpha: 0.1),
                   child: Padding(
                     padding: const EdgeInsets.all(12),
                     child: Row(
