@@ -13,9 +13,9 @@
 
 ### **Progreso General:**
 - **Backend**: ✅ **100% COMPLETADO**
-- **Frontend**: 🟡 **23% COMPLETADO** (Formulario de anteproyecto implementado)
+- **Frontend**: 🟡 **26% COMPLETADO** (Formularios y lista de anteproyectos implementados)
 - **Testing**: ❌ **30% COMPLETADO** (39% de tests fallando)
-- **Progreso total**: **41% completado** (No 98% como indicaba el checklist anterior)
+- **Progreso total**: **42% completado** (No 98% como indicaba el checklist anterior)
 
 ### **Estado por Componente (REAL):**
 
@@ -31,8 +31,8 @@
 | **Pantallas de Autenticación** | ✅ COMPLETADO | 100% | Frontend Team | LoginScreenBloc |
 | **Dashboards por Rol** | ✅ COMPLETADO | 100% | Frontend Team | Básicos implementados |
 | **Internacionalización** | ✅ COMPLETADO | 100% | Frontend Team | Español/inglés |
-| **🟡 FORMULARIOS** | **PARCIAL** | 25% | Frontend Team | **CRÍTICO** (Formulario de anteproyecto implementado) |
-| **❌ LISTAS Y TABLAS** | ❌ **NO IMPLEMENTADO** | 0% | Frontend Team | **CRÍTICO** |
+| **🟡 FORMULARIOS** | **PARCIAL** | 50% | Frontend Team | **CRÍTICO** (Formularios de anteproyecto implementados) |
+| **🟡 LISTAS Y TABLAS** | **PARCIAL** | 25% | Frontend Team | **CRÍTICO** (Lista de anteproyectos implementada) |
 | **❌ KANBAN BOARD** | ❌ **NO IMPLEMENTADO** | 0% | Frontend Team | **CRÍTICO** |
 | **❌ FLUJOS DE TRABAJO** | ❌ **NO IMPLEMENTADO** | 0% | Frontend Team | **CRÍTICO** |
 | **❌ TESTING COMPLETO** | ❌ **NO IMPLEMENTADO** | 30% | Frontend Team | **CRÍTICO** |
@@ -107,11 +107,11 @@
 - [x] **Internacionalización** - Soporte completo español/inglés
 - [x] **Scripts de calidad** - Verificación y corrección de warnings
 
-### **🟡 SEMANA 17-18: Funcionalidades de Negocio (25% - Formulario de anteproyecto implementado)**
+### **🟡 SEMANA 17-18: Funcionalidades de Negocio (50% - Formularios y lista de anteproyectos implementados)**
 - [x] **Formularios de anteproyectos** - Crear anteproyectos ✅ COMPLETADO
-- [ ] **Formularios de anteproyectos** - Editar anteproyectos
+- [x] **Formularios de anteproyectos** - Editar anteproyectos ✅ COMPLETADO
+- [x] **Lista de anteproyectos** - Visualización y gestión ✅ COMPLETADO
 - [ ] **Formularios de tareas** - Crear/editar tareas
-- [ ] **Listas de anteproyectos** - Visualización y gestión
 - [ ] **Listas de tareas** - Visualización y gestión
 - [ ] **Tablero Kanban** - Gestión visual de tareas
 - [ ] **Sistema de comentarios** - Comentarios en tareas
@@ -160,11 +160,11 @@
 
 ### **Progreso por Fase:**
 - **Fase 1 (Backend)**: ✅ **100% completado**
-- **Fase 2 (Frontend)**: 🟡 **23% completado**
+- **Fase 2 (Frontend)**: 🟡 **26% completado**
 - **Fase 3 (Integración)**: ❌ **40% completado**
 
 ### **Progreso Total del Proyecto:**
-- **Progreso general**: **41% completado** (No 98%)
+- **Progreso general**: **42% completado** (No 98%)
 - **Tiempo estimado restante**: **7 semanas** (No 1 semana)
 - **Estado del proyecto**: 🟡 **AMARILLO** - Requiere atención crítica
 
