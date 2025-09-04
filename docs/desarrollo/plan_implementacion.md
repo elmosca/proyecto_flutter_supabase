@@ -29,7 +29,7 @@
 
 #### **Semana 1: Formularios de Anteproyectos (20 horas)**
 - [x] **Día 1-2**: Implementar `AnteprojectForm` - Crear anteproyectos ✅ COMPLETADO
-- **Día 3-4**: Implementar `AnteprojectEditForm` - Editar anteproyectos
+- [x] **Día 3-4**: Implementar `AnteprojectEditForm` - Editar anteproyectos ✅ COMPLETADO
 - **Día 5**: Implementar validaciones y manejo de errores
 - **Día 6-7**: Testing y corrección de bugs
 
@@ -111,12 +111,12 @@
   - [x] Manejo de errores
   - [ ] Testing (pendiente para semana 5)
 
-- [ ] **AnteprojectEditForm** - Editar anteproyectos
-  - [ ] Carga de datos existentes
-  - [ ] Validaciones de entrada
-  - [ ] Integración con AnteprojectsService
-  - [ ] Manejo de errores
-  - [ ] Testing
+- [x] **AnteprojectEditForm** - Editar anteproyectos ✅ COMPLETADO
+  - [x] Carga de datos existentes
+  - [x] Validaciones de entrada
+  - [x] Integración con AnteprojectsService
+  - [x] Manejo de errores
+  - [ ] Testing (pendiente para semana 5)
 
 #### **Formularios de Tareas:**
 - [ ] **TaskForm** - Crear/editar tareas
@@ -127,12 +127,12 @@
   - [ ] Testing
 
 #### **Listas y Tablas:**
-- [ ] **AnteprojectsList** - Lista de anteproyectos
-  - [ ] Visualización de datos
-  - [ ] Filtros y búsqueda
+- [x] **AnteprojectsList** - Lista de anteproyectos ✅ COMPLETADO
+  - [x] Visualización de datos
+  - [x] Filtros y búsqueda (básico)
   - [ ] Paginación
-  - [ ] Acciones (editar, eliminar)
-  - [ ] Testing
+  - [x] Acciones (editar, eliminar)
+  - [ ] Testing (pendiente para semana 5)
 
 - [ ] **TasksList** - Lista de tareas
   - [ ] Visualización de datos

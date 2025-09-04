@@ -9,6 +9,7 @@ import '../../blocs/auth_bloc.dart';
 import '../../blocs/anteprojects_bloc.dart';
 import '../../services/anteprojects_service.dart';
 import '../forms/anteproject_form.dart';
+import '../lists/anteprojects_list.dart';
 
 class StudentDashboard extends StatefulWidget {
   final User user;
@@ -359,11 +360,14 @@ class _StudentDashboardState extends State<StudentDashboard> {
   }
 
   void _viewAllAnteprojects() {
-    final l10n = AppLocalizations.of(context)!;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.anteprojectsListDev),
-        duration: const Duration(seconds: 2),
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) => BlocProvider<AnteprojectsBloc>(
+          create: (_) => AnteprojectsBloc(
+            anteprojectsService: AnteprojectsService(),
+          ),
+          child: const AnteprojectsList(),
+        ),
       ),
     );
   }
