@@ -192,7 +192,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
             ),
             TextButton(
               onPressed: _viewSystemStatus,
-              child: const Text('Ver detalles'),
+              child: Text(AppLocalizations.of(context)!.viewDetails),
             ),
           ],
         ),
@@ -246,7 +246,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
             ),
             TextButton(
               onPressed: _viewAllUsers,
-              child: const Text('Ver todos'),
+              child: Text(AppLocalizations.of(context)!.viewAll),
             ),
           ],
         ),
@@ -347,27 +347,27 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
   void _manageUsers() {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Panel de gestión de usuarios en desarrollo'),
-        duration: Duration(seconds: 2),
+      SnackBar(
+        content: Text(AppLocalizations.of(context)!.userManagementInDevelopment),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
 
   void _viewSystemStatus() {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Estado detallado del sistema en desarrollo'),
-        duration: Duration(seconds: 2),
+      SnackBar(
+        content: Text(AppLocalizations.of(context)!.systemStatusInDevelopment),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
 
   void _viewAllUsers() {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Lista de usuarios en desarrollo'),
-        duration: Duration(seconds: 2),
+      SnackBar(
+        content: Text(AppLocalizations.of(context)!.usersListInDevelopment),
+        duration: const Duration(seconds: 2),
       ),
     );
   }

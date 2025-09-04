@@ -309,4 +309,94 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get copied => '¡Copiado!';
+
+  @override
+  String get viewDetails => 'Ver detalles';
+
+  @override
+  String get anteprojectsListInDevelopment => 'Lista de anteproyectos en desarrollo';
+
+  @override
+  String get studentsListInDevelopment => 'Lista de estudiantes en desarrollo';
+
+  @override
+  String get userManagementInDevelopment => 'Panel de gestión de usuarios en desarrollo';
+
+  @override
+  String get systemStatusInDevelopment => 'Estado detallado del sistema en desarrollo';
+
+  @override
+  String get usersListInDevelopment => 'Lista de usuarios en desarrollo';
+
+  @override
+  String get validationError => 'Error de validación';
+
+  @override
+  String get formValidationError => 'Por favor, corrige los errores en el formulario';
+
+  @override
+  String get networkError => 'Error de red';
+
+  @override
+  String get networkErrorMessage => 'No se pudo conectar al servidor. Verifica tu conexión a internet.';
+
+  @override
+  String get serverError => 'Error del servidor';
+
+  @override
+  String get serverErrorMessage => 'El servidor no pudo procesar la solicitud. Inténtalo de nuevo más tarde.';
+
+  @override
+  String get unknownError => 'Error desconocido';
+
+  @override
+  String get unknownErrorMessage => 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get retry => 'Reintentar';
+
+  @override
+  String get close => 'Cerrar';
+
+  @override
+  String get confirm => 'Confirmar';
+
+  @override
+  String get yes => 'Sí';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get fieldRequired => 'Este campo es obligatorio';
+
+  @override
+  String get fieldTooShort => 'Este campo es demasiado corto';
+
+  @override
+  String get fieldTooLong => 'Este campo es demasiado largo';
+
+  @override
+  String get invalidEmail => 'El formato del email no es válido';
+
+  @override
+  String get invalidUrl => 'La URL no tiene un formato válido';
+
+  @override
+  String get invalidNumber => 'El valor debe ser un número válido';
+
+  @override
+  String get invalidJson => 'El formato JSON no es válido';
+
+  @override
+  String get operationInProgress => 'Operación en progreso...';
+
+  @override
+  String get operationCompleted => 'Operación completada';
+
+  @override
+  String get operationFailed => 'La operación falló';
 }

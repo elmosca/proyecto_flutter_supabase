@@ -408,12 +408,136 @@
   "@loginSuccessTitle": {
     "description": "Título de login exitoso"
   },
-  "copyToClipboard": "Copiar al portapapeles",
+  "copyToClipboard": "Copy to clipboard",
   "@copyToClipboard": {
-    "description": "Acción de copiar al portapapeles"
+    "description": "Copy to clipboard action"
   },
-  "copied": "¡Copiado!",
+  "copied": "Copied!",
   "@copied": {
-    "description": "Mensaje de confirmación de copiado"
+    "description": "Copy confirmation message"
+  },
+  "viewAll": "View all",
+  "@viewAll": {
+    "description": "Button to view all items"
+  },
+  "viewDetails": "View details",
+  "@viewDetails": {
+    "description": "Button to view details"
+  },
+  "anteprojectsListInDevelopment": "Anteprojects list in development",
+  "@anteprojectsListInDevelopment": {
+    "description": "Development feature message"
+  },
+  "studentsListInDevelopment": "Students list in development",
+  "@studentsListInDevelopment": {
+    "description": "Development feature message"
+  },
+  "userManagementInDevelopment": "User management panel in development",
+  "@userManagementInDevelopment": {
+    "description": "Development feature message"
+  },
+  "systemStatusInDevelopment": "Detailed system status in development",
+  "@systemStatusInDevelopment": {
+    "description": "Development feature message"
+  },
+  "usersListInDevelopment": "Users list in development",
+  "@usersListInDevelopment": {
+    "description": "Development feature message"
+  },
+  "validationError": "Validation Error",
+  "@validationError": {
+    "description": "Validation error title"
+  },
+  "formValidationError": "Please correct the errors in the form",
+  "@formValidationError": {
+    "description": "Form validation error message"
+  },
+  "networkError": "Network Error",
+  "@networkError": {
+    "description": "Network error title"
+  },
+  "networkErrorMessage": "Could not connect to server. Check your internet connection.",
+  "@networkErrorMessage": {
+    "description": "Network error message"
+  },
+  "serverError": "Server Error",
+  "@serverError": {
+    "description": "Server error title"
+  },
+  "serverErrorMessage": "The server could not process the request. Please try again later.",
+  "@serverErrorMessage": {
+    "description": "Server error message"
+  },
+  "unknownError": "Unknown Error",
+  "@unknownError": {
+    "description": "Unknown error title"
+  },
+  "unknownErrorMessage": "An unexpected error occurred. Please try again.",
+  "@unknownErrorMessage": {
+    "description": "Unknown error message"
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Retry operation button"
+  },
+  "close": "Close",
+  "@close": {
+    "description": "Close button"
+  },
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Confirm button"
+  },
+  "yes": "Yes",
+  "@yes": {
+    "description": "Affirmative response"
+  },
+  "no": "No",
+  "@no": {
+    "description": "Negative response"
+  },
+  "ok": "OK",
+  "@ok": {
+    "description": "Confirmation button"
+  },
+  "fieldRequired": "This field is required",
+  "@fieldRequired": {
+    "description": "Generic required field message"
+  },
+  "fieldTooShort": "This field is too short",
+  "@fieldTooShort": {
+    "description": "Field too short message"
+  },
+  "fieldTooLong": "This field is too long",
+  "@fieldTooLong": {
+    "description": "Field too long message"
+  },
+  "invalidEmail": "The email format is not valid",
+  "@invalidEmail": {
+    "description": "Invalid email message"
+  },
+  "invalidUrl": "The URL format is not valid",
+  "@invalidUrl": {
+    "description": "Invalid URL message"
+  },
+  "invalidNumber": "The value must be a valid number",
+  "@invalidNumber": {
+    "description": "Invalid number message"
+  },
+  "invalidJson": "The JSON format is not valid",
+  "@invalidJson": {
+    "description": "Invalid JSON message"
+  },
+  "operationInProgress": "Operation in progress...",
+  "@operationInProgress": {
+    "description": "Operation in progress message"
+  },
+  "operationCompleted": "Operation completed",
+  "@operationCompleted": {
+    "description": "Operation completed message"
+  },
+  "operationFailed": "The operation failed",
+  "@operationFailed": {
+    "description": "Operation failed message"
   }
 }

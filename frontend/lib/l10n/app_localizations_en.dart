@@ -212,7 +212,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get myAnteprojects => 'Mis Anteproyectos';
 
   @override
-  String get viewAll => 'Ver todos';
+  String get viewAll => 'View all';
 
   @override
   String get noAnteprojects => 'No tienes anteproyectos creados. ¡Crea tu primer anteproyecto!';
@@ -305,8 +305,98 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginSuccessTitle => '✅ Login Exitoso';
 
   @override
-  String get copyToClipboard => 'Copiar al portapapeles';
+  String get copyToClipboard => 'Copy to clipboard';
 
   @override
-  String get copied => '¡Copiado!';
+  String get copied => 'Copied!';
+
+  @override
+  String get viewDetails => 'View details';
+
+  @override
+  String get anteprojectsListInDevelopment => 'Anteprojects list in development';
+
+  @override
+  String get studentsListInDevelopment => 'Students list in development';
+
+  @override
+  String get userManagementInDevelopment => 'User management panel in development';
+
+  @override
+  String get systemStatusInDevelopment => 'Detailed system status in development';
+
+  @override
+  String get usersListInDevelopment => 'Users list in development';
+
+  @override
+  String get validationError => 'Validation Error';
+
+  @override
+  String get formValidationError => 'Please correct the errors in the form';
+
+  @override
+  String get networkError => 'Network Error';
+
+  @override
+  String get networkErrorMessage => 'Could not connect to server. Check your internet connection.';
+
+  @override
+  String get serverError => 'Server Error';
+
+  @override
+  String get serverErrorMessage => 'The server could not process the request. Please try again later.';
+
+  @override
+  String get unknownError => 'Unknown Error';
+
+  @override
+  String get unknownErrorMessage => 'An unexpected error occurred. Please try again.';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get yes => 'Yes';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get fieldRequired => 'This field is required';
+
+  @override
+  String get fieldTooShort => 'This field is too short';
+
+  @override
+  String get fieldTooLong => 'This field is too long';
+
+  @override
+  String get invalidEmail => 'The email format is not valid';
+
+  @override
+  String get invalidUrl => 'The URL format is not valid';
+
+  @override
+  String get invalidNumber => 'The value must be a valid number';
+
+  @override
+  String get invalidJson => 'The JSON format is not valid';
+
+  @override
+  String get operationInProgress => 'Operation in progress...';
+
+  @override
+  String get operationCompleted => 'Operation completed';
+
+  @override
+  String get operationFailed => 'The operation failed';
 }

@@ -6,6 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/anteprojects_bloc.dart';
 import '../../models/anteproject.dart';
 import '../../l10n/app_localizations.dart';
+import '../../widgets/common/form_validators.dart';
+import '../../widgets/common/error_handler_widget.dart';
+import '../../widgets/common/loading_widget.dart';
 
 class AnteprojectForm extends StatefulWidget {
   const AnteprojectForm({super.key});
@@ -119,8 +122,9 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
         }
 
         if (state is AnteprojectsFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
+          ErrorSnackBar.show(
+            context,
+            error: state.message,
           );
         }
       },
@@ -143,8 +147,7 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
                     labelText: l10n.anteprojectTitle,
                     border: const OutlineInputBorder(),
                   ),
-                  validator: (String? value) =>
-                      (value == null || value.trim().isEmpty) ? l10n.anteprojectTitleRequired : null,
+                  validator: (String? value) => FormValidators.anteprojectTitle(value, context),
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<ProjectType>(
@@ -172,8 +175,7 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
                     labelText: l10n.anteprojectDescription,
                     border: const OutlineInputBorder(),
                   ),
-                  validator: (String? value) =>
-                      (value == null || value.trim().isEmpty) ? l10n.anteprojectDescriptionRequired : null,
+                  validator: (String? value) => FormValidators.anteprojectDescription(value, context),
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -182,8 +184,7 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
                     labelText: l10n.anteprojectAcademicYear,
                     border: const OutlineInputBorder(),
                   ),
-                  validator: (String? value) =>
-                      (value == null || value.trim().isEmpty) ? l10n.anteprojectAcademicYearRequired : null,
+                  validator: (String? value) => FormValidators.academicYear(value, context),
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -215,29 +216,19 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
                     labelText: l10n.anteprojectTutorId,
                     border: const OutlineInputBorder(),
                   ),
-                  validator: (String? value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return l10n.anteprojectTutorIdRequired;
-                    }
-                    if (int.tryParse(value.trim()) == null) {
-                      return l10n.anteprojectTutorIdNumeric;
-                    }
-                    return null;
-                  },
+                  validator: (String? value) => FormValidators.tutorId(value, context),
                 ),
                 const SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
                   height: 48,
-                  child: FilledButton(
-                    onPressed: _isSubmitting ? null : _submit,
-                    child: _isSubmitting
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : Text(l10n.anteprojectCreateButton),
+                  child: LoadingButton(
+                    text: l10n.anteprojectCreateButton,
+                    onPressed: _submit,
+                    isLoading: _isSubmitting,
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 48),
+                    ),
                   ),
                 ),
               ],

@@ -5,6 +5,8 @@ import '../../blocs/anteprojects_bloc.dart';
 import '../../models/anteproject.dart';
 import '../../services/anteprojects_service.dart';
 import '../../l10n/app_localizations.dart';
+import '../../widgets/common/error_handler_widget.dart';
+import '../../widgets/common/loading_widget.dart';
 import '../forms/anteproject_edit_form.dart';
 
 class AnteprojectsList extends StatefulWidget {
@@ -42,39 +44,16 @@ class _AnteprojectsListState extends State<AnteprojectsList> {
       body: BlocBuilder<AnteprojectsBloc, AnteprojectsState>(
         builder: (BuildContext context, AnteprojectsState state) {
           if (state is AnteprojectsLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const LoadingWidget();
           }
 
           if (state is AnteprojectsFailure) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 64,
-                    color: Colors.red.shade300,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    l10n.anteprojectsListError,
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    state.message,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.grey.shade600),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<AnteprojectsBloc>().add(AnteprojectsLoadRequested());
-                    },
-                    child: Text(l10n.anteprojectsListRetry),
-                  ),
-                ],
-              ),
+            return ErrorHandlerWidget(
+              error: state.message,
+              customTitle: l10n.anteprojectsListError,
+              onRetry: () {
+                context.read<AnteprojectsBloc>().add(AnteprojectsLoadRequested());
+              },
             );
           }
 
