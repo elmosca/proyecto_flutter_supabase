@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../blocs/anteprojects_bloc.dart';
 import '../../models/anteproject.dart';
+import '../../l10n/app_localizations.dart';
 
 class AnteprojectEditForm extends StatefulWidget {
   final Anteproject anteproject;
@@ -94,8 +95,9 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
 
     final int? tutorId = int.tryParse(_tutorIdController.text.trim());
     if (tutorId == null) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Tutor ID inválido')),
+        SnackBar(content: Text(l10n.anteprojectInvalidTutorId)),
       );
       return;
     }
@@ -122,16 +124,17 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
   }
 
   void _deleteAnteproject() {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Eliminar Anteproyecto'),
-          content: const Text('¿Estás seguro de que quieres eliminar este anteproyecto? Esta acción no se puede deshacer.'),
+          title: Text(l10n.anteprojectDeleteTitle),
+          content: Text(l10n.anteprojectDeleteMessage),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancelar'),
+              child: Text(l10n.cancel),
             ),
             TextButton(
               onPressed: () {
@@ -139,7 +142,7 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
                 context.read<AnteprojectsBloc>().add(AnteprojectDeleteRequested(widget.anteproject.id));
               },
               style: TextButton.styleFrom(foregroundColor: Colors.red),
-              child: const Text('Eliminar'),
+              child: Text(l10n.anteprojectDeleteButton),
             ),
           ],
         );
@@ -168,8 +171,9 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
         }
 
         if (state is AnteprojectOperationSuccess) {
+          final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Anteproyecto actualizado exitosamente')),
+            SnackBar(content: Text(l10n.anteprojectUpdatedSuccess)),
           );
           Navigator.of(context).pop();
         }
@@ -180,18 +184,21 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
           );
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Editar Anteproyecto'),
-          actions: [
-            if (widget.anteproject.status == AnteprojectStatus.draft)
-              IconButton(
-                onPressed: _deleteAnteproject,
-                icon: const Icon(Icons.delete),
-                tooltip: 'Eliminar anteproyecto',
-              ),
-          ],
-        ),
+      child: Builder(
+        builder: (context) {
+          final l10n = AppLocalizations.of(context)!;
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(l10n.anteprojectEditFormTitle),
+              actions: [
+                if (widget.anteproject.status == AnteprojectStatus.draft)
+                  IconButton(
+                    onPressed: _deleteAnteproject,
+                    icon: const Icon(Icons.delete),
+                    tooltip: l10n.anteprojectDeleteTooltip,
+                  ),
+              ],
+            ),
         body: SafeArea(
           child: Form(
             key: _formKey,
@@ -208,7 +215,7 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
                         Icon(_getStatusIcon(), color: _getStatusColor()),
                         const SizedBox(width: 8),
                         Text(
-                          'Estado: ${_status.displayName}',
+                          l10n.anteprojectStatusLabel(_status.displayName),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: _getStatusColor(),
@@ -223,21 +230,21 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
                 // Campo de título
                 TextFormField(
                   controller: _titleController,
-                  decoration: const InputDecoration(
-                    labelText: 'Título',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.anteprojectTitle,
+                    border: const OutlineInputBorder(),
                   ),
                   validator: (String? value) =>
-                      (value == null || value.trim().isEmpty) ? 'El título es obligatorio' : null,
+                      (value == null || value.trim().isEmpty) ? l10n.anteprojectTitleRequired : null,
                 ),
                 const SizedBox(height: 16),
 
                 // Tipo de proyecto
                 DropdownButtonFormField<ProjectType>(
                   value: _projectType,
-                  decoration: const InputDecoration(
-                    labelText: 'Tipo de proyecto',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.anteprojectType,
+                    border: const OutlineInputBorder(),
                   ),
                   items: ProjectType.values
                       .map(
@@ -255,9 +262,9 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
                 if (widget.anteproject.status == AnteprojectStatus.draft)
                   DropdownButtonFormField<AnteprojectStatus>(
                     value: _status,
-                    decoration: const InputDecoration(
-                      labelText: 'Estado',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: l10n.anteprojectStatus,
+                      border: const OutlineInputBorder(),
                     ),
                     items: [
                       AnteprojectStatus.draft,
@@ -280,24 +287,24 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
                   controller: _descriptionController,
                   minLines: 4,
                   maxLines: 8,
-                  decoration: const InputDecoration(
-                    labelText: 'Descripción',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.anteprojectDescription,
+                    border: const OutlineInputBorder(),
                   ),
                   validator: (String? value) =>
-                      (value == null || value.trim().isEmpty) ? 'La descripción es obligatoria' : null,
+                      (value == null || value.trim().isEmpty) ? l10n.anteprojectDescriptionRequired : null,
                 ),
                 const SizedBox(height: 16),
 
                 // Año académico
                 TextFormField(
                   controller: _academicYearController,
-                  decoration: const InputDecoration(
-                    labelText: 'Año académico (e.g., 2024-2025)',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.anteprojectAcademicYear,
+                    border: const OutlineInputBorder(),
                   ),
                   validator: (String? value) =>
-                      (value == null || value.trim().isEmpty) ? 'El año académico es obligatorio' : null,
+                      (value == null || value.trim().isEmpty) ? l10n.anteprojectAcademicYearRequired : null,
                 ),
                 const SizedBox(height: 16),
 
@@ -306,10 +313,10 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
                   controller: _expectedResultsController,
                   minLines: 3,
                   maxLines: 8,
-                  decoration: const InputDecoration(
-                    labelText: 'Resultados esperados (JSON)',
-                    hintText: '{"milestone1":"Descripción"}',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.anteprojectExpectedResults,
+                    hintText: l10n.anteprojectExpectedResultsHint,
+                    border: const OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -319,10 +326,10 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
                   controller: _timelineController,
                   minLines: 3,
                   maxLines: 8,
-                  decoration: const InputDecoration(
-                    labelText: 'Temporalización (JSON)',
-                    hintText: '{"phase1":"Descripción"}',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.anteprojectTimeline,
+                    hintText: l10n.anteprojectTimelineHint,
+                    border: const OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -331,16 +338,16 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
                 TextFormField(
                   controller: _tutorIdController,
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Tutor ID',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.anteprojectTutorId,
+                    border: const OutlineInputBorder(),
                   ),
                   validator: (String? value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'El Tutor ID es obligatorio';
+                      return l10n.anteprojectTutorIdRequired;
                     }
                     if (int.tryParse(value.trim()) == null) {
-                      return 'El Tutor ID debe ser numérico';
+                      return l10n.anteprojectTutorIdNumeric;
                     }
                     return null;
                   },
@@ -353,7 +360,7 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
                     Expanded(
                       child: OutlinedButton(
                         onPressed: _isSubmitting ? null : () => Navigator.of(context).pop(),
-                        child: const Text('Cancelar'),
+                        child: Text(l10n.cancel),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -369,7 +376,7 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
                                   height: 20,
                                   child: CircularProgressIndicator(strokeWidth: 2),
                                 )
-                              : const Text('Actualizar anteproyecto'),
+                              : Text(l10n.anteprojectUpdateButton),
                         ),
                       ),
                     ),
@@ -379,6 +386,8 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
             ),
           ),
         ),
+          );
+        },
       ),
     );
   }

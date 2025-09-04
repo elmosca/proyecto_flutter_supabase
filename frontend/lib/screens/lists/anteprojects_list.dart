@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/anteprojects_bloc.dart';
 import '../../models/anteproject.dart';
 import '../../services/anteprojects_service.dart';
+import '../../l10n/app_localizations.dart';
 import '../forms/anteproject_edit_form.dart';
 
 class AnteprojectsList extends StatefulWidget {
@@ -23,16 +24,18 @@ class _AnteprojectsListState extends State<AnteprojectsList> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mis Anteproyectos'),
+        title: Text(l10n.anteprojectsListTitle),
         actions: [
           IconButton(
             onPressed: () {
               context.read<AnteprojectsBloc>().add(AnteprojectsLoadRequested());
             },
             icon: const Icon(Icons.refresh),
-            tooltip: 'Actualizar lista',
+            tooltip: l10n.anteprojectsListRefresh,
           ),
         ],
       ),
@@ -54,7 +57,7 @@ class _AnteprojectsListState extends State<AnteprojectsList> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Error al cargar anteproyectos',
+                    l10n.anteprojectsListError,
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   const SizedBox(height: 8),
@@ -68,7 +71,7 @@ class _AnteprojectsListState extends State<AnteprojectsList> {
                     onPressed: () {
                       context.read<AnteprojectsBloc>().add(AnteprojectsLoadRequested());
                     },
-                    child: const Text('Reintentar'),
+                    child: Text(l10n.anteprojectsListRetry),
                   ),
                 ],
               ),
@@ -88,12 +91,12 @@ class _AnteprojectsListState extends State<AnteprojectsList> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'No tienes anteproyectos',
+                      l10n.anteprojectsListEmpty,
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Crea tu primer anteproyecto para comenzar',
+                      l10n.anteprojectsListEmptySubtitle,
                       style: TextStyle(color: Colors.grey.shade600),
                     ),
                   ],
@@ -106,18 +109,19 @@ class _AnteprojectsListState extends State<AnteprojectsList> {
               itemCount: state.anteprojects.length,
               itemBuilder: (BuildContext context, int index) {
                 final Anteproject anteproject = state.anteprojects[index];
-                return _buildAnteprojectCard(anteproject);
+                return _buildAnteprojectCard(context, anteproject);
               },
             );
           }
 
-          return const Center(child: Text('Estado no reconocido'));
+          return Center(child: Text(l10n.anteprojectsListUnknownState));
         },
       ),
     );
   }
 
-  Widget _buildAnteprojectCard(Anteproject anteproject) {
+  Widget _buildAnteprojectCard(BuildContext context, Anteproject anteproject) {
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
@@ -201,7 +205,7 @@ class _AnteprojectsListState extends State<AnteprojectsList> {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    'Editar',
+                    l10n.anteprojectsListEdit,
                     style: TextStyle(
                       color: Colors.grey.shade600,
                       fontSize: 12,
