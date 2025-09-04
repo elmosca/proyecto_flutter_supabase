@@ -21,6 +21,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get password => 'Contraseña';
 
   @override
+  String get loginError => 'Error de inicio de sesión. Por favor, verifica tus credenciales.';
+
+  @override
   String get dashboard => 'Panel Principal';
 
   @override
@@ -66,6 +69,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get edit => 'Editar';
 
   @override
+  String get taskCreatedSuccess => 'Tarea creada exitosamente';
+
+  @override
+  String get taskUpdatedSuccess => 'Tarea actualizada exitosamente';
+
+  @override
+  String get taskStatusUpdatedSuccess => 'Estado de tarea actualizado';
+
+  @override
+  String get taskDeletedSuccess => 'Tarea eliminada exitosamente';
+
+  @override
+  String get taskNotFound => 'Tarea no encontrada';
+
+  @override
   String get delete => 'Eliminar';
 
   @override
@@ -78,8 +96,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noData => 'No hay datos disponibles';
 
   @override
-  String get connectionError =>
-      'Error de conexión. Por favor, verifica tu conexión a internet.';
+  String get connectionError => 'Error de conexión. Por favor, verifica tu conexión a internet.';
 
   @override
   String get anteprojectFormTitle => 'Crear Anteproyecto';
@@ -124,15 +141,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get anteprojectDeleteTitle => 'Eliminar Anteproyecto';
 
   @override
-  String get anteprojectDeleteMessage =>
-      '¿Estás seguro de que quieres eliminar este anteproyecto? Esta acción no se puede deshacer.';
+  String get anteprojectDeleteMessage => '¿Estás seguro de que quieres eliminar este anteproyecto? Esta acción no se puede deshacer.';
 
   @override
   String get anteprojectCreatedSuccess => 'Anteproyecto creado exitosamente';
 
   @override
-  String get anteprojectUpdatedSuccess =>
-      'Anteproyecto actualizado exitosamente';
+  String get anteprojectUpdatedSuccess => 'Anteproyecto actualizado exitosamente';
 
   @override
   String get anteprojectInvalidTutorId => 'Tutor ID inválido';
@@ -144,8 +159,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get anteprojectDescriptionRequired => 'La descripción es obligatoria';
 
   @override
-  String get anteprojectAcademicYearRequired =>
-      'El año académico es obligatorio';
+  String get anteprojectAcademicYearRequired => 'El año académico es obligatorio';
 
   @override
   String get anteprojectTutorIdRequired => 'El Tutor ID es obligatorio';
@@ -169,8 +183,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get anteprojectsListEmpty => 'No tienes anteproyectos';
 
   @override
-  String get anteprojectsListEmptySubtitle =>
-      'Crea tu primer anteproyecto para comenzar';
+  String get anteprojectsListEmptySubtitle => 'Crea tu primer anteproyecto para comenzar';
 
   @override
   String get anteprojectsListUnknownState => 'Estado no reconocido';
@@ -202,8 +215,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get viewAll => 'Ver todos';
 
   @override
-  String get noAnteprojects =>
-      'No tienes anteproyectos creados. ¡Crea tu primer anteproyecto!';
+  String get noAnteprojects => 'No tienes anteproyectos creados. ¡Crea tu primer anteproyecto!';
 
   @override
   String get pendingTasks => 'Tareas Pendientes';
@@ -212,8 +224,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get viewAllTasks => 'Ver todas';
 
   @override
-  String get noPendingTasks =>
-      'No tienes tareas pendientes. ¡Excelente trabajo!';
+  String get noPendingTasks => 'No tienes tareas pendientes. ¡Excelente trabajo!';
 
   @override
   String get systemInfo => 'Información del Sistema';

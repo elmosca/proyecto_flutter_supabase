@@ -2,323 +2,315 @@
   "@@locale": "en",
   "appTitle": "TFG Management System",
   "@appTitle": {
-    "description": "The title of the application"
+    "description": "Título principal de la aplicación"
   },
-  
   "login": "Login",
   "@login": {
-    "description": "Login button text"
+    "description": "Botón o acción de iniciar sesión"
   },
-  
   "email": "Email",
   "@email": {
-    "description": "Email field label"
+    "description": "Campo de email"
   },
-  
   "password": "Password",
   "@password": {
-    "description": "Password field label"
+    "description": "Campo de contraseña"
   },
-  
-  "loginError": "Login failed. Please check your credentials.",
+  "loginError": "Login error. Please verify your credentials.",
   "@loginError": {
-    "description": "Error message for failed login"
+    "description": "Mensaje de error al fallar el login"
   },
-  
   "dashboard": "Dashboard",
   "@dashboard": {
-    "description": "Dashboard screen title"
+    "description": "Pantalla principal del usuario"
   },
-  
   "projects": "Projects",
   "@projects": {
-    "description": "Projects section title"
+    "description": "Sección de proyectos"
   },
-  
   "tasks": "Tasks",
   "@tasks": {
-    "description": "Tasks section title"
+    "description": "Sección de tareas"
   },
-  
   "profile": "Profile",
   "@profile": {
-    "description": "Profile section title"
+    "description": "Sección de perfil de usuario"
   },
-  
   "logout": "Logout",
   "@logout": {
-    "description": "Logout button text"
+    "description": "Acción de cerrar sesión"
   },
-  
-  "student": "Student",
+  "student": "Estudiante",
   "@student": {
-    "description": "Student role label"
+    "description": "Rol de estudiante"
   },
-  
   "tutor": "Tutor",
   "@tutor": {
-    "description": "Tutor role label"
+    "description": "Rol de tutor"
   },
-  
-  "admin": "Administrator",
+  "admin": "Administrador",
   "@admin": {
-    "description": "Administrator role label"
+    "description": "Rol de administrador"
   },
-  
-  "welcome": "Welcome",
+  "welcome": "Bienvenido",
   "@welcome": {
-    "description": "Welcome message"
+    "description": "Mensaje de bienvenida"
   },
-  
-  "loading": "Loading...",
+  "loading": "Cargando...",
   "@loading": {
-    "description": "Loading message"
+    "description": "Mensaje de carga"
   },
-  
   "error": "Error",
   "@error": {
-    "description": "Error message"
+    "description": "Mensaje de error genérico"
   },
-  
-  "success": "Success",
+  "success": "Éxito",
   "@success": {
-    "description": "Success message"
+    "description": "Mensaje de éxito genérico"
   },
-  
-  "cancel": "Cancel",
+  "cancel": "Cancelar",
   "@cancel": {
-    "description": "Cancel button text"
+    "description": "Botón de cancelar"
   },
-  
-  "save": "Save",
+  "save": "Guardar",
   "@save": {
-    "description": "Save button text"
+    "description": "Botón de guardar"
   },
-  
-  "edit": "Edit",
+  "edit": "Editar",
   "@edit": {
-    "description": "Edit button text"
+    "description": "Botón de editar"
   },
-  
-  "taskCreatedSuccess": "Task created successfully",
+  "taskCreatedSuccess": "Tarea creada exitosamente",
   "@taskCreatedSuccess": {
-    "description": "Success message when creating a task"
+    "description": "Mensaje de éxito al crear tarea"
   },
-  
-  "taskUpdatedSuccess": "Task updated successfully",
+  "taskUpdatedSuccess": "Tarea actualizada exitosamente",
   "@taskUpdatedSuccess": {
-    "description": "Success message when updating a task"
+    "description": "Mensaje de éxito al actualizar tarea"
   },
-  
-  "taskStatusUpdatedSuccess": "Task status updated",
+  "taskStatusUpdatedSuccess": "Estado de tarea actualizado",
   "@taskStatusUpdatedSuccess": {
-    "description": "Success message when updating task status"
+    "description": "Mensaje de éxito al actualizar estado de tarea"
   },
-  
-  "taskDeletedSuccess": "Task deleted successfully",
+  "taskDeletedSuccess": "Tarea eliminada exitosamente",
   "@taskDeletedSuccess": {
-    "description": "Success message when deleting a task"
+    "description": "Mensaje de éxito al eliminar tarea"
   },
-  
-  "taskNotFound": "Task not found",
+  "taskNotFound": "Tarea no encontrada",
   "@taskNotFound": {
-    "description": "Error message when task is not found"
+    "description": "Mensaje de error cuando no se encuentra la tarea"
   },
-  
-  "delete": "Delete",
+  "delete": "Eliminar",
   "@delete": {
-    "description": "Delete button text"
+    "description": "Botón de eliminar"
   },
-  
-  "create": "Create",
+  "create": "Crear",
   "@create": {
-    "description": "Create button text"
+    "description": "Botón de crear"
   },
-  
-  "search": "Search",
+  "search": "Buscar",
   "@search": {
-    "description": "Search field placeholder"
+    "description": "Campo o acción de búsqueda"
   },
-  
-  "noData": "No data available",
+  "noData": "No hay datos disponibles",
   "@noData": {
-    "description": "Message when no data is available"
+    "description": "Mensaje cuando no hay datos"
   },
-  
-  "connectionError": "Connection error. Please check your internet connection.",
+  "connectionError": "Error de conexión. Por favor, verifica tu conexión a internet.",
   "@connectionError": {
-    "description": "Connection error message"
+    "description": "Mensaje de error de conexión"
   },
-  
-  "serverInfo": "Server Information",
-  "@serverInfo": {
-    "description": "Server information section title"
+  "anteprojectFormTitle": "Create Anteproject",
+  "@anteprojectFormTitle": {
+    "description": "Título del formulario de creación de anteproyecto"
   },
-  
-  "serverUrl": "Server URL",
-  "@serverUrl": {
-    "description": "Server URL label"
+  "anteprojectEditFormTitle": "Edit Anteproject",
+  "@anteprojectEditFormTitle": {
+    "description": "Título del formulario de edición de anteproyecto"
   },
-  
-  "platform": "Platform",
-  "@platform": {
-    "description": "Platform label"
+  "anteprojectTitle": "Title",
+  "@anteprojectTitle": {
+    "description": "Campo título del anteproyecto"
   },
-  
-  "version": "Version",
-  "@version": {
-    "description": "Version label"
+  "anteprojectType": "Project Type",
+  "@anteprojectType": {
+    "description": "Campo tipo de proyecto del anteproyecto"
   },
-  
-  "testCredentials": "Test Credentials",
-  "@testCredentials": {
-    "description": "Test credentials section title"
+  "anteprojectDescription": "Description",
+  "@anteprojectDescription": {
+    "description": "Campo descripción del anteproyecto"
   },
-  
-  "studentEmail": "Student Email",
-  "@studentEmail": {
-    "description": "Student email label"
+  "anteprojectAcademicYear": "Año académico (e.g., 2024-2025)",
+  "@anteprojectAcademicYear": {
+    "description": "Campo año académico del anteproyecto"
   },
-  
-  "tutorEmail": "Tutor Email",
-  "@tutorEmail": {
-    "description": "Tutor email label"
+  "anteprojectExpectedResults": "Resultados esperados (JSON)",
+  "@anteprojectExpectedResults": {
+    "description": "Campo resultados esperados del anteproyecto"
   },
-  
-  "adminEmail": "Admin Email",
-  "@adminEmail": {
-    "description": "Admin email label"
+  "anteprojectTimeline": "Temporalización (JSON)",
+  "@anteprojectTimeline": {
+    "description": "Campo temporalización del anteproyecto"
   },
-  
-  "testPassword": "Test Password",
-  "@testPassword": {
-    "description": "Test password label"
+  "anteprojectTutorId": "Tutor ID",
+  "@anteprojectTutorId": {
+    "description": "Campo ID del tutor del anteproyecto"
   },
-  
-  "copyToClipboard": "Copy to clipboard",
-  "@copyToClipboard": {
-    "description": "Copy to clipboard action"
+  "anteprojectStatus": "Status",
+  "@anteprojectStatus": {
+    "description": "Campo estado del anteproyecto"
   },
-  
-  "copied": "Copied!",
-  "@copied": {
-    "description": "Copied confirmation message"
+  "anteprojectCreateButton": "Create Anteproject",
+  "@anteprojectCreateButton": {
+    "description": "Botón para crear anteproyecto"
   },
-  
-  "language": "Language",
-  "@language": {
-    "description": "Language selection label"
+  "anteprojectUpdateButton": "Update Anteproject",
+  "@anteprojectUpdateButton": {
+    "description": "Botón para actualizar anteproyecto"
   },
-  
-  "english": "English",
-  "@english": {
-    "description": "English language option"
+  "anteprojectDeleteButton": "Delete",
+  "@anteprojectDeleteButton": {
+    "description": "Botón para eliminar anteproyecto"
   },
-  
-  "spanish": "Spanish",
-  "@spanish": {
-    "description": "Spanish language option"
+  "anteprojectDeleteTitle": "Eliminar Anteproyecto",
+  "@anteprojectDeleteTitle": {
+    "description": "Título del diálogo de eliminación de anteproyecto"
   },
-  
-  "settings": "Settings",
-  "@settings": {
-    "description": "Settings screen title"
+  "anteprojectDeleteMessage": "¿Estás seguro de que quieres eliminar este anteproyecto? Esta acción no se puede deshacer.",
+  "@anteprojectDeleteMessage": {
+    "description": "Mensaje del diálogo de eliminación de anteproyecto"
   },
-  
-  "theme": "Theme",
-  "@theme": {
-    "description": "Theme selection label"
+  "anteprojectCreatedSuccess": "Anteproyecto creado exitosamente",
+  "@anteprojectCreatedSuccess": {
+    "description": "Mensaje de éxito al crear anteproyecto"
   },
-  
-  "light": "Light",
-  "@light": {
-    "description": "Light theme option"
+  "anteprojectUpdatedSuccess": "Anteproyecto actualizado exitosamente",
+  "@anteprojectUpdatedSuccess": {
+    "description": "Mensaje de éxito al actualizar anteproyecto"
   },
-  
-  "dark": "Dark",
-  "@dark": {
-    "description": "Dark theme option"
+  "anteprojectInvalidTutorId": "Tutor ID inválido",
+  "@anteprojectInvalidTutorId": {
+    "description": "Mensaje de error para ID de tutor inválido"
   },
-  
-  "system": "System",
-  "@system": {
-    "description": "System theme option"
+  "anteprojectTitleRequired": "El título es obligatorio",
+  "@anteprojectTitleRequired": {
+    "description": "Mensaje de validación para título requerido"
   },
-  
-  "dashboardStudent": "Student Dashboard",
-  "@dashboardStudent": {
-    "description": "Student dashboard title"
+  "anteprojectDescriptionRequired": "La descripción es obligatoria",
+  "@anteprojectDescriptionRequired": {
+    "description": "Mensaje de validación para descripción requerida"
   },
-  
-  "welcomeUser": "Welcome, {email}",
-  "@welcomeUser": {
-    "description": "Welcome message with user email",
+  "anteprojectAcademicYearRequired": "El año académico es obligatorio",
+  "@anteprojectAcademicYearRequired": {
+    "description": "Mensaje de validación para año académico requerido"
+  },
+  "anteprojectTutorIdRequired": "El Tutor ID es obligatorio",
+  "@anteprojectTutorIdRequired": {
+    "description": "Mensaje de validación para ID de tutor requerido"
+  },
+  "anteprojectTutorIdNumeric": "El Tutor ID debe ser numérico",
+  "@anteprojectTutorIdNumeric": {
+    "description": "Mensaje de validación para ID de tutor numérico"
+  },
+  "anteprojectsListTitle": "My Anteprojects",
+  "@anteprojectsListTitle": {
+    "description": "Título de la lista de anteproyectos"
+  },
+  "anteprojectsListRefresh": "Actualizar lista",
+  "@anteprojectsListRefresh": {
+    "description": "Botón para actualizar la lista de anteproyectos"
+  },
+  "anteprojectsListError": "Error al cargar anteproyectos",
+  "@anteprojectsListError": {
+    "description": "Mensaje de error al cargar la lista de anteproyectos"
+  },
+  "anteprojectsListRetry": "Reintentar",
+  "@anteprojectsListRetry": {
+    "description": "Botón para reintentar cargar la lista"
+  },
+  "anteprojectsListEmpty": "No tienes anteproyectos",
+  "@anteprojectsListEmpty": {
+    "description": "Mensaje cuando la lista de anteproyectos está vacía"
+  },
+  "anteprojectsListEmptySubtitle": "Crea tu primer anteproyecto para comenzar",
+  "@anteprojectsListEmptySubtitle": {
+    "description": "Subtítulo cuando la lista de anteproyectos está vacía"
+  },
+  "anteprojectsListUnknownState": "Estado no reconocido",
+  "@anteprojectsListUnknownState": {
+    "description": "Mensaje para estado desconocido en la lista"
+  },
+  "anteprojectsListEdit": "Editar",
+  "@anteprojectsListEdit": {
+    "description": "Botón para editar en la lista de anteproyectos"
+  },
+  "anteprojectDeleteTooltip": "Eliminar anteproyecto",
+  "@anteprojectDeleteTooltip": {
+    "description": "Tooltip para el botón de eliminar anteproyecto"
+  },
+  "anteprojectStatusLabel": "Estado: {status}",
+  "@anteprojectStatusLabel": {
+    "description": "Etiqueta de estado con valor",
     "placeholders": {
-      "email": {
+      "status": {
         "type": "String",
-        "example": "user@example.com"
+        "example": "Borrador"
       }
     }
   },
-  
-  "myAnteprojects": "My Anteprojects",
+  "anteprojectExpectedResultsHint": "Ejemplo milestone1 Descripción",
+  "@anteprojectExpectedResultsHint": {
+    "description": "Hint para el campo de resultados esperados"
+  },
+  "anteprojectTimelineHint": "Ejemplo phase1 Descripción",
+  "@anteprojectTimelineHint": {
+    "description": "Hint para el campo de temporalización"
+  },
+  "dashboardStudent": "Dashboard Estudiante",
+  "@dashboardStudent": {
+    "description": "Título del dashboard de estudiante"
+  },
+  "myAnteprojects": "Mis Anteproyectos",
   "@myAnteprojects": {
-    "description": "User's anteprojects section title"
+    "description": "Sección de anteproyectos del usuario"
   },
-  
-  "viewAll": "View all",
+  "viewAll": "Ver todos",
   "@viewAll": {
-    "description": "Button to view all items"
+    "description": "Enlace para ver todos los elementos"
   },
-  
-  "noAnteprojects": "You don't have any anteprojects created. Create your first anteproject!",
+  "noAnteprojects": "No tienes anteproyectos creados. ¡Crea tu primer anteproyecto!",
   "@noAnteprojects": {
-    "description": "Message when there are no anteprojects"
+    "description": "Mensaje cuando no hay anteproyectos"
   },
-  
-  "pendingTasks": "Pending Tasks",
+  "pendingTasks": "Tareas Pendientes",
   "@pendingTasks": {
-    "description": "Pending tasks section title"
+    "description": "Sección de tareas pendientes"
   },
-  
-  "viewAllTasks": "View all",
+  "viewAllTasks": "Ver todas",
   "@viewAllTasks": {
-    "description": "Button to view all tasks"
+    "description": "Enlace para ver todas las tareas"
   },
-  
-  "noPendingTasks": "You don't have any pending tasks. Excellent work!",
+  "noPendingTasks": "No tienes tareas pendientes. ¡Excelente trabajo!",
   "@noPendingTasks": {
-    "description": "Message when there are no pending tasks"
+    "description": "Mensaje cuando no hay tareas pendientes"
   },
-  
-  "systemInfo": "System Information",
+  "systemInfo": "Información del Sistema",
   "@systemInfo": {
-    "description": "System information section title"
+    "description": "Sección de información del sistema"
   },
-  
-  "connectedToServer": "Status: Connected to network server",
-  "@connectedToServer": {
-    "description": "Server connection status"
+  "backendLabel": "Backend: {url}",
+  "@backendLabel": {
+    "description": "Etiqueta de backend con URL",
+    "placeholders": {
+      "url": {
+        "type": "String",
+        "example": "https://api.ejemplo.com"
+      }
+    }
   },
-  
-  "anteprojectsDev": "Anteproject creation functionality in development",
-  "@anteprojectsDev": {
-    "description": "Development functionality message"
-  },
-  
-  "anteprojectsListDev": "Anteprojects list in development",
-  "@anteprojectsListDev": {
-    "description": "Development list message"
-  },
-  
-  "tasksListDev": "Tasks list in development",
-  "@tasksListDev": {
-    "description": "Tasks list development message"
-  },
-  
-  "platformLabel": "Platform: {platform}",
+  "platformLabel": "Plataforma: {platform}",
   "@platformLabel": {
-    "description": "Platform label with value",
+    "description": "Etiqueta de plataforma con valor",
     "placeholders": {
       "platform": {
         "type": "String",
@@ -326,10 +318,9 @@
       }
     }
   },
-  
-  "versionLabel": "Version: {version}",
+  "versionLabel": "Versión: {version}",
   "@versionLabel": {
-    "description": "Version label with value",
+    "description": "Etiqueta de versión con valor",
     "placeholders": {
       "version": {
         "type": "String",
@@ -337,410 +328,92 @@
       }
     }
   },
-  
-  "backendLabel": "Backend: {url}",
-  "@backendLabel": {
-    "description": "Backend label with URL",
-    "placeholders": {
-      "url": {
-        "type": "String",
-        "example": "http://localhost:54321"
-      }
-    }
-  },
-  
-  "studio": "Studio",
-  "@studio": {
-    "description": "Supabase Studio label"
-  },
-  
   "emailLabel": "Email",
   "@emailLabel": {
-    "description": "Email label"
+    "description": "Etiqueta de email"
   },
-  
-  "loginSuccess": "✅ Login successful on {platform}!",
-  "@loginSuccess": {
-    "description": "Successful login message with platform",
-    "placeholders": {
-      "platform": {
-        "type": "String",
-        "example": "Android"
-      }
-    }
+  "connectedToServer": "Estado: Conectado al servidor de red",
+  "@connectedToServer": {
+    "description": "Mensaje de estado de conexión al servidor"
   },
-  
-  "loginError": "❌ Error: {error}",
-  "@loginError": {
-    "description": "Login error message with details",
-    "placeholders": {
-      "error": {
-        "type": "String",
-        "example": "Invalid credentials"
-      }
-    }
+  "tasksListDev": "Lista de tareas en desarrollo",
+  "@tasksListDev": {
+    "description": "Mensaje temporal para lista de tareas en desarrollo"
   },
-  
-  "loginSuccessTitle": "✅ Login Successful",
-  "@loginSuccessTitle": {
-    "description": "Successful login dialog title"
-  },
-  
-  "emailInfo": "Email: {email}",
-  "@emailInfo": {
-    "description": "Email information with value",
-    "placeholders": {
-      "email": {
-        "type": "String",
-        "example": "user@example.com"
-      }
-    }
-  },
-  
-  "idInfo": "ID: {id}",
-  "@idInfo": {
-    "description": "ID information with value",
-    "placeholders": {
-      "id": {
-        "type": "String",
-        "example": "123456"
-      }
-    }
-  },
-  
-  "roleInfo": "Role: {role}",
-  "@roleInfo": {
-    "description": "Role information with value",
-    "placeholders": {
-      "role": {
-        "type": "String",
-        "example": "student"
-      }
-    }
-  },
-  
-  "createdInfo": "Created: {date}",
-  "@createdInfo": {
-    "description": "Creation date information",
-    "placeholders": {
-      "date": {
-        "type": "String",
-        "example": "2024-08-29"
-      }
-    }
-  },
-  
-  "nextSteps": "Next steps:",
-  "@nextSteps": {
-    "description": "Next steps section title"
-  },
-  
-  "navigationRoles": "• Role-based navigation",
-  "@navigationRoles": {
-    "description": "Role navigation step"
-  },
-  
-  "personalDashboard": "• Personal dashboard",
-  "@personalDashboard": {
-    "description": "Personal dashboard step"
-  },
-  
-  "anteprojectsManagement": "• Anteprojects management",
-  "@anteprojectsManagement": {
-    "description": "Anteprojects management step"
-  },
-  
-  "continueButton": "Continue",
-  "@continueButton": {
-    "description": "Continue button"
-  },
-  
-  "tutorDashboardDev": "Tutor dashboard in development",
-  "@tutorDashboardDev": {
-    "description": "Tutor dashboard development message"
-  },
-  
-  "adminDashboardDev": "Admin dashboard in development",
+  "adminDashboardDev": "Dashboard de admin en desarrollo",
   "@adminDashboardDev": {
-    "description": "Admin dashboard development message"
+    "description": "Mensaje temporal para dashboard de admin en desarrollo"
   },
-  
-  "roleNotSpecified": "Not specified",
-  "@roleNotSpecified": {
-    "description": "Message when role is not specified"
+  "dashboardAdminUsersManagement": "Gestión de Usuarios",
+  "@dashboardAdminUsersManagement": {
+    "description": "Sección de gestión de usuarios en dashboard de admin"
   },
-  
-  "dashboardStudent": "Student Dashboard",
-  "@dashboardStudent": {
-    "description": "Student dashboard title"
+  "tutorDashboardDev": "Dashboard de tutor en desarrollo",
+  "@tutorDashboardDev": {
+    "description": "Mensaje temporal para dashboard de tutor en desarrollo"
   },
-  
-  "welcomeUser": "Welcome, {email}",
-  "@welcomeUser": {
-    "description": "Welcome message with user email",
-    "placeholders": {
-      "email": {
-        "type": "String",
-        "example": "user@example.com"
-      }
-    }
+  "dashboardTutorMyAnteprojects": "Mis Anteproyectos",
+  "@dashboardTutorMyAnteprojects": {
+    "description": "Sección de anteproyectos en dashboard de tutor"
   },
-  
-  "myAnteprojects": "My Anteprojects",
-  "@myAnteprojects": {
-    "description": "User anteprojects section title"
+  "language": "Idioma",
+  "@language": {
+    "description": "Configuración de idioma"
   },
-  
-  "viewAll": "View all",
-  "@viewAll": {
-    "description": "Button to view all items"
+  "spanish": "Español",
+  "@spanish": {
+    "description": "Idioma español"
   },
-  
-  "noAnteprojects": "You don't have any anteprojects created. Create your first anteproject!",
-  "@noAnteprojects": {
-    "description": "Message when there are no anteprojects"
+  "english": "Inglés",
+  "@english": {
+    "description": "Idioma inglés"
   },
-  
-  "pendingTasks": "Pending Tasks",
-  "@pendingTasks": {
-    "description": "Pending tasks section title"
+  "serverInfo": "Información del Servidor",
+  "@serverInfo": {
+    "description": "Sección de información del servidor"
   },
-  
-  "viewAllTasks": "View all",
-  "@viewAllTasks": {
-    "description": "Button to view all tasks"
+  "serverUrl": "URL del Servidor",
+  "@serverUrl": {
+    "description": "URL del servidor"
   },
-  
-  "noPendingTasks": "You don't have any pending tasks. Excellent work!",
-  "@noPendingTasks": {
-    "description": "Message when there are no pending tasks"
+  "version": "Versión",
+  "@version": {
+    "description": "Versión de la aplicación"
   },
-  
-  "systemInfo": "System Information",
-  "@systemInfo": {
-    "description": "System information section title"
+  "testCredentials": "Credenciales de Prueba",
+  "@testCredentials": {
+    "description": "Sección de credenciales de prueba"
   },
-  
-  "connectedToServer": "Status: Connected to network server",
-  "@connectedToServer": {
-    "description": "Server connection status message"
+  "studentEmail": "Correo del Estudiante",
+  "@studentEmail": {
+    "description": "Email de estudiante de prueba"
   },
-  
-  "anteprojectsDev": "Anteproject creation functionality in development",
-  "@anteprojectsDev": {
-    "description": "Development functionality message"
+  "tutorEmail": "Correo del Tutor",
+  "@tutorEmail": {
+    "description": "Email de tutor de prueba"
   },
-  
-  "anteprojectsListDev": "Anteprojects list in development",
-  "@anteprojectsListDev": {
-    "description": "List development message"
+  "adminEmail": "Correo del Administrador",
+  "@adminEmail": {
+    "description": "Email de administrador de prueba"
   },
-  
-  "tasksListDev": "Tasks list in development",
-  "@tasksListDev": {
-    "description": "Tasks list development message"
+  "testPassword": "Contraseña de Prueba",
+  "@testPassword": {
+    "description": "Contraseña de prueba"
   },
-  
-  "platformLabel": "Platform: {platform}",
-  "@platformLabel": {
-    "description": "Platform label with value",
-    "placeholders": {
-      "platform": {
-        "type": "String",
-        "example": "Windows"
-      }
-    }
-  },
-  
-  "versionLabel": "Version: {version}",
-  "@versionLabel": {
-    "description": "Version label with value",
-    "placeholders": {
-      "version": {
-        "type": "String",
-        "example": "1.0.0"
-      }
-    }
-  },
-  
-  "backendLabel": "Backend: {url}",
-  "@backendLabel": {
-    "description": "Backend label with URL",
-    "placeholders": {
-      "url": {
-        "type": "String",
-        "example": "http://localhost:54321"
-      }
-    }
-  },
-  
   "studio": "Studio",
   "@studio": {
-    "description": "Supabase Studio label"
+    "description": "Enlace a Supabase Studio"
   },
-  
-  "emailLabel": "Email",
-  "@emailLabel": {
-    "description": "Email label"
+  "loginSuccessTitle": "✅ Login Exitoso",
+  "@loginSuccessTitle": {
+    "description": "Título de login exitoso"
   },
-  
-  "serverUrl": "Server URL",
-  "@serverUrl": {
-    "description": "Server URL label"
-  },
-  
-  "version": "Version",
-  "@version": {
-    "description": "Version label"
-  },
-  
-  "language": "Language",
-  "@language": {
-    "description": "Language label"
-  },
-  
-  "spanish": "Spanish",
-  "@spanish": {
-    "description": "Spanish language name"
-  },
-  
-  "english": "English",
-  "@english": {
-    "description": "English language name"
-  },
-  
-  "serverInfo": "Server Information",
-  "@serverInfo": {
-    "description": "Server information title"
-  },
-  
-  "testCredentials": "Test Credentials",
-  "@testCredentials": {
-    "description": "Test credentials title"
-  },
-  
-  "studentEmail": "Student",
-  "@studentEmail": {
-    "description": "Student test email"
-  },
-  
-  "tutorEmail": "Tutor",
-  "@tutorEmail": {
-    "description": "Tutor test email"
-  },
-  
-  "adminEmail": "Administrator",
-  "@adminEmail": {
-    "description": "Administrator test email"
-  },
-  
-  "testPassword": "Test password",
-  "@testPassword": {
-    "description": "Test password"
-  },
-  
-  "copied": "Copied",
-  "@copied": {
-    "description": "Successful copy message"
-  },
-  
-  "copyToClipboard": "Copy to clipboard",
+  "copyToClipboard": "Copiar al portapapeles",
   "@copyToClipboard": {
-    "description": "Copy to clipboard tooltip"
+    "description": "Acción de copiar al portapapeles"
   },
-  
-  "dashboardAdminTitle": "Administration Panel",
-  "@dashboardAdminTitle": {
-    "description": "Administrator dashboard title"
-  },
-  
-  "dashboardAdminUsersManagement": "User Management",
-  "@dashboardAdminUsersManagement": {
-    "description": "User management section title"
-  },
-  
-  "dashboardAdminAnteprojectsManagement": "Anteprojects Management",
-  "@dashboardAdminAnteprojectsManagement": {
-    "description": "Anteprojects management section title"
-  },
-  
-  "dashboardAdminSystemStats": "System Statistics",
-  "@dashboardAdminSystemStats": {
-    "description": "System statistics section title"
-  },
-  
-  "dashboardAdminActiveUsers": "Active Users",
-  "@dashboardAdminActiveUsers": {
-    "description": "Active users statistics title"
-  },
-  
-  "dashboardAdminPendingAnteproyectos": "Pending Anteprojects",
-  "@dashboardAdminPendingAnteproyectos": {
-    "description": "Pending anteproyectos statistics title"
-  },
-  
-  "dashboardAdminOngoingProjects": "Ongoing Projects",
-  "@dashboardAdminOngoingProjects": {
-    "description": "Ongoing projects statistics title"
-  },
-  
-  "dashboardAdminCompletedTasks": "Completed Tasks",
-  "@dashboardAdminCompletedTasks": {
-    "description": "Completed tasks statistics title"
-  },
-  
-  "dashboardTutorTitle": "Tutor Panel",
-  "@dashboardTutorTitle": {
-    "description": "Tutor dashboard title"
-  },
-  
-  "dashboardTutorMyAnteprojects": "My Anteprojects",
-  "@dashboardTutorMyAnteprojects": {
-    "description": "My anteproyectos section title"
-  },
-  
-  "dashboardTutorActiveProjects": "Active Projects",
-  "@dashboardTutorActiveProjects": {
-    "description": "Active projects section title"
-  },
-  
-  "dashboardTutorPendingTasks": "Pending Tasks",
-  "@dashboardTutorPendingTasks": {
-    "description": "Pending tasks section title"
-  },
-  
-  "dashboardTutorPersonalStats": "Personal Statistics",
-  "@dashboardTutorPersonalStats": {
-    "description": "Personal statistics section title"
-  },
-  
-  "errorAuthentication": "Authentication Error",
-  "@errorAuthentication": {
-    "description": "Authentication error message"
-  },
-  
-  "errorConnection": "Connection Error",
-  "@errorConnection": {
-    "description": "Connection error message"
-  },
-  
-  "errorUnknown": "Unknown Error",
-  "@errorUnknown": {
-    "description": "Unknown error message"
-  },
-  
-  "errorTitle": "Error",
-  "@errorTitle": {
-    "description": "Error dialog title"
-  },
-  
-  "ok": "OK",
-  "@ok": {
-    "description": "OK button text"
-  },
-  
-  "notAvailable": "Not Available",
-  "@notAvailable": {
-    "description": "Text for unavailable values"
+  "copied": "¡Copiado!",
+  "@copied": {
+    "description": "Mensaje de confirmación de copiado"
   }
 }

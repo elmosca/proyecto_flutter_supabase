@@ -21,6 +21,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get password => 'Password';
 
   @override
+  String get loginError => 'Login error. Please verify your credentials.';
+
+  @override
   String get dashboard => 'Dashboard';
 
   @override
@@ -36,65 +39,79 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logout => 'Logout';
 
   @override
-  String get student => 'Student';
+  String get student => 'Estudiante';
 
   @override
   String get tutor => 'Tutor';
 
   @override
-  String get admin => 'Administrator';
+  String get admin => 'Administrador';
 
   @override
-  String get welcome => 'Welcome';
+  String get welcome => 'Bienvenido';
 
   @override
-  String get loading => 'Loading...';
+  String get loading => 'Cargando...';
 
   @override
   String get error => 'Error';
 
   @override
-  String get success => 'Success';
+  String get success => 'Éxito';
 
   @override
-  String get cancel => 'Cancel';
+  String get cancel => 'Cancelar';
 
   @override
-  String get save => 'Save';
+  String get save => 'Guardar';
 
   @override
-  String get edit => 'Edit';
+  String get edit => 'Editar';
 
   @override
-  String get delete => 'Delete';
+  String get taskCreatedSuccess => 'Tarea creada exitosamente';
 
   @override
-  String get create => 'Create';
+  String get taskUpdatedSuccess => 'Tarea actualizada exitosamente';
 
   @override
-  String get search => 'Search';
+  String get taskStatusUpdatedSuccess => 'Estado de tarea actualizado';
 
   @override
-  String get noData => 'No data available';
+  String get taskDeletedSuccess => 'Tarea eliminada exitosamente';
 
   @override
-  String get connectionError =>
-      'Connection error. Please check your internet connection.';
+  String get taskNotFound => 'Tarea no encontrada';
 
   @override
-  String get anteprojectFormTitle => 'Crear Anteproyecto';
+  String get delete => 'Eliminar';
 
   @override
-  String get anteprojectEditFormTitle => 'Editar Anteproyecto';
+  String get create => 'Crear';
 
   @override
-  String get anteprojectTitle => 'Título';
+  String get search => 'Buscar';
 
   @override
-  String get anteprojectType => 'Tipo de proyecto';
+  String get noData => 'No hay datos disponibles';
 
   @override
-  String get anteprojectDescription => 'Descripción';
+  String get connectionError => 'Error de conexión. Por favor, verifica tu conexión a internet.';
+
+  @override
+  String get anteprojectFormTitle => 'Create Anteproject';
+
+  @override
+  String get anteprojectEditFormTitle => 'Edit Anteproject';
+
+  @override
+  String get anteprojectTitle => 'Title';
+
+  @override
+  String get anteprojectType => 'Project Type';
+
+  @override
+  String get anteprojectDescription => 'Description';
 
   @override
   String get anteprojectAcademicYear => 'Año académico (e.g., 2024-2025)';
@@ -109,30 +126,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get anteprojectTutorId => 'Tutor ID';
 
   @override
-  String get anteprojectStatus => 'Estado';
+  String get anteprojectStatus => 'Status';
 
   @override
-  String get anteprojectCreateButton => 'Crear anteproyecto';
+  String get anteprojectCreateButton => 'Create Anteproject';
 
   @override
-  String get anteprojectUpdateButton => 'Actualizar anteproyecto';
+  String get anteprojectUpdateButton => 'Update Anteproject';
 
   @override
-  String get anteprojectDeleteButton => 'Eliminar';
+  String get anteprojectDeleteButton => 'Delete';
 
   @override
   String get anteprojectDeleteTitle => 'Eliminar Anteproyecto';
 
   @override
-  String get anteprojectDeleteMessage =>
-      '¿Estás seguro de que quieres eliminar este anteproyecto? Esta acción no se puede deshacer.';
+  String get anteprojectDeleteMessage => '¿Estás seguro de que quieres eliminar este anteproyecto? Esta acción no se puede deshacer.';
 
   @override
   String get anteprojectCreatedSuccess => 'Anteproyecto creado exitosamente';
 
   @override
-  String get anteprojectUpdatedSuccess =>
-      'Anteproyecto actualizado exitosamente';
+  String get anteprojectUpdatedSuccess => 'Anteproyecto actualizado exitosamente';
 
   @override
   String get anteprojectInvalidTutorId => 'Tutor ID inválido';
@@ -144,8 +159,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get anteprojectDescriptionRequired => 'La descripción es obligatoria';
 
   @override
-  String get anteprojectAcademicYearRequired =>
-      'El año académico es obligatorio';
+  String get anteprojectAcademicYearRequired => 'El año académico es obligatorio';
 
   @override
   String get anteprojectTutorIdRequired => 'El Tutor ID es obligatorio';
@@ -154,7 +168,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get anteprojectTutorIdNumeric => 'El Tutor ID debe ser numérico';
 
   @override
-  String get anteprojectsListTitle => 'Mis Anteproyectos';
+  String get anteprojectsListTitle => 'My Anteprojects';
 
   @override
   String get anteprojectsListRefresh => 'Actualizar lista';
@@ -169,8 +183,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get anteprojectsListEmpty => 'No tienes anteproyectos';
 
   @override
-  String get anteprojectsListEmptySubtitle =>
-      'Crea tu primer anteproyecto para comenzar';
+  String get anteprojectsListEmptySubtitle => 'Crea tu primer anteproyecto para comenzar';
 
   @override
   String get anteprojectsListUnknownState => 'Estado no reconocido';
@@ -193,30 +206,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get anteprojectTimelineHint => 'Ejemplo phase1 Descripción';
 
   @override
-  String get dashboardStudent => 'Student Dashboard';
+  String get dashboardStudent => 'Dashboard Estudiante';
 
   @override
-  String get myAnteprojects => 'My Anteprojects';
+  String get myAnteprojects => 'Mis Anteproyectos';
 
   @override
-  String get viewAll => 'View all';
+  String get viewAll => 'Ver todos';
 
   @override
-  String get noAnteprojects =>
-      'You don\'t have any anteprojects created. Create your first anteproject!';
+  String get noAnteprojects => 'No tienes anteproyectos creados. ¡Crea tu primer anteproyecto!';
 
   @override
-  String get pendingTasks => 'Pending Tasks';
+  String get pendingTasks => 'Tareas Pendientes';
 
   @override
-  String get viewAllTasks => 'View all';
+  String get viewAllTasks => 'Ver todas';
 
   @override
-  String get noPendingTasks =>
-      'You don\'t have any pending tasks. Excellent work!';
+  String get noPendingTasks => 'No tienes tareas pendientes. ¡Excelente trabajo!';
 
   @override
-  String get systemInfo => 'System Information';
+  String get systemInfo => 'Información del Sistema';
 
   @override
   String backendLabel(String url) {
@@ -225,77 +236,77 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String platformLabel(String platform) {
-    return 'Platform: $platform';
+    return 'Plataforma: $platform';
   }
 
   @override
   String versionLabel(String version) {
-    return 'Version: $version';
+    return 'Versión: $version';
   }
 
   @override
   String get emailLabel => 'Email';
 
   @override
-  String get connectedToServer => 'Status: Connected to network server';
+  String get connectedToServer => 'Estado: Conectado al servidor de red';
 
   @override
-  String get tasksListDev => 'Tasks list in development';
+  String get tasksListDev => 'Lista de tareas en desarrollo';
 
   @override
-  String get adminDashboardDev => 'Admin dashboard in development';
+  String get adminDashboardDev => 'Dashboard de admin en desarrollo';
 
   @override
-  String get dashboardAdminUsersManagement => 'User Management';
+  String get dashboardAdminUsersManagement => 'Gestión de Usuarios';
 
   @override
-  String get tutorDashboardDev => 'Tutor dashboard in development';
+  String get tutorDashboardDev => 'Dashboard de tutor en desarrollo';
 
   @override
-  String get dashboardTutorMyAnteprojects => 'My Anteprojects';
+  String get dashboardTutorMyAnteprojects => 'Mis Anteproyectos';
 
   @override
-  String get language => 'Language';
+  String get language => 'Idioma';
 
   @override
-  String get spanish => 'Spanish';
+  String get spanish => 'Español';
 
   @override
-  String get english => 'English';
+  String get english => 'Inglés';
 
   @override
-  String get serverInfo => 'Server Information';
+  String get serverInfo => 'Información del Servidor';
 
   @override
-  String get serverUrl => 'Server URL';
+  String get serverUrl => 'URL del Servidor';
 
   @override
-  String get version => 'Version';
+  String get version => 'Versión';
 
   @override
-  String get testCredentials => 'Test Credentials';
+  String get testCredentials => 'Credenciales de Prueba';
 
   @override
-  String get studentEmail => 'Student';
+  String get studentEmail => 'Correo del Estudiante';
 
   @override
-  String get tutorEmail => 'Tutor';
+  String get tutorEmail => 'Correo del Tutor';
 
   @override
-  String get adminEmail => 'Administrator';
+  String get adminEmail => 'Correo del Administrador';
 
   @override
-  String get testPassword => 'Test password';
+  String get testPassword => 'Contraseña de Prueba';
 
   @override
   String get studio => 'Studio';
 
   @override
-  String get loginSuccessTitle => '✅ Login Successful';
+  String get loginSuccessTitle => '✅ Login Exitoso';
 
   @override
-  String get copyToClipboard => 'Copy to clipboard';
+  String get copyToClipboard => 'Copiar al portapapeles';
 
   @override
-  String get copied => 'Copied';
+  String get copied => '¡Copiado!';
 }
