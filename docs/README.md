@@ -2,11 +2,11 @@
 
 ## 🎯 **ESTADO ACTUAL DEL PROYECTO**
 
-**Fecha de actualización**: 30 de agosto de 2024  
-**Versión**: 3.2.0  
-**Estado general**: 🟢 **BACKEND 100% COMPLETADO, FRONTEND 99% COMPLETADO**
+**Fecha de actualización**: 30 de agosto de 2024 (Fix internacionalización)  
+**Versión**: 3.1.1  
+**Estado general**: 🟡 **BACKEND 100% COMPLETADO, FRONTEND 28% COMPLETADO**
 
-El Sistema de Seguimiento de Proyectos TFG ha alcanzado un **hito excepcional** con la **completación del 100% del backend** y el **99% del frontend**. Las funcionalidades de negocio están implementadas, el testing está avanzando y el código está completamente limpio. El proyecto está en excelente posición para completar el MVP en los próximos días.
+El Sistema de Seguimiento de Proyectos TFG ha completado exitosamente el **100% del backend** y está avanzando en el frontend con **28% completado**. Las funcionalidades de negocio básicas están implementadas (formularios, validaciones, internacionalización), el código está completamente limpio y el proyecto está en buena posición para continuar con el desarrollo según el plan de implementación.
 
 ---
 
@@ -43,7 +43,7 @@ docs/
 
 ---
 
-## 🚀 **FRONTEND - ESTADO: 🟢 99% COMPLETADO**
+## 🚀 **FRONTEND - ESTADO: 🟡 28% COMPLETADO**
 
 ### **✅ COMPLETADO**
 - **Proyecto Flutter** configurado para múltiples plataformas
@@ -57,14 +57,21 @@ docs/
 - **Arquitectura BLoC** completamente implementada
 - **Pantallas de autenticación** implementadas con BLoC
 - **Dashboards por rol** (Estudiante, Tutor, Admin)
-- **Internacionalización** completa (español/inglés)
-- **Funcionalidades de negocio** implementadas (login/logout, CRUD básico)
+- **Internacionalización** completa (español/inglés) ✅
+- **Formularios de anteproyectos** (crear/editar) ✅
+- **Lista de anteproyectos** con gestión completa ✅
+- **Sistema de validaciones** robusto y localizado ✅
+- **Manejo de errores** consistente con widgets reutilizables ✅
 - **Código completamente limpio** (0 errores, 0 warnings) ✅
 - **Testing unitario** implementado (AuthBloc y TasksBloc)
 - **Testing de integración** implementado (Estructura de modelos validada)
-- **Testing de widgets** implementado (Dashboards principales)
 
 ### **🔄 EN DESARROLLO**
+- **Formularios de tareas** (crear/editar)
+- **Listas de tareas** y visualización
+- **Tablero Kanban** para gestión visual
+- **Sistema de comentarios** en tareas
+- **Flujo de aprobación** de anteproyectos
 - **Testing completo** (pantallas restantes y optimización)
 - **Optimización** de rendimiento y experiencia de usuario
 - **Despliegue** de producción
@@ -203,6 +210,6 @@ El proyecto TFG ha alcanzado un **hito excepcional** con la **completación del 
 
 ---
 
-**Fecha de actualización**: 30 de agosto de 2024  
-**Estado general**: 🟢 **EXCELENTE PROGRESO**  
-**Próximo hito**: Testing completo y despliegue de producción
+**Fecha de actualización**: 30 de agosto de 2024 (Fix internacionalización)  
+**Estado general**: 🟡 **BUEN PROGRESO**  
+**Próximo hito**: Implementar formularios de tareas y listas
