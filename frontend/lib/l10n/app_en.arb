@@ -274,43 +274,43 @@
   "@myAnteprojects": {
     "description": "Sección de anteproyectos del usuario"
   },
-  "viewAll": "Ver todos",
+  "viewAll": "View all",
   "@viewAll": {
-    "description": "Enlace para ver todos los elementos"
+    "description": "Link to view all items"
   },
-  "noAnteprojects": "No tienes anteproyectos creados. ¡Crea tu primer anteproyecto!",
+  "noAnteprojects": "You don't have any anteprojects created. Create your first anteproject!",
   "@noAnteprojects": {
-    "description": "Mensaje cuando no hay anteproyectos"
+    "description": "Message when there are no anteprojects"
   },
-  "pendingTasks": "Tareas Pendientes",
+  "pendingTasks": "Pending Tasks",
   "@pendingTasks": {
-    "description": "Sección de tareas pendientes"
+    "description": "Pending tasks section"
   },
-  "viewAllTasks": "Ver todas",
+  "viewAllTasks": "View all",
   "@viewAllTasks": {
-    "description": "Enlace para ver todas las tareas"
+    "description": "Link to view all tasks"
   },
-  "noPendingTasks": "No tienes tareas pendientes. ¡Excelente trabajo!",
+  "noPendingTasks": "You don't have any pending tasks. Great job!",
   "@noPendingTasks": {
-    "description": "Mensaje cuando no hay tareas pendientes"
+    "description": "Message when there are no pending tasks"
   },
-  "systemInfo": "Información del Sistema",
+  "systemInfo": "System Information",
   "@systemInfo": {
-    "description": "Sección de información del sistema"
+    "description": "System information section"
   },
   "backendLabel": "Backend: {url}",
   "@backendLabel": {
-    "description": "Etiqueta de backend con URL",
+    "description": "Backend label with URL",
     "placeholders": {
       "url": {
         "type": "String",
-        "example": "https://api.ejemplo.com"
+        "example": "https://api.example.com"
       }
     }
   },
-  "platformLabel": "Plataforma: {platform}",
+  "platformLabel": "Platform: {platform}",
   "@platformLabel": {
-    "description": "Etiqueta de plataforma con valor",
+    "description": "Platform label with value",
     "placeholders": {
       "platform": {
         "type": "String",
@@ -318,9 +318,9 @@
       }
     }
   },
-  "versionLabel": "Versión: {version}",
+  "versionLabel": "Version: {version}",
   "@versionLabel": {
-    "description": "Etiqueta de versión con valor",
+    "description": "Version label with value",
     "placeholders": {
       "version": {
         "type": "String",
@@ -330,83 +330,83 @@
   },
   "emailLabel": "Email",
   "@emailLabel": {
-    "description": "Etiqueta de email"
+    "description": "Email label"
   },
-  "connectedToServer": "Estado: Conectado al servidor de red",
+  "connectedToServer": "Status: Connected to network server",
   "@connectedToServer": {
-    "description": "Mensaje de estado de conexión al servidor"
+    "description": "Server connection status message"
   },
-  "tasksListDev": "Lista de tareas en desarrollo",
+  "tasksListDev": "Tasks list in development",
   "@tasksListDev": {
-    "description": "Mensaje temporal para lista de tareas en desarrollo"
+    "description": "Temporary message for tasks list in development"
   },
-  "adminDashboardDev": "Dashboard de admin en desarrollo",
+  "adminDashboardDev": "Admin dashboard in development",
   "@adminDashboardDev": {
-    "description": "Mensaje temporal para dashboard de admin en desarrollo"
+    "description": "Temporary message for admin dashboard in development"
   },
-  "dashboardAdminUsersManagement": "Gestión de Usuarios",
+  "dashboardAdminUsersManagement": "User Management",
   "@dashboardAdminUsersManagement": {
-    "description": "Sección de gestión de usuarios en dashboard de admin"
+    "description": "User management section in admin dashboard"
   },
-  "tutorDashboardDev": "Dashboard de tutor en desarrollo",
+  "tutorDashboardDev": "Tutor dashboard in development",
   "@tutorDashboardDev": {
-    "description": "Mensaje temporal para dashboard de tutor en desarrollo"
+    "description": "Temporary message for tutor dashboard in development"
   },
-  "dashboardTutorMyAnteprojects": "Mis Anteproyectos",
+  "dashboardTutorMyAnteprojects": "My Anteprojects",
   "@dashboardTutorMyAnteprojects": {
-    "description": "Sección de anteproyectos en dashboard de tutor"
+    "description": "Anteprojects section in tutor dashboard"
   },
-  "language": "Idioma",
+  "language": "Language",
   "@language": {
-    "description": "Configuración de idioma"
+    "description": "Language setting"
   },
-  "spanish": "Español",
+  "spanish": "Spanish",
   "@spanish": {
-    "description": "Idioma español"
+    "description": "Spanish language"
   },
-  "english": "Inglés",
+  "english": "English",
   "@english": {
-    "description": "Idioma inglés"
+    "description": "English language"
   },
-  "serverInfo": "Información del Servidor",
+  "serverInfo": "Server Information",
   "@serverInfo": {
-    "description": "Sección de información del servidor"
+    "description": "Server information section"
   },
-  "serverUrl": "URL del Servidor",
+  "serverUrl": "Server URL",
   "@serverUrl": {
-    "description": "URL del servidor"
+    "description": "Server URL"
   },
-  "version": "Versión",
+  "version": "Version",
   "@version": {
-    "description": "Versión de la aplicación"
+    "description": "Application version"
   },
-  "testCredentials": "Credenciales de Prueba",
+  "testCredentials": "Test Credentials",
   "@testCredentials": {
-    "description": "Sección de credenciales de prueba"
+    "description": "Test credentials section"
   },
-  "studentEmail": "Correo del Estudiante",
+  "studentEmail": "Student Email",
   "@studentEmail": {
-    "description": "Email de estudiante de prueba"
+    "description": "Test student email"
   },
-  "tutorEmail": "Correo del Tutor",
+  "tutorEmail": "Tutor Email",
   "@tutorEmail": {
-    "description": "Email de tutor de prueba"
+    "description": "Test tutor email"
   },
-  "adminEmail": "Correo del Administrador",
+  "adminEmail": "Admin Email",
   "@adminEmail": {
-    "description": "Email de administrador de prueba"
+    "description": "Test admin email"
   },
-  "testPassword": "Contraseña de Prueba",
+  "testPassword": "Test Password",
   "@testPassword": {
-    "description": "Contraseña de prueba"
+    "description": "Test password"
   },
   "studio": "Studio",
   "@studio": {
-    "description": "Enlace a Supabase Studio"
+    "description": "Link to Supabase Studio"
   },
-  "loginSuccessTitle": "✅ Login Exitoso",
+  "loginSuccessTitle": "✅ Login Successful",
   "@loginSuccessTitle": {
-    "description": "Título de login exitoso"
+    "description": "Successful login title"
   },
   "copyToClipboard": "Copy to clipboard",
   "@copyToClipboard": {
@@ -415,10 +415,6 @@
   "copied": "Copied!",
   "@copied": {
     "description": "Copy confirmation message"
-  },
-  "viewAll": "View all",
-  "@viewAll": {
-    "description": "Button to view all items"
   },
   "viewDetails": "View details",
   "@viewDetails": {

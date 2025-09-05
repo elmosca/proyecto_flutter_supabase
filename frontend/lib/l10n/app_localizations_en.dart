@@ -215,19 +215,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewAll => 'View all';
 
   @override
-  String get noAnteprojects => 'No tienes anteproyectos creados. ¡Crea tu primer anteproyecto!';
+  String get noAnteprojects => 'You don\'t have any anteprojects created. Create your first anteproject!';
 
   @override
-  String get pendingTasks => 'Tareas Pendientes';
+  String get pendingTasks => 'Pending Tasks';
 
   @override
-  String get viewAllTasks => 'Ver todas';
+  String get viewAllTasks => 'View all';
 
   @override
-  String get noPendingTasks => 'No tienes tareas pendientes. ¡Excelente trabajo!';
+  String get noPendingTasks => 'You don\'t have any pending tasks. Great job!';
 
   @override
-  String get systemInfo => 'Información del Sistema';
+  String get systemInfo => 'System Information';
 
   @override
   String backendLabel(String url) {
@@ -236,73 +236,73 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String platformLabel(String platform) {
-    return 'Plataforma: $platform';
+    return 'Platform: $platform';
   }
 
   @override
   String versionLabel(String version) {
-    return 'Versión: $version';
+    return 'Version: $version';
   }
 
   @override
   String get emailLabel => 'Email';
 
   @override
-  String get connectedToServer => 'Estado: Conectado al servidor de red';
+  String get connectedToServer => 'Status: Connected to network server';
 
   @override
-  String get tasksListDev => 'Lista de tareas en desarrollo';
+  String get tasksListDev => 'Tasks list in development';
 
   @override
-  String get adminDashboardDev => 'Dashboard de admin en desarrollo';
+  String get adminDashboardDev => 'Admin dashboard in development';
 
   @override
-  String get dashboardAdminUsersManagement => 'Gestión de Usuarios';
+  String get dashboardAdminUsersManagement => 'User Management';
 
   @override
-  String get tutorDashboardDev => 'Dashboard de tutor en desarrollo';
+  String get tutorDashboardDev => 'Tutor dashboard in development';
 
   @override
-  String get dashboardTutorMyAnteprojects => 'Mis Anteproyectos';
+  String get dashboardTutorMyAnteprojects => 'My Anteprojects';
 
   @override
-  String get language => 'Idioma';
+  String get language => 'Language';
 
   @override
-  String get spanish => 'Español';
+  String get spanish => 'Spanish';
 
   @override
-  String get english => 'Inglés';
+  String get english => 'English';
 
   @override
-  String get serverInfo => 'Información del Servidor';
+  String get serverInfo => 'Server Information';
 
   @override
-  String get serverUrl => 'URL del Servidor';
+  String get serverUrl => 'Server URL';
 
   @override
-  String get version => 'Versión';
+  String get version => 'Version';
 
   @override
-  String get testCredentials => 'Credenciales de Prueba';
+  String get testCredentials => 'Test Credentials';
 
   @override
-  String get studentEmail => 'Correo del Estudiante';
+  String get studentEmail => 'Student Email';
 
   @override
-  String get tutorEmail => 'Correo del Tutor';
+  String get tutorEmail => 'Tutor Email';
 
   @override
-  String get adminEmail => 'Correo del Administrador';
+  String get adminEmail => 'Admin Email';
 
   @override
-  String get testPassword => 'Contraseña de Prueba';
+  String get testPassword => 'Test Password';
 
   @override
   String get studio => 'Studio';
 
   @override
-  String get loginSuccessTitle => '✅ Login Exitoso';
+  String get loginSuccessTitle => '✅ Login Successful';
 
   @override
   String get copyToClipboard => 'Copy to clipboard';
