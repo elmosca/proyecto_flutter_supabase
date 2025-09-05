@@ -416,10 +416,6 @@
   "@copied": {
     "description": "Mensaje de confirmación de copiado"
   },
-  "viewAll": "Ver todos",
-  "@viewAll": {
-    "description": "Botón para ver todos los elementos"
-  },
   "viewDetails": "Ver detalles",
   "@viewDetails": {
     "description": "Botón para ver detalles"

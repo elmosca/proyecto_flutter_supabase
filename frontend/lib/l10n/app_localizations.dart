@@ -497,178 +497,178 @@ abstract class AppLocalizations {
   /// **'Mis Anteproyectos'**
   String get myAnteprojects;
 
-  /// Button to view all items
+  /// Link to view all items
   ///
   /// In en, this message translates to:
   /// **'View all'**
   String get viewAll;
 
-  /// Mensaje cuando no hay anteproyectos
+  /// Message when there are no anteprojects
   ///
   /// In en, this message translates to:
-  /// **'No tienes anteproyectos creados. ¡Crea tu primer anteproyecto!'**
+  /// **'You don\'t have any anteprojects created. Create your first anteproject!'**
   String get noAnteprojects;
 
-  /// Sección de tareas pendientes
+  /// Pending tasks section
   ///
   /// In en, this message translates to:
-  /// **'Tareas Pendientes'**
+  /// **'Pending Tasks'**
   String get pendingTasks;
 
-  /// Enlace para ver todas las tareas
+  /// Link to view all tasks
   ///
   /// In en, this message translates to:
-  /// **'Ver todas'**
+  /// **'View all'**
   String get viewAllTasks;
 
-  /// Mensaje cuando no hay tareas pendientes
+  /// Message when there are no pending tasks
   ///
   /// In en, this message translates to:
-  /// **'No tienes tareas pendientes. ¡Excelente trabajo!'**
+  /// **'You don\'t have any pending tasks. Great job!'**
   String get noPendingTasks;
 
-  /// Sección de información del sistema
+  /// System information section
   ///
   /// In en, this message translates to:
-  /// **'Información del Sistema'**
+  /// **'System Information'**
   String get systemInfo;
 
-  /// Etiqueta de backend con URL
+  /// Backend label with URL
   ///
   /// In en, this message translates to:
   /// **'Backend: {url}'**
   String backendLabel(String url);
 
-  /// Etiqueta de plataforma con valor
+  /// Platform label with value
   ///
   /// In en, this message translates to:
-  /// **'Plataforma: {platform}'**
+  /// **'Platform: {platform}'**
   String platformLabel(String platform);
 
-  /// Etiqueta de versión con valor
+  /// Version label with value
   ///
   /// In en, this message translates to:
-  /// **'Versión: {version}'**
+  /// **'Version: {version}'**
   String versionLabel(String version);
 
-  /// Etiqueta de email
+  /// Email label
   ///
   /// In en, this message translates to:
   /// **'Email'**
   String get emailLabel;
 
-  /// Mensaje de estado de conexión al servidor
+  /// Server connection status message
   ///
   /// In en, this message translates to:
-  /// **'Estado: Conectado al servidor de red'**
+  /// **'Status: Connected to network server'**
   String get connectedToServer;
 
-  /// Mensaje temporal para lista de tareas en desarrollo
+  /// Temporary message for tasks list in development
   ///
   /// In en, this message translates to:
-  /// **'Lista de tareas en desarrollo'**
+  /// **'Tasks list in development'**
   String get tasksListDev;
 
-  /// Mensaje temporal para dashboard de admin en desarrollo
+  /// Temporary message for admin dashboard in development
   ///
   /// In en, this message translates to:
-  /// **'Dashboard de admin en desarrollo'**
+  /// **'Admin dashboard in development'**
   String get adminDashboardDev;
 
-  /// Sección de gestión de usuarios en dashboard de admin
+  /// User management section in admin dashboard
   ///
   /// In en, this message translates to:
-  /// **'Gestión de Usuarios'**
+  /// **'User Management'**
   String get dashboardAdminUsersManagement;
 
-  /// Mensaje temporal para dashboard de tutor en desarrollo
+  /// Temporary message for tutor dashboard in development
   ///
   /// In en, this message translates to:
-  /// **'Dashboard de tutor en desarrollo'**
+  /// **'Tutor dashboard in development'**
   String get tutorDashboardDev;
 
-  /// Sección de anteproyectos en dashboard de tutor
+  /// Anteprojects section in tutor dashboard
   ///
   /// In en, this message translates to:
-  /// **'Mis Anteproyectos'**
+  /// **'My Anteprojects'**
   String get dashboardTutorMyAnteprojects;
 
-  /// Configuración de idioma
+  /// Language setting
   ///
   /// In en, this message translates to:
-  /// **'Idioma'**
+  /// **'Language'**
   String get language;
 
-  /// Idioma español
+  /// Spanish language
   ///
   /// In en, this message translates to:
-  /// **'Español'**
+  /// **'Spanish'**
   String get spanish;
 
-  /// Idioma inglés
+  /// English language
   ///
   /// In en, this message translates to:
-  /// **'Inglés'**
+  /// **'English'**
   String get english;
 
-  /// Sección de información del servidor
+  /// Server information section
   ///
   /// In en, this message translates to:
-  /// **'Información del Servidor'**
+  /// **'Server Information'**
   String get serverInfo;
 
-  /// URL del servidor
+  /// Server URL
   ///
   /// In en, this message translates to:
-  /// **'URL del Servidor'**
+  /// **'Server URL'**
   String get serverUrl;
 
-  /// Versión de la aplicación
+  /// Application version
   ///
   /// In en, this message translates to:
-  /// **'Versión'**
+  /// **'Version'**
   String get version;
 
-  /// Sección de credenciales de prueba
+  /// Test credentials section
   ///
   /// In en, this message translates to:
-  /// **'Credenciales de Prueba'**
+  /// **'Test Credentials'**
   String get testCredentials;
 
-  /// Email de estudiante de prueba
+  /// Test student email
   ///
   /// In en, this message translates to:
-  /// **'Correo del Estudiante'**
+  /// **'Student Email'**
   String get studentEmail;
 
-  /// Email de tutor de prueba
+  /// Test tutor email
   ///
   /// In en, this message translates to:
-  /// **'Correo del Tutor'**
+  /// **'Tutor Email'**
   String get tutorEmail;
 
-  /// Email de administrador de prueba
+  /// Test admin email
   ///
   /// In en, this message translates to:
-  /// **'Correo del Administrador'**
+  /// **'Admin Email'**
   String get adminEmail;
 
-  /// Contraseña de prueba
+  /// Test password
   ///
   /// In en, this message translates to:
-  /// **'Contraseña de Prueba'**
+  /// **'Test Password'**
   String get testPassword;
 
-  /// Enlace a Supabase Studio
+  /// Link to Supabase Studio
   ///
   /// In en, this message translates to:
   /// **'Studio'**
   String get studio;
 
-  /// Título de login exitoso
+  /// Successful login title
   ///
   /// In en, this message translates to:
-  /// **'✅ Login Exitoso'**
+  /// **'✅ Login Successful'**
   String get loginSuccessTitle;
 
   /// Copy to clipboard action
