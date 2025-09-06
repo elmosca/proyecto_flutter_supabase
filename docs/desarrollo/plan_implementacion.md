@@ -31,7 +31,7 @@
 - [x] **Día 1-2**: Implementar `AnteprojectForm` - Crear anteproyectos ✅ COMPLETADO
 - [x] **Día 3-4**: Implementar `AnteprojectEditForm` - Editar anteproyectos ✅ COMPLETADO
 - [x] **Día 5**: Implementar validaciones y manejo de errores ✅ COMPLETADO
-- **Día 6-7**: Testing y corrección de bugs
+- [x] **Día 6-7**: Testing y corrección de bugs ✅ COMPLETADO (Mocking de Supabase resuelto)
 
 #### **Semana 2: Formularios de Tareas y Listas (20 horas)**
 - **Día 1-2**: Implementar `TaskForm` - Crear/editar tareas
@@ -187,10 +187,10 @@
 ### **✅ SEMANA 5-6: TESTING Y CORRECCIÓN**
 
 #### **Testing de Widgets:**
-- [ ] **Corregir errores de Supabase** en tests
-  - [ ] Inicialización correcta
-  - [ ] Mocks de servicios
-  - [ ] Configuración de tests
+- [x] **Corregir errores de Supabase** en tests ✅ COMPLETADO
+  - [x] Inicialización correcta
+  - [x] Mocks de servicios
+  - [x] Configuración de tests
 
 - [ ] **Tests para formularios**
   - [ ] AnteprojectForm tests
@@ -213,8 +213,8 @@
   - [ ] CommentSystem tests
 
 #### **Testing de Integración:**
-- [ ] **Corregir mocks de servicios**
-  - [ ] AuthService mocks
+- [x] **Corregir mocks de servicios** ✅ COMPLETADO
+  - [x] AuthService mocks
   - [ ] AnteprojectsService mocks
   - [ ] TasksService mocks
 

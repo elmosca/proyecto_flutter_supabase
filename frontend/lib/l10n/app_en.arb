@@ -278,6 +278,14 @@
   "@viewAll": {
     "description": "Link to view all items"
   },
+  "pendingAnteprojects": "Pending Anteprojects",
+  "@pendingAnteprojects": {
+    "description": "Section title for pending anteprojects"
+  },
+  "assignedStudents": "Assigned Students",
+  "@assignedStudents": {
+    "description": "Section title for assigned students"
+  },
   "noAnteprojects": "You don't have any anteprojects created. Create your first anteproject!",
   "@noAnteprojects": {
     "description": "Message when there are no anteprojects"

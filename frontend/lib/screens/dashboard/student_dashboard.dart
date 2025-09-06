@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,6 +24,7 @@ class StudentDashboard extends StatefulWidget {
 
 class _StudentDashboardState extends State<StudentDashboard> {
   bool _isLoading = true;
+  Timer? _loadingTimer;
 
   @override
   void initState() {
@@ -30,13 +33,20 @@ class _StudentDashboardState extends State<StudentDashboard> {
     _loadData();
   }
 
+  @override
+  void dispose() {
+    _loadingTimer?.cancel();
+    super.dispose();
+  }
+
   Future<void> _loadData() async {
-    await Future.delayed(const Duration(seconds: 1));
-    if (mounted) {
-      setState(() {
-        _isLoading = false;
-      });
-    }
+    _loadingTimer = Timer(const Duration(seconds: 1), () {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    });
   }
 
   @override
@@ -207,9 +217,12 @@ class _StudentDashboardState extends State<StudentDashboard> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              l10n.myAnteprojects,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Expanded(
+              child: Text(
+                l10n.myAnteprojects,
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
             TextButton(
               onPressed: _viewAllAnteprojects,
@@ -241,9 +254,12 @@ class _StudentDashboardState extends State<StudentDashboard> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              l10n.pendingTasks,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Expanded(
+              child: Text(
+                l10n.pendingTasks,
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
             TextButton(
               onPressed: _viewAllTasks,
@@ -280,11 +296,14 @@ class _StudentDashboardState extends State<StudentDashboard> {
               children: [
                 Icon(Icons.info, color: Colors.blue.shade700),
                 const SizedBox(width: 8),
-                Text(
-                  l10n.systemInfo,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue.shade700,
+                Expanded(
+                  child: Text(
+                    l10n.systemInfo,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue.shade700,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],

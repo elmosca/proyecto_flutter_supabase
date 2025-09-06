@@ -278,6 +278,14 @@
   "@viewAll": {
     "description": "Enlace para ver todos los elementos"
   },
+  "pendingAnteprojects": "Anteproyectos Pendientes",
+  "@pendingAnteprojects": {
+    "description": "Título de sección para anteproyectos pendientes"
+  },
+  "assignedStudents": "Estudiantes Asignados",
+  "@assignedStudents": {
+    "description": "Título de sección para estudiantes asignados"
+  },
   "noAnteprojects": "No tienes anteproyectos creados. ¡Crea tu primer anteproyecto!",
   "@noAnteprojects": {
     "description": "Mensaje cuando no hay anteproyectos"

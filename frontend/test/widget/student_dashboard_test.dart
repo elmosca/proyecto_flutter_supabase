@@ -7,8 +7,10 @@ import 'package:frontend/screens/dashboard/student_dashboard.dart';
 import 'package:frontend/blocs/auth_bloc.dart';
 import 'package:frontend/blocs/anteprojects_bloc.dart';
 import 'package:frontend/blocs/tasks_bloc.dart';
+import 'package:frontend/models/user.dart';
 import 'widget_test_utils.dart';
 import 'widget_test_utils.mocks.dart';
+import '../test_setup.dart';
 
 void main() {
   group('StudentDashboard Widget Tests', () {
@@ -18,6 +20,15 @@ void main() {
     late AuthBloc authBloc;
     late AnteprojectsBloc anteprojectsBloc;
     late TasksBloc tasksBloc;
+    late User testUser;
+
+    setUpAll(() async {
+      await TestSetup.initializeSupabase();
+    });
+
+    tearDownAll(() async {
+      await TestSetup.cleanup();
+    });
 
     setUp(() {
       mockAuthService = MockAuthService();
@@ -27,6 +38,8 @@ void main() {
       authBloc = AuthBloc(authService: mockAuthService);
       anteprojectsBloc = AnteprojectsBloc(anteprojectsService: mockAnteprojectsService);
       tasksBloc = TasksBloc(tasksService: mockTasksService);
+      
+      testUser = WidgetTestUtils.createTestUser();
       
       // Configurar mocks básicos
       WidgetTestUtils.setupBasicMocks(
@@ -43,18 +56,22 @@ void main() {
     });
 
     Widget createTestWidget() {
-      return WidgetTestUtils.createTestApp(
-        child: StudentDashboard(user: WidgetTestUtils.createTestUser()),
-        blocProviders: [
-          BlocProvider<AuthBloc>.value(value: authBloc),
-          BlocProvider<AnteprojectsBloc>.value(value: anteprojectsBloc),
-          BlocProvider<TasksBloc>.value(value: tasksBloc),
-        ],
+      return TestSetup.createTestApp(
+        child: WidgetTestUtils.createTestApp(
+          child: StudentDashboard(user: testUser),
+          blocProviders: [
+            BlocProvider<AuthBloc>.value(value: authBloc),
+            BlocProvider<AnteprojectsBloc>.value(value: anteprojectsBloc),
+            BlocProvider<TasksBloc>.value(value: tasksBloc),
+          ],
+        ),
+        responsive: true,
       );
     }
 
     testWidgets('StudentDashboard shows correct title and structure',
         (WidgetTester tester) async {
+      TestSetup.setMobileSize(tester);
       await tester.pumpWidget(createTestWidget());
       await WidgetTestUtils.waitForAnimation(tester);
 
@@ -141,6 +158,7 @@ void main() {
 
     testWidgets('StudentDashboard navigation works correctly',
         (WidgetTester tester) async {
+      TestSetup.setMobileSize(tester);
       await tester.pumpWidget(createTestWidget());
       await WidgetTestUtils.waitForAnimation(tester);
 
@@ -166,15 +184,12 @@ void main() {
 
     testWidgets('StudentDashboard responsive design works',
         (WidgetTester tester) async {
-      // Probar en diferentes tamaños de pantalla
-      await tester.binding.setSurfaceSize(const Size(400, 800));
+      TestSetup.setMobileSize(tester);
+      
       await tester.pumpWidget(createTestWidget());
       await WidgetTestUtils.waitForAnimation(tester);
 
       expect(find.byType(Scaffold), findsOneWidget);
-
-      // Restaurar tamaño original
-      await tester.binding.setSurfaceSize(null);
     });
   });
 }

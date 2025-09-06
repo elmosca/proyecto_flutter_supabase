@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +20,7 @@ class TutorDashboard extends StatefulWidget {
 
 class _TutorDashboardState extends State<TutorDashboard> {
   bool _isLoading = true;
+  Timer? _loadingTimer;
 
   @override
   void initState() {
@@ -25,13 +28,20 @@ class _TutorDashboardState extends State<TutorDashboard> {
     _loadData();
   }
 
+  @override
+  void dispose() {
+    _loadingTimer?.cancel();
+    super.dispose();
+  }
+
   Future<void> _loadData() async {
-    await Future.delayed(const Duration(seconds: 1));
-    if (mounted) {
-      setState(() {
-        _isLoading = false;
-      });
-    }
+    _loadingTimer = Timer(const Duration(seconds: 1), () {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    });
   }
 
   @override
@@ -191,9 +201,12 @@ class _TutorDashboardState extends State<TutorDashboard> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              'Anteproyectos Pendientes',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Expanded(
+              child: Text(
+                AppLocalizations.of(context)!.pendingAnteprojects,
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
             TextButton(
               onPressed: _viewAllAnteprojects,
@@ -223,9 +236,12 @@ class _TutorDashboardState extends State<TutorDashboard> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              'Estudiantes Asignados',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Expanded(
+              child: Text(
+                AppLocalizations.of(context)!.assignedStudents,
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
             TextButton(
               onPressed: _viewAllStudents,
@@ -262,11 +278,14 @@ class _TutorDashboardState extends State<TutorDashboard> {
               children: [
                 Icon(Icons.info, color: Colors.blue.shade700),
                 const SizedBox(width: 8),
-                Text(
-                  l10n.systemInfo,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue.shade700,
+                Expanded(
+                  child: Text(
+                    l10n.systemInfo,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue.shade700,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],

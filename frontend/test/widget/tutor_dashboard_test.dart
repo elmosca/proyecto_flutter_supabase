@@ -91,7 +91,7 @@ void main() {
       await WidgetTestUtils.waitForAnimation(tester);
 
       // Verificar que hay opciones de gestión de estudiantes
-      expect(find.byType(ElevatedButton), findsWidgets);
+      expect(find.byType(TextButton), findsWidgets);
     });
 
     testWidgets('TutorDashboard shows approval workflow',
@@ -152,7 +152,7 @@ void main() {
       await WidgetTestUtils.waitForAnimation(tester);
 
       // Verificar que los botones de navegación están presentes
-      final navigationButtons = find.byType(ElevatedButton);
+      final navigationButtons = find.byType(TextButton);
       expect(navigationButtons, findsWidgets);
 
       // Simular tap en botón de navegación
