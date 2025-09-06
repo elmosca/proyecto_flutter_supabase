@@ -503,6 +503,18 @@ abstract class AppLocalizations {
   /// **'View all'**
   String get viewAll;
 
+  /// Section title for pending anteprojects
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Anteprojects'**
+  String get pendingAnteprojects;
+
+  /// Section title for assigned students
+  ///
+  /// In en, this message translates to:
+  /// **'Assigned Students'**
+  String get assignedStudents;
+
   /// Message when there are no anteprojects
   ///
   /// In en, this message translates to:

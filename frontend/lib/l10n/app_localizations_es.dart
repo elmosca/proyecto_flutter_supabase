@@ -215,6 +215,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get viewAll => 'Ver todos';
 
   @override
+  String get pendingAnteprojects => 'Anteproyectos Pendientes';
+
+  @override
+  String get assignedStudents => 'Estudiantes Asignados';
+
+  @override
   String get noAnteprojects => 'No tienes anteproyectos creados. ¡Crea tu primer anteproyecto!';
 
   @override
