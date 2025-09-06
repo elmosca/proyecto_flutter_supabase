@@ -543,5 +543,125 @@
   "operationFailed": "La operación falló",
   "@operationFailed": {
     "description": "Mensaje de operación fallida"
+  },
+  "taskFormTitle": "Formulario de Tarea",
+  "@taskFormTitle": {
+    "description": "Título del formulario de tarea"
+  },
+  "taskEditFormTitle": "Editar Tarea",
+  "@taskEditFormTitle": {
+    "description": "Título del formulario de edición de tarea"
+  },
+  "taskTitle": "Título",
+  "@taskTitle": {
+    "description": "Campo de título de tarea"
+  },
+  "taskDescription": "Descripción",
+  "@taskDescription": {
+    "description": "Campo de descripción de tarea"
+  },
+  "taskStatus": "Estado",
+  "@taskStatus": {
+    "description": "Campo de estado de tarea"
+  },
+  "taskComplexity": "Complejidad",
+  "@taskComplexity": {
+    "description": "Campo de complejidad de tarea"
+  },
+  "taskDueDate": "Fecha de Vencimiento",
+  "@taskDueDate": {
+    "description": "Campo de fecha de vencimiento de tarea"
+  },
+  "taskEstimatedHours": "Horas Estimadas",
+  "@taskEstimatedHours": {
+    "description": "Campo de horas estimadas de tarea"
+  },
+  "taskTags": "Etiquetas",
+  "@taskTags": {
+    "description": "Campo de etiquetas de tarea"
+  },
+  "taskCreateButton": "Crear Tarea",
+  "@taskCreateButton": {
+    "description": "Botón para crear tarea"
+  },
+  "taskUpdateButton": "Actualizar Tarea",
+  "@taskUpdateButton": {
+    "description": "Botón para actualizar tarea"
+  },
+  "taskTitleRequired": "El título es obligatorio",
+  "@taskTitleRequired": {
+    "description": "Mensaje de error cuando el título es requerido"
+  },
+  "taskDescriptionRequired": "La descripción es obligatoria",
+  "@taskDescriptionRequired": {
+    "description": "Mensaje de error cuando la descripción es requerida"
+  },
+  "taskStatusPending": "Pendiente",
+  "@taskStatusPending": {
+    "description": "Estado de tarea pendiente"
+  },
+  "taskStatusInProgress": "En Progreso",
+  "@taskStatusInProgress": {
+    "description": "Estado de tarea en progreso"
+  },
+  "taskStatusUnderReview": "En Revisión",
+  "@taskStatusUnderReview": {
+    "description": "Estado de tarea en revisión"
+  },
+  "taskStatusCompleted": "Completada",
+  "@taskStatusCompleted": {
+    "description": "Estado de tarea completada"
+  },
+  "taskComplexitySimple": "Simple",
+  "@taskComplexitySimple": {
+    "description": "Complejidad simple de tarea"
+  },
+  "taskComplexityMedium": "Media",
+  "@taskComplexityMedium": {
+    "description": "Complejidad media de tarea"
+  },
+  "taskComplexityComplex": "Compleja",
+  "@taskComplexityComplex": {
+    "description": "Complejidad compleja de tarea"
+  },
+  "tasksListTitle": "Lista de Tareas",
+  "@tasksListTitle": {
+    "description": "Título de la lista de tareas"
+  },
+  "tasksListEmpty": "No hay tareas disponibles",
+  "@tasksListEmpty": {
+    "description": "Mensaje cuando no hay tareas en la lista"
+  },
+  "tasksListRefresh": "Actualizar",
+  "@tasksListRefresh": {
+    "description": "Botón para actualizar la lista de tareas"
+  },
+  "kanbanBoardTitle": "Tablero Kanban",
+  "@kanbanBoardTitle": {
+    "description": "Título del tablero Kanban"
+  },
+  "kanbanColumnPending": "Pendientes",
+  "@kanbanColumnPending": {
+    "description": "Columna de tareas pendientes en Kanban"
+  },
+  "kanbanColumnInProgress": "En Progreso",
+  "@kanbanColumnInProgress": {
+    "description": "Columna de tareas en progreso en Kanban"
+  },
+  "kanbanColumnUnderReview": "En Revisión",
+  "@kanbanColumnUnderReview": {
+    "description": "Columna de tareas en revisión en Kanban"
+  },
+  "kanbanColumnCompleted": "Completadas",
+  "@kanbanColumnCompleted": {
+    "description": "Columna de tareas completadas en Kanban"
+  },
+  "selectDate": "Seleccionar fecha",
+  "@selectDate": {
+    "description": "Texto para seleccionar fecha"
+  },
+  "retry": "Reintentar",
+  "@retry": {
+    "description": "Botón para reintentar una operación"
   }
 }

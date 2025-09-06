@@ -62,7 +62,8 @@ import 'app_localizations_es.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -70,7 +71,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -82,801 +84,977 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('es')
+    Locale('es'),
   ];
 
   /// Título principal de la aplicación
   ///
-  /// In en, this message translates to:
-  /// **'TFG Management System'**
+  /// In es, this message translates to:
+  /// **'Sistema de Gestión TFG'**
   String get appTitle;
 
   /// Botón o acción de iniciar sesión
   ///
-  /// In en, this message translates to:
-  /// **'Login'**
+  /// In es, this message translates to:
+  /// **'Iniciar Sesión'**
   String get login;
 
   /// Campo de email
   ///
-  /// In en, this message translates to:
-  /// **'Email'**
+  /// In es, this message translates to:
+  /// **'Correo Electrónico'**
   String get email;
 
   /// Campo de contraseña
   ///
-  /// In en, this message translates to:
-  /// **'Password'**
+  /// In es, this message translates to:
+  /// **'Contraseña'**
   String get password;
 
   /// Mensaje de error al fallar el login
   ///
-  /// In en, this message translates to:
-  /// **'Login error. Please verify your credentials.'**
+  /// In es, this message translates to:
+  /// **'Error de inicio de sesión. Por favor, verifica tus credenciales.'**
   String get loginError;
 
   /// Pantalla principal del usuario
   ///
-  /// In en, this message translates to:
-  /// **'Dashboard'**
+  /// In es, this message translates to:
+  /// **'Panel Principal'**
   String get dashboard;
 
   /// Sección de proyectos
   ///
-  /// In en, this message translates to:
-  /// **'Projects'**
+  /// In es, this message translates to:
+  /// **'Proyectos'**
   String get projects;
 
   /// Sección de tareas
   ///
-  /// In en, this message translates to:
-  /// **'Tasks'**
+  /// In es, this message translates to:
+  /// **'Tareas'**
   String get tasks;
 
   /// Sección de perfil de usuario
   ///
-  /// In en, this message translates to:
-  /// **'Profile'**
+  /// In es, this message translates to:
+  /// **'Perfil'**
   String get profile;
 
   /// Acción de cerrar sesión
   ///
-  /// In en, this message translates to:
-  /// **'Logout'**
+  /// In es, this message translates to:
+  /// **'Cerrar Sesión'**
   String get logout;
 
   /// Rol de estudiante
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Estudiante'**
   String get student;
 
   /// Rol de tutor
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Tutor'**
   String get tutor;
 
   /// Rol de administrador
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Administrador'**
   String get admin;
 
   /// Mensaje de bienvenida
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Bienvenido'**
   String get welcome;
 
   /// Mensaje de carga
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Cargando...'**
   String get loading;
 
   /// Mensaje de error genérico
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Error'**
   String get error;
 
   /// Mensaje de éxito genérico
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Éxito'**
   String get success;
 
   /// Botón de cancelar
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Cancelar'**
   String get cancel;
 
   /// Botón de guardar
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Guardar'**
   String get save;
 
   /// Botón de editar
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Editar'**
   String get edit;
 
   /// Mensaje de éxito al crear tarea
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Tarea creada exitosamente'**
   String get taskCreatedSuccess;
 
   /// Mensaje de éxito al actualizar tarea
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Tarea actualizada exitosamente'**
   String get taskUpdatedSuccess;
 
   /// Mensaje de éxito al actualizar estado de tarea
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Estado de tarea actualizado'**
   String get taskStatusUpdatedSuccess;
 
   /// Mensaje de éxito al eliminar tarea
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Tarea eliminada exitosamente'**
   String get taskDeletedSuccess;
 
   /// Mensaje de error cuando no se encuentra la tarea
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Tarea no encontrada'**
   String get taskNotFound;
 
   /// Botón de eliminar
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Eliminar'**
   String get delete;
 
   /// Botón de crear
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Crear'**
   String get create;
 
   /// Campo o acción de búsqueda
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Buscar'**
   String get search;
 
   /// Mensaje cuando no hay datos
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'No hay datos disponibles'**
   String get noData;
 
   /// Mensaje de error de conexión
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Error de conexión. Por favor, verifica tu conexión a internet.'**
   String get connectionError;
 
   /// Título del formulario de creación de anteproyecto
   ///
-  /// In en, this message translates to:
-  /// **'Create Anteproject'**
+  /// In es, this message translates to:
+  /// **'Crear Anteproyecto'**
   String get anteprojectFormTitle;
 
   /// Título del formulario de edición de anteproyecto
   ///
-  /// In en, this message translates to:
-  /// **'Edit Anteproject'**
+  /// In es, this message translates to:
+  /// **'Editar Anteproyecto'**
   String get anteprojectEditFormTitle;
 
   /// Campo título del anteproyecto
   ///
-  /// In en, this message translates to:
-  /// **'Title'**
+  /// In es, this message translates to:
+  /// **'Título'**
   String get anteprojectTitle;
 
   /// Campo tipo de proyecto del anteproyecto
   ///
-  /// In en, this message translates to:
-  /// **'Project Type'**
+  /// In es, this message translates to:
+  /// **'Tipo de proyecto'**
   String get anteprojectType;
 
   /// Campo descripción del anteproyecto
   ///
-  /// In en, this message translates to:
-  /// **'Description'**
+  /// In es, this message translates to:
+  /// **'Descripción'**
   String get anteprojectDescription;
 
   /// Campo año académico del anteproyecto
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Año académico (e.g., 2024-2025)'**
   String get anteprojectAcademicYear;
 
   /// Campo resultados esperados del anteproyecto
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Resultados esperados (JSON)'**
   String get anteprojectExpectedResults;
 
   /// Campo temporalización del anteproyecto
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Temporalización (JSON)'**
   String get anteprojectTimeline;
 
   /// Campo ID del tutor del anteproyecto
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Tutor ID'**
   String get anteprojectTutorId;
 
   /// Campo estado del anteproyecto
   ///
-  /// In en, this message translates to:
-  /// **'Status'**
+  /// In es, this message translates to:
+  /// **'Estado'**
   String get anteprojectStatus;
 
   /// Botón para crear anteproyecto
   ///
-  /// In en, this message translates to:
-  /// **'Create Anteproject'**
+  /// In es, this message translates to:
+  /// **'Crear anteproyecto'**
   String get anteprojectCreateButton;
 
   /// Botón para actualizar anteproyecto
   ///
-  /// In en, this message translates to:
-  /// **'Update Anteproject'**
+  /// In es, this message translates to:
+  /// **'Actualizar anteproyecto'**
   String get anteprojectUpdateButton;
 
   /// Botón para eliminar anteproyecto
   ///
-  /// In en, this message translates to:
-  /// **'Delete'**
+  /// In es, this message translates to:
+  /// **'Eliminar'**
   String get anteprojectDeleteButton;
 
   /// Título del diálogo de eliminación de anteproyecto
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Eliminar Anteproyecto'**
   String get anteprojectDeleteTitle;
 
   /// Mensaje del diálogo de eliminación de anteproyecto
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'¿Estás seguro de que quieres eliminar este anteproyecto? Esta acción no se puede deshacer.'**
   String get anteprojectDeleteMessage;
 
   /// Mensaje de éxito al crear anteproyecto
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Anteproyecto creado exitosamente'**
   String get anteprojectCreatedSuccess;
 
   /// Mensaje de éxito al actualizar anteproyecto
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Anteproyecto actualizado exitosamente'**
   String get anteprojectUpdatedSuccess;
 
   /// Mensaje de error para ID de tutor inválido
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Tutor ID inválido'**
   String get anteprojectInvalidTutorId;
 
   /// Mensaje de validación para título requerido
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'El título es obligatorio'**
   String get anteprojectTitleRequired;
 
   /// Mensaje de validación para descripción requerida
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'La descripción es obligatoria'**
   String get anteprojectDescriptionRequired;
 
   /// Mensaje de validación para año académico requerido
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'El año académico es obligatorio'**
   String get anteprojectAcademicYearRequired;
 
   /// Mensaje de validación para ID de tutor requerido
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'El Tutor ID es obligatorio'**
   String get anteprojectTutorIdRequired;
 
   /// Mensaje de validación para ID de tutor numérico
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'El Tutor ID debe ser numérico'**
   String get anteprojectTutorIdNumeric;
 
   /// Título de la lista de anteproyectos
   ///
-  /// In en, this message translates to:
-  /// **'My Anteprojects'**
+  /// In es, this message translates to:
+  /// **'Mis Anteproyectos'**
   String get anteprojectsListTitle;
 
   /// Botón para actualizar la lista de anteproyectos
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Actualizar lista'**
   String get anteprojectsListRefresh;
 
   /// Mensaje de error al cargar la lista de anteproyectos
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Error al cargar anteproyectos'**
   String get anteprojectsListError;
 
   /// Botón para reintentar cargar la lista
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Reintentar'**
   String get anteprojectsListRetry;
 
   /// Mensaje cuando la lista de anteproyectos está vacía
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'No tienes anteproyectos'**
   String get anteprojectsListEmpty;
 
   /// Subtítulo cuando la lista de anteproyectos está vacía
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Crea tu primer anteproyecto para comenzar'**
   String get anteprojectsListEmptySubtitle;
 
   /// Mensaje para estado desconocido en la lista
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Estado no reconocido'**
   String get anteprojectsListUnknownState;
 
   /// Botón para editar en la lista de anteproyectos
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Editar'**
   String get anteprojectsListEdit;
 
   /// Tooltip para el botón de eliminar anteproyecto
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Eliminar anteproyecto'**
   String get anteprojectDeleteTooltip;
 
   /// Etiqueta de estado con valor
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Estado: {status}'**
   String anteprojectStatusLabel(String status);
 
   /// Hint para el campo de resultados esperados
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Ejemplo milestone1 Descripción'**
   String get anteprojectExpectedResultsHint;
 
   /// Hint para el campo de temporalización
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Ejemplo phase1 Descripción'**
   String get anteprojectTimelineHint;
 
   /// Título del dashboard de estudiante
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Dashboard Estudiante'**
   String get dashboardStudent;
 
   /// Sección de anteproyectos del usuario
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Mis Anteproyectos'**
   String get myAnteprojects;
 
-  /// Link to view all items
+  /// Enlace para ver todos los elementos
   ///
-  /// In en, this message translates to:
-  /// **'View all'**
+  /// In es, this message translates to:
+  /// **'Ver todos'**
   String get viewAll;
 
-  /// Section title for pending anteprojects
+  /// Título de sección para anteproyectos pendientes
   ///
-  /// In en, this message translates to:
-  /// **'Pending Anteprojects'**
+  /// In es, this message translates to:
+  /// **'Anteproyectos Pendientes'**
   String get pendingAnteprojects;
 
-  /// Section title for assigned students
+  /// Título de sección para estudiantes asignados
   ///
-  /// In en, this message translates to:
-  /// **'Assigned Students'**
+  /// In es, this message translates to:
+  /// **'Estudiantes Asignados'**
   String get assignedStudents;
 
-  /// Message when there are no anteprojects
+  /// Mensaje cuando no hay anteproyectos
   ///
-  /// In en, this message translates to:
-  /// **'You don\'t have any anteprojects created. Create your first anteproject!'**
+  /// In es, this message translates to:
+  /// **'No tienes anteproyectos creados. ¡Crea tu primer anteproyecto!'**
   String get noAnteprojects;
 
-  /// Pending tasks section
+  /// Sección de tareas pendientes
   ///
-  /// In en, this message translates to:
-  /// **'Pending Tasks'**
+  /// In es, this message translates to:
+  /// **'Tareas Pendientes'**
   String get pendingTasks;
 
-  /// Link to view all tasks
+  /// Enlace para ver todas las tareas
   ///
-  /// In en, this message translates to:
-  /// **'View all'**
+  /// In es, this message translates to:
+  /// **'Ver todas'**
   String get viewAllTasks;
 
-  /// Message when there are no pending tasks
+  /// Mensaje cuando no hay tareas pendientes
   ///
-  /// In en, this message translates to:
-  /// **'You don\'t have any pending tasks. Great job!'**
+  /// In es, this message translates to:
+  /// **'No tienes tareas pendientes. ¡Excelente trabajo!'**
   String get noPendingTasks;
 
-  /// System information section
+  /// Sección de información del sistema
   ///
-  /// In en, this message translates to:
-  /// **'System Information'**
+  /// In es, this message translates to:
+  /// **'Información del Sistema'**
   String get systemInfo;
 
-  /// Backend label with URL
+  /// Etiqueta de backend con URL
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Backend: {url}'**
   String backendLabel(String url);
 
-  /// Platform label with value
+  /// Etiqueta de plataforma con valor
   ///
-  /// In en, this message translates to:
-  /// **'Platform: {platform}'**
+  /// In es, this message translates to:
+  /// **'Plataforma: {platform}'**
   String platformLabel(String platform);
 
-  /// Version label with value
+  /// Etiqueta de versión con valor
   ///
-  /// In en, this message translates to:
-  /// **'Version: {version}'**
+  /// In es, this message translates to:
+  /// **'Versión: {version}'**
   String versionLabel(String version);
 
-  /// Email label
+  /// Etiqueta de email
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Email'**
   String get emailLabel;
 
-  /// Server connection status message
+  /// Mensaje de estado de conexión al servidor
   ///
-  /// In en, this message translates to:
-  /// **'Status: Connected to network server'**
+  /// In es, this message translates to:
+  /// **'Estado: Conectado al servidor de red'**
   String get connectedToServer;
 
-  /// Temporary message for tasks list in development
+  /// Mensaje temporal para lista de tareas en desarrollo
   ///
-  /// In en, this message translates to:
-  /// **'Tasks list in development'**
+  /// In es, this message translates to:
+  /// **'Lista de tareas en desarrollo'**
   String get tasksListDev;
 
-  /// Temporary message for admin dashboard in development
+  /// Mensaje temporal para dashboard de admin en desarrollo
   ///
-  /// In en, this message translates to:
-  /// **'Admin dashboard in development'**
+  /// In es, this message translates to:
+  /// **'Dashboard de admin en desarrollo'**
   String get adminDashboardDev;
 
-  /// User management section in admin dashboard
+  /// Sección de gestión de usuarios en dashboard de admin
   ///
-  /// In en, this message translates to:
-  /// **'User Management'**
+  /// In es, this message translates to:
+  /// **'Gestión de Usuarios'**
   String get dashboardAdminUsersManagement;
 
-  /// Temporary message for tutor dashboard in development
+  /// Mensaje temporal para dashboard de tutor en desarrollo
   ///
-  /// In en, this message translates to:
-  /// **'Tutor dashboard in development'**
+  /// In es, this message translates to:
+  /// **'Dashboard de tutor en desarrollo'**
   String get tutorDashboardDev;
 
-  /// Anteprojects section in tutor dashboard
+  /// Sección de anteproyectos en dashboard de tutor
   ///
-  /// In en, this message translates to:
-  /// **'My Anteprojects'**
+  /// In es, this message translates to:
+  /// **'Mis Anteproyectos'**
   String get dashboardTutorMyAnteprojects;
 
-  /// Language setting
+  /// Configuración de idioma
   ///
-  /// In en, this message translates to:
-  /// **'Language'**
+  /// In es, this message translates to:
+  /// **'Idioma'**
   String get language;
 
-  /// Spanish language
+  /// Idioma español
   ///
-  /// In en, this message translates to:
-  /// **'Spanish'**
+  /// In es, this message translates to:
+  /// **'Español'**
   String get spanish;
 
-  /// English language
+  /// Idioma inglés
   ///
-  /// In en, this message translates to:
-  /// **'English'**
+  /// In es, this message translates to:
+  /// **'Inglés'**
   String get english;
 
-  /// Server information section
+  /// Sección de información del servidor
   ///
-  /// In en, this message translates to:
-  /// **'Server Information'**
+  /// In es, this message translates to:
+  /// **'Información del Servidor'**
   String get serverInfo;
 
-  /// Server URL
+  /// URL del servidor
   ///
-  /// In en, this message translates to:
-  /// **'Server URL'**
+  /// In es, this message translates to:
+  /// **'URL del Servidor'**
   String get serverUrl;
 
-  /// Application version
+  /// Versión de la aplicación
   ///
-  /// In en, this message translates to:
-  /// **'Version'**
+  /// In es, this message translates to:
+  /// **'Versión'**
   String get version;
 
-  /// Test credentials section
+  /// Sección de credenciales de prueba
   ///
-  /// In en, this message translates to:
-  /// **'Test Credentials'**
+  /// In es, this message translates to:
+  /// **'Credenciales de Prueba'**
   String get testCredentials;
 
-  /// Test student email
+  /// Email de estudiante de prueba
   ///
-  /// In en, this message translates to:
-  /// **'Student Email'**
+  /// In es, this message translates to:
+  /// **'Correo del Estudiante'**
   String get studentEmail;
 
-  /// Test tutor email
+  /// Email de tutor de prueba
   ///
-  /// In en, this message translates to:
-  /// **'Tutor Email'**
+  /// In es, this message translates to:
+  /// **'Correo del Tutor'**
   String get tutorEmail;
 
-  /// Test admin email
+  /// Email de administrador de prueba
   ///
-  /// In en, this message translates to:
-  /// **'Admin Email'**
+  /// In es, this message translates to:
+  /// **'Correo del Administrador'**
   String get adminEmail;
 
-  /// Test password
+  /// Contraseña de prueba
   ///
-  /// In en, this message translates to:
-  /// **'Test Password'**
+  /// In es, this message translates to:
+  /// **'Contraseña de Prueba'**
   String get testPassword;
 
-  /// Link to Supabase Studio
+  /// Enlace a Supabase Studio
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'Studio'**
   String get studio;
 
-  /// Successful login title
+  /// Título de login exitoso
   ///
-  /// In en, this message translates to:
-  /// **'✅ Login Successful'**
+  /// In es, this message translates to:
+  /// **'✅ Login Exitoso'**
   String get loginSuccessTitle;
 
-  /// Copy to clipboard action
+  /// Acción de copiar al portapapeles
   ///
-  /// In en, this message translates to:
-  /// **'Copy to clipboard'**
+  /// In es, this message translates to:
+  /// **'Copiar al portapapeles'**
   String get copyToClipboard;
 
-  /// Copy confirmation message
+  /// Mensaje de confirmación de copiado
   ///
-  /// In en, this message translates to:
-  /// **'Copied!'**
+  /// In es, this message translates to:
+  /// **'¡Copiado!'**
   String get copied;
 
-  /// Button to view details
+  /// Botón para ver detalles
   ///
-  /// In en, this message translates to:
-  /// **'View details'**
+  /// In es, this message translates to:
+  /// **'Ver detalles'**
   String get viewDetails;
 
-  /// Development feature message
+  /// Mensaje de funcionalidad en desarrollo
   ///
-  /// In en, this message translates to:
-  /// **'Anteprojects list in development'**
+  /// In es, this message translates to:
+  /// **'Lista de anteproyectos en desarrollo'**
   String get anteprojectsListInDevelopment;
 
-  /// Development feature message
+  /// Mensaje de funcionalidad en desarrollo
   ///
-  /// In en, this message translates to:
-  /// **'Students list in development'**
+  /// In es, this message translates to:
+  /// **'Lista de estudiantes en desarrollo'**
   String get studentsListInDevelopment;
 
-  /// Development feature message
+  /// Mensaje de funcionalidad en desarrollo
   ///
-  /// In en, this message translates to:
-  /// **'User management panel in development'**
+  /// In es, this message translates to:
+  /// **'Panel de gestión de usuarios en desarrollo'**
   String get userManagementInDevelopment;
 
-  /// Development feature message
+  /// Mensaje de funcionalidad en desarrollo
   ///
-  /// In en, this message translates to:
-  /// **'Detailed system status in development'**
+  /// In es, this message translates to:
+  /// **'Estado detallado del sistema en desarrollo'**
   String get systemStatusInDevelopment;
 
-  /// Development feature message
+  /// Mensaje de funcionalidad en desarrollo
   ///
-  /// In en, this message translates to:
-  /// **'Users list in development'**
+  /// In es, this message translates to:
+  /// **'Lista de usuarios en desarrollo'**
   String get usersListInDevelopment;
 
-  /// Validation error title
+  /// Título de error de validación
   ///
-  /// In en, this message translates to:
-  /// **'Validation Error'**
+  /// In es, this message translates to:
+  /// **'Error de validación'**
   String get validationError;
 
-  /// Form validation error message
+  /// Mensaje de error de validación de formulario
   ///
-  /// In en, this message translates to:
-  /// **'Please correct the errors in the form'**
+  /// In es, this message translates to:
+  /// **'Por favor, corrige los errores en el formulario'**
   String get formValidationError;
 
-  /// Network error title
+  /// Título de error de red
   ///
-  /// In en, this message translates to:
-  /// **'Network Error'**
+  /// In es, this message translates to:
+  /// **'Error de red'**
   String get networkError;
 
-  /// Network error message
+  /// Mensaje de error de red
   ///
-  /// In en, this message translates to:
-  /// **'Could not connect to server. Check your internet connection.'**
+  /// In es, this message translates to:
+  /// **'No se pudo conectar al servidor. Verifica tu conexión a internet.'**
   String get networkErrorMessage;
 
-  /// Server error title
+  /// Título de error del servidor
   ///
-  /// In en, this message translates to:
-  /// **'Server Error'**
+  /// In es, this message translates to:
+  /// **'Error del servidor'**
   String get serverError;
 
-  /// Server error message
+  /// Mensaje de error del servidor
   ///
-  /// In en, this message translates to:
-  /// **'The server could not process the request. Please try again later.'**
+  /// In es, this message translates to:
+  /// **'El servidor no pudo procesar la solicitud. Inténtalo de nuevo más tarde.'**
   String get serverErrorMessage;
 
-  /// Unknown error title
+  /// Título de error desconocido
   ///
-  /// In en, this message translates to:
-  /// **'Unknown Error'**
+  /// In es, this message translates to:
+  /// **'Error desconocido'**
   String get unknownError;
 
-  /// Unknown error message
+  /// Mensaje de error desconocido
   ///
-  /// In en, this message translates to:
-  /// **'An unexpected error occurred. Please try again.'**
+  /// In es, this message translates to:
+  /// **'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.'**
   String get unknownErrorMessage;
 
-  /// Retry operation button
+  /// Botón para reintentar una operación
   ///
-  /// In en, this message translates to:
-  /// **'Retry'**
+  /// In es, this message translates to:
+  /// **'Reintentar'**
   String get retry;
 
-  /// Close button
+  /// Botón para cerrar
   ///
-  /// In en, this message translates to:
-  /// **'Close'**
+  /// In es, this message translates to:
+  /// **'Cerrar'**
   String get close;
 
-  /// Confirm button
+  /// Botón para confirmar
   ///
-  /// In en, this message translates to:
-  /// **'Confirm'**
+  /// In es, this message translates to:
+  /// **'Confirmar'**
   String get confirm;
 
-  /// Affirmative response
+  /// Respuesta afirmativa
   ///
-  /// In en, this message translates to:
-  /// **'Yes'**
+  /// In es, this message translates to:
+  /// **'Sí'**
   String get yes;
 
-  /// Negative response
+  /// Respuesta negativa
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'No'**
   String get no;
 
-  /// Confirmation button
+  /// Botón de confirmación
   ///
-  /// In en, this message translates to:
+  /// In es, this message translates to:
   /// **'OK'**
   String get ok;
 
-  /// Generic required field message
+  /// Mensaje de campo obligatorio genérico
   ///
-  /// In en, this message translates to:
-  /// **'This field is required'**
+  /// In es, this message translates to:
+  /// **'Este campo es obligatorio'**
   String get fieldRequired;
 
-  /// Field too short message
+  /// Mensaje de campo demasiado corto
   ///
-  /// In en, this message translates to:
-  /// **'This field is too short'**
+  /// In es, this message translates to:
+  /// **'Este campo es demasiado corto'**
   String get fieldTooShort;
 
-  /// Field too long message
+  /// Mensaje de campo demasiado largo
   ///
-  /// In en, this message translates to:
-  /// **'This field is too long'**
+  /// In es, this message translates to:
+  /// **'Este campo es demasiado largo'**
   String get fieldTooLong;
 
-  /// Invalid email message
+  /// Mensaje de email inválido
   ///
-  /// In en, this message translates to:
-  /// **'The email format is not valid'**
+  /// In es, this message translates to:
+  /// **'El formato del email no es válido'**
   String get invalidEmail;
 
-  /// Invalid URL message
+  /// Mensaje de URL inválida
   ///
-  /// In en, this message translates to:
-  /// **'The URL format is not valid'**
+  /// In es, this message translates to:
+  /// **'La URL no tiene un formato válido'**
   String get invalidUrl;
 
-  /// Invalid number message
+  /// Mensaje de número inválido
   ///
-  /// In en, this message translates to:
-  /// **'The value must be a valid number'**
+  /// In es, this message translates to:
+  /// **'El valor debe ser un número válido'**
   String get invalidNumber;
 
-  /// Invalid JSON message
+  /// Mensaje de JSON inválido
   ///
-  /// In en, this message translates to:
-  /// **'The JSON format is not valid'**
+  /// In es, this message translates to:
+  /// **'El formato JSON no es válido'**
   String get invalidJson;
 
-  /// Operation in progress message
+  /// Mensaje de operación en progreso
   ///
-  /// In en, this message translates to:
-  /// **'Operation in progress...'**
+  /// In es, this message translates to:
+  /// **'Operación en progreso...'**
   String get operationInProgress;
 
-  /// Operation completed message
+  /// Mensaje de operación completada
   ///
-  /// In en, this message translates to:
-  /// **'Operation completed'**
+  /// In es, this message translates to:
+  /// **'Operación completada'**
   String get operationCompleted;
 
-  /// Operation failed message
+  /// Mensaje de operación fallida
   ///
-  /// In en, this message translates to:
-  /// **'The operation failed'**
+  /// In es, this message translates to:
+  /// **'La operación falló'**
   String get operationFailed;
+
+  /// Título del formulario de tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Formulario de Tarea'**
+  String get taskFormTitle;
+
+  /// Título del formulario de edición de tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Editar Tarea'**
+  String get taskEditFormTitle;
+
+  /// Campo de título de tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Título'**
+  String get taskTitle;
+
+  /// Campo de descripción de tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Descripción'**
+  String get taskDescription;
+
+  /// Campo de estado de tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Estado'**
+  String get taskStatus;
+
+  /// Campo de complejidad de tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Complejidad'**
+  String get taskComplexity;
+
+  /// Campo de fecha de vencimiento de tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha de Vencimiento'**
+  String get taskDueDate;
+
+  /// Campo de horas estimadas de tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Horas Estimadas'**
+  String get taskEstimatedHours;
+
+  /// Campo de etiquetas de tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Etiquetas'**
+  String get taskTags;
+
+  /// Botón para crear tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Crear Tarea'**
+  String get taskCreateButton;
+
+  /// Botón para actualizar tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizar Tarea'**
+  String get taskUpdateButton;
+
+  /// Mensaje de error cuando el título es requerido
+  ///
+  /// In es, this message translates to:
+  /// **'El título es obligatorio'**
+  String get taskTitleRequired;
+
+  /// Mensaje de error cuando la descripción es requerida
+  ///
+  /// In es, this message translates to:
+  /// **'La descripción es obligatoria'**
+  String get taskDescriptionRequired;
+
+  /// Estado de tarea pendiente
+  ///
+  /// In es, this message translates to:
+  /// **'Pendiente'**
+  String get taskStatusPending;
+
+  /// Estado de tarea en progreso
+  ///
+  /// In es, this message translates to:
+  /// **'En Progreso'**
+  String get taskStatusInProgress;
+
+  /// Estado de tarea en revisión
+  ///
+  /// In es, this message translates to:
+  /// **'En Revisión'**
+  String get taskStatusUnderReview;
+
+  /// Estado de tarea completada
+  ///
+  /// In es, this message translates to:
+  /// **'Completada'**
+  String get taskStatusCompleted;
+
+  /// Complejidad simple de tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Simple'**
+  String get taskComplexitySimple;
+
+  /// Complejidad media de tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Media'**
+  String get taskComplexityMedium;
+
+  /// Complejidad compleja de tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Compleja'**
+  String get taskComplexityComplex;
+
+  /// Título de la lista de tareas
+  ///
+  /// In es, this message translates to:
+  /// **'Lista de Tareas'**
+  String get tasksListTitle;
+
+  /// Mensaje cuando no hay tareas en la lista
+  ///
+  /// In es, this message translates to:
+  /// **'No hay tareas disponibles'**
+  String get tasksListEmpty;
+
+  /// Botón para actualizar la lista de tareas
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizar'**
+  String get tasksListRefresh;
+
+  /// Título del tablero Kanban
+  ///
+  /// In es, this message translates to:
+  /// **'Tablero Kanban'**
+  String get kanbanBoardTitle;
+
+  /// Columna de tareas pendientes en Kanban
+  ///
+  /// In es, this message translates to:
+  /// **'Pendientes'**
+  String get kanbanColumnPending;
+
+  /// Columna de tareas en progreso en Kanban
+  ///
+  /// In es, this message translates to:
+  /// **'En Progreso'**
+  String get kanbanColumnInProgress;
+
+  /// Columna de tareas en revisión en Kanban
+  ///
+  /// In es, this message translates to:
+  /// **'En Revisión'**
+  String get kanbanColumnUnderReview;
+
+  /// Columna de tareas completadas en Kanban
+  ///
+  /// In es, this message translates to:
+  /// **'Completadas'**
+  String get kanbanColumnCompleted;
+
+  /// Texto para seleccionar fecha
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar fecha'**
+  String get selectDate;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -885,25 +1063,26 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'es'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'es'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en': return AppLocalizationsEn();
-    case 'es': return AppLocalizationsEs();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'es':
+      return AppLocalizationsEs();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
+    'that was used.',
   );
 }

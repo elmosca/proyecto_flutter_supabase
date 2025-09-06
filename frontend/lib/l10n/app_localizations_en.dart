@@ -96,7 +96,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noData => 'No hay datos disponibles';
 
   @override
-  String get connectionError => 'Error de conexión. Por favor, verifica tu conexión a internet.';
+  String get connectionError =>
+      'Error de conexión. Por favor, verifica tu conexión a internet.';
 
   @override
   String get anteprojectFormTitle => 'Create Anteproject';
@@ -141,13 +142,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get anteprojectDeleteTitle => 'Eliminar Anteproyecto';
 
   @override
-  String get anteprojectDeleteMessage => '¿Estás seguro de que quieres eliminar este anteproyecto? Esta acción no se puede deshacer.';
+  String get anteprojectDeleteMessage =>
+      '¿Estás seguro de que quieres eliminar este anteproyecto? Esta acción no se puede deshacer.';
 
   @override
   String get anteprojectCreatedSuccess => 'Anteproyecto creado exitosamente';
 
   @override
-  String get anteprojectUpdatedSuccess => 'Anteproyecto actualizado exitosamente';
+  String get anteprojectUpdatedSuccess =>
+      'Anteproyecto actualizado exitosamente';
 
   @override
   String get anteprojectInvalidTutorId => 'Tutor ID inválido';
@@ -159,7 +162,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get anteprojectDescriptionRequired => 'La descripción es obligatoria';
 
   @override
-  String get anteprojectAcademicYearRequired => 'El año académico es obligatorio';
+  String get anteprojectAcademicYearRequired =>
+      'El año académico es obligatorio';
 
   @override
   String get anteprojectTutorIdRequired => 'El Tutor ID es obligatorio';
@@ -183,7 +187,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get anteprojectsListEmpty => 'No tienes anteproyectos';
 
   @override
-  String get anteprojectsListEmptySubtitle => 'Crea tu primer anteproyecto para comenzar';
+  String get anteprojectsListEmptySubtitle =>
+      'Crea tu primer anteproyecto para comenzar';
 
   @override
   String get anteprojectsListUnknownState => 'Estado no reconocido';
@@ -221,7 +226,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get assignedStudents => 'Assigned Students';
 
   @override
-  String get noAnteprojects => 'You don\'t have any anteprojects created. Create your first anteproject!';
+  String get noAnteprojects =>
+      'You don\'t have any anteprojects created. Create your first anteproject!';
 
   @override
   String get pendingTasks => 'Pending Tasks';
@@ -320,16 +326,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewDetails => 'View details';
 
   @override
-  String get anteprojectsListInDevelopment => 'Anteprojects list in development';
+  String get anteprojectsListInDevelopment =>
+      'Anteprojects list in development';
 
   @override
   String get studentsListInDevelopment => 'Students list in development';
 
   @override
-  String get userManagementInDevelopment => 'User management panel in development';
+  String get userManagementInDevelopment =>
+      'User management panel in development';
 
   @override
-  String get systemStatusInDevelopment => 'Detailed system status in development';
+  String get systemStatusInDevelopment =>
+      'Detailed system status in development';
 
   @override
   String get usersListInDevelopment => 'Users list in development';
@@ -344,19 +353,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get networkError => 'Network Error';
 
   @override
-  String get networkErrorMessage => 'Could not connect to server. Check your internet connection.';
+  String get networkErrorMessage =>
+      'Could not connect to server. Check your internet connection.';
 
   @override
   String get serverError => 'Server Error';
 
   @override
-  String get serverErrorMessage => 'The server could not process the request. Please try again later.';
+  String get serverErrorMessage =>
+      'The server could not process the request. Please try again later.';
 
   @override
   String get unknownError => 'Unknown Error';
 
   @override
-  String get unknownErrorMessage => 'An unexpected error occurred. Please try again.';
+  String get unknownErrorMessage =>
+      'An unexpected error occurred. Please try again.';
 
   @override
   String get retry => 'Retry';
@@ -405,4 +417,91 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get operationFailed => 'The operation failed';
+
+  @override
+  String get taskFormTitle => 'Formulario de Tarea';
+
+  @override
+  String get taskEditFormTitle => 'Editar Tarea';
+
+  @override
+  String get taskTitle => 'Título';
+
+  @override
+  String get taskDescription => 'Descripción';
+
+  @override
+  String get taskStatus => 'Estado';
+
+  @override
+  String get taskComplexity => 'Complejidad';
+
+  @override
+  String get taskDueDate => 'Fecha de Vencimiento';
+
+  @override
+  String get taskEstimatedHours => 'Horas Estimadas';
+
+  @override
+  String get taskTags => 'Etiquetas';
+
+  @override
+  String get taskCreateButton => 'Crear Tarea';
+
+  @override
+  String get taskUpdateButton => 'Actualizar Tarea';
+
+  @override
+  String get taskTitleRequired => 'El título es obligatorio';
+
+  @override
+  String get taskDescriptionRequired => 'La descripción es obligatoria';
+
+  @override
+  String get taskStatusPending => 'Pendiente';
+
+  @override
+  String get taskStatusInProgress => 'En Progreso';
+
+  @override
+  String get taskStatusUnderReview => 'En Revisión';
+
+  @override
+  String get taskStatusCompleted => 'Completada';
+
+  @override
+  String get taskComplexitySimple => 'Simple';
+
+  @override
+  String get taskComplexityMedium => 'Media';
+
+  @override
+  String get taskComplexityComplex => 'Compleja';
+
+  @override
+  String get tasksListTitle => 'Lista de Tareas';
+
+  @override
+  String get tasksListEmpty => 'No hay tareas disponibles';
+
+  @override
+  String get tasksListRefresh => 'Actualizar';
+
+  @override
+  String get kanbanBoardTitle => 'Tablero Kanban';
+
+  @override
+  String get kanbanColumnPending => 'Pendientes';
+
+  @override
+  String get kanbanColumnInProgress => 'En Progreso';
+
+  @override
+  String get kanbanColumnUnderReview => 'En Revisión';
+
+  @override
+  String get kanbanColumnCompleted => 'Completadas';
+
+  @override
+  String get selectDate => 'Seleccionar fecha';
 }

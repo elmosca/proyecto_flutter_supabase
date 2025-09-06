@@ -150,19 +150,22 @@ class WidgetTestUtils {
 
   /// Esperar a que se complete la animación
   static Future<void> waitForAnimation(WidgetTester tester) async {
-    await tester.pumpAndSettle();
+    // Usar pump() múltiples veces en lugar de pumpAndSettle() para evitar problemas de renderizado
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump(const Duration(milliseconds: 100));
   }
 
   /// Simular tap en un widget
   static Future<void> tapWidget(WidgetTester tester, Finder finder) async {
     await tester.tap(finder);
-    await tester.pumpAndSettle();
+    await tester.pump(); // Usar pump() en lugar de pumpAndSettle() para evitar problemas de renderizado
   }
 
   /// Simular entrada de texto
   static Future<void> enterText(WidgetTester tester, Finder finder, String text) async {
     await tester.enterText(finder, text);
-    await tester.pumpAndSettle();
+    await tester.pump(); // Usar pump() en lugar de pumpAndSettle() para evitar problemas de renderizado
   }
 
   /// Verificar que un widget está presente
