@@ -21,7 +21,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get password => 'Contraseña';
 
   @override
-  String get loginError => 'Error de inicio de sesión. Por favor, verifica tus credenciales.';
+  String get loginError =>
+      'Error de inicio de sesión. Por favor, verifica tus credenciales.';
 
   @override
   String get dashboard => 'Panel Principal';
@@ -96,7 +97,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noData => 'No hay datos disponibles';
 
   @override
-  String get connectionError => 'Error de conexión. Por favor, verifica tu conexión a internet.';
+  String get connectionError =>
+      'Error de conexión. Por favor, verifica tu conexión a internet.';
 
   @override
   String get anteprojectFormTitle => 'Crear Anteproyecto';
@@ -141,13 +143,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get anteprojectDeleteTitle => 'Eliminar Anteproyecto';
 
   @override
-  String get anteprojectDeleteMessage => '¿Estás seguro de que quieres eliminar este anteproyecto? Esta acción no se puede deshacer.';
+  String get anteprojectDeleteMessage =>
+      '¿Estás seguro de que quieres eliminar este anteproyecto? Esta acción no se puede deshacer.';
 
   @override
   String get anteprojectCreatedSuccess => 'Anteproyecto creado exitosamente';
 
   @override
-  String get anteprojectUpdatedSuccess => 'Anteproyecto actualizado exitosamente';
+  String get anteprojectUpdatedSuccess =>
+      'Anteproyecto actualizado exitosamente';
 
   @override
   String get anteprojectInvalidTutorId => 'Tutor ID inválido';
@@ -159,7 +163,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get anteprojectDescriptionRequired => 'La descripción es obligatoria';
 
   @override
-  String get anteprojectAcademicYearRequired => 'El año académico es obligatorio';
+  String get anteprojectAcademicYearRequired =>
+      'El año académico es obligatorio';
 
   @override
   String get anteprojectTutorIdRequired => 'El Tutor ID es obligatorio';
@@ -183,7 +188,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get anteprojectsListEmpty => 'No tienes anteproyectos';
 
   @override
-  String get anteprojectsListEmptySubtitle => 'Crea tu primer anteproyecto para comenzar';
+  String get anteprojectsListEmptySubtitle =>
+      'Crea tu primer anteproyecto para comenzar';
 
   @override
   String get anteprojectsListUnknownState => 'Estado no reconocido';
@@ -221,7 +227,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get assignedStudents => 'Estudiantes Asignados';
 
   @override
-  String get noAnteprojects => 'No tienes anteproyectos creados. ¡Crea tu primer anteproyecto!';
+  String get noAnteprojects =>
+      'No tienes anteproyectos creados. ¡Crea tu primer anteproyecto!';
 
   @override
   String get pendingTasks => 'Tareas Pendientes';
@@ -230,7 +237,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get viewAllTasks => 'Ver todas';
 
   @override
-  String get noPendingTasks => 'No tienes tareas pendientes. ¡Excelente trabajo!';
+  String get noPendingTasks =>
+      'No tienes tareas pendientes. ¡Excelente trabajo!';
 
   @override
   String get systemInfo => 'Información del Sistema';
@@ -320,16 +328,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get viewDetails => 'Ver detalles';
 
   @override
-  String get anteprojectsListInDevelopment => 'Lista de anteproyectos en desarrollo';
+  String get anteprojectsListInDevelopment =>
+      'Lista de anteproyectos en desarrollo';
 
   @override
   String get studentsListInDevelopment => 'Lista de estudiantes en desarrollo';
 
   @override
-  String get userManagementInDevelopment => 'Panel de gestión de usuarios en desarrollo';
+  String get userManagementInDevelopment =>
+      'Panel de gestión de usuarios en desarrollo';
 
   @override
-  String get systemStatusInDevelopment => 'Estado detallado del sistema en desarrollo';
+  String get systemStatusInDevelopment =>
+      'Estado detallado del sistema en desarrollo';
 
   @override
   String get usersListInDevelopment => 'Lista de usuarios en desarrollo';
@@ -338,25 +349,29 @@ class AppLocalizationsEs extends AppLocalizations {
   String get validationError => 'Error de validación';
 
   @override
-  String get formValidationError => 'Por favor, corrige los errores en el formulario';
+  String get formValidationError =>
+      'Por favor, corrige los errores en el formulario';
 
   @override
   String get networkError => 'Error de red';
 
   @override
-  String get networkErrorMessage => 'No se pudo conectar al servidor. Verifica tu conexión a internet.';
+  String get networkErrorMessage =>
+      'No se pudo conectar al servidor. Verifica tu conexión a internet.';
 
   @override
   String get serverError => 'Error del servidor';
 
   @override
-  String get serverErrorMessage => 'El servidor no pudo procesar la solicitud. Inténtalo de nuevo más tarde.';
+  String get serverErrorMessage =>
+      'El servidor no pudo procesar la solicitud. Inténtalo de nuevo más tarde.';
 
   @override
   String get unknownError => 'Error desconocido';
 
   @override
-  String get unknownErrorMessage => 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.';
+  String get unknownErrorMessage =>
+      'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.';
 
   @override
   String get retry => 'Reintentar';
@@ -405,4 +420,91 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get operationFailed => 'La operación falló';
+
+  @override
+  String get taskFormTitle => 'Formulario de Tarea';
+
+  @override
+  String get taskEditFormTitle => 'Editar Tarea';
+
+  @override
+  String get taskTitle => 'Título';
+
+  @override
+  String get taskDescription => 'Descripción';
+
+  @override
+  String get taskStatus => 'Estado';
+
+  @override
+  String get taskComplexity => 'Complejidad';
+
+  @override
+  String get taskDueDate => 'Fecha de Vencimiento';
+
+  @override
+  String get taskEstimatedHours => 'Horas Estimadas';
+
+  @override
+  String get taskTags => 'Etiquetas';
+
+  @override
+  String get taskCreateButton => 'Crear Tarea';
+
+  @override
+  String get taskUpdateButton => 'Actualizar Tarea';
+
+  @override
+  String get taskTitleRequired => 'El título es obligatorio';
+
+  @override
+  String get taskDescriptionRequired => 'La descripción es obligatoria';
+
+  @override
+  String get taskStatusPending => 'Pendiente';
+
+  @override
+  String get taskStatusInProgress => 'En Progreso';
+
+  @override
+  String get taskStatusUnderReview => 'En Revisión';
+
+  @override
+  String get taskStatusCompleted => 'Completada';
+
+  @override
+  String get taskComplexitySimple => 'Simple';
+
+  @override
+  String get taskComplexityMedium => 'Media';
+
+  @override
+  String get taskComplexityComplex => 'Compleja';
+
+  @override
+  String get tasksListTitle => 'Lista de Tareas';
+
+  @override
+  String get tasksListEmpty => 'No hay tareas disponibles';
+
+  @override
+  String get tasksListRefresh => 'Actualizar';
+
+  @override
+  String get kanbanBoardTitle => 'Tablero Kanban';
+
+  @override
+  String get kanbanColumnPending => 'Pendientes';
+
+  @override
+  String get kanbanColumnInProgress => 'En Progreso';
+
+  @override
+  String get kanbanColumnUnderReview => 'En Revisión';
+
+  @override
+  String get kanbanColumnCompleted => 'Completadas';
+
+  @override
+  String get selectDate => 'Seleccionar fecha';
 }

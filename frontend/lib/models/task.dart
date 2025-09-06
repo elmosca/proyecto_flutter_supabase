@@ -121,32 +121,9 @@ enum TaskComplexity {
 }
 
 extension TaskStatusExtension on TaskStatus {
-  String get displayName {
-    switch (this) {
-      case TaskStatus.pending:
-        return 'Pendiente';
-      case TaskStatus.inProgress:
-        return 'En Progreso';
-      case TaskStatus.underReview:
-        return 'En Revisión';
-      case TaskStatus.completed:
-        return 'Completada';
-    }
-  }
-
-  String get shortName {
-    switch (this) {
-      case TaskStatus.pending:
-        return 'Pendiente';
-      case TaskStatus.inProgress:
-        return 'Progreso';
-      case TaskStatus.underReview:
-        return 'Revisión';
-      case TaskStatus.completed:
-        return 'Completada';
-    }
-  }
-
+  // Los métodos displayName y shortName ahora requieren AppLocalizations
+  // Se moverán a un helper o se usarán directamente en los widgets
+  
   bool get isCompleted => this == TaskStatus.completed;
   bool get isInProgress => this == TaskStatus.inProgress;
   bool get isPending => this == TaskStatus.pending;
@@ -154,17 +131,9 @@ extension TaskStatusExtension on TaskStatus {
 }
 
 extension TaskComplexityExtension on TaskComplexity {
-  String get displayName {
-    switch (this) {
-      case TaskComplexity.simple:
-        return 'Simple';
-      case TaskComplexity.medium:
-        return 'Media';
-      case TaskComplexity.complex:
-        return 'Compleja';
-    }
-  }
-
+  // El método displayName ahora requiere AppLocalizations
+  // Se usará directamente en los widgets
+  
   int get estimatedHours {
     switch (this) {
       case TaskComplexity.simple:
