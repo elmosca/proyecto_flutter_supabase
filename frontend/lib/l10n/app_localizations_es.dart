@@ -507,4 +507,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get selectDate => 'Seleccionar fecha';
+
+  @override
+  String get createTask => 'Crear Tarea';
 }

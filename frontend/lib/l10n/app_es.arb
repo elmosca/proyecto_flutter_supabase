@@ -663,5 +663,9 @@
   "retry": "Reintentar",
   "@retry": {
     "description": "Botón para reintentar una operación"
+  },
+  "createTask": "Crear Tarea",
+  "@createTask": {
+    "description": "Botón para crear una nueva tarea"
   }
 }

@@ -117,18 +117,10 @@ void main() {
       expect(AnteprojectStatus.approved.displayName, equals('Aprobado'));
       expect(AnteprojectStatus.rejected.displayName, equals('Rechazado'));
       
-      // Verificar nombres de visualización de TaskStatus
-      expect(TaskStatus.pending.displayName, equals('Pendiente'));
-      expect(TaskStatus.inProgress.displayName, equals('En Progreso'));
-      expect(TaskStatus.underReview.displayName, equals('En Revisión'));
-      expect(TaskStatus.completed.displayName, equals('Completada'));
+      // TaskStatus y TaskComplexity ya no tienen displayName para forzar internacionalización
+      // Los nombres de visualización se manejan a través de TaskLocalizationsHelper
       
-      // Verificar nombres de visualización de TaskComplexity
-      expect(TaskComplexity.simple.displayName, equals('Simple'));
-      expect(TaskComplexity.medium.displayName, equals('Media'));
-      expect(TaskComplexity.complex.displayName, equals('Compleja'));
-      
-      debugPrint('✅ Todos los enums tienen nombres de visualización correctos');
+      debugPrint('✅ AnteprojectStatus tiene nombres de visualización correctos');
     });
 
     test('Model enums have correct utility methods', () {
