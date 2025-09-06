@@ -18,10 +18,7 @@ void main() {
       mockAuthService = AuthServiceMockHelper.createMockAuthService();
     });
 
-    tearDown(() {
-      // Limpiar mocks
-      resetMockitoState();
-    });
+    tearDown(resetMockitoState);
 
     testWidgets('LoginScreen renders correctly with mocked AuthService', (WidgetTester tester) async {
       // Crear el widget de login con BLoC

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'mocks/supabase_mock.dart';
 import 'supabase_test_helper.dart';
 
 /// Wrapper para MyApp que maneja correctamente la inicialización de Supabase en tests
@@ -49,9 +47,6 @@ class TestAppSetup {
 
   /// Configurar Supabase.instance para tests
   static void _setupSupabaseInstance() {
-    // Crear un mock de SupabaseClient que funcione con Supabase.instance
-    final mockClient = SupabaseMock.client;
-    
     // Configurar el mock para que responda a las llamadas básicas
     // Nota: Los mocks ya están configurados en SupabaseMock.initializeMocks()
     // No necesitamos configurar aquí ya que SupabaseTestHelper se encarga de esto
