@@ -373,7 +373,7 @@ class TasksService {
         'user_id': task.projectId, // Notificar al tutor del proyecto
         'type': 'task_status_changed',
         'title': 'Estado de tarea actualizado',
-        'message': 'La tarea "${task.title}" cambió a estado: ${status.displayName}',
+        'message': 'La tarea "${task.title}" cambió a estado: ${_getStatusDisplayName(status)}',
         'action_url': '/tasks/$taskId',
         'metadata': {
           'task_id': taskId,
@@ -452,6 +452,20 @@ class TasksService {
     } catch (e) {
       // No fallar si la notificación falla
       LoggingService.error('Error al crear notificación de comentario', e, 'TaskComment');
+    }
+  }
+
+  /// Helper method to get status display name without BuildContext
+  String _getStatusDisplayName(TaskStatus status) {
+    switch (status) {
+      case TaskStatus.pending:
+        return 'Pendiente';
+      case TaskStatus.inProgress:
+        return 'En Progreso';
+      case TaskStatus.underReview:
+        return 'En Revisión';
+      case TaskStatus.completed:
+        return 'Completada';
     }
   }
 }

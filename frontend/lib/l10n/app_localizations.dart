@@ -1051,6 +1051,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Seleccionar fecha'**
   String get selectDate;
+
+  /// Botón para crear una nueva tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Crear Tarea'**
+  String get createTask;
 }
 
 class _AppLocalizationsDelegate

@@ -9,9 +9,14 @@ import '../../utils/config.dart';
 import '../../models/user.dart';
 import '../../blocs/auth_bloc.dart';
 import '../../blocs/anteprojects_bloc.dart';
+import '../../blocs/tasks_bloc.dart';
 import '../../services/anteprojects_service.dart';
+import '../../services/tasks_service.dart';
 import '../forms/anteproject_form.dart';
 import '../lists/anteprojects_list.dart';
+import '../lists/tasks_list.dart';
+import '../kanban/kanban_board.dart';
+import '../forms/task_form.dart';
 
 class StudentDashboard extends StatefulWidget {
   final User user;
@@ -261,9 +266,18 @@ class _StudentDashboardState extends State<StudentDashboard> {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            TextButton(
-              onPressed: _viewAllTasks,
-              child: Text(l10n.viewAllTasks),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextButton(
+                  onPressed: _viewKanbanBoard,
+                  child: Text(l10n.kanbanBoardTitle),
+                ),
+                TextButton(
+                  onPressed: _viewAllTasks,
+                  child: Text(l10n.viewAllTasks),
+                ),
+              ],
             ),
           ],
         ),
@@ -271,10 +285,30 @@ class _StudentDashboardState extends State<StudentDashboard> {
         Card(
           child: Padding(
             padding: const EdgeInsets.all(16),
-            child: Text(
-              l10n.noPendingTasks,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.grey),
+            child: Column(
+              children: [
+                Text(
+                  l10n.noPendingTasks,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.grey),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: _createTask,
+                      icon: const Icon(Icons.add),
+                      label: Text(l10n.createTask),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: _viewKanbanBoard,
+                      icon: const Icon(Icons.dashboard),
+                      label: Text(l10n.kanbanBoardTitle),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
@@ -392,11 +426,40 @@ class _StudentDashboardState extends State<StudentDashboard> {
   }
 
   void _viewAllTasks() {
-    final l10n = AppLocalizations.of(context)!;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.tasksListDev),
-        duration: const Duration(seconds: 2),
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) => BlocProvider<TasksBloc>(
+          create: (_) => TasksBloc(
+            tasksService: TasksService(),
+          ),
+          child: const TasksList(projectId: 1), // TODO: Obtener projectId real
+        ),
+      ),
+    );
+  }
+
+  void _viewKanbanBoard() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) => BlocProvider<TasksBloc>(
+          create: (_) => TasksBloc(
+            tasksService: TasksService(),
+          ),
+          child: const KanbanBoard(projectId: 1), // TODO: Obtener projectId real
+        ),
+      ),
+    );
+  }
+
+  void _createTask() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) => BlocProvider<TasksBloc>(
+          create: (_) => TasksBloc(
+            tasksService: TasksService(),
+          ),
+          child: const TaskForm(projectId: 1), // TODO: Obtener projectId real
+        ),
       ),
     );
   }
