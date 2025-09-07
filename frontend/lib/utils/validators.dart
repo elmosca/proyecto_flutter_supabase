@@ -74,4 +74,21 @@ class Validators {
     
     return null;
   }
+
+  /// Valida el contenido de un comentario
+  static String? validateCommentContent(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'El contenido del comentario es obligatorio';
+    }
+    
+    if (value.trim().length < 3) {
+      return 'El comentario debe tener al menos 3 caracteres';
+    }
+    
+    if (value.length > 1000) {
+      return 'El comentario no puede exceder 1000 caracteres';
+    }
+    
+    return null;
+  }
 }

@@ -248,6 +248,106 @@
   "@anteprojectDeleteTooltip": {
     "description": "Tooltip para el botón de eliminar anteproyecto"
   },
+  "commentsTitle": "Comentarios",
+  "@commentsTitle": {
+    "description": "Título de la sección de comentarios"
+  },
+  "commentsAddComment": "Añadir comentario",
+  "@commentsAddComment": {
+    "description": "Botón para añadir un nuevo comentario"
+  },
+  "commentsWriteComment": "Escribe tu comentario...",
+  "@commentsWriteComment": {
+    "description": "Placeholder para el campo de comentario"
+  },
+  "commentsSend": "Enviar",
+  "@commentsSend": {
+    "description": "Botón para enviar comentario"
+  },
+  "commentsCancel": "Cancelar",
+  "@commentsCancel": {
+    "description": "Botón para cancelar comentario"
+  },
+  "commentsInternal": "Comentario interno",
+  "@commentsInternal": {
+    "description": "Etiqueta para comentarios internos"
+  },
+  "commentsPublic": "Comentario público",
+  "@commentsPublic": {
+    "description": "Etiqueta para comentarios públicos"
+  },
+  "commentsNoComments": "No hay comentarios",
+  "@commentsNoComments": {
+    "description": "Mensaje cuando no hay comentarios"
+  },
+  "commentsAddFirst": "Sé el primero en comentar",
+  "@commentsAddFirst": {
+    "description": "Mensaje para animar a comentar cuando no hay comentarios"
+  },
+  "commentsError": "Error al cargar comentarios",
+  "@commentsError": {
+    "description": "Mensaje de error al cargar comentarios"
+  },
+  "commentsErrorAdd": "Error al añadir comentario",
+  "@commentsErrorAdd": {
+    "description": "Mensaje de error al añadir comentario"
+  },
+  "commentsSuccess": "Comentario añadido correctamente",
+  "@commentsSuccess": {
+    "description": "Mensaje de éxito al añadir comentario"
+  },
+  "commentsDelete": "Eliminar comentario",
+  "@commentsDelete": {
+    "description": "Botón para eliminar comentario"
+  },
+  "commentsDeleteConfirm": "¿Estás seguro de que quieres eliminar este comentario?",
+  "@commentsDeleteConfirm": {
+    "description": "Mensaje de confirmación para eliminar comentario"
+  },
+  "commentsEdit": "Editar comentario",
+  "@commentsEdit": {
+    "description": "Botón para editar comentario"
+  },
+  "commentsSave": "Guardar cambios",
+  "@commentsSave": {
+    "description": "Botón para guardar cambios en comentario"
+  },
+  "commentsAuthor": "Autor",
+  "@commentsAuthor": {
+    "description": "Etiqueta para el autor del comentario"
+  },
+  "commentsDate": "Fecha",
+  "@commentsDate": {
+    "description": "Etiqueta para la fecha del comentario"
+  },
+  "commentsContent": "Contenido",
+  "@commentsContent": {
+    "description": "Etiqueta para el contenido del comentario"
+  },
+  "commentsContentRequired": "El contenido del comentario es obligatorio",
+  "@commentsContentRequired": {
+    "description": "Mensaje de validación para contenido requerido"
+  },
+  "commentsContentMinLength": "El comentario debe tener al menos 3 caracteres",
+  "@commentsContentMinLength": {
+    "description": "Mensaje de validación para longitud mínima"
+  },
+  "commentsContentMaxLength": "El comentario no puede exceder 1000 caracteres",
+  "@commentsContentMaxLength": {
+    "description": "Mensaje de validación para longitud máxima"
+  },
+  "retry": "Reintentar",
+  "@retry": {
+    "description": "Botón para reintentar operación"
+  },
+  "unknownUser": "Usuario desconocido",
+  "@unknownUser": {
+    "description": "Texto para usuario desconocido"
+  },
+  "justNow": "Ahora",
+  "@justNow": {
+    "description": "Texto para tiempo reciente"
+  },
   "anteprojectStatusLabel": "Estado: {status}",
   "@anteprojectStatusLabel": {
     "description": "Etiqueta de estado con valor",
