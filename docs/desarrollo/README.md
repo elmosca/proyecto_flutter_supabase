@@ -1,33 +1,133 @@
 # 📚 DOCUMENTACIÓN DE DESARROLLO
 # Sistema de Seguimiento de Proyectos TFG - Ciclo DAM
 
-> **DOCUMENTACIÓN COMPLETA** - Guías, progreso y estado del desarrollo del sistema TFG.
+> **DOCUMENTACIÓN ORGANIZADA** - Estructura limpia y ordenada por funcionalidad.
 
 **Fecha de actualización**: 7 de septiembre de 2025  
-**Versión**: 2.0.0  
-**Estado**: 🟢 **MVP 100% COMPLETADO** - Todas las funcionalidades implementadas
+**Versión**: 3.0.0  
+**Estado**: 🟢 **MVP 100% COMPLETADO** - Documentación reorganizada
 
 ---
 
-## 📋 **DOCUMENTOS PRINCIPALES**
+## 📁 **ESTRUCTURA ORGANIZADA POR FUNCIONALIDAD**
 
-### **🎯 Planificación y Progreso**
-- **[checklist_mvp_detallado.md](./checklist_mvp_detallado.md)** - Checklist completo del MVP (100% completado)
-- **[plan_implementacion_actualizado.md](./plan_implementacion_actualizado.md)** - Plan de implementación completado
-- **[guia_inicio_frontend.md](./guia_inicio_frontend.md)** - Guía de inicio para desarrollo frontend
+```
+docs/desarrollo/
+├── README.md                           # Este archivo - Índice principal
+├── 01-configuracion/                   # Configuración inicial y setup
+├── 02-progreso/                        # Seguimiento del progreso del proyecto
+├── 03-guias-tecnicas/                  # Guías técnicas y herramientas
+├── 04-despliegue/                      # Despliegue y producción
+└── 05-historicos/                      # Documentos históricos (archivados)
+```
 
-### **🛠️ Progreso Técnico**
-- **[progreso_codigo_limpio.md](./progreso_codigo_limpio.md)** - Resolución de warnings de linter
-- **[progreso_mocking_supabase.md](./progreso_mocking_supabase.md)** - Sistema de testing con mocks
-- **[progreso_internacionalizacion.md](./progreso_internacionalizacion.md)** - Sistema de localización completo
-- **[progreso_sistema_archivos.md](./progreso_sistema_archivos.md)** - Sistema de gestión de archivos
+---
 
-### **📖 Guías Técnicas**
-- **[android_setup.md](./android_setup.md)** - Configuración para desarrollo Android
-- **[guia_ngrok_backend_local.md](./guia_ngrok_backend_local.md)** - Guía completa para acceso externo al backend con Ngrok
-- **[guia_actualizacion_servidor.md](./guia_actualizacion_servidor.md)** - Guía para actualizar servidor y levantar aplicación web
-- **[CLEAN_STATE_GUIDE.md](./CLEAN_STATE_GUIDE.md)** - Guía de estado limpio del proyecto
-- **[resumen_progreso_agosto_2024.md](./resumen_progreso_agosto_2024.md)** - Resumen histórico de progreso
+## 🔧 **01-CONFIGURACIÓN**
+
+### **Setup Inicial y Configuración del Entorno**
+
+| Archivo | Descripción | Estado |
+|---------|-------------|--------|
+| **[android_setup.md](./01-configuracion/android_setup.md)** | Configuración para desarrollo Android | ✅ Actualizado |
+| **[guia_inicio_frontend.md](./01-configuracion/guia_inicio_frontend.md)** | Guía de inicio para desarrolladores frontend | ✅ Actualizado |
+| **[CLEAN_STATE_GUIDE.md](./01-configuracion/CLEAN_STATE_GUIDE.md)** | Guía para mantener código limpio | ✅ Actualizado |
+
+**Contenido:**
+- Configuración de entornos de desarrollo
+- Setup de herramientas y dependencias
+- Guías de inicio rápido
+- Mejores prácticas de código
+
+---
+
+## 📊 **02-PROGRESO**
+
+### **Seguimiento del Progreso del Proyecto**
+
+| Archivo | Descripción | Estado |
+|---------|-------------|--------|
+| **[checklist_mvp_detallado.md](./02-progreso/checklist_mvp_detallado.md)** | **DOCUMENTO PRINCIPAL** - Checklist completo del MVP | ✅ 100% Completado |
+| **[plan_implementacion_actualizado.md](./02-progreso/plan_implementacion_actualizado.md)** | Plan de implementación completado | ✅ 100% Completado |
+| **[progreso_codigo_limpio.md](./02-progreso/progreso_codigo_limpio.md)** | Resolución de warnings de linter | ✅ Completado |
+| **[progreso_mocking_supabase.md](./02-progreso/progreso_mocking_supabase.md)** | Sistema de testing con mocks | ✅ Completado |
+| **[progreso_internacionalizacion.md](./02-progreso/progreso_internacionalizacion.md)** | Sistema de localización completo | ✅ Completado |
+| **[progreso_sistema_archivos.md](./02-progreso/progreso_sistema_archivos.md)** | Sistema de gestión de archivos | ✅ Completado |
+
+**Contenido:**
+- Estado actual del proyecto
+- Progreso por funcionalidades
+- Métricas y estadísticas
+- Logros alcanzados
+
+---
+
+## 🛠️ **03-GUÍAS TÉCNICAS**
+
+### **Herramientas y Guías Técnicas**
+
+| Archivo | Descripción | Estado |
+|---------|-------------|--------|
+| **[guia_ngrok_backend_local.md](./03-guias-tecnicas/guia_ngrok_backend_local.md)** | Guía completa para acceso externo al backend con Ngrok | ✅ Completa |
+| **[configuracion_ngrok_ejemplo.md](./03-guias-tecnicas/configuracion_ngrok_ejemplo.md)** | Configuración de ejemplo para Ngrok | ✅ Completa |
+
+**Contenido:**
+- Herramientas de desarrollo
+- Configuraciones técnicas
+- Guías de uso de herramientas
+- Ejemplos prácticos
+
+---
+
+## 🚀 **04-DESPLIEGUE**
+
+### **Despliegue y Producción**
+
+| Archivo | Descripción | Estado |
+|---------|-------------|--------|
+| **[guia_actualizacion_servidor.md](./04-despliegue/guia_actualizacion_servidor.md)** | Guía para actualizar servidor y levantar aplicación web | ✅ Completa |
+
+**Contenido:**
+- Actualización de servidores
+- Despliegue en producción
+- Configuración de entornos
+- Monitoreo y mantenimiento
+
+---
+
+## 📚 **05-HISTÓRICOS**
+
+### **Documentos Históricos (Archivados)**
+
+| Archivo | Descripción | Estado |
+|---------|-------------|--------|
+| **[plan_implementacion.md](./05-historicos/plan_implementacion.md)** | Plan de implementación original (reemplazado) | 🗄️ Archivado |
+| **[resumen_progreso_agosto_2024.md](./05-historicos/resumen_progreso_agosto_2024.md)** | Resumen histórico de progreso | 🗄️ Archivado |
+
+**Contenido:**
+- Documentos obsoletos
+- Versiones anteriores
+- Referencias históricas
+- Archivos de respaldo
+
+---
+
+## 🎯 **NAVEGACIÓN RÁPIDA POR ROL**
+
+### **👨‍💻 Para Desarrolladores:**
+1. **[01-configuracion/](./01-configuracion/)** - Setup inicial
+2. **[03-guias-tecnicas/](./03-guias-tecnicas/)** - Herramientas técnicas
+3. **[02-progreso/checklist_mvp_detallado.md](./02-progreso/checklist_mvp_detallado.md)** - Estado del proyecto
+
+### **👨‍💼 Para Gestores de Proyecto:**
+1. **[02-progreso/checklist_mvp_detallado.md](./02-progreso/checklist_mvp_detallado.md)** - Estado completo
+2. **[02-progreso/plan_implementacion_actualizado.md](./02-progreso/plan_implementacion_actualizado.md)** - Plan completado
+3. **[04-despliegue/](./04-despliegue/)** - Despliegue
+
+### **🔧 Para DevOps/Administradores:**
+1. **[04-despliegue/](./04-despliegue/)** - Despliegue y servidores
+2. **[03-guias-tecnicas/](./03-guias-tecnicas/)** - Herramientas técnicas
+3. **[01-configuracion/](./01-configuracion/)** - Configuración
 
 ---
 
@@ -39,7 +139,7 @@ El proyecto ha alcanzado el **100% de completitud** del MVP con todas las funcio
 - ✅ **Frontend 100% funcional** con sistema de archivos e internacionalización completa
 - ✅ **Backend configurado y funcionando**
 - ✅ **Testing completo y funcionando**
-- ✅ **Documentación actualizada y sincronizada**
+- ✅ **Documentación actualizada y reorganizada**
 - ✅ **Código limpio sin errores de linter**
 - ✅ **Internacionalización completa** (310 claves traducidas español/inglés)
 - ✅ **Sistema de archivos completo** (subida, gestión y descarga de archivos)
@@ -51,7 +151,7 @@ El proyecto ha alcanzado el **100% de completitud** del MVP con todas las funcio
 - **Frontend**: 100% completado
 - **Backend**: 100% completado
 - **Testing**: 100% completado
-- **Documentación**: 100% completada
+- **Documentación**: 100% completada y reorganizada
 - **Internacionalización**: 100% completada
 - **Sistema de archivos**: 100% completado
 - **MVP**: 100% completado
@@ -115,6 +215,11 @@ El proyecto ha alcanzado el **100% de completitud** del MVP con todas las funcio
 - **Mocks** - Simulación de Supabase
 - **Cobertura completa** - Validación del sistema
 
+### **Despliegue**
+- **Ngrok** - Acceso externo al backend
+- **Docker** - Containerización
+- **Scripts automatizados** - Despliegue simplificado
+
 ---
 
 ## 📈 **PROGRESO HISTÓRICO**
@@ -130,6 +235,7 @@ El proyecto ha alcanzado el **100% de completitud** del MVP con todas las funcio
 - Creada pantalla de detalles
 - Completada internacionalización
 - **Implementado sistema de archivos** (MVP 100%)
+- **Reorganizada documentación** por funcionalidad
 
 ---
 
@@ -156,13 +262,15 @@ Con el MVP 100% completado, las siguientes áreas de mejora podrían considerars
 
 Para consultas sobre el desarrollo o documentación:
 
-- **Documentación técnica**: Ver archivos específicos en este directorio
-- **Estado del proyecto**: Consultar `checklist_mvp_detallado.md`
+- **Documentación técnica**: Ver archivos específicos en cada directorio
+- **Estado del proyecto**: Consultar `02-progreso/checklist_mvp_detallado.md`
 - **Problemas técnicos**: Revisar documentos de progreso correspondientes
+- **Configuración**: Consultar `01-configuracion/`
+- **Despliegue**: Consultar `04-despliegue/`
 
 ---
 
-**Fecha de actualización**: 7 de septiembre de 2025 (Sistema de Archivos Completado - MVP 100%)  
+**Fecha de actualización**: 7 de septiembre de 2025 (Documentación Reorganizada)  
 **Responsable**: Equipo de Desarrollo  
-**Estado**: 🟢 **100% COMPLETADO** - MVP completamente funcional  
-**Confianza**: Muy Alta - Todas las funcionalidades implementadas y funcionando correctamente
+**Estado**: 🟢 **100% COMPLETADO** - MVP completamente funcional y documentación reorganizada  
+**Confianza**: Muy Alta - Todas las funcionalidades implementadas y documentación ordenada

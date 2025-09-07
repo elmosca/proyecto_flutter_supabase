@@ -92,11 +92,13 @@ Documentación técnica de la base de datos:
 - **`modelo_datos.md`** - Esquema completo de 19 tablas con relaciones
 
 ### **📊 `docs/desarrollo/`**
-Seguimiento del progreso y guías prácticas:
-- **`checklist_mvp_detallado.md`** - **DOCUMENTO ÚNICO DE SEGUIMIENTO** (RECOMENDADO)
-- **`guia_inicio_frontend.md`** - Guía práctica para desarrolladores frontend
-- **`android_setup.md`** - Configuración específica de Android
-- **`CLEAN_STATE_GUIDE.md`** - Guía para mantener código limpio
+Seguimiento del progreso y guías prácticas organizadas por funcionalidad:
+- **`README.md`** - **ÍNDICE PRINCIPAL** - Navegación por funcionalidad
+- **`01-configuracion/`** - Setup inicial y configuración del entorno
+- **`02-progreso/`** - Seguimiento del progreso del proyecto
+- **`03-guias-tecnicas/`** - Herramientas y guías técnicas
+- **`04-despliegue/`** - Despliegue y producción
+- **`05-historicos/`** - Documentos históricos (archivados)
 
 ---
 
@@ -107,13 +109,13 @@ Seguimiento del progreso y guías prácticas:
 2. **`docs/arquitectura/especificacion_funcional.md`** - Especificaciones funcionales
 
 ### **🎨 PARA DESARROLLADORES FRONTEND:**
-1. **`docs/desarrollo/guia_inicio_frontend.md`** - Guía de inicio rápida
-2. **`docs/desarrollo/checklist_mvp_detallado.md`** - Estado del proyecto
-3. **`docs/desarrollo/android_setup.md`** - Configuración de Android
-4. **`docs/desarrollo/CLEAN_STATE_GUIDE.md`** - Mantener código limpio
+1. **`docs/desarrollo/01-configuracion/guia_inicio_frontend.md`** - Guía de inicio rápida
+2. **`docs/desarrollo/02-progreso/checklist_mvp_detallado.md`** - Estado del proyecto
+3. **`docs/desarrollo/01-configuracion/android_setup.md`** - Configuración de Android
+4. **`docs/desarrollo/01-configuracion/CLEAN_STATE_GUIDE.md`** - Mantener código limpio
 
 ### **👨‍💼 PARA GESTORES DE PROYECTO:**
-1. **`docs/desarrollo/checklist_mvp_detallado.md`** - Estado completo del proyecto
+1. **`docs/desarrollo/02-progreso/checklist_mvp_detallado.md`** - Estado completo del proyecto
 2. **`docs/README.md`** - Visión general del sistema
 
 ### **🔍 PARA ARQUITECTOS Y DISEÑADORES:**
