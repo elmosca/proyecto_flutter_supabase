@@ -6,6 +6,7 @@ import '../../models/task.dart';
 import '../../blocs/tasks_bloc.dart';
 import '../../utils/task_localizations.dart';
 import '../forms/task_form.dart';
+import '../details/task_detail_screen.dart';
 
 class TasksList extends StatefulWidget {
   final int projectId;
@@ -199,7 +200,7 @@ class _TasksListState extends State<TasksList> {
             ),
           ],
         ),
-        onTap: () => _editTask(task),
+        onTap: () => _viewTaskDetails(task),
       ),
     );
   }
@@ -290,6 +291,14 @@ class _TasksListState extends State<TasksList> {
           value: context.read<TasksBloc>(),
           child: TaskForm(projectId: widget.projectId, task: task),
         ),
+      ),
+    );
+  }
+
+  void _viewTaskDetails(Task task) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => TaskDetailScreen(task: task),
       ),
     );
   }

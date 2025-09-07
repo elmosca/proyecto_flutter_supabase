@@ -895,5 +895,93 @@
   "noDataDescription": "No hay información para mostrar en este momento",
   "@noDataDescription": {
     "description": "Descripción cuando no hay datos para mostrar"
+  },
+  "uploadFile": "Subir Archivo",
+  "@uploadFile": {
+    "description": "Botón para subir un archivo"
+  },
+  "uploading": "Subiendo...",
+  "@uploading": {
+    "description": "Texto mostrado mientras se sube un archivo"
+  },
+  "upload": "Subir",
+  "@upload": {
+    "description": "Botón de acción para subir"
+  },
+  "fileUploadedSuccessfully": "Archivo subido correctamente",
+  "@fileUploadedSuccessfully": {
+    "description": "Mensaje de éxito al subir archivo"
+  },
+  "fileDeletedSuccessfully": "Archivo eliminado correctamente",
+  "@fileDeletedSuccessfully": {
+    "description": "Mensaje de éxito al eliminar archivo"
+  },
+  "confirmDeleteFile": "Confirmar Eliminación",
+  "@confirmDeleteFile": {
+    "description": "Título del diálogo de confirmación para eliminar archivo"
+  },
+  "confirmDeleteFileMessage": "¿Estás seguro de que deseas eliminar el archivo {fileName}?",
+  "@confirmDeleteFileMessage": {
+    "description": "Mensaje de confirmación para eliminar archivo",
+    "placeholders": {
+      "fileName": {
+        "type": "String",
+        "description": "Nombre del archivo a eliminar"
+      }
+    }
+  },
+  "openFile": "Abrir Archivo",
+  "@openFile": {
+    "description": "Tooltip para abrir archivo"
+  },
+  "deleteFile": "Eliminar Archivo",
+  "@deleteFile": {
+    "description": "Tooltip para eliminar archivo"
+  },
+  "noFilesAttached": "No hay archivos adjuntos",
+  "@noFilesAttached": {
+    "description": "Mensaje cuando no hay archivos adjuntos"
+  },
+  "noFilesYet": "Aún no hay archivos",
+  "@noFilesYet": {
+    "description": "Mensaje cuando no hay archivos todavía"
+  },
+  "uploadedBy": "Subido por",
+  "@uploadedBy": {
+    "description": "Etiqueta para mostrar quién subió el archivo"
+  },
+  "clickToSelectFile": "Haz clic para seleccionar un archivo",
+  "@clickToSelectFile": {
+    "description": "Instrucción para seleccionar archivo"
+  },
+  "allowedFileTypes": "Tipos permitidos: PDF, Word, TXT, Imágenes (JPG, PNG, GIF), ZIP, RAR",
+  "@allowedFileTypes": {
+    "description": "Lista de tipos de archivo permitidos"
+  },
+  "maxFileSize": "Tamaño máximo: {size}",
+  "@maxFileSize": {
+    "description": "Tamaño máximo permitido para archivos",
+    "placeholders": {
+      "size": {
+        "type": "String",
+        "description": "Tamaño máximo en formato legible"
+      }
+    }
+  },
+  "filesAttached": "Archivos Adjuntos",
+  "@filesAttached": {
+    "description": "Título de la sección de archivos adjuntos"
+  },
+  "attachFile": "Adjuntar Archivo",
+  "@attachFile": {
+    "description": "Botón para adjuntar un archivo"
+  },
+  "taskDetails": "Detalles de la Tarea",
+  "@taskDetails": {
+    "description": "Título de la pantalla de detalles de tarea"
+  },
+  "details": "Detalles",
+  "@details": {
+    "description": "Pestaña de detalles"
   }
 }

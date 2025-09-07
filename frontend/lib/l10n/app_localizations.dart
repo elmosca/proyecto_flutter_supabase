@@ -1405,6 +1405,120 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No hay información para mostrar en este momento'**
   String get noDataDescription;
+
+  /// Botón para subir un archivo
+  ///
+  /// In es, this message translates to:
+  /// **'Subir Archivo'**
+  String get uploadFile;
+
+  /// Texto mostrado mientras se sube un archivo
+  ///
+  /// In es, this message translates to:
+  /// **'Subiendo...'**
+  String get uploading;
+
+  /// Botón de acción para subir
+  ///
+  /// In es, this message translates to:
+  /// **'Subir'**
+  String get upload;
+
+  /// Mensaje de éxito al subir archivo
+  ///
+  /// In es, this message translates to:
+  /// **'Archivo subido correctamente'**
+  String get fileUploadedSuccessfully;
+
+  /// Mensaje de éxito al eliminar archivo
+  ///
+  /// In es, this message translates to:
+  /// **'Archivo eliminado correctamente'**
+  String get fileDeletedSuccessfully;
+
+  /// Título del diálogo de confirmación para eliminar archivo
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar Eliminación'**
+  String get confirmDeleteFile;
+
+  /// Mensaje de confirmación para eliminar archivo
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de que deseas eliminar el archivo {fileName}?'**
+  String confirmDeleteFileMessage(String fileName);
+
+  /// Tooltip para abrir archivo
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir Archivo'**
+  String get openFile;
+
+  /// Tooltip para eliminar archivo
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar Archivo'**
+  String get deleteFile;
+
+  /// Mensaje cuando no hay archivos adjuntos
+  ///
+  /// In es, this message translates to:
+  /// **'No hay archivos adjuntos'**
+  String get noFilesAttached;
+
+  /// Mensaje cuando no hay archivos todavía
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay archivos'**
+  String get noFilesYet;
+
+  /// Etiqueta para mostrar quién subió el archivo
+  ///
+  /// In es, this message translates to:
+  /// **'Subido por'**
+  String get uploadedBy;
+
+  /// Instrucción para seleccionar archivo
+  ///
+  /// In es, this message translates to:
+  /// **'Haz clic para seleccionar un archivo'**
+  String get clickToSelectFile;
+
+  /// Lista de tipos de archivo permitidos
+  ///
+  /// In es, this message translates to:
+  /// **'Tipos permitidos: PDF, Word, TXT, Imágenes (JPG, PNG, GIF), ZIP, RAR'**
+  String get allowedFileTypes;
+
+  /// Tamaño máximo permitido para archivos
+  ///
+  /// In es, this message translates to:
+  /// **'Tamaño máximo: {size}'**
+  String maxFileSize(String size);
+
+  /// Título de la sección de archivos adjuntos
+  ///
+  /// In es, this message translates to:
+  /// **'Archivos Adjuntos'**
+  String get filesAttached;
+
+  /// Botón para adjuntar un archivo
+  ///
+  /// In es, this message translates to:
+  /// **'Adjuntar Archivo'**
+  String get attachFile;
+
+  /// Título de la pantalla de detalles de tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Detalles de la Tarea'**
+  String get taskDetails;
+
+  /// Pestaña de detalles
+  ///
+  /// In es, this message translates to:
+  /// **'Detalles'**
+  String get details;
 }
 
 class _AppLocalizationsDelegate
