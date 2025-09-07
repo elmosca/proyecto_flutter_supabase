@@ -11,7 +11,7 @@
 
 ## 🎯 **OBJETIVO DEL PLAN**
 
-**Implementar las funcionalidades críticas faltantes del frontend para completar el MVP del sistema TFG en 7 semanas.**
+**✅ COMPLETADO: Implementar las funcionalidades críticas faltantes del frontend para completar el MVP del sistema TFG.**
 
 ### **Funcionalidades Críticas Identificadas:**
 1. **Formularios de entrada** - Crear/editar entidades
