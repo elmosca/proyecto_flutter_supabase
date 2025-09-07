@@ -196,7 +196,7 @@ class _FileUploadWidgetState extends State<FileUploadWidget> {
                         textAlign: TextAlign.center,
                       ),
                       Text(
-                        l10n.maxFileSize('50MB'),
+                        '${l10n.maxFileSize}: 50MB',
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: theme.colorScheme.onSurfaceVariant,
                         ),
