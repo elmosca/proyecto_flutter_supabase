@@ -25,6 +25,7 @@
 ### **📖 Guías Técnicas**
 - **[android_setup.md](./android_setup.md)** - Configuración para desarrollo Android
 - **[guia_ngrok_backend_local.md](./guia_ngrok_backend_local.md)** - Guía completa para acceso externo al backend con Ngrok
+- **[guia_actualizacion_servidor.md](./guia_actualizacion_servidor.md)** - Guía para actualizar servidor y levantar aplicación web
 - **[CLEAN_STATE_GUIDE.md](./CLEAN_STATE_GUIDE.md)** - Guía de estado limpio del proyecto
 - **[resumen_progreso_agosto_2024.md](./resumen_progreso_agosto_2024.md)** - Resumen histórico de progreso
 

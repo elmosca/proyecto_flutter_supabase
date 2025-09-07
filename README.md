@@ -279,6 +279,20 @@ scripts/start_ngrok.bat  # Windows
 ./scripts/start_ngrok.sh # Linux/macOS
 ```
 
+### **Servidor (Actualización y Despliegue)**
+```bash
+# Actualizar repositorio en servidor
+git pull origin develop
+
+# Levantar sistema completo en servidor
+scripts/start_server_system.bat  # Windows
+./scripts/start_server_system.sh # Linux/macOS
+
+# URLs resultantes:
+# Backend: https://tu-proyecto-tfg.ngrok.io
+# Web App: https://tu-proyecto-tfg-web.ngrok.io
+```
+
 ---
 
 ## 📞 **APIs DISPONIBLES**
