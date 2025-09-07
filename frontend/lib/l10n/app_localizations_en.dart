@@ -127,9 +127,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get anteprojectTutorId => 'Tutor ID';
 
   @override
-  String get anteprojectStatus => 'Status';
-
-  @override
   String get anteprojectCreateButton => 'Create Anteproject';
 
   @override
@@ -270,9 +267,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'El comentario no puede exceder 1000 caracteres';
 
   @override
-  String get retry => 'Retry';
-
-  @override
   String get unknownUser => 'Usuario desconocido';
 
   @override
@@ -400,9 +394,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get copied => 'Copied!';
-
-  @override
-  String get viewDetails => 'View details';
 
   @override
   String get anteprojectsListInDevelopment =>
@@ -583,4 +574,122 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get createTask => 'Crear Tarea';
+
+  @override
+  String get approvalWorkflow => 'Flujo de Aprobación';
+
+  @override
+  String get pendingApprovals => 'Aprobaciones Pendientes';
+
+  @override
+  String get reviewedAnteprojects => 'Anteproyectos Revisados';
+
+  @override
+  String get approveAnteproject => 'Aprobar Anteproyecto';
+
+  @override
+  String get rejectAnteproject => 'Rechazar Anteproyecto';
+
+  @override
+  String get requestChanges => 'Solicitar Cambios';
+
+  @override
+  String get approvalComments => 'Comentarios de Aprobación';
+
+  @override
+  String get approvalCommentsHint =>
+      'Escribe comentarios sobre la aprobación (opcional)';
+
+  @override
+  String get rejectionComments => 'Comentarios de Rechazo';
+
+  @override
+  String get rejectionCommentsHint =>
+      'Escribe los motivos del rechazo (obligatorio)';
+
+  @override
+  String get changesComments => 'Comentarios sobre Cambios';
+
+  @override
+  String get changesCommentsHint =>
+      'Especifica los cambios necesarios (obligatorio)';
+
+  @override
+  String get confirmApproval => 'Confirmar Aprobación';
+
+  @override
+  String get confirmRejection => 'Confirmar Rechazo';
+
+  @override
+  String get confirmChanges => 'Confirmar Solicitud de Cambios';
+
+  @override
+  String get approvalConfirmMessage =>
+      '¿Estás seguro de que quieres aprobar este anteproyecto?';
+
+  @override
+  String get rejectionConfirmMessage =>
+      '¿Estás seguro de que quieres rechazar este anteproyecto?';
+
+  @override
+  String get changesConfirmMessage =>
+      '¿Estás seguro de que quieres solicitar cambios en este anteproyecto?';
+
+  @override
+  String get approvalSuccess => 'Anteproyecto aprobado exitosamente';
+
+  @override
+  String get rejectionSuccess => 'Anteproyecto rechazado exitosamente';
+
+  @override
+  String get changesSuccess => 'Cambios solicitados exitosamente';
+
+  @override
+  String get approvalError => 'Error al procesar la aprobación';
+
+  @override
+  String get noAnteprojectsToReview => 'No hay anteproyectos para revisar';
+
+  @override
+  String get noReviewedAnteprojects => 'No hay anteproyectos revisados';
+
+  @override
+  String get submittedOn => 'Enviado el';
+
+  @override
+  String get reviewedOn => 'Revisado el';
+
+  @override
+  String get tutorComments => 'Comentarios del Tutor';
+
+  @override
+  String get anteprojectStatus => 'Status';
+
+  @override
+  String get viewDetails => 'View details';
+
+  @override
+  String get processing => 'Procesando...';
+
+  @override
+  String get commentsRequired => 'Los comentarios son obligatorios';
+
+  @override
+  String get approve => 'Aprobar';
+
+  @override
+  String get reject => 'Rechazar';
+
+  @override
+  String get refresh => 'Actualizar';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get academicYear => 'Año Académico';
+
+  @override
+  String get noDataDescription =>
+      'No hay información para mostrar en este momento';
 }

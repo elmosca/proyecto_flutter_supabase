@@ -332,12 +332,6 @@ abstract class AppLocalizations {
   /// **'Tutor ID'**
   String get anteprojectTutorId;
 
-  /// Campo estado del anteproyecto
-  ///
-  /// In es, this message translates to:
-  /// **'Estado'**
-  String get anteprojectStatus;
-
   /// Botón para crear anteproyecto
   ///
   /// In es, this message translates to:
@@ -602,12 +596,6 @@ abstract class AppLocalizations {
   /// **'El comentario no puede exceder 1000 caracteres'**
   String get commentsContentMaxLength;
 
-  /// Botón para reintentar una operación
-  ///
-  /// In es, this message translates to:
-  /// **'Reintentar'**
-  String get retry;
-
   /// Texto para usuario desconocido
   ///
   /// In es, this message translates to:
@@ -847,12 +835,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'¡Copiado!'**
   String get copied;
-
-  /// Botón para ver detalles
-  ///
-  /// In es, this message translates to:
-  /// **'Ver detalles'**
-  String get viewDetails;
 
   /// Mensaje de funcionalidad en desarrollo
   ///
@@ -1201,6 +1183,228 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Crear Tarea'**
   String get createTask;
+
+  /// Título del flujo de aprobación
+  ///
+  /// In es, this message translates to:
+  /// **'Flujo de Aprobación'**
+  String get approvalWorkflow;
+
+  /// Sección de aprobaciones pendientes
+  ///
+  /// In es, this message translates to:
+  /// **'Aprobaciones Pendientes'**
+  String get pendingApprovals;
+
+  /// Sección de anteproyectos ya revisados
+  ///
+  /// In es, this message translates to:
+  /// **'Anteproyectos Revisados'**
+  String get reviewedAnteprojects;
+
+  /// Acción de aprobar un anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Aprobar Anteproyecto'**
+  String get approveAnteproject;
+
+  /// Acción de rechazar un anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazar Anteproyecto'**
+  String get rejectAnteproject;
+
+  /// Acción de solicitar cambios en un anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Solicitar Cambios'**
+  String get requestChanges;
+
+  /// Campo para comentarios en el proceso de aprobación
+  ///
+  /// In es, this message translates to:
+  /// **'Comentarios de Aprobación'**
+  String get approvalComments;
+
+  /// Texto de ayuda para el campo de comentarios de aprobación
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe comentarios sobre la aprobación (opcional)'**
+  String get approvalCommentsHint;
+
+  /// Campo para comentarios en el proceso de rechazo
+  ///
+  /// In es, this message translates to:
+  /// **'Comentarios de Rechazo'**
+  String get rejectionComments;
+
+  /// Texto de ayuda para el campo de comentarios de rechazo
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe los motivos del rechazo (obligatorio)'**
+  String get rejectionCommentsHint;
+
+  /// Campo para comentarios sobre cambios solicitados
+  ///
+  /// In es, this message translates to:
+  /// **'Comentarios sobre Cambios'**
+  String get changesComments;
+
+  /// Texto de ayuda para el campo de comentarios de cambios
+  ///
+  /// In es, this message translates to:
+  /// **'Especifica los cambios necesarios (obligatorio)'**
+  String get changesCommentsHint;
+
+  /// Título del diálogo de confirmación de aprobación
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar Aprobación'**
+  String get confirmApproval;
+
+  /// Título del diálogo de confirmación de rechazo
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar Rechazo'**
+  String get confirmRejection;
+
+  /// Título del diálogo de confirmación de solicitud de cambios
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar Solicitud de Cambios'**
+  String get confirmChanges;
+
+  /// Mensaje de confirmación para aprobar anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de que quieres aprobar este anteproyecto?'**
+  String get approvalConfirmMessage;
+
+  /// Mensaje de confirmación para rechazar anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de que quieres rechazar este anteproyecto?'**
+  String get rejectionConfirmMessage;
+
+  /// Mensaje de confirmación para solicitar cambios
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de que quieres solicitar cambios en este anteproyecto?'**
+  String get changesConfirmMessage;
+
+  /// Mensaje de éxito al aprobar anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Anteproyecto aprobado exitosamente'**
+  String get approvalSuccess;
+
+  /// Mensaje de éxito al rechazar anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Anteproyecto rechazado exitosamente'**
+  String get rejectionSuccess;
+
+  /// Mensaje de éxito al solicitar cambios
+  ///
+  /// In es, this message translates to:
+  /// **'Cambios solicitados exitosamente'**
+  String get changesSuccess;
+
+  /// Mensaje de error en el proceso de aprobación
+  ///
+  /// In es, this message translates to:
+  /// **'Error al procesar la aprobación'**
+  String get approvalError;
+
+  /// Mensaje cuando no hay anteproyectos pendientes de revisión
+  ///
+  /// In es, this message translates to:
+  /// **'No hay anteproyectos para revisar'**
+  String get noAnteprojectsToReview;
+
+  /// Mensaje cuando no hay anteproyectos ya revisados
+  ///
+  /// In es, this message translates to:
+  /// **'No hay anteproyectos revisados'**
+  String get noReviewedAnteprojects;
+
+  /// Fecha de envío del anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Enviado el'**
+  String get submittedOn;
+
+  /// Fecha de revisión del anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Revisado el'**
+  String get reviewedOn;
+
+  /// Comentarios dejados por el tutor
+  ///
+  /// In es, this message translates to:
+  /// **'Comentarios del Tutor'**
+  String get tutorComments;
+
+  /// Estado actual del anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Estado del Anteproyecto'**
+  String get anteprojectStatus;
+
+  /// Acción para ver detalles de un elemento
+  ///
+  /// In es, this message translates to:
+  /// **'Ver Detalles'**
+  String get viewDetails;
+
+  /// Mensaje de procesamiento en curso
+  ///
+  /// In es, this message translates to:
+  /// **'Procesando...'**
+  String get processing;
+
+  /// Mensaje de validación cuando los comentarios son requeridos
+  ///
+  /// In es, this message translates to:
+  /// **'Los comentarios son obligatorios'**
+  String get commentsRequired;
+
+  /// Acción de aprobar
+  ///
+  /// In es, this message translates to:
+  /// **'Aprobar'**
+  String get approve;
+
+  /// Acción de rechazar
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazar'**
+  String get reject;
+
+  /// Acción de actualizar o refrescar
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizar'**
+  String get refresh;
+
+  /// Botón para reintentar una operación
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get retry;
+
+  /// Año académico del anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Año Académico'**
+  String get academicYear;
+
+  /// Descripción cuando no hay datos para mostrar
+  ///
+  /// In es, this message translates to:
+  /// **'No hay información para mostrar en este momento'**
+  String get noDataDescription;
 }
 
 class _AppLocalizationsDelegate

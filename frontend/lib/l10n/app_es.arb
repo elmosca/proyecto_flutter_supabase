@@ -156,10 +156,6 @@
   "@anteprojectTutorId": {
     "description": "Campo ID del tutor del anteproyecto"
   },
-  "anteprojectStatus": "Estado",
-  "@anteprojectStatus": {
-    "description": "Campo estado del anteproyecto"
-  },
   "anteprojectCreateButton": "Crear anteproyecto",
   "@anteprojectCreateButton": {
     "description": "Botón para crear anteproyecto"
@@ -335,10 +331,6 @@
   "commentsContentMaxLength": "El comentario no puede exceder 1000 caracteres",
   "@commentsContentMaxLength": {
     "description": "Mensaje de validación para longitud máxima"
-  },
-  "retry": "Reintentar",
-  "@retry": {
-    "description": "Botón para reintentar operación"
   },
   "unknownUser": "Usuario desconocido",
   "@unknownUser": {
@@ -524,10 +516,6 @@
   "@copied": {
     "description": "Mensaje de confirmación de copiado"
   },
-  "viewDetails": "Ver detalles",
-  "@viewDetails": {
-    "description": "Botón para ver detalles"
-  },
   "anteprojectsListInDevelopment": "Lista de anteproyectos en desarrollo",
   "@anteprojectsListInDevelopment": {
     "description": "Mensaje de funcionalidad en desarrollo"
@@ -579,10 +567,6 @@
   "unknownErrorMessage": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo.",
   "@unknownErrorMessage": {
     "description": "Mensaje de error desconocido"
-  },
-  "retry": "Reintentar",
-  "@retry": {
-    "description": "Botón para reintentar operación"
   },
   "close": "Cerrar",
   "@close": {
@@ -760,12 +744,156 @@
   "@selectDate": {
     "description": "Texto para seleccionar fecha"
   },
+  "createTask": "Crear Tarea",
+  "@createTask": {
+    "description": "Botón para crear una nueva tarea"
+  },
+  "approvalWorkflow": "Flujo de Aprobación",
+  "@approvalWorkflow": {
+    "description": "Título del flujo de aprobación"
+  },
+  "pendingApprovals": "Aprobaciones Pendientes",
+  "@pendingApprovals": {
+    "description": "Sección de aprobaciones pendientes"
+  },
+  "reviewedAnteprojects": "Anteproyectos Revisados",
+  "@reviewedAnteprojects": {
+    "description": "Sección de anteproyectos ya revisados"
+  },
+  "approveAnteproject": "Aprobar Anteproyecto",
+  "@approveAnteproject": {
+    "description": "Acción de aprobar un anteproyecto"
+  },
+  "rejectAnteproject": "Rechazar Anteproyecto",
+  "@rejectAnteproject": {
+    "description": "Acción de rechazar un anteproyecto"
+  },
+  "requestChanges": "Solicitar Cambios",
+  "@requestChanges": {
+    "description": "Acción de solicitar cambios en un anteproyecto"
+  },
+  "approvalComments": "Comentarios de Aprobación",
+  "@approvalComments": {
+    "description": "Campo para comentarios en el proceso de aprobación"
+  },
+  "approvalCommentsHint": "Escribe comentarios sobre la aprobación (opcional)",
+  "@approvalCommentsHint": {
+    "description": "Texto de ayuda para el campo de comentarios de aprobación"
+  },
+  "rejectionComments": "Comentarios de Rechazo",
+  "@rejectionComments": {
+    "description": "Campo para comentarios en el proceso de rechazo"
+  },
+  "rejectionCommentsHint": "Escribe los motivos del rechazo (obligatorio)",
+  "@rejectionCommentsHint": {
+    "description": "Texto de ayuda para el campo de comentarios de rechazo"
+  },
+  "changesComments": "Comentarios sobre Cambios",
+  "@changesComments": {
+    "description": "Campo para comentarios sobre cambios solicitados"
+  },
+  "changesCommentsHint": "Especifica los cambios necesarios (obligatorio)",
+  "@changesCommentsHint": {
+    "description": "Texto de ayuda para el campo de comentarios de cambios"
+  },
+  "confirmApproval": "Confirmar Aprobación",
+  "@confirmApproval": {
+    "description": "Título del diálogo de confirmación de aprobación"
+  },
+  "confirmRejection": "Confirmar Rechazo",
+  "@confirmRejection": {
+    "description": "Título del diálogo de confirmación de rechazo"
+  },
+  "confirmChanges": "Confirmar Solicitud de Cambios",
+  "@confirmChanges": {
+    "description": "Título del diálogo de confirmación de solicitud de cambios"
+  },
+  "approvalConfirmMessage": "¿Estás seguro de que quieres aprobar este anteproyecto?",
+  "@approvalConfirmMessage": {
+    "description": "Mensaje de confirmación para aprobar anteproyecto"
+  },
+  "rejectionConfirmMessage": "¿Estás seguro de que quieres rechazar este anteproyecto?",
+  "@rejectionConfirmMessage": {
+    "description": "Mensaje de confirmación para rechazar anteproyecto"
+  },
+  "changesConfirmMessage": "¿Estás seguro de que quieres solicitar cambios en este anteproyecto?",
+  "@changesConfirmMessage": {
+    "description": "Mensaje de confirmación para solicitar cambios"
+  },
+  "approvalSuccess": "Anteproyecto aprobado exitosamente",
+  "@approvalSuccess": {
+    "description": "Mensaje de éxito al aprobar anteproyecto"
+  },
+  "rejectionSuccess": "Anteproyecto rechazado exitosamente",
+  "@rejectionSuccess": {
+    "description": "Mensaje de éxito al rechazar anteproyecto"
+  },
+  "changesSuccess": "Cambios solicitados exitosamente",
+  "@changesSuccess": {
+    "description": "Mensaje de éxito al solicitar cambios"
+  },
+  "approvalError": "Error al procesar la aprobación",
+  "@approvalError": {
+    "description": "Mensaje de error en el proceso de aprobación"
+  },
+  "noAnteprojectsToReview": "No hay anteproyectos para revisar",
+  "@noAnteprojectsToReview": {
+    "description": "Mensaje cuando no hay anteproyectos pendientes de revisión"
+  },
+  "noReviewedAnteprojects": "No hay anteproyectos revisados",
+  "@noReviewedAnteprojects": {
+    "description": "Mensaje cuando no hay anteproyectos ya revisados"
+  },
+  "submittedOn": "Enviado el",
+  "@submittedOn": {
+    "description": "Fecha de envío del anteproyecto"
+  },
+  "reviewedOn": "Revisado el",
+  "@reviewedOn": {
+    "description": "Fecha de revisión del anteproyecto"
+  },
+  "tutorComments": "Comentarios del Tutor",
+  "@tutorComments": {
+    "description": "Comentarios dejados por el tutor"
+  },
+  "anteprojectStatus": "Estado del Anteproyecto",
+  "@anteprojectStatus": {
+    "description": "Estado actual del anteproyecto"
+  },
+  "viewDetails": "Ver Detalles",
+  "@viewDetails": {
+    "description": "Acción para ver detalles de un elemento"
+  },
+  "processing": "Procesando...",
+  "@processing": {
+    "description": "Mensaje de procesamiento en curso"
+  },
+  "commentsRequired": "Los comentarios son obligatorios",
+  "@commentsRequired": {
+    "description": "Mensaje de validación cuando los comentarios son requeridos"
+  },
+  "approve": "Aprobar",
+  "@approve": {
+    "description": "Acción de aprobar"
+  },
+  "reject": "Rechazar",
+  "@reject": {
+    "description": "Acción de rechazar"
+  },
+  "refresh": "Actualizar",
+  "@refresh": {
+    "description": "Acción de actualizar o refrescar"
+  },
   "retry": "Reintentar",
   "@retry": {
     "description": "Botón para reintentar una operación"
   },
-  "createTask": "Crear Tarea",
-  "@createTask": {
-    "description": "Botón para crear una nueva tarea"
+  "academicYear": "Año Académico",
+  "@academicYear": {
+    "description": "Año académico del anteproyecto"
+  },
+  "noDataDescription": "No hay información para mostrar en este momento",
+  "@noDataDescription": {
+    "description": "Descripción cuando no hay datos para mostrar"
   }
 }
