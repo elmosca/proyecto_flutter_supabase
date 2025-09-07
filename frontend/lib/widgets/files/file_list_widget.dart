@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../services/files_service.dart';
 import '../../l10n/app_localizations.dart';
+import '../../screens/files/file_upload_screen.dart';
 
 class FileListWidget extends StatefulWidget {
   final String attachableType;
@@ -69,7 +70,7 @@ class _FileListWidgetState extends State<FileListWidget> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(l10n.confirmDeleteFile),
-        content: Text(l10n.confirmDeleteFileMessage(file.originalFilename)),
+        content: Text('${l10n.confirmDeleteFileMessage} "${file.originalFilename}"?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -182,12 +183,13 @@ class _FileListWidgetState extends State<FileListWidget> {
             child: ElevatedButton.icon(
               onPressed: () async {
                 // Navegar a la pantalla de subida
-                final result = await Navigator.of(context).pushNamed(
-                  '/upload-file',
-                  arguments: {
-                    'attachableType': widget.attachableType,
-                    'attachableId': widget.attachableId,
-                  },
+                final result = await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => FileUploadScreen(
+                      attachableType: widget.attachableType,
+                      attachableId: widget.attachableId,
+                    ),
+                  ),
                 );
                 
                 if (result == true) {
