@@ -261,6 +261,24 @@ flutter format .
 flutter clean
 ```
 
+### **Acceso Externo con Ngrok**
+```bash
+# Iniciar Supabase
+cd backend/supabase
+supabase start
+
+# Crear túnel ngrok (en otra terminal)
+ngrok http 54321 --subdomain=tu-proyecto-tfg
+
+# Ejecutar frontend con ngrok
+cd frontend
+flutter run --dart-define=ENVIRONMENT=ngrok
+
+# O usar script automatizado
+scripts/start_ngrok.bat  # Windows
+./scripts/start_ngrok.sh # Linux/macOS
+```
+
 ---
 
 ## 📞 **APIs DISPONIBLES**
@@ -297,7 +315,8 @@ flutter clean
 ### **Guías de Configuración**
 - [Configuración Backend](backend/supabase/README.md)
 - [Configuración Android](docs/desarrollo/android_setup.md)
-- [Internacionalización](docs/desarrollo/internacionalizacion.md)
+- [Guía Ngrok para Backend Local](docs/desarrollo/guia_ngrok_backend_local.md)
+- [Configuración Ngrok - Ejemplo](docs/desarrollo/configuracion_ngrok_ejemplo.md)
 
 ---
 
