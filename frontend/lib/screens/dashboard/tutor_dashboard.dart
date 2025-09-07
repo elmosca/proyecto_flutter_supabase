@@ -8,6 +8,8 @@ import '../../l10n/app_localizations.dart';
 import '../../utils/config.dart';
 import '../../models/user.dart';
 import '../../blocs/auth_bloc.dart';
+import '../../blocs/approval_bloc.dart';
+import '../approval/approval_screen.dart';
 
 class TutorDashboard extends StatefulWidget {
   final User user;
@@ -64,11 +66,25 @@ class _TutorDashboardState extends State<TutorDashboard> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _buildDashboardContent(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _reviewAnteprojects,
-        backgroundColor: Color(AppConfig.platformColor),
-        tooltip: l10n.dashboardTutorMyAnteprojects,
-        child: const Icon(Icons.assignment, color: Colors.white),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            onPressed: _navigateToApprovalWorkflow,
+            backgroundColor: Colors.green,
+            tooltip: l10n.approvalWorkflow,
+            heroTag: 'approval',
+            child: const Icon(Icons.gavel, color: Colors.white),
+          ),
+          const SizedBox(height: 8),
+          FloatingActionButton(
+            onPressed: _reviewAnteprojects,
+            backgroundColor: Color(AppConfig.platformColor),
+            tooltip: l10n.dashboardTutorMyAnteprojects,
+            heroTag: 'review',
+            child: const Icon(Icons.assignment, color: Colors.white),
+          ),
+        ],
       ),
     );
   }
@@ -345,6 +361,17 @@ class _TutorDashboardState extends State<TutorDashboard> {
         debugPrint('Error al cerrar sesión: $e');
       }
     }
+  }
+
+  void _navigateToApprovalWorkflow() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => BlocProvider(
+          create: (context) => ApprovalBloc(),
+          child: const ApprovalScreen(),
+        ),
+      ),
+    );
   }
 
   void _reviewAnteprojects() {
