@@ -21,7 +21,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get password => 'Password';
 
   @override
-  String get loginError => 'Login error. Please verify your credentials.';
+  String get loginError => 'Login error';
 
   @override
   String get dashboard => 'Dashboard';
@@ -39,65 +39,64 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logout => 'Logout';
 
   @override
-  String get student => 'Estudiante';
+  String get student => 'Student';
 
   @override
   String get tutor => 'Tutor';
 
   @override
-  String get admin => 'Administrador';
+  String get admin => 'Administrator';
 
   @override
-  String get welcome => 'Bienvenido';
+  String get welcome => 'Welcome';
 
   @override
-  String get loading => 'Cargando...';
+  String get loading => 'Loading...';
 
   @override
   String get error => 'Error';
 
   @override
-  String get success => 'Éxito';
+  String get success => 'Success';
 
   @override
-  String get cancel => 'Cancelar';
+  String get cancel => 'Cancel';
 
   @override
-  String get save => 'Guardar';
+  String get save => 'Save';
 
   @override
-  String get edit => 'Editar';
+  String get edit => 'Edit';
 
   @override
-  String get taskCreatedSuccess => 'Tarea creada exitosamente';
+  String get taskCreatedSuccess => 'Task created successfully';
 
   @override
-  String get taskUpdatedSuccess => 'Tarea actualizada exitosamente';
+  String get taskUpdatedSuccess => 'Task updated successfully';
 
   @override
-  String get taskStatusUpdatedSuccess => 'Estado de tarea actualizado';
+  String get taskStatusUpdatedSuccess => 'Task status updated';
 
   @override
-  String get taskDeletedSuccess => 'Tarea eliminada exitosamente';
+  String get taskDeletedSuccess => 'Task deleted successfully';
 
   @override
-  String get taskNotFound => 'Tarea no encontrada';
+  String get taskNotFound => 'Task not found';
 
   @override
-  String get delete => 'Eliminar';
+  String get delete => 'Delete';
 
   @override
-  String get create => 'Crear';
+  String get create => 'Create';
 
   @override
-  String get search => 'Buscar';
+  String get search => 'Search';
 
   @override
-  String get noData => 'No hay datos disponibles';
+  String get noData => 'No data available';
 
   @override
-  String get connectionError =>
-      'Error de conexión. Por favor, verifica tu conexión a internet.';
+  String get connectionError => 'Connection error';
 
   @override
   String get anteprojectFormTitle => 'Create Anteproject';
@@ -115,182 +114,179 @@ class AppLocalizationsEn extends AppLocalizations {
   String get anteprojectDescription => 'Description';
 
   @override
-  String get anteprojectAcademicYear => 'Año académico (e.g., 2024-2025)';
+  String get anteprojectAcademicYear => 'Academic Year (e.g., 2024-2025)';
 
   @override
-  String get anteprojectExpectedResults => 'Resultados esperados (JSON)';
+  String get anteprojectExpectedResults => 'Expected Results (JSON)';
 
   @override
-  String get anteprojectTimeline => 'Temporalización (JSON)';
+  String get anteprojectTimeline => 'Timeline (JSON)';
 
   @override
   String get anteprojectTutorId => 'Tutor ID';
 
   @override
-  String get anteprojectCreateButton => 'Create Anteproject';
+  String get anteprojectCreateButton => 'Create anteproyecto';
 
   @override
-  String get anteprojectUpdateButton => 'Update Anteproject';
+  String get anteprojectUpdateButton => 'Update anteproyecto';
 
   @override
   String get anteprojectDeleteButton => 'Delete';
 
   @override
-  String get anteprojectDeleteTitle => 'Eliminar Anteproyecto';
+  String get anteprojectDeleteTitle => 'Delete Anteproject';
 
   @override
   String get anteprojectDeleteMessage =>
-      '¿Estás seguro de que quieres eliminar este anteproyecto? Esta acción no se puede deshacer.';
+      'Are you sure you want to delete this anteproyecto? This action cannot be undone.';
 
   @override
-  String get anteprojectCreatedSuccess => 'Anteproyecto creado exitosamente';
+  String get anteprojectCreatedSuccess => 'Anteproject created successfully';
 
   @override
-  String get anteprojectUpdatedSuccess =>
-      'Anteproyecto actualizado exitosamente';
+  String get anteprojectUpdatedSuccess => 'Anteproject updated successfully';
 
   @override
-  String get anteprojectInvalidTutorId => 'Tutor ID inválido';
+  String get anteprojectInvalidTutorId => 'Invalid Tutor ID';
 
   @override
-  String get anteprojectTitleRequired => 'El título es obligatorio';
+  String get anteprojectTitleRequired => 'Title is required';
 
   @override
-  String get anteprojectDescriptionRequired => 'La descripción es obligatoria';
+  String get anteprojectDescriptionRequired => 'Description is required';
 
   @override
-  String get anteprojectAcademicYearRequired =>
-      'El año académico es obligatorio';
+  String get anteprojectAcademicYearRequired => 'Academic year is required';
 
   @override
-  String get anteprojectTutorIdRequired => 'El Tutor ID es obligatorio';
+  String get anteprojectTutorIdRequired => 'Tutor ID is required';
 
   @override
-  String get anteprojectTutorIdNumeric => 'El Tutor ID debe ser numérico';
+  String get anteprojectTutorIdNumeric => 'Tutor ID must be numeric';
 
   @override
   String get anteprojectsListTitle => 'My Anteprojects';
 
   @override
-  String get anteprojectsListRefresh => 'Actualizar lista';
+  String get anteprojectsListRefresh => 'Refresh list';
 
   @override
-  String get anteprojectsListError => 'Error al cargar anteproyectos';
+  String get anteprojectsListError => 'Error loading anteproyectos';
 
   @override
-  String get anteprojectsListRetry => 'Reintentar';
+  String get anteprojectsListRetry => 'Retry';
 
   @override
-  String get anteprojectsListEmpty => 'No tienes anteproyectos';
+  String get anteprojectsListEmpty => 'You have no anteproyectos';
 
   @override
   String get anteprojectsListEmptySubtitle =>
-      'Crea tu primer anteproyecto para comenzar';
+      'Create your first anteproyecto to get started';
 
   @override
-  String get anteprojectsListUnknownState => 'Estado no reconocido';
+  String get anteprojectsListUnknownState => 'Unknown state';
 
   @override
-  String get anteprojectsListEdit => 'Editar';
+  String get anteprojectsListEdit => 'Edit';
 
   @override
-  String get anteprojectDeleteTooltip => 'Eliminar anteproyecto';
+  String get anteprojectDeleteTooltip => 'Delete anteproyecto';
 
   @override
-  String get commentsTitle => 'Comentarios';
+  String get commentsTitle => 'Comments';
 
   @override
-  String get commentsAddComment => 'Añadir comentario';
+  String get commentsAddComment => 'Add comment';
 
   @override
-  String get commentsWriteComment => 'Escribe tu comentario...';
+  String get commentsWriteComment => 'Write your comment...';
 
   @override
-  String get commentsSend => 'Enviar';
+  String get commentsSend => 'Send';
 
   @override
-  String get commentsCancel => 'Cancelar';
+  String get commentsCancel => 'Cancel';
 
   @override
-  String get commentsInternal => 'Comentario interno';
+  String get commentsInternal => 'Internal comment';
 
   @override
-  String get commentsPublic => 'Comentario público';
+  String get commentsPublic => 'Public comment';
 
   @override
-  String get commentsNoComments => 'No hay comentarios';
+  String get commentsNoComments => 'No comments';
 
   @override
-  String get commentsAddFirst => 'Sé el primero en comentar';
+  String get commentsAddFirst => 'Be the first to comment';
 
   @override
-  String get commentsError => 'Error al cargar comentarios';
+  String get commentsError => 'Error loading comments';
 
   @override
-  String get commentsErrorAdd => 'Error al añadir comentario';
+  String get commentsErrorAdd => 'Error adding comment';
 
   @override
-  String get commentsSuccess => 'Comentario añadido correctamente';
+  String get commentsSuccess => 'Comment added successfully';
 
   @override
-  String get commentsDelete => 'Eliminar comentario';
+  String get commentsDelete => 'Delete comment';
 
   @override
   String get commentsDeleteConfirm =>
-      '¿Estás seguro de que quieres eliminar este comentario?';
+      'Are you sure you want to delete this comment?';
 
   @override
-  String get commentsEdit => 'Editar comentario';
+  String get commentsEdit => 'Edit comment';
 
   @override
-  String get commentsSave => 'Guardar cambios';
+  String get commentsSave => 'Save changes';
 
   @override
-  String get commentsAuthor => 'Autor';
+  String get commentsAuthor => 'Author';
 
   @override
-  String get commentsDate => 'Fecha';
+  String get commentsDate => 'Date';
 
   @override
-  String get commentsContent => 'Contenido';
+  String get commentsContent => 'Content';
 
   @override
-  String get commentsContentRequired =>
-      'El contenido del comentario es obligatorio';
+  String get commentsContentRequired => 'Comment content is required';
 
   @override
   String get commentsContentMinLength =>
-      'El comentario debe tener al menos 3 caracteres';
+      'Comment must be at least 3 characters';
 
   @override
   String get commentsContentMaxLength =>
-      'El comentario no puede exceder 1000 caracteres';
+      'Comment cannot exceed 1000 characters';
 
   @override
-  String get unknownUser => 'Usuario desconocido';
+  String get unknownUser => 'Unknown User';
 
   @override
-  String get justNow => 'Ahora';
+  String get justNow => 'Just now';
 
   @override
   String anteprojectStatusLabel(String status) {
-    return 'Estado: $status';
+    return 'Status: $status';
   }
 
   @override
-  String get anteprojectExpectedResultsHint => 'Ejemplo milestone1 Descripción';
+  String get anteprojectExpectedResultsHint => 'Example milestone1 Description';
 
   @override
-  String get anteprojectTimelineHint => 'Ejemplo phase1 Descripción';
+  String get anteprojectTimelineHint => 'Example phase1 Description';
 
   @override
-  String get dashboardStudent => 'Dashboard Estudiante';
+  String get dashboardStudent => 'Student Dashboard';
 
   @override
-  String get myAnteprojects => 'Mis Anteproyectos';
+  String get myAnteprojects => 'My Anteprojects';
 
   @override
-  String get viewAll => 'View all';
+  String get viewAll => 'View All';
 
   @override
   String get pendingAnteprojects => 'Pending Anteprojects';
@@ -299,53 +295,52 @@ class AppLocalizationsEn extends AppLocalizations {
   String get assignedStudents => 'Assigned Students';
 
   @override
-  String get noAnteprojects =>
-      'You don\'t have any anteprojects created. Create your first anteproject!';
+  String get noAnteprojects => 'No Anteprojects';
 
   @override
   String get pendingTasks => 'Pending Tasks';
 
   @override
-  String get viewAllTasks => 'View all';
+  String get viewAllTasks => 'View All Tasks';
 
   @override
-  String get noPendingTasks => 'You don\'t have any pending tasks. Great job!';
+  String get noPendingTasks => 'No Pending Tasks';
 
   @override
   String get systemInfo => 'System Information';
 
   @override
   String backendLabel(String url) {
-    return 'Backend: $url';
+    return 'Backend';
   }
 
   @override
   String platformLabel(String platform) {
-    return 'Platform: $platform';
+    return 'Platform';
   }
 
   @override
   String versionLabel(String version) {
-    return 'Version: $version';
+    return 'Version';
   }
 
   @override
   String get emailLabel => 'Email';
 
   @override
-  String get connectedToServer => 'Status: Connected to network server';
+  String get connectedToServer => 'Connected to server';
 
   @override
-  String get tasksListDev => 'Tasks list in development';
+  String get tasksListDev => 'Tasks List (Development)';
 
   @override
-  String get adminDashboardDev => 'Admin dashboard in development';
+  String get adminDashboardDev => 'Admin Dashboard (Development)';
 
   @override
-  String get dashboardAdminUsersManagement => 'User Management';
+  String get dashboardAdminUsersManagement => 'Users Management';
 
   @override
-  String get tutorDashboardDev => 'Tutor dashboard in development';
+  String get tutorDashboardDev => 'Tutor Dashboard (Development)';
 
   @override
   String get dashboardTutorMyAnteprojects => 'My Anteprojects';
@@ -387,31 +382,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get studio => 'Studio';
 
   @override
-  String get loginSuccessTitle => '✅ Login Successful';
+  String get loginSuccessTitle => 'Login Successful';
 
   @override
-  String get copyToClipboard => 'Copy to clipboard';
+  String get copyToClipboard => 'Copy to Clipboard';
 
   @override
-  String get copied => 'Copied!';
+  String get copied => 'Copied';
 
   @override
-  String get anteprojectsListInDevelopment =>
-      'Anteprojects list in development';
+  String get anteprojectsListInDevelopment => 'Anteprojects List (Development)';
 
   @override
-  String get studentsListInDevelopment => 'Students list in development';
+  String get studentsListInDevelopment => 'Students List (Development)';
 
   @override
-  String get userManagementInDevelopment =>
-      'User management panel in development';
+  String get userManagementInDevelopment => 'User Management (Development)';
 
   @override
-  String get systemStatusInDevelopment =>
-      'Detailed system status in development';
+  String get systemStatusInDevelopment => 'System Status (Development)';
 
   @override
-  String get usersListInDevelopment => 'Users list in development';
+  String get usersListInDevelopment => 'Users List (Development)';
 
   @override
   String get validationError => 'Validation Error';
@@ -420,21 +412,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get formValidationError => 'Please correct the errors in the form';
 
   @override
-  String get networkError => 'Network Error';
+  String get networkError => 'Network error';
 
   @override
   String get networkErrorMessage =>
       'Could not connect to server. Check your internet connection.';
 
   @override
-  String get serverError => 'Server Error';
+  String get serverError => 'Server error';
 
   @override
   String get serverErrorMessage =>
-      'The server could not process the request. Please try again later.';
+      'Server could not process the request. Try again later.';
 
   @override
-  String get unknownError => 'Unknown Error';
+  String get unknownError => 'Unknown error';
 
   @override
   String get unknownErrorMessage =>
@@ -465,231 +457,288 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fieldTooLong => 'This field is too long';
 
   @override
-  String get invalidEmail => 'The email format is not valid';
+  String get invalidEmail => 'Email format is not valid';
 
   @override
-  String get invalidUrl => 'The URL format is not valid';
+  String get invalidUrl => 'URL does not have a valid format';
 
   @override
-  String get invalidNumber => 'The value must be a valid number';
+  String get invalidNumber => 'Value must be a valid number';
 
   @override
-  String get invalidJson => 'The JSON format is not valid';
+  String get invalidJson => 'JSON format is not valid';
 
   @override
-  String get operationInProgress => 'Operation in progress...';
+  String get operationInProgress => 'Operation in progress';
 
   @override
   String get operationCompleted => 'Operation completed';
 
   @override
-  String get operationFailed => 'The operation failed';
+  String get operationFailed => 'Operation failed';
 
   @override
-  String get taskFormTitle => 'Formulario de Tarea';
+  String get taskFormTitle => 'Task Form';
 
   @override
-  String get taskEditFormTitle => 'Editar Tarea';
+  String get taskEditFormTitle => 'Edit Task';
 
   @override
-  String get taskTitle => 'Título';
+  String get taskTitle => 'Title';
 
   @override
-  String get taskDescription => 'Descripción';
+  String get taskDescription => 'Description';
 
   @override
-  String get taskStatus => 'Estado';
+  String get taskStatus => 'Status';
 
   @override
-  String get taskComplexity => 'Complejidad';
+  String get taskComplexity => 'Complexity';
 
   @override
-  String get taskDueDate => 'Fecha de Vencimiento';
+  String get taskDueDate => 'Due Date';
 
   @override
-  String get taskEstimatedHours => 'Horas Estimadas';
+  String get taskEstimatedHours => 'Estimated Hours';
 
   @override
-  String get taskTags => 'Etiquetas';
+  String get taskTags => 'Tags';
 
   @override
-  String get taskCreateButton => 'Crear Tarea';
+  String get taskCreateButton => 'Create Task';
 
   @override
-  String get taskUpdateButton => 'Actualizar Tarea';
+  String get taskUpdateButton => 'Update Task';
 
   @override
-  String get taskTitleRequired => 'El título es obligatorio';
+  String get taskTitleRequired => 'Title is required';
 
   @override
-  String get taskDescriptionRequired => 'La descripción es obligatoria';
+  String get taskDescriptionRequired => 'Description is required';
 
   @override
-  String get taskStatusPending => 'Pendiente';
+  String get taskStatusPending => 'Pending';
 
   @override
-  String get taskStatusInProgress => 'En Progreso';
+  String get taskStatusInProgress => 'In Progress';
 
   @override
-  String get taskStatusUnderReview => 'En Revisión';
+  String get taskStatusUnderReview => 'Under Review';
 
   @override
-  String get taskStatusCompleted => 'Completada';
+  String get taskStatusCompleted => 'Completed';
 
   @override
   String get taskComplexitySimple => 'Simple';
 
   @override
-  String get taskComplexityMedium => 'Media';
+  String get taskComplexityMedium => 'Medium';
 
   @override
-  String get taskComplexityComplex => 'Compleja';
+  String get taskComplexityComplex => 'Complex';
 
   @override
-  String get tasksListTitle => 'Lista de Tareas';
+  String get tasksListTitle => 'Tasks List';
 
   @override
-  String get tasksListEmpty => 'No hay tareas disponibles';
+  String get tasksListEmpty => 'No tasks available';
 
   @override
-  String get tasksListRefresh => 'Actualizar';
+  String get tasksListRefresh => 'Refresh Tasks';
 
   @override
-  String get kanbanBoardTitle => 'Tablero Kanban';
+  String get kanbanBoardTitle => 'Kanban Board';
 
   @override
-  String get kanbanColumnPending => 'Pendientes';
+  String get kanbanColumnPending => 'Pending';
 
   @override
-  String get kanbanColumnInProgress => 'En Progreso';
+  String get kanbanColumnInProgress => 'In Progress';
 
   @override
-  String get kanbanColumnUnderReview => 'En Revisión';
+  String get kanbanColumnUnderReview => 'Under Review';
 
   @override
-  String get kanbanColumnCompleted => 'Completadas';
+  String get kanbanColumnCompleted => 'Completed';
 
   @override
-  String get selectDate => 'Seleccionar fecha';
+  String get selectDate => 'Select Date';
 
   @override
-  String get createTask => 'Crear Tarea';
+  String get createTask => 'Create Task';
 
   @override
-  String get approvalWorkflow => 'Flujo de Aprobación';
+  String get approvalWorkflow => 'Approval Workflow';
 
   @override
-  String get pendingApprovals => 'Aprobaciones Pendientes';
+  String get pendingApprovals => 'Pending Approvals';
 
   @override
-  String get reviewedAnteprojects => 'Anteproyectos Revisados';
+  String get reviewedAnteprojects => 'Reviewed Anteprojects';
 
   @override
-  String get approveAnteproject => 'Aprobar Anteproyecto';
+  String get approveAnteproject => 'Approve Anteproject';
 
   @override
-  String get rejectAnteproject => 'Rechazar Anteproyecto';
+  String get rejectAnteproject => 'Reject Anteproject';
 
   @override
-  String get requestChanges => 'Solicitar Cambios';
+  String get requestChanges => 'Request Changes';
 
   @override
-  String get approvalComments => 'Comentarios de Aprobación';
+  String get approvalComments => 'Approval Comments';
 
   @override
-  String get approvalCommentsHint =>
-      'Escribe comentarios sobre la aprobación (opcional)';
+  String get approvalCommentsHint => 'Enter approval comments';
 
   @override
-  String get rejectionComments => 'Comentarios de Rechazo';
+  String get rejectionComments => 'Rejection Comments';
 
   @override
-  String get rejectionCommentsHint =>
-      'Escribe los motivos del rechazo (obligatorio)';
+  String get rejectionCommentsHint => 'Enter rejection comments';
 
   @override
-  String get changesComments => 'Comentarios sobre Cambios';
+  String get changesComments => 'Changes Comments';
 
   @override
-  String get changesCommentsHint =>
-      'Especifica los cambios necesarios (obligatorio)';
+  String get changesCommentsHint => 'Enter changes comments';
 
   @override
-  String get confirmApproval => 'Confirmar Aprobación';
+  String get confirmApproval => 'Confirm Approval';
 
   @override
-  String get confirmRejection => 'Confirmar Rechazo';
+  String get confirmRejection => 'Confirm Rejection';
 
   @override
-  String get confirmChanges => 'Confirmar Solicitud de Cambios';
+  String get confirmChanges => 'Confirm Changes';
 
   @override
   String get approvalConfirmMessage =>
-      '¿Estás seguro de que quieres aprobar este anteproyecto?';
+      'Are you sure you want to approve this anteproyecto?';
 
   @override
   String get rejectionConfirmMessage =>
-      '¿Estás seguro de que quieres rechazar este anteproyecto?';
+      'Are you sure you want to reject this anteproyecto?';
 
   @override
   String get changesConfirmMessage =>
-      '¿Estás seguro de que quieres solicitar cambios en este anteproyecto?';
+      'Are you sure you want to request changes for this anteproyecto?';
 
   @override
-  String get approvalSuccess => 'Anteproyecto aprobado exitosamente';
+  String get approvalSuccess => 'Anteproject approved successfully';
 
   @override
-  String get rejectionSuccess => 'Anteproyecto rechazado exitosamente';
+  String get rejectionSuccess => 'Anteproject rejected successfully';
 
   @override
-  String get changesSuccess => 'Cambios solicitados exitosamente';
+  String get changesSuccess => 'Changes requested successfully';
 
   @override
-  String get approvalError => 'Error al procesar la aprobación';
+  String get approvalError => 'Error processing approval';
 
   @override
-  String get noAnteprojectsToReview => 'No hay anteproyectos para revisar';
+  String get noAnteprojectsToReview => 'No anteproyectos to review';
 
   @override
-  String get noReviewedAnteprojects => 'No hay anteproyectos revisados';
+  String get noReviewedAnteprojects => 'No reviewed anteproyectos';
 
   @override
-  String get submittedOn => 'Enviado el';
+  String get submittedOn => 'Submitted on';
 
   @override
-  String get reviewedOn => 'Revisado el';
+  String get reviewedOn => 'Reviewed on';
 
   @override
-  String get tutorComments => 'Comentarios del Tutor';
+  String get tutorComments => 'Tutor Comments';
 
   @override
-  String get anteprojectStatus => 'Status';
+  String get anteprojectStatus => 'Anteproject Status';
 
   @override
   String get viewDetails => 'View details';
 
   @override
-  String get processing => 'Procesando...';
+  String get processing => 'Processing...';
 
   @override
-  String get commentsRequired => 'Los comentarios son obligatorios';
+  String get commentsRequired => 'Comments are required';
 
   @override
-  String get approve => 'Aprobar';
+  String get approve => 'Approve';
 
   @override
-  String get reject => 'Rechazar';
+  String get reject => 'Reject';
 
   @override
-  String get refresh => 'Actualizar';
+  String get refresh => 'Refresh';
 
   @override
   String get retry => 'Retry';
 
   @override
-  String get academicYear => 'Año Académico';
+  String get academicYear => 'Academic Year';
 
   @override
-  String get noDataDescription =>
-      'No hay información para mostrar en este momento';
+  String get noDataDescription => 'No data available';
+
+  @override
+  String get uploadFile => 'Upload File';
+
+  @override
+  String get uploading => 'Uploading...';
+
+  @override
+  String get upload => 'Upload';
+
+  @override
+  String get fileUploadedSuccessfully => 'File uploaded successfully';
+
+  @override
+  String get fileDeletedSuccessfully => 'File deleted successfully';
+
+  @override
+  String get confirmDeleteFile => 'Confirm Delete';
+
+  @override
+  String confirmDeleteFileMessage(String fileName) {
+    return 'Are you sure you want to delete this file?';
+  }
+
+  @override
+  String get openFile => 'Open File';
+
+  @override
+  String get deleteFile => 'Delete File';
+
+  @override
+  String get noFilesAttached => 'No files attached';
+
+  @override
+  String get noFilesYet => 'No files yet';
+
+  @override
+  String get uploadedBy => 'Uploaded by';
+
+  @override
+  String get clickToSelectFile => 'Click to select a file';
+
+  @override
+  String get allowedFileTypes => 'Allowed file types';
+
+  @override
+  String maxFileSize(String size) {
+    return 'Maximum file size';
+  }
+
+  @override
+  String get filesAttached => 'Files Attached';
+
+  @override
+  String get attachFile => 'Attach File';
+
+  @override
+  String get taskDetails => 'Task Details';
+
+  @override
+  String get details => 'Details';
 }

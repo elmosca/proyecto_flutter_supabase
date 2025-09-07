@@ -695,4 +695,66 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get noDataDescription =>
       'No hay información para mostrar en este momento';
+
+  @override
+  String get uploadFile => 'Subir Archivo';
+
+  @override
+  String get uploading => 'Subiendo...';
+
+  @override
+  String get upload => 'Subir';
+
+  @override
+  String get fileUploadedSuccessfully => 'Archivo subido correctamente';
+
+  @override
+  String get fileDeletedSuccessfully => 'Archivo eliminado correctamente';
+
+  @override
+  String get confirmDeleteFile => 'Confirmar Eliminación';
+
+  @override
+  String confirmDeleteFileMessage(String fileName) {
+    return '¿Estás seguro de que deseas eliminar el archivo $fileName?';
+  }
+
+  @override
+  String get openFile => 'Abrir Archivo';
+
+  @override
+  String get deleteFile => 'Eliminar Archivo';
+
+  @override
+  String get noFilesAttached => 'No hay archivos adjuntos';
+
+  @override
+  String get noFilesYet => 'Aún no hay archivos';
+
+  @override
+  String get uploadedBy => 'Subido por';
+
+  @override
+  String get clickToSelectFile => 'Haz clic para seleccionar un archivo';
+
+  @override
+  String get allowedFileTypes =>
+      'Tipos permitidos: PDF, Word, TXT, Imágenes (JPG, PNG, GIF), ZIP, RAR';
+
+  @override
+  String maxFileSize(String size) {
+    return 'Tamaño máximo: $size';
+  }
+
+  @override
+  String get filesAttached => 'Archivos Adjuntos';
+
+  @override
+  String get attachFile => 'Adjuntar Archivo';
+
+  @override
+  String get taskDetails => 'Detalles de la Tarea';
+
+  @override
+  String get details => 'Detalles';
 }
