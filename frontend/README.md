@@ -142,22 +142,27 @@ frontend/
 - [x] Configuración multiplataforma
 - [x] Conexión con backend en servidor de red
 - [x] Pantalla de login funcional
-- [x] Detección de plataforma
-- [x] Información del servidor
-- [x] Credenciales de prueba
+- [x] Dashboards por rol (estudiante, tutor, admin)
+- [x] Formularios de anteproyectos (crear/editar)
+- [x] Lista de anteproyectos con gestión
+- [x] Formularios de tareas (crear/editar)
+- [x] Lista de tareas con gestión
+- [x] Tablero Kanban básico
+- [x] Sistema de comentarios completo con BLoC e internacionalización
+- [x] Navegación integrada entre pantallas
+- [x] Internacionalización completa (español/inglés)
+- [x] Código completamente limpio (0 errores, 0 warnings)
+- [x] Testing unitario y de integración
 
-### **🔄 En Desarrollo**
-- [ ] Navegación por roles
-- [ ] Dashboard de estudiante
-- [ ] Dashboard de tutor
-- [ ] Gestión de anteproyectos
-- [ ] Tablero Kanban
+### **🔄 Pendientes**
+- [ ] Flujo de aprobación de anteproyectos (Frontend)
+- [ ] Subida de archivos y gestión (Frontend)
 
-### **⏳ Pendientes**
-- [ ] Sistema de notificaciones
-- [ ] Subida de archivos
+### **⏳ Futuras Mejoras**
+- [ ] Sistema de notificaciones push
 - [ ] Generación de PDFs
-- [ ] Testing multiplataforma
+- [ ] Optimizaciones de rendimiento
+- [ ] Despliegue en tiendas de aplicaciones
 
 ## 🛠️ **Herramientas de Desarrollo**
 
@@ -256,6 +261,6 @@ telnet 192.168.1.9 54321
 
 ---
 
-**Estado**: ✅ **CONFIGURADO Y FUNCIONAL**  
-**Última actualización**: 29 de agosto de 2024  
-**Versión**: 1.0.0
+**Estado**: ✅ **85% COMPLETADO** - Sistema de comentarios implementado  
+**Última actualización**: 30 de agosto de 2024  
+**Versión**: 1.2.0

@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'user.dart';
 
 part 'comment.g.dart';
 
@@ -11,6 +12,7 @@ class Comment {
   final bool isInternal;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final User? author;
 
   const Comment({
     required this.id,
@@ -20,6 +22,7 @@ class Comment {
     required this.isInternal,
     required this.createdAt,
     required this.updatedAt,
+    this.author,
   });
 
   factory Comment.fromJson(Map<String, dynamic> json) => _$CommentFromJson(json);
@@ -33,6 +36,7 @@ class Comment {
     bool? isInternal,
     DateTime? createdAt,
     DateTime? updatedAt,
+    User? author,
   }) {
     return Comment(
       id: id ?? this.id,
@@ -42,6 +46,7 @@ class Comment {
       isInternal: isInternal ?? this.isInternal,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      author: author ?? this.author,
     );
   }
 

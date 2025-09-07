@@ -470,6 +470,156 @@ abstract class AppLocalizations {
   /// **'Eliminar anteproyecto'**
   String get anteprojectDeleteTooltip;
 
+  /// Título de la sección de comentarios
+  ///
+  /// In es, this message translates to:
+  /// **'Comentarios'**
+  String get commentsTitle;
+
+  /// Botón para añadir un nuevo comentario
+  ///
+  /// In es, this message translates to:
+  /// **'Añadir comentario'**
+  String get commentsAddComment;
+
+  /// Placeholder para el campo de comentario
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe tu comentario...'**
+  String get commentsWriteComment;
+
+  /// Botón para enviar comentario
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar'**
+  String get commentsSend;
+
+  /// Botón para cancelar comentario
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar'**
+  String get commentsCancel;
+
+  /// Etiqueta para comentarios internos
+  ///
+  /// In es, this message translates to:
+  /// **'Comentario interno'**
+  String get commentsInternal;
+
+  /// Etiqueta para comentarios públicos
+  ///
+  /// In es, this message translates to:
+  /// **'Comentario público'**
+  String get commentsPublic;
+
+  /// Mensaje cuando no hay comentarios
+  ///
+  /// In es, this message translates to:
+  /// **'No hay comentarios'**
+  String get commentsNoComments;
+
+  /// Mensaje para animar a comentar cuando no hay comentarios
+  ///
+  /// In es, this message translates to:
+  /// **'Sé el primero en comentar'**
+  String get commentsAddFirst;
+
+  /// Mensaje de error al cargar comentarios
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar comentarios'**
+  String get commentsError;
+
+  /// Mensaje de error al añadir comentario
+  ///
+  /// In es, this message translates to:
+  /// **'Error al añadir comentario'**
+  String get commentsErrorAdd;
+
+  /// Mensaje de éxito al añadir comentario
+  ///
+  /// In es, this message translates to:
+  /// **'Comentario añadido correctamente'**
+  String get commentsSuccess;
+
+  /// Botón para eliminar comentario
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar comentario'**
+  String get commentsDelete;
+
+  /// Mensaje de confirmación para eliminar comentario
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de que quieres eliminar este comentario?'**
+  String get commentsDeleteConfirm;
+
+  /// Botón para editar comentario
+  ///
+  /// In es, this message translates to:
+  /// **'Editar comentario'**
+  String get commentsEdit;
+
+  /// Botón para guardar cambios en comentario
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar cambios'**
+  String get commentsSave;
+
+  /// Etiqueta para el autor del comentario
+  ///
+  /// In es, this message translates to:
+  /// **'Autor'**
+  String get commentsAuthor;
+
+  /// Etiqueta para la fecha del comentario
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha'**
+  String get commentsDate;
+
+  /// Etiqueta para el contenido del comentario
+  ///
+  /// In es, this message translates to:
+  /// **'Contenido'**
+  String get commentsContent;
+
+  /// Mensaje de validación para contenido requerido
+  ///
+  /// In es, this message translates to:
+  /// **'El contenido del comentario es obligatorio'**
+  String get commentsContentRequired;
+
+  /// Mensaje de validación para longitud mínima
+  ///
+  /// In es, this message translates to:
+  /// **'El comentario debe tener al menos 3 caracteres'**
+  String get commentsContentMinLength;
+
+  /// Mensaje de validación para longitud máxima
+  ///
+  /// In es, this message translates to:
+  /// **'El comentario no puede exceder 1000 caracteres'**
+  String get commentsContentMaxLength;
+
+  /// Botón para reintentar una operación
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get retry;
+
+  /// Texto para usuario desconocido
+  ///
+  /// In es, this message translates to:
+  /// **'Usuario desconocido'**
+  String get unknownUser;
+
+  /// Texto para tiempo reciente
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora'**
+  String get justNow;
+
   /// Etiqueta de estado con valor
   ///
   /// In es, this message translates to:
@@ -781,12 +931,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.'**
   String get unknownErrorMessage;
-
-  /// Botón para reintentar una operación
-  ///
-  /// In es, this message translates to:
-  /// **'Reintentar'**
-  String get retry;
 
   /// Botón para cerrar
   ///

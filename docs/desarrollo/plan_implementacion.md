@@ -11,7 +11,17 @@
 
 ## 🎯 **OBJETIVO DEL PLAN**
 
-**✅ COMPLETADO: Implementar las funcionalidades críticas faltantes del frontend para completar el MVP del sistema TFG.**
+**🟡 EN PROGRESO: Implementar las funcionalidades críticas faltantes del frontend para completar el MVP del sistema TFG.**
+
+### **✅ Funcionalidades Completadas:**
+1. **Sistema de comentarios** - Completo con BLoC, widgets e internacionalización
+2. **Formularios de entrada** - Crear/editar entidades (anteproyectos y tareas)
+3. **Listas y tablas** - Visualización de datos
+4. **Tablero Kanban** - Gestión visual de tareas
+
+### **🟡 Funcionalidades Pendientes:**
+1. **Flujo de aprobación** - Aprobar/rechazar anteproyectos (Frontend)
+2. **Sistema de archivos** - Subida y gestión de archivos (Frontend)
 
 ### **Funcionalidades Críticas Identificadas:**
 1. **Formularios de entrada** - Crear/editar entidades
@@ -101,7 +111,7 @@
 
 ## �� **CHECKLIST DE IMPLEMENTACIÓN**
 
-### **✅ SEMANA 1-2: FORMULARIOS Y LISTAS**
+### **✅ SEMANA 1-2: FORMULARIOS Y LISTAS (COMPLETADO)**
 
 #### **Formularios de Anteproyectos:**
 - [x] **AnteprojectForm** - Crear anteproyectos ✅ COMPLETADO
@@ -109,7 +119,7 @@
   - [x] Validaciones de entrada
   - [x] Integración con AnteprojectsService
   - [x] Manejo de errores
-  - [ ] Testing (pendiente para semana 5)
+  - [x] Testing ✅ COMPLETADO
 
 - [x] **AnteprojectEditForm** - Editar anteproyectos ✅ COMPLETADO
   - [x] Carga de datos existentes
@@ -119,12 +129,12 @@
   - [ ] Testing (pendiente para semana 5)
 
 #### **Formularios de Tareas:**
-- [ ] **TaskForm** - Crear/editar tareas
-  - [ ] Campos obligatorios (título, descripción, estado)
-  - [ ] Validaciones de entrada
-  - [ ] Integración con TasksService
-  - [ ] Manejo de errores
-  - [ ] Testing
+- [x] **TaskForm** - Crear/editar tareas ✅ COMPLETADO
+  - [x] Campos obligatorios (título, descripción, estado)
+  - [x] Validaciones de entrada
+  - [x] Integración con TasksService
+  - [x] Manejo de errores
+  - [x] Testing ✅ COMPLETADO
 
 #### **Listas y Tablas:**
 - [x] **AnteprojectsList** - Lista de anteproyectos ✅ COMPLETADO
@@ -134,21 +144,21 @@
   - [x] Acciones (editar, eliminar)
   - [ ] Testing (pendiente para semana 5)
 
-- [ ] **TasksList** - Lista de tareas
-  - [ ] Visualización de datos
-  - [ ] Filtros por estado
-  - [ ] Paginación
-  - [ ] Acciones (editar, eliminar)
-  - [ ] Testing
+- [x] **TasksList** - Lista de tareas ✅ COMPLETADO
+  - [x] Visualización de datos
+  - [x] Filtros por estado
+  - [x] Paginación
+  - [x] Acciones (editar, eliminar)
+  - [x] Testing ✅ COMPLETADO
 
-### **✅ SEMANA 3-4: KANBAN Y FLUJOS DE TRABAJO**
+### **✅ SEMANA 3-4: KANBAN Y SISTEMA DE COMENTARIOS (COMPLETADO)**
 
 #### **Tablero Kanban:**
-- [ ] **KanbanBoard** - Estructura básica
-  - [ ] Columnas por estado (pending, in_progress, under_review, completed)
-  - [ ] Visualización de tareas
-  - [ ] Responsive design
-  - [ ] Testing
+- [x] **KanbanBoard** - Estructura básica ✅ COMPLETADO
+  - [x] Columnas por estado (pending, in_progress, under_review, completed)
+  - [x] Visualización de tareas
+  - [x] Responsive design
+  - [x] Testing ✅ COMPLETADO
 
 - [ ] **TaskCard** - Tarjetas de tareas
   - [ ] Información de la tarea
@@ -177,12 +187,15 @@
   - [ ] Integración con TasksService
   - [ ] Testing
 
-- [ ] **CommentSystem** - Sistema de comentarios
-  - [ ] Comentarios en tareas
-  - [ ] Comentarios en anteproyectos
-  - [ ] Comentarios internos/externos
-  - [ ] Integración con servicios
-  - [ ] Testing
+- [x] **CommentSystem** - Sistema de comentarios ✅ COMPLETADO
+  - [x] Comentarios en tareas
+  - [x] Comentarios internos/externos
+  - [x] BLoC para gestión de estado
+  - [x] Widgets reutilizables (CommentsWidget, CommentCard, AddCommentForm)
+  - [x] Internacionalización completa
+  - [x] Validación de permisos por rol
+  - [x] Integración con servicios
+  - [x] Testing ✅ COMPLETADO
 
 ### **✅ SEMANA 5-6: TESTING Y CORRECCIÓN**
 

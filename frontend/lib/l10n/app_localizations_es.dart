@@ -201,6 +201,85 @@ class AppLocalizationsEs extends AppLocalizations {
   String get anteprojectDeleteTooltip => 'Eliminar anteproyecto';
 
   @override
+  String get commentsTitle => 'Comentarios';
+
+  @override
+  String get commentsAddComment => 'Añadir comentario';
+
+  @override
+  String get commentsWriteComment => 'Escribe tu comentario...';
+
+  @override
+  String get commentsSend => 'Enviar';
+
+  @override
+  String get commentsCancel => 'Cancelar';
+
+  @override
+  String get commentsInternal => 'Comentario interno';
+
+  @override
+  String get commentsPublic => 'Comentario público';
+
+  @override
+  String get commentsNoComments => 'No hay comentarios';
+
+  @override
+  String get commentsAddFirst => 'Sé el primero en comentar';
+
+  @override
+  String get commentsError => 'Error al cargar comentarios';
+
+  @override
+  String get commentsErrorAdd => 'Error al añadir comentario';
+
+  @override
+  String get commentsSuccess => 'Comentario añadido correctamente';
+
+  @override
+  String get commentsDelete => 'Eliminar comentario';
+
+  @override
+  String get commentsDeleteConfirm =>
+      '¿Estás seguro de que quieres eliminar este comentario?';
+
+  @override
+  String get commentsEdit => 'Editar comentario';
+
+  @override
+  String get commentsSave => 'Guardar cambios';
+
+  @override
+  String get commentsAuthor => 'Autor';
+
+  @override
+  String get commentsDate => 'Fecha';
+
+  @override
+  String get commentsContent => 'Contenido';
+
+  @override
+  String get commentsContentRequired =>
+      'El contenido del comentario es obligatorio';
+
+  @override
+  String get commentsContentMinLength =>
+      'El comentario debe tener al menos 3 caracteres';
+
+  @override
+  String get commentsContentMaxLength =>
+      'El comentario no puede exceder 1000 caracteres';
+
+  @override
+  String get retry => 'Reintentar';
+
+  @override
+  String get unknownUser => 'Usuario desconocido';
+
+  @override
+  String get justNow => 'Ahora';
+
+  @override
   String anteprojectStatusLabel(String status) {
     return 'Estado: $status';
   }
@@ -372,9 +451,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get unknownErrorMessage =>
       'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.';
-
-  @override
-  String get retry => 'Reintentar';
 
   @override
   String get close => 'Cerrar';

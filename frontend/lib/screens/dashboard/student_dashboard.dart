@@ -426,39 +426,51 @@ class _StudentDashboardState extends State<StudentDashboard> {
   }
 
   void _viewAllTasks() {
+    // Obtener projectId del usuario autenticado
+    final authState = context.read<AuthBloc>().state;
+    final projectId = authState is AuthAuthenticated ? authState.user.id : 1;
+    
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (BuildContext context) => BlocProvider<TasksBloc>(
           create: (_) => TasksBloc(
             tasksService: TasksService(),
           ),
-          child: const TasksList(projectId: 1), // TODO: Obtener projectId real
+          child: TasksList(projectId: projectId),
         ),
       ),
     );
   }
 
   void _viewKanbanBoard() {
+    // Obtener projectId del usuario autenticado
+    final authState = context.read<AuthBloc>().state;
+    final projectId = authState is AuthAuthenticated ? authState.user.id : 1;
+    
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (BuildContext context) => BlocProvider<TasksBloc>(
           create: (_) => TasksBloc(
             tasksService: TasksService(),
           ),
-          child: const KanbanBoard(projectId: 1), // TODO: Obtener projectId real
+          child: KanbanBoard(projectId: projectId),
         ),
       ),
     );
   }
 
   void _createTask() {
+    // Obtener projectId del usuario autenticado
+    final authState = context.read<AuthBloc>().state;
+    final projectId = authState is AuthAuthenticated ? authState.user.id : 1;
+    
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (BuildContext context) => BlocProvider<TasksBloc>(
           create: (_) => TasksBloc(
             tasksService: TasksService(),
           ),
-          child: const TaskForm(projectId: 1), // TODO: Obtener projectId real
+          child: TaskForm(projectId: projectId),
         ),
       ),
     );

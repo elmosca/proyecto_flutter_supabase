@@ -3,9 +3,9 @@
 
 ## 📊 **ESTADO ACTUAL DEL PROYECTO**
 
-**Fecha de actualización**: 30 de agosto de 2024 (MVP COMPLETADO AL 100%)  
-**Progreso general**: 100% completado  
-**Estado**: ✅ **PROYECTO COMPLETADO**
+**Fecha de actualización**: 30 de agosto de 2024 (MVP FUNCIONAL AL 85%)  
+**Progreso general**: 85% completado  
+**Estado**: 🟡 **MVP FUNCIONAL CON FUNCIONALIDADES CORE**
 
 ### **Backend**: ✅ **100% COMPLETADO**
 - ✅ Modelo de datos completo (19 tablas)
@@ -14,7 +14,7 @@
 - ✅ Seguridad RLS implementada
 - ✅ Datos de ejemplo disponibles
 
-### **Frontend**: ✅ **100% COMPLETADO**
+### **Frontend**: 🟡 **75% COMPLETADO**
 - ✅ Configuración inicial multiplataforma
 - ✅ Autenticación básica implementada
 - ✅ Dashboards por rol creados
@@ -29,6 +29,9 @@
 - ✅ Sistema de mocking de Supabase resuelto
 - ✅ Código completamente limpio (0 warnings, 0 errores)
 - ✅ Testing completo (19 tests pasando)
+- 🟡 **Sistema de comentarios** (Backend implementado, Frontend pendiente)
+- 🟡 **Flujo de aprobación** (Backend implementado, Frontend pendiente)
+- 🟡 **Subida de archivos** (Backend implementado, Frontend pendiente)
 
 ---
 

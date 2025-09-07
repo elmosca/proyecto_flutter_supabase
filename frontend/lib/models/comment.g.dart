@@ -14,6 +14,9 @@ Comment _$CommentFromJson(Map<String, dynamic> json) => Comment(
   isInternal: json['isInternal'] as bool,
   createdAt: DateTime.parse(json['createdAt'] as String),
   updatedAt: DateTime.parse(json['updatedAt'] as String),
+  author: json['author'] == null
+      ? null
+      : User.fromJson(json['author'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$CommentToJson(Comment instance) => <String, dynamic>{
@@ -24,4 +27,5 @@ Map<String, dynamic> _$CommentToJson(Comment instance) => <String, dynamic>{
   'isInternal': instance.isInternal,
   'createdAt': instance.createdAt.toIso8601String(),
   'updatedAt': instance.updatedAt.toIso8601String(),
+  'author': instance.author,
 };
