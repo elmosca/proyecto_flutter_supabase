@@ -158,7 +158,7 @@ class _AddCommentFormState extends State<AddCommentForm> {
         CommentAddRequested(
           taskId: widget.taskId,
           content: _contentController.text.trim(),
-          authorId: widget.currentUser.id,
+          authorId: int.tryParse(widget.currentUser.id) ?? 0,
           isInternal: _isInternal,
         ),
       );

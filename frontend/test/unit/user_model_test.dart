@@ -5,7 +5,7 @@ void main() {
   group('User Model Tests', () {
     test('User can be created with required fields', () {
       final user = User(
-        id: 1,
+        id: '1',
         fullName: 'Test User',
         email: 'test@example.com',
         role: UserRole.student,
@@ -14,7 +14,7 @@ void main() {
         updatedAt: DateTime(2024, 1, 1),
       );
 
-      expect(user.id, equals(1));
+      expect(user.id, equals('1'));
       expect(user.fullName, equals('Test User'));
       expect(user.email, equals('test@example.com'));
       expect(user.role, equals(UserRole.student));
@@ -23,7 +23,7 @@ void main() {
 
     test('User can be created with optional fields', () {
       final user = User(
-        id: 2,
+        id: '2',
         fullName: 'Test User 2',
         email: 'test2@example.com',
         role: UserRole.tutor,
@@ -42,7 +42,7 @@ void main() {
 
     test('User copyWith works correctly', () {
       final originalUser = User(
-        id: 1,
+        id: '1',
         fullName: 'Original User',
         email: 'original@example.com',
         role: UserRole.student,
@@ -56,7 +56,7 @@ void main() {
         email: 'updated@example.com',
       );
 
-      expect(updatedUser.id, equals(1));
+      expect(updatedUser.id, equals('1'));
       expect(updatedUser.fullName, equals('Updated User'));
       expect(updatedUser.email, equals('updated@example.com'));
       expect(updatedUser.role, equals(UserRole.student));
@@ -65,7 +65,7 @@ void main() {
 
     test('User equality works correctly', () {
       final user1 = User(
-        id: 1,
+        id: '1',
         fullName: 'Test User',
         email: 'test@example.com',
         role: UserRole.student,
@@ -75,7 +75,7 @@ void main() {
       );
 
       final user2 = User(
-        id: 1,
+        id: '1',
         fullName: 'Different Name',
         email: 'different@example.com',
         role: UserRole.admin,
@@ -85,7 +85,7 @@ void main() {
       );
 
       final user3 = User(
-        id: 2,
+        id: '2',
         fullName: 'Test User',
         email: 'test@example.com',
         role: UserRole.student,

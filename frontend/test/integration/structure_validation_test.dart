@@ -93,7 +93,7 @@ void main() {
       
       // Crear User
       final user = User(
-        id: 123,
+        id: '123',
         email: 'test@example.com',
         fullName: 'Test User',
         role: UserRole.student,
@@ -102,7 +102,7 @@ void main() {
         updatedAt: now,
       );
       
-      expect(user.id, equals(123));
+      expect(user.id, equals('123'));
       expect(user.email, equals('test@example.com'));
       expect(user.role, equals(UserRole.student));
       

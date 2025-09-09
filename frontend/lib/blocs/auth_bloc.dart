@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import '../models/user.dart';
 import '../services/auth_service.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
+import '../router/app_router.dart';
 
 // Events
 abstract class AuthEvent extends Equatable {
@@ -15,14 +17,16 @@ abstract class AuthEvent extends Equatable {
 class AuthLoginRequested extends AuthEvent {
   final String email;
   final String password;
+  final BuildContext context;
 
   const AuthLoginRequested({
     required this.email,
     required this.password,
+    required this.context,
   });
 
   @override
-  List<Object> get props => [email, password];
+  List<Object> get props => [email, password, context];
 }
 
 class AuthLogoutRequested extends AuthEvent {}
@@ -32,7 +36,7 @@ class AuthCheckRequested extends AuthEvent {}
 class AuthUserChanged extends AuthEvent {
   final User? user;
 
-  const AuthUserChanged(this.user);
+  const AuthUserChanged({this.user});
 
   @override
   List<Object?> get props => [user];
@@ -82,6 +86,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthLogoutRequested>(_onAuthLogoutRequested);
     on<AuthCheckRequested>(_onAuthCheckRequested);
     on<AuthUserChanged>(_onAuthUserChanged);
+    
+    // Escuchar cambios en el estado de autenticación de Supabase
+    _authService.authStateChanges.listen((supabase.AuthState supabaseAuthState) {
+      if (supabaseAuthState.event == supabase.AuthChangeEvent.signedOut) {
+        add(const AuthUserChanged(user: null));
+      } else if (supabaseAuthState.event == supabase.AuthChangeEvent.signedIn) {
+        // Obtener el perfil del usuario
+        _authService.getCurrentUserProfile().then((user) {
+          add(AuthUserChanged(user: user));
+        });
+      }
+    });
   }
 
   Future<void> _onAuthLoginRequested(
@@ -96,21 +112,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         password: event.password,
       );
       
-      if (response.user != null) {
-        // Convertir supabase.User a nuestro modelo User
-        final user = User(
-          id: int.tryParse(response.user!.id) ?? 0,
-          email: response.user!.email ?? '',
-          fullName: response.user!.userMetadata?['full_name'] ?? '',
-          role: response.user!.userMetadata?['role'] ?? 'student',
-          nre: response.user!.userMetadata?['nre'],
-          phone: response.user!.userMetadata?['phone'],
-          biography: response.user!.userMetadata?['biography'],
-          status: UserStatus.active,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-        );
-        emit(AuthAuthenticated(user));
+      if (response['success'] == true && response['user'] != null) {
+        // Crear el usuario directamente desde la respuesta de login
+        final userProfile = _authService.createUserFromLoginResponse(response);
+        if (userProfile != null) {
+          emit(AuthAuthenticated(userProfile));
+          // Navegar al dashboard correcto usando el router
+          if (event.context.mounted) {
+            AppRouter.goToDashboard(event.context, userProfile);
+          }
+        } else {
+          emit(const AuthFailure('No se pudo crear el perfil del usuario'));
+        }
       } else {
         emit(const AuthFailure('Credenciales inválidas'));
       }
@@ -140,25 +153,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     
     try {
-      final currentUser = supabase.Supabase.instance.client.auth.currentUser;
-      if (currentUser != null) {
-        // Convertir supabase.User a nuestro modelo User
-        final user = User(
-          id: int.tryParse(currentUser.id) ?? 0,
-          email: currentUser.email ?? '',
-          fullName: currentUser.userMetadata?['full_name'] ?? '',
-          role: currentUser.userMetadata?['role'] ?? 'student',
-          nre: currentUser.userMetadata?['nre'],
-          phone: currentUser.userMetadata?['phone'],
-          biography: currentUser.userMetadata?['biography'],
-          status: UserStatus.active,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-        );
-        emit(AuthAuthenticated(user));
-      } else {
-        emit(AuthUnauthenticated());
-      }
+      // Como no usamos Supabase Auth, siempre emitimos no autenticado
+      // El usuario tendrá que hacer login manualmente
+      emit(AuthUnauthenticated());
     } catch (e) {
       emit(AuthFailure(e.toString()));
     }
@@ -174,4 +171,5 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthUnauthenticated());
     }
   }
+
 }

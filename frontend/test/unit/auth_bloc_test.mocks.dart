@@ -3,12 +3,12 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i4;
+import 'dart:async' as _i3;
 
 import 'package:frontend/models/models.dart' as _i5;
-import 'package:frontend/services/auth_service.dart' as _i3;
+import 'package:frontend/services/auth_service.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:supabase_flutter/supabase_flutter.dart' as _i2;
+import 'package:supabase_flutter/supabase_flutter.dart' as _i4;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -24,26 +24,21 @@ import 'package:supabase_flutter/supabase_flutter.dart' as _i2;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeAuthResponse_0 extends _i1.SmartFake implements _i2.AuthResponse {
-  _FakeAuthResponse_0(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
 /// A class which mocks [AuthService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAuthService extends _i1.Mock implements _i3.AuthService {
+class MockAuthService extends _i1.Mock implements _i2.AuthService {
   MockAuthService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Stream<_i2.AuthState> get authStateChanges =>
+  _i3.Stream<_i4.AuthState> get authStateChanges =>
       (super.noSuchMethod(
             Invocation.getter(#authStateChanges),
-            returnValue: _i4.Stream<_i2.AuthState>.empty(),
+            returnValue: _i3.Stream<_i4.AuthState>.empty(),
           )
-          as _i4.Stream<_i2.AuthState>);
+          as _i3.Stream<_i4.AuthState>);
 
   @override
   bool get isAuthenticated =>
@@ -54,31 +49,31 @@ class MockAuthService extends _i1.Mock implements _i3.AuthService {
           as bool);
 
   @override
-  _i4.Future<bool> get isAdmin =>
+  _i3.Future<bool> get isAdmin =>
       (super.noSuchMethod(
             Invocation.getter(#isAdmin),
-            returnValue: _i4.Future<bool>.value(false),
+            returnValue: _i3.Future<bool>.value(false),
           )
-          as _i4.Future<bool>);
+          as _i3.Future<bool>);
 
   @override
-  _i4.Future<bool> get isTutor =>
+  _i3.Future<bool> get isTutor =>
       (super.noSuchMethod(
             Invocation.getter(#isTutor),
-            returnValue: _i4.Future<bool>.value(false),
+            returnValue: _i3.Future<bool>.value(false),
           )
-          as _i4.Future<bool>);
+          as _i3.Future<bool>);
 
   @override
-  _i4.Future<bool> get isStudent =>
+  _i3.Future<bool> get isStudent =>
       (super.noSuchMethod(
             Invocation.getter(#isStudent),
-            returnValue: _i4.Future<bool>.value(false),
+            returnValue: _i3.Future<bool>.value(false),
           )
-          as _i4.Future<bool>);
+          as _i3.Future<bool>);
 
   @override
-  _i4.Future<_i2.AuthResponse> signIn({
+  _i3.Future<Map<String, dynamic>> signIn({
     required String? email,
     required String? password,
   }) =>
@@ -87,37 +82,38 @@ class MockAuthService extends _i1.Mock implements _i3.AuthService {
               #email: email,
               #password: password,
             }),
-            returnValue: _i4.Future<_i2.AuthResponse>.value(
-              _FakeAuthResponse_0(
-                this,
-                Invocation.method(#signIn, [], {
-                  #email: email,
-                  #password: password,
-                }),
-              ),
+            returnValue: _i3.Future<Map<String, dynamic>>.value(
+              <String, dynamic>{},
             ),
           )
-          as _i4.Future<_i2.AuthResponse>);
+          as _i3.Future<Map<String, dynamic>>);
 
   @override
-  _i4.Future<void> signOut() =>
+  _i3.Future<void> signOut() =>
       (super.noSuchMethod(
             Invocation.method(#signOut, []),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i3.Future<void>);
 
   @override
-  _i4.Future<_i5.User?> getCurrentUserProfile() =>
+  _i3.Future<_i5.User?> getCurrentUserProfile() =>
       (super.noSuchMethod(
             Invocation.method(#getCurrentUserProfile, []),
-            returnValue: _i4.Future<_i5.User?>.value(),
+            returnValue: _i3.Future<_i5.User?>.value(),
           )
-          as _i4.Future<_i5.User?>);
+          as _i3.Future<_i5.User?>);
 
   @override
-  _i4.Future<void> updateProfile({
+  _i5.User? createUserFromLoginResponse(Map<String, dynamic>? loginResponse) =>
+      (super.noSuchMethod(
+            Invocation.method(#createUserFromLoginResponse, [loginResponse]),
+          )
+          as _i5.User?);
+
+  @override
+  _i3.Future<void> updateProfile({
     required String? fullName,
     String? phone,
     String? biography,
@@ -128,16 +124,16 @@ class MockAuthService extends _i1.Mock implements _i3.AuthService {
               #phone: phone,
               #biography: biography,
             }),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i3.Future<void>);
 
   @override
-  _i4.Future<bool> hasRole(_i5.UserRole? role) =>
+  _i3.Future<bool> hasRole(_i5.UserRole? role) =>
       (super.noSuchMethod(
             Invocation.method(#hasRole, [role]),
-            returnValue: _i4.Future<bool>.value(false),
+            returnValue: _i3.Future<bool>.value(false),
           )
-          as _i4.Future<bool>);
+          as _i3.Future<bool>);
 }

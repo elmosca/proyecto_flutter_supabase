@@ -51,8 +51,9 @@ void main() {
           password: 'password123',
         );
         
-        expect(response.user, isNotNull);
-        expect(response.user!.email, equals('carlos.lopez@alumno.cifpcarlos3.es'));
+        expect(response['success'], isTrue);
+        expect(response['user'], isNotNull);
+        expect(response['user']['email'], equals('carlos.lopez@alumno.cifpcarlos3.es'));
         
         // Verificar estado de autenticación
         expect(authService.isAuthenticated, isTrue);

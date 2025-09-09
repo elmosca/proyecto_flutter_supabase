@@ -41,7 +41,8 @@ void main() {
           password: 'password123',
         );
         
-        expect(authResponse.user, isNotNull);
+        expect(authResponse['success'], isTrue);
+        expect(authResponse['user'], isNotNull);
         expect(authService.isAuthenticated, isTrue);
         
         // 3. Obtener perfil del usuario

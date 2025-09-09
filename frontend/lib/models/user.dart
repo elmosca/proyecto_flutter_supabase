@@ -4,7 +4,7 @@ part 'user.g.dart';
 
 @JsonSerializable()
 class User {
-  final int id;
+  final String id;
   final String fullName;
   final String email;
   final String? nre;
@@ -32,7 +32,7 @@ class User {
   Map<String, dynamic> toJson() => _$UserToJson(this);
 
   User copyWith({
-    int? id,
+    String? id,
     String? fullName,
     String? email,
     String? nre,
