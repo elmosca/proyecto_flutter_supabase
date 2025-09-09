@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../utils/config.dart';
+import '../../config/app_config.dart';
 import '../../l10n/app_localizations.dart';
 
 /// Widget para mostrar las credenciales de prueba con soporte de internacionalización

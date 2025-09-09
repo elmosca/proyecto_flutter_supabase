@@ -9,8 +9,7 @@
 
 | Archivo | Descripción | Estado |
 |---------|-------------|--------|
-| **[guia_ngrok_backend_local.md](./guia_ngrok_backend_local.md)** | Guía completa para acceso externo al backend con Ngrok | ✅ Completa |
-| **[configuracion_ngrok_ejemplo.md](./configuracion_ngrok_ejemplo.md)** | Configuración de ejemplo para Ngrok | ✅ Completa |
+| **MCP Server** | Servidor MCP para integración con Supabase | ✅ Activo |
 
 ---
 
@@ -27,92 +26,86 @@ Este directorio contiene guías técnicas para:
 
 ## 🚀 **INICIO RÁPIDO**
 
-### **Para Acceso Externo al Backend:**
-1. Leer **[guia_ngrok_backend_local.md](./guia_ngrok_backend_local.md)** - Guía completa
-2. Seguir **[configuracion_ngrok_ejemplo.md](./configuracion_ngrok_ejemplo.md)** - Configuración paso a paso
+### **Para Desarrollo Local:**
+1. Usar el servidor Supabase local en `http://192.168.1.9:54321`
+2. Configurar el frontend para entorno `network`
+3. Usar las credenciales de prueba configuradas
 
-### **Para Testing en Dispositivos Móviles:**
-1. Configurar Ngrok siguiendo las guías
-2. Usar URLs públicas para testing
-3. Probar desde cualquier dispositivo
+### **Para Testing:**
+1. Usar usuarios de prueba predefinidos
+2. Probar funcionalidades desde la aplicación
+3. Usar el servidor MCP para diagnóstico
 
 ---
 
 ## 📚 **CONTENIDO DETALLADO**
 
-### **🌐 guia_ngrok_backend_local.md**
-- **Instalación y configuración** de Ngrok
-- **Configuración para Supabase** local
-- **Configuración del frontend** para múltiples entornos
-- **Scripts de automatización** para Windows y Linux/macOS
-- **Configuración de seguridad** y mejores prácticas
-- **Monitoreo y debugging**
-- **Solución de problemas** comunes
-- **Testing en dispositivos** móviles
-
-### **⚙️ configuracion_ngrok_ejemplo.md**
-- **Configuración de ejemplo** personalizable
-- **Pasos específicos** para tu proyecto
-- **Checklist de configuración**
-- **Comandos de ejecución**
-- **Testing y verificación**
-- **Configuración avanzada**
-- **Solución de problemas**
+### **🔧 MCP Server**
+- **Integración con Supabase** para diagnóstico directo
+- **Herramientas de debugging** integradas en Cursor
+- **Consultas directas** a la base de datos
+- **Gestión de usuarios** y autenticación
+- **Monitoreo en tiempo real** del sistema
 
 ---
 
 ## 🔧 **HERRAMIENTAS CUBIERTAS**
 
-### **Ngrok**
-- **Túnel seguro** desde servidor local a internet
-- **HTTPS automático** incluido
-- **URLs públicas** accesibles desde cualquier dispositivo
-- **Dashboard de monitoreo** en tiempo real
-- **Configuración de seguridad** avanzada
+### **MCP (Model Context Protocol)**
+- **Servidor personalizado** para integración con Supabase
+- **Herramientas de diagnóstico** integradas
+- **Consultas SQL directas** a la base de datos
+- **Gestión de autenticación** y usuarios
+- **Monitoreo del sistema** en tiempo real
 
 ### **Configuración de Entornos**
 - **Desarrollo local** (localhost)
-- **Desarrollo remoto** (ngrok)
-- **Producción** (servidor propio)
+- **Desarrollo en red** (192.168.1.9)
 - **Configuración automática** por entorno
+- **Credenciales de prueba** predefinidas
 
 ---
 
 ## 🎯 **CASOS DE USO**
 
-### **Desarrollo Remoto**
-- Acceso al backend desde cualquier lugar
-- Testing en dispositivos móviles reales
-- Demostraciones a clientes/usuarios
-- Desarrollo colaborativo
+### **Desarrollo Local**
+- Desarrollo con servidor Supabase local
+- Testing con usuarios de prueba
+- Debugging con herramientas MCP
+- Desarrollo colaborativo en red local
 
 ### **Testing y QA**
-- Testing en múltiples dispositivos
-- Testing de conectividad
-- Testing de rendimiento
-- Testing de funcionalidades completas
+- Testing con usuarios predefinidos
+- Verificación de funcionalidades
+- Testing de autenticación
+- Testing de navegación
 
-### **Demostraciones**
-- Presentaciones a clientes
-- Demostraciones en vivo
-- Acceso temporal para usuarios
-- Prototipado rápido
+### **Diagnóstico**
+- Consultas directas a la base de datos
+- Verificación de usuarios y roles
+- Monitoreo de autenticación
+- Debugging de problemas
 
 ---
 
-## 📱 **TESTING EN DISPOSITIVOS**
+## 📱 **CONFIGURACIÓN ACTUAL**
 
 ### **URLs de Acceso:**
-- **Backend**: `https://tu-proyecto-tfg.ngrok.io`
-- **Aplicación Web**: `https://tu-proyecto-tfg-web.ngrok.io`
-- **Dashboard Ngrok**: `http://127.0.0.1:4040`
+- **Backend Supabase**: `http://192.168.1.9:54321`
+- **Supabase Studio**: `http://192.168.1.9:54323`
+- **Inbucket (Email)**: `http://192.168.1.9:54324`
 
 ### **Credenciales de Prueba:**
 ```json
 {
-  "email": "carlos.lopez@alumno.cifpcarlos3.es",
-  "password": "password123",
-  "role": "student"
+  "student": "student.test@alumno.cifpcarlos3.es",
+  "tutor": "tutor.test@cifpcarlos3.es", 
+  "admin": "admin.test@cifpcarlos3.es",
+  "passwords": {
+    "student": "student123",
+    "tutor": "tutor123", 
+    "admin": "admin123"
+  }
 }
 ```
 
@@ -121,28 +114,28 @@ Este directorio contiene guías técnicas para:
 ## 🚨 **SOLUCIÓN DE PROBLEMAS**
 
 ### **Problemas Comunes:**
-- **"subdomain already taken"** - Usar subdomain diferente
-- **"tunnel not found"** - Verificar que Supabase esté corriendo
-- **"connection refused"** - Verificar puerto y firewall
-- **"SSL certificate error"** - Asegurar uso de https://
+- **"No GoRouter found"** - Verificar configuración de MaterialApp.router
+- **"Connection refused"** - Verificar que Supabase esté corriendo
+- **"Auth error"** - Usar credenciales de prueba correctas
+- **"Navigation error"** - Verificar configuración del router
 
 ### **Debugging:**
-- **Dashboard Ngrok** para ver tráfico
+- **MCP Server** para consultas directas
 - **Logs de Supabase** para errores del backend
-- **Logs del servidor web** para errores de la aplicación
-- **Verificación de conectividad** con curl
+- **Logs de Flutter** para errores del frontend
+- **Verificación de conectividad** con ping
 
 ---
 
 ## 🎯 **PRÓXIMOS PASOS**
 
-1. **Configurar Ngrok** siguiendo las guías
-2. **Probar acceso** desde dispositivos móviles
-3. **Configurar monitoreo** y seguridad
-4. **Documentar URLs** para el equipo
-5. **Automatizar proceso** de inicio
+1. **Usar usuarios de prueba** para testing
+2. **Probar funcionalidades** de la aplicación
+3. **Usar MCP Server** para diagnóstico
+4. **Desarrollar nuevas funcionalidades**
+5. **Mantener documentación** actualizada
 
 ---
 
-**Fecha de actualización**: 7 de septiembre de 2025  
-**Estado**: ✅ **COMPLETO** - Guías técnicas completas y probadas
+**Fecha de actualización**: 9 de enero de 2025  
+**Estado**: ✅ **ACTIVO** - Sistema funcionando con herramientas modernas

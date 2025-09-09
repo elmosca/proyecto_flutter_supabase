@@ -7,13 +7,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'l10n/app_localizations.dart';
-import 'screens/auth/login_screen_bloc.dart';
 import 'services/language_service.dart';
 import 'services/auth_service.dart';
 import 'services/anteprojects_service.dart';
 import 'services/tasks_service.dart';
 import 'blocs/blocs.dart';
-import 'utils/config.dart';
+import 'config/app_config.dart';
+import 'router/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -94,7 +94,7 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
       ],
-      child: MaterialApp(
+      child: MaterialApp.router(
         title: AppConfig.appName,
 
         // Configuración de internacionalización
@@ -113,7 +113,7 @@ class _MyAppState extends State<MyApp> {
           ),
           useMaterial3: true,
         ),
-        home: const LoginScreenBloc(),
+        routerConfig: AppRouter.router,
       ),
     ),
   );

@@ -3,14 +3,14 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i5;
+import 'dart:async' as _i4;
 
-import 'package:frontend/models/models.dart' as _i3;
+import 'package:frontend/models/models.dart' as _i2;
 import 'package:frontend/services/anteprojects_service.dart' as _i6;
-import 'package:frontend/services/auth_service.dart' as _i4;
+import 'package:frontend/services/auth_service.dart' as _i3;
 import 'package:frontend/services/tasks_service.dart' as _i7;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:supabase_flutter/supabase_flutter.dart' as _i2;
+import 'package:supabase_flutter/supabase_flutter.dart' as _i5;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -26,41 +26,36 @@ import 'package:supabase_flutter/supabase_flutter.dart' as _i2;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeAuthResponse_0 extends _i1.SmartFake implements _i2.AuthResponse {
-  _FakeAuthResponse_0(Object parent, Invocation parentInvocation)
+class _FakeAnteproject_0 extends _i1.SmartFake implements _i2.Anteproject {
+  _FakeAnteproject_0(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeAnteproject_1 extends _i1.SmartFake implements _i3.Anteproject {
-  _FakeAnteproject_1(Object parent, Invocation parentInvocation)
+class _FakeTask_1 extends _i1.SmartFake implements _i2.Task {
+  _FakeTask_1(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeTask_2 extends _i1.SmartFake implements _i3.Task {
-  _FakeTask_2(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeComment_3 extends _i1.SmartFake implements _i3.Comment {
-  _FakeComment_3(Object parent, Invocation parentInvocation)
+class _FakeComment_2 extends _i1.SmartFake implements _i2.Comment {
+  _FakeComment_2(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 /// A class which mocks [AuthService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAuthService extends _i1.Mock implements _i4.AuthService {
+class MockAuthService extends _i1.Mock implements _i3.AuthService {
   MockAuthService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i5.Stream<_i2.AuthState> get authStateChanges =>
+  _i4.Stream<_i5.AuthState> get authStateChanges =>
       (super.noSuchMethod(
             Invocation.getter(#authStateChanges),
-            returnValue: _i5.Stream<_i2.AuthState>.empty(),
+            returnValue: _i4.Stream<_i5.AuthState>.empty(),
           )
-          as _i5.Stream<_i2.AuthState>);
+          as _i4.Stream<_i5.AuthState>);
 
   @override
   bool get isAuthenticated =>
@@ -71,31 +66,31 @@ class MockAuthService extends _i1.Mock implements _i4.AuthService {
           as bool);
 
   @override
-  _i5.Future<bool> get isAdmin =>
+  _i4.Future<bool> get isAdmin =>
       (super.noSuchMethod(
             Invocation.getter(#isAdmin),
-            returnValue: _i5.Future<bool>.value(false),
+            returnValue: _i4.Future<bool>.value(false),
           )
-          as _i5.Future<bool>);
+          as _i4.Future<bool>);
 
   @override
-  _i5.Future<bool> get isTutor =>
+  _i4.Future<bool> get isTutor =>
       (super.noSuchMethod(
             Invocation.getter(#isTutor),
-            returnValue: _i5.Future<bool>.value(false),
+            returnValue: _i4.Future<bool>.value(false),
           )
-          as _i5.Future<bool>);
+          as _i4.Future<bool>);
 
   @override
-  _i5.Future<bool> get isStudent =>
+  _i4.Future<bool> get isStudent =>
       (super.noSuchMethod(
             Invocation.getter(#isStudent),
-            returnValue: _i5.Future<bool>.value(false),
+            returnValue: _i4.Future<bool>.value(false),
           )
-          as _i5.Future<bool>);
+          as _i4.Future<bool>);
 
   @override
-  _i5.Future<_i2.AuthResponse> signIn({
+  _i4.Future<Map<String, dynamic>> signIn({
     required String? email,
     required String? password,
   }) =>
@@ -104,37 +99,38 @@ class MockAuthService extends _i1.Mock implements _i4.AuthService {
               #email: email,
               #password: password,
             }),
-            returnValue: _i5.Future<_i2.AuthResponse>.value(
-              _FakeAuthResponse_0(
-                this,
-                Invocation.method(#signIn, [], {
-                  #email: email,
-                  #password: password,
-                }),
-              ),
+            returnValue: _i4.Future<Map<String, dynamic>>.value(
+              <String, dynamic>{},
             ),
           )
-          as _i5.Future<_i2.AuthResponse>);
+          as _i4.Future<Map<String, dynamic>>);
 
   @override
-  _i5.Future<void> signOut() =>
+  _i4.Future<void> signOut() =>
       (super.noSuchMethod(
             Invocation.method(#signOut, []),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<_i3.User?> getCurrentUserProfile() =>
+  _i4.Future<_i2.User?> getCurrentUserProfile() =>
       (super.noSuchMethod(
             Invocation.method(#getCurrentUserProfile, []),
-            returnValue: _i5.Future<_i3.User?>.value(),
+            returnValue: _i4.Future<_i2.User?>.value(),
           )
-          as _i5.Future<_i3.User?>);
+          as _i4.Future<_i2.User?>);
 
   @override
-  _i5.Future<void> updateProfile({
+  _i2.User? createUserFromLoginResponse(Map<String, dynamic>? loginResponse) =>
+      (super.noSuchMethod(
+            Invocation.method(#createUserFromLoginResponse, [loginResponse]),
+          )
+          as _i2.User?);
+
+  @override
+  _i4.Future<void> updateProfile({
     required String? fullName,
     String? phone,
     String? biography,
@@ -145,18 +141,18 @@ class MockAuthService extends _i1.Mock implements _i4.AuthService {
               #phone: phone,
               #biography: biography,
             }),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<bool> hasRole(_i3.UserRole? role) =>
+  _i4.Future<bool> hasRole(_i2.UserRole? role) =>
       (super.noSuchMethod(
             Invocation.method(#hasRole, [role]),
-            returnValue: _i5.Future<bool>.value(false),
+            returnValue: _i4.Future<bool>.value(false),
           )
-          as _i5.Future<bool>);
+          as _i4.Future<bool>);
 }
 
 /// A class which mocks [AnteprojectsService].
@@ -169,100 +165,100 @@ class MockAnteprojectsService extends _i1.Mock
   }
 
   @override
-  _i5.Future<List<_i3.Anteproject>> getAnteprojects() =>
+  _i4.Future<List<_i2.Anteproject>> getAnteprojects() =>
       (super.noSuchMethod(
             Invocation.method(#getAnteprojects, []),
-            returnValue: _i5.Future<List<_i3.Anteproject>>.value(
-              <_i3.Anteproject>[],
+            returnValue: _i4.Future<List<_i2.Anteproject>>.value(
+              <_i2.Anteproject>[],
             ),
           )
-          as _i5.Future<List<_i3.Anteproject>>);
+          as _i4.Future<List<_i2.Anteproject>>);
 
   @override
-  _i5.Future<_i3.Anteproject?> getAnteproject(int? id) =>
+  _i4.Future<_i2.Anteproject?> getAnteproject(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#getAnteproject, [id]),
-            returnValue: _i5.Future<_i3.Anteproject?>.value(),
+            returnValue: _i4.Future<_i2.Anteproject?>.value(),
           )
-          as _i5.Future<_i3.Anteproject?>);
+          as _i4.Future<_i2.Anteproject?>);
 
   @override
-  _i5.Future<_i3.Anteproject> createAnteproject(_i3.Anteproject? anteproject) =>
+  _i4.Future<_i2.Anteproject> createAnteproject(_i2.Anteproject? anteproject) =>
       (super.noSuchMethod(
             Invocation.method(#createAnteproject, [anteproject]),
-            returnValue: _i5.Future<_i3.Anteproject>.value(
-              _FakeAnteproject_1(
+            returnValue: _i4.Future<_i2.Anteproject>.value(
+              _FakeAnteproject_0(
                 this,
                 Invocation.method(#createAnteproject, [anteproject]),
               ),
             ),
           )
-          as _i5.Future<_i3.Anteproject>);
+          as _i4.Future<_i2.Anteproject>);
 
   @override
-  _i5.Future<_i3.Anteproject> updateAnteproject(
+  _i4.Future<_i2.Anteproject> updateAnteproject(
     int? id,
-    _i3.Anteproject? anteproject,
+    _i2.Anteproject? anteproject,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#updateAnteproject, [id, anteproject]),
-            returnValue: _i5.Future<_i3.Anteproject>.value(
-              _FakeAnteproject_1(
+            returnValue: _i4.Future<_i2.Anteproject>.value(
+              _FakeAnteproject_0(
                 this,
                 Invocation.method(#updateAnteproject, [id, anteproject]),
               ),
             ),
           )
-          as _i5.Future<_i3.Anteproject>);
+          as _i4.Future<_i2.Anteproject>);
 
   @override
-  _i5.Future<void> submitAnteproject(int? id) =>
+  _i4.Future<void> submitAnteproject(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#submitAnteproject, [id]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<void> approveAnteproject(int? id, String? comments) =>
+  _i4.Future<void> approveAnteproject(int? id, String? comments) =>
       (super.noSuchMethod(
             Invocation.method(#approveAnteproject, [id, comments]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<void> rejectAnteproject(int? id, String? comments) =>
+  _i4.Future<void> rejectAnteproject(int? id, String? comments) =>
       (super.noSuchMethod(
             Invocation.method(#rejectAnteproject, [id, comments]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<List<_i3.Anteproject>> getAnteprojectsByStatus(
-    _i3.AnteprojectStatus? status,
+  _i4.Future<List<_i2.Anteproject>> getAnteprojectsByStatus(
+    _i2.AnteprojectStatus? status,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getAnteprojectsByStatus, [status]),
-            returnValue: _i5.Future<List<_i3.Anteproject>>.value(
-              <_i3.Anteproject>[],
+            returnValue: _i4.Future<List<_i2.Anteproject>>.value(
+              <_i2.Anteproject>[],
             ),
           )
-          as _i5.Future<List<_i3.Anteproject>>);
+          as _i4.Future<List<_i2.Anteproject>>);
 
   @override
-  _i5.Future<List<_i3.Anteproject>> getTutorAnteprojects() =>
+  _i4.Future<List<_i2.Anteproject>> getTutorAnteprojects() =>
       (super.noSuchMethod(
             Invocation.method(#getTutorAnteprojects, []),
-            returnValue: _i5.Future<List<_i3.Anteproject>>.value(
-              <_i3.Anteproject>[],
+            returnValue: _i4.Future<List<_i2.Anteproject>>.value(
+              <_i2.Anteproject>[],
             ),
           )
-          as _i5.Future<List<_i3.Anteproject>>);
+          as _i4.Future<List<_i2.Anteproject>>);
 }
 
 /// A class which mocks [TasksService].
@@ -274,78 +270,78 @@ class MockTasksService extends _i1.Mock implements _i7.TasksService {
   }
 
   @override
-  _i5.Future<List<_i3.Task>> getTasks() =>
+  _i4.Future<List<_i2.Task>> getTasks() =>
       (super.noSuchMethod(
             Invocation.method(#getTasks, []),
-            returnValue: _i5.Future<List<_i3.Task>>.value(<_i3.Task>[]),
+            returnValue: _i4.Future<List<_i2.Task>>.value(<_i2.Task>[]),
           )
-          as _i5.Future<List<_i3.Task>>);
+          as _i4.Future<List<_i2.Task>>);
 
   @override
-  _i5.Future<List<_i3.Task>> getTasksByProject(int? projectId) =>
+  _i4.Future<List<_i2.Task>> getTasksByProject(int? projectId) =>
       (super.noSuchMethod(
             Invocation.method(#getTasksByProject, [projectId]),
-            returnValue: _i5.Future<List<_i3.Task>>.value(<_i3.Task>[]),
+            returnValue: _i4.Future<List<_i2.Task>>.value(<_i2.Task>[]),
           )
-          as _i5.Future<List<_i3.Task>>);
+          as _i4.Future<List<_i2.Task>>);
 
   @override
-  _i5.Future<_i3.Task?> getTask(int? id) =>
+  _i4.Future<_i2.Task?> getTask(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#getTask, [id]),
-            returnValue: _i5.Future<_i3.Task?>.value(),
+            returnValue: _i4.Future<_i2.Task?>.value(),
           )
-          as _i5.Future<_i3.Task?>);
+          as _i4.Future<_i2.Task?>);
 
   @override
-  _i5.Future<_i3.Task> createTask(_i3.Task? task) =>
+  _i4.Future<_i2.Task> createTask(_i2.Task? task) =>
       (super.noSuchMethod(
             Invocation.method(#createTask, [task]),
-            returnValue: _i5.Future<_i3.Task>.value(
-              _FakeTask_2(this, Invocation.method(#createTask, [task])),
+            returnValue: _i4.Future<_i2.Task>.value(
+              _FakeTask_1(this, Invocation.method(#createTask, [task])),
             ),
           )
-          as _i5.Future<_i3.Task>);
+          as _i4.Future<_i2.Task>);
 
   @override
-  _i5.Future<_i3.Task> updateTask(int? id, _i3.Task? task) =>
+  _i4.Future<_i2.Task> updateTask(int? id, _i2.Task? task) =>
       (super.noSuchMethod(
             Invocation.method(#updateTask, [id, task]),
-            returnValue: _i5.Future<_i3.Task>.value(
-              _FakeTask_2(this, Invocation.method(#updateTask, [id, task])),
+            returnValue: _i4.Future<_i2.Task>.value(
+              _FakeTask_1(this, Invocation.method(#updateTask, [id, task])),
             ),
           )
-          as _i5.Future<_i3.Task>);
+          as _i4.Future<_i2.Task>);
 
   @override
-  _i5.Future<void> updateTaskStatus(int? id, _i3.TaskStatus? status) =>
+  _i4.Future<void> updateTaskStatus(int? id, _i2.TaskStatus? status) =>
       (super.noSuchMethod(
             Invocation.method(#updateTaskStatus, [id, status]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<void> assignUserToTask(int? taskId, int? userId) =>
+  _i4.Future<void> assignUserToTask(int? taskId, int? userId) =>
       (super.noSuchMethod(
             Invocation.method(#assignUserToTask, [taskId, userId]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<void> unassignUserFromTask(int? taskId, int? userId) =>
+  _i4.Future<void> unassignUserFromTask(int? taskId, int? userId) =>
       (super.noSuchMethod(
             Invocation.method(#unassignUserFromTask, [taskId, userId]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<_i3.Comment> addComment(
+  _i4.Future<_i2.Comment> addComment(
     int? taskId,
     String? content, {
     bool? isInternal = false,
@@ -356,8 +352,8 @@ class MockTasksService extends _i1.Mock implements _i7.TasksService {
               [taskId, content],
               {#isInternal: isInternal},
             ),
-            returnValue: _i5.Future<_i3.Comment>.value(
-              _FakeComment_3(
+            returnValue: _i4.Future<_i2.Comment>.value(
+              _FakeComment_2(
                 this,
                 Invocation.method(
                   #addComment,
@@ -367,61 +363,61 @@ class MockTasksService extends _i1.Mock implements _i7.TasksService {
               ),
             ),
           )
-          as _i5.Future<_i3.Comment>);
+          as _i4.Future<_i2.Comment>);
 
   @override
-  _i5.Future<List<_i3.Comment>> getTaskComments(int? taskId) =>
+  _i4.Future<List<_i2.Comment>> getTaskComments(int? taskId) =>
       (super.noSuchMethod(
             Invocation.method(#getTaskComments, [taskId]),
-            returnValue: _i5.Future<List<_i3.Comment>>.value(<_i3.Comment>[]),
+            returnValue: _i4.Future<List<_i2.Comment>>.value(<_i2.Comment>[]),
           )
-          as _i5.Future<List<_i3.Comment>>);
+          as _i4.Future<List<_i2.Comment>>);
 
   @override
-  _i5.Future<void> updateKanbanPosition(int? taskId, int? newPosition) =>
+  _i4.Future<void> updateKanbanPosition(int? taskId, int? newPosition) =>
       (super.noSuchMethod(
             Invocation.method(#updateKanbanPosition, [taskId, newPosition]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<List<_i3.Task>> getTasksByStatus(_i3.TaskStatus? status) =>
+  _i4.Future<List<_i2.Task>> getTasksByStatus(_i2.TaskStatus? status) =>
       (super.noSuchMethod(
             Invocation.method(#getTasksByStatus, [status]),
-            returnValue: _i5.Future<List<_i3.Task>>.value(<_i3.Task>[]),
+            returnValue: _i4.Future<List<_i2.Task>>.value(<_i2.Task>[]),
           )
-          as _i5.Future<List<_i3.Task>>);
+          as _i4.Future<List<_i2.Task>>);
 
   @override
-  _i5.Future<List<_i3.Task>> getTasksByComplexity(
-    _i3.TaskComplexity? complexity,
+  _i4.Future<List<_i2.Task>> getTasksByComplexity(
+    _i2.TaskComplexity? complexity,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getTasksByComplexity, [complexity]),
-            returnValue: _i5.Future<List<_i3.Task>>.value(<_i3.Task>[]),
+            returnValue: _i4.Future<List<_i2.Task>>.value(<_i2.Task>[]),
           )
-          as _i5.Future<List<_i3.Task>>);
+          as _i4.Future<List<_i2.Task>>);
 
   @override
-  _i5.Future<List<_i3.Task>> getTasksWithUpcomingDeadline({
+  _i4.Future<List<_i2.Task>> getTasksWithUpcomingDeadline({
     int? daysAhead = 7,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#getTasksWithUpcomingDeadline, [], {
               #daysAhead: daysAhead,
             }),
-            returnValue: _i5.Future<List<_i3.Task>>.value(<_i3.Task>[]),
+            returnValue: _i4.Future<List<_i2.Task>>.value(<_i2.Task>[]),
           )
-          as _i5.Future<List<_i3.Task>>);
+          as _i4.Future<List<_i2.Task>>);
 
   @override
-  _i5.Future<void> deleteTask(int? id) =>
+  _i4.Future<void> deleteTask(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteTask, [id]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 }

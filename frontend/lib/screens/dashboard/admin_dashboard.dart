@@ -1,11 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../utils/config.dart';
+import '../../config/app_config.dart';
 import '../../models/user.dart';
-import '../../blocs/auth_bloc.dart';
+import '../../router/app_router.dart';
 
 class AdminDashboard extends StatefulWidget {
   final User user;
@@ -333,11 +332,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
   Future<void> _logout() async {
     try {
-      // Usar nuestro AuthBloc para logout
-      context.read<AuthBloc>().add(AuthLogoutRequested());
-      if (mounted) {
-        Navigator.of(context).pushReplacementNamed('/login');
-      }
+      // Usar el router para logout
+      AppRouter.logout(context);
     } catch (e) {
       if (kDebugMode) {
         debugPrint('Error al cerrar sesión: $e');

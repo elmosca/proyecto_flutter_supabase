@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/models/models.dart';
-import 'package:frontend/utils/config.dart';
+import 'package:frontend/config/app_config.dart';
 
 void main() {
   group('Backend Connection Integration Tests', () {
@@ -50,12 +50,12 @@ void main() {
       expect(AppConfig.supabaseUrl, isNotEmpty);
       expect(AppConfig.supabaseAnonKey, isNotEmpty);
       expect(AppConfig.storageUrl, isNotEmpty);
-      expect(AppConfig.storageAccessKey, isNotEmpty);
-      expect(AppConfig.storageSecretKey, isNotEmpty);
-      expect(AppConfig.storageRegion, isNotEmpty);
       expect(AppConfig.platformName, isNotEmpty);
       expect(AppConfig.appName, isNotEmpty);
       expect(AppConfig.appVersion, isNotEmpty);
+      expect(AppConfig.environment, isNotEmpty);
+      expect(AppConfig.supabaseStudioUrl, isNotEmpty);
+      expect(AppConfig.inbucketUrl, isNotEmpty);
     });
 
     testWidgets('Task model copyWith works correctly', (WidgetTester tester) async {
@@ -104,10 +104,10 @@ void main() {
       );
 
       // Verificar que la configuración está disponible
-      expect(AppConfig.supabaseUrl, contains('127.0.0.1'));
+      expect(AppConfig.supabaseUrl, isNotEmpty);
       expect(AppConfig.supabaseAnonKey, isNotEmpty);
       expect(AppConfig.isDevelopment, isTrue);
-      expect(AppConfig.enableLogging, isTrue);
+      expect(AppConfig.debugMode, isTrue);
     });
   });
 }

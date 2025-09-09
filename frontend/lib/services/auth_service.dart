@@ -1,5 +1,7 @@
+// ignore_for_file: avoid_print
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import '../models/models.dart';
+import '../models/user.dart';
 
 class AuthService {
   final supabase.SupabaseClient _supabase = supabase.Supabase.instance.client;
@@ -10,26 +12,41 @@ class AuthService {
   /// Stream de cambios en el estado de autenticación
   Stream<supabase.AuthState> get authStateChanges => _supabase.auth.onAuthStateChange;
 
-  /// Inicia sesión con email y password
-  Future<supabase.AuthResponse> signIn({
+  /// Inicia sesión con email y password usando Supabase Auth
+  Future<Map<String, dynamic>> signIn({
     required String email,
     required String password,
   }) async {
     try {
-      final response = await _supabase.auth.signInWithPassword(
+      print('🔐 Intentando login con Supabase Auth para: $email');
+      
+      final authResponse = await _supabase.auth.signInWithPassword(
         email: email,
         password: password,
       );
       
-      if (response.user == null) {
-        throw const AuthException('Error en la autenticación');
+      if (authResponse.user == null) {
+        throw const AuthException('Credenciales inválidas');
       }
       
-      return response;
-    } on supabase.AuthException catch (e) {
-      throw AuthException('Error de autenticación: ${e.message}');
+      print('✅ Login exitoso con Supabase Auth');
+      
+      // Crear respuesta en el formato esperado
+      return {
+        'success': true,
+        'user': {
+          'id': authResponse.user!.id,
+          'email': authResponse.user!.email,
+          'full_name': authResponse.user!.userMetadata?['full_name'] ?? 'Usuario',
+          'role': _parseUserRoleFromEmail(email).name,
+          'status': 'active',
+          'created_at': authResponse.user!.createdAt,
+          'updated_at': authResponse.user!.updatedAt,
+        }
+      };
     } catch (e) {
-      throw AuthException('Error inesperado: $e');
+      print('❌ Error en login: $e');
+      throw AuthException('Error de autenticación: $e');
     }
   }
 
@@ -47,19 +64,66 @@ class AuthService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) return null;
-
-      // Obtener datos del perfil desde la tabla users
-      final response = await _supabase
-          .from('users')
-          .select()
-          .eq('id', user.id)
-          .single();
-
-      return User.fromJson(response);
+      
+      // Crear un objeto User desde los datos de Supabase Auth
+      return User(
+        id: user.id,
+        fullName: user.userMetadata?['full_name'] ?? 'Usuario',
+        email: user.email ?? '',
+        nre: '',
+        role: _parseUserRoleFromEmail(user.email ?? ''),
+        phone: '',
+        biography: '',
+        status: UserStatus.active,
+        createdAt: DateTime.parse(user.createdAt),
+        updatedAt: DateTime.parse(user.updatedAt ?? user.createdAt),
+      );
     } catch (e) {
       throw AuthException('Error al obtener perfil: $e');
     }
   }
+
+  /// Convierte la respuesta de login_user a un objeto User
+  User? createUserFromLoginResponse(Map<String, dynamic> loginResponse) {
+    try {
+      print('🔍 Debug - Respuesta de login: $loginResponse');
+      
+      if (loginResponse['success'] == true && loginResponse['user'] != null) {
+        final userData = Map<String, dynamic>.from(loginResponse['user']);
+        
+        print('🔍 Debug - Datos del usuario: $userData');
+        
+        // Convertir el ID a String para compatibilidad (puede venir como int o String)
+        if (userData['id'] is int) {
+          userData['id'] = userData['id'].toString();
+        }
+        
+        // Convertir snake_case a camelCase para el modelo User
+        final convertedData = <String, dynamic>{
+          'id': userData['id'],
+          'fullName': userData['full_name'] ?? 'Usuario',
+          'email': userData['email'] ?? '',
+          'nre': userData['nre'] ?? '',
+          'role': userData['role'] ?? 'student',
+          'phone': userData['phone'] ?? '',
+          'biography': userData['biography'] ?? '',
+          'status': userData['status'] ?? 'active',
+          'createdAt': userData['created_at'] ?? DateTime.now().toIso8601String(),
+          'updatedAt': userData['updated_at'] ?? DateTime.now().toIso8601String(),
+        };
+        
+        print('🔍 Debug - Datos finales del usuario: $convertedData');
+        
+        return User.fromJson(convertedData);
+      }
+      print('❌ Debug - Respuesta de login inválida o sin usuario');
+      return null;
+    } catch (e) {
+      print('❌ Debug - Error al crear usuario: $e');
+      throw AuthException('Error al crear usuario desde respuesta de login: $e');
+    }
+  }
+
 
   /// Actualiza el perfil del usuario
   Future<void> updateProfile({
@@ -81,7 +145,7 @@ class AuthService {
             'biography': biography,
             'updated_at': DateTime.now().toIso8601String(),
           })
-          .eq('id', user.id);
+          .eq('email', user.email!);
     } catch (e) {
       throw AuthException('Error al actualizar perfil: $e');
     }
@@ -114,6 +178,18 @@ class AuthService {
 
   /// Verifica si el usuario es estudiante
   Future<bool> get isStudent async => hasRole(UserRole.student);
+
+  /// Parsea el rol del usuario basado en su email
+  UserRole _parseUserRoleFromEmail(String email) {
+    if (email.contains('@alumno.cifpcarlos3.es')) {
+      return UserRole.student;
+    } else if (email.contains('@cifpcarlos3.es') && !email.contains('admin')) {
+      return UserRole.tutor;
+    } else if (email.contains('admin@cifpcarlos3.es')) {
+      return UserRole.admin;
+    }
+    return UserRole.student; // Por defecto
+  }
 }
 
 /// Excepción personalizada para errores de autenticación

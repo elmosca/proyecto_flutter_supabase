@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/auth_bloc.dart';
 import '../../l10n/app_localizations.dart';
-import '../../utils/config.dart';
+import '../../config/app_config.dart';
 import '../../screens/dashboard/student_dashboard.dart';
 import '../../screens/dashboard/tutor_dashboard.dart';
 import '../../screens/dashboard/admin_dashboard.dart';
@@ -26,7 +26,7 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
     super.initState();
     // Usar credenciales de prueba por defecto
     _emailController.text = AppConfig.testCredentials['student']!;
-    _passwordController.text = AppConfig.testCredentials['password']!;
+    _passwordController.text = AppConfig.testCredentials['student_password']!;
   }
 
   @override
@@ -110,11 +110,15 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
             _navigateToDashboard(state.user);
           }
         },
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height - 32,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
               // Información de la aplicación
               Card(
                 child: Padding(
@@ -190,7 +194,7 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
                         const SizedBox(height: 12),
                         _buildServerInfoRow(
                           l10n.serverUrl,
-                          AppConfig.serverInfo['ip']!,
+                          AppConfig.supabaseUrl,
                         ),
                         _buildServerInfoRow(
                           l10n.version,
@@ -285,6 +289,7 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
                 ],
               ),
             ],
+            ),
           ),
         ),
       ),
@@ -333,6 +338,7 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
         AuthLoginRequested(
           email: _emailController.text.trim(),
           password: _passwordController.text,
+          context: context,
         ),
       );
     }
