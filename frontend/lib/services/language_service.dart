@@ -4,6 +4,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// Servicio para gestionar el idioma de la aplicación
 class LanguageService extends ChangeNotifier {
   static const String _languageKey = 'selected_language';
+  
+  // Singleton pattern
+  static final LanguageService _instance = LanguageService._internal();
+  factory LanguageService() => _instance;
+  LanguageService._internal();
+
+  static LanguageService get instance => _instance;
 
   Locale _currentLocale = const Locale('es'); // Español por defecto
 
@@ -16,9 +23,9 @@ class LanguageService extends ChangeNotifier {
     Locale('en'), // Inglés
   ];
 
-  /// Constructor
-  LanguageService() {
-    _loadSavedLanguage();
+  /// Inicializar el servicio
+  Future<void> initialize() async {
+    await _loadSavedLanguage();
   }
 
   /// Carga el idioma guardado en las preferencias
@@ -41,15 +48,20 @@ class LanguageService extends ChangeNotifier {
     if (_currentLocale == newLocale) return;
 
     try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(_languageKey, newLocale.languageCode);
-
+      // Cambiar inmediatamente para respuesta instantánea
       _currentLocale = newLocale;
       notifyListeners();
+      
+      // Guardar en segundo plano
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_languageKey, newLocale.languageCode);
 
       debugPrint('Language changed to: ${newLocale.languageCode}');
     } catch (e) {
       debugPrint('Error changing language: $e');
+      // Revertir en caso de error
+      _currentLocale = const Locale('es');
+      notifyListeners();
     }
   }
 

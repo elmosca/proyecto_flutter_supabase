@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../config/app_config.dart';
 import '../../models/user.dart';
+import '../../services/theme_service.dart';
+import '../../themes/role_themes.dart';
+import '../../widgets/common/language_selector.dart';
 import '../../router/app_router.dart';
 
 class AdminDashboard extends StatefulWidget {
@@ -39,10 +42,17 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.adminDashboardDev),
-        backgroundColor: Color(AppConfig.platformColor),
+        title: Row(
+          children: [
+            Text(RoleThemes.getEmojiForRole(widget.user.role)),
+            const SizedBox(width: 8),
+            Text(l10n.adminDashboardDev),
+          ],
+        ),
+        backgroundColor: ThemeService.instance.currentPrimaryColor,
         foregroundColor: Colors.white,
         actions: [
+          const LanguageSelectorAppBar(),
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: _logout,
@@ -55,7 +65,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
           : _buildDashboardContent(),
       floatingActionButton: FloatingActionButton(
         onPressed: _manageUsers,
-        backgroundColor: Color(AppConfig.platformColor),
+        backgroundColor: ThemeService.instance.currentPrimaryColor,
         tooltip: l10n.dashboardAdminUsersManagement,
         child: const Icon(Icons.admin_panel_settings, color: Colors.white),
       ),

@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import '../models/user.dart';
 import '../services/auth_service.dart';
+import '../services/theme_service.dart';
 import '../router/app_router.dart';
 
 // Events
@@ -89,11 +90,27 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     
     // Escuchar cambios en el estado de autenticación de Supabase
     _authService.authStateChanges.listen((supabase.AuthState supabaseAuthState) {
+      debugPrint('🔄 Cambio de estado de autenticación: ${supabaseAuthState.event}');
+      
       if (supabaseAuthState.event == supabase.AuthChangeEvent.signedOut) {
+        debugPrint('🚪 Usuario deslogueado');
         add(const AuthUserChanged(user: null));
       } else if (supabaseAuthState.event == supabase.AuthChangeEvent.signedIn) {
-        // Obtener el perfil del usuario
-        _authService.getCurrentUserProfile().then((user) {
+        debugPrint('🔑 Usuario logueado');
+        // Obtener el perfil del usuario desde Supabase
+        _authService.getCurrentUserFromSupabase().then((user) {
+          if (user != null) {
+            ThemeService.instance.setUser(user);
+          }
+          add(AuthUserChanged(user: user));
+        });
+      } else if (supabaseAuthState.event == supabase.AuthChangeEvent.tokenRefreshed) {
+        debugPrint('🔄 Token refrescado');
+        // Verificar si el usuario sigue autenticado
+        _authService.getCurrentUserFromSupabase().then((user) {
+          if (user != null) {
+            ThemeService.instance.setUser(user);
+          }
           add(AuthUserChanged(user: user));
         });
       }
@@ -116,6 +133,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // Crear el usuario directamente desde la respuesta de login
         final userProfile = _authService.createUserFromLoginResponse(response);
         if (userProfile != null) {
+          // Actualizar el tema según el rol del usuario
+          ThemeService.instance.setUser(userProfile);
           emit(AuthAuthenticated(userProfile));
           // Navegar al dashboard correcto usando el router
           if (event.context.mounted) {
@@ -140,6 +159,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     
     try {
       await _authService.signOut();
+      // Resetear el tema al logout
+      ThemeService.instance.reset();
       emit(AuthUnauthenticated());
     } catch (e) {
       emit(AuthFailure(e.toString()));
@@ -153,9 +174,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     
     try {
-      // Como no usamos Supabase Auth, siempre emitimos no autenticado
-      // El usuario tendrá que hacer login manualmente
-      emit(AuthUnauthenticated());
+      // Verificar si hay una sesión activa en Supabase
+      final currentUser = await _authService.getCurrentUserFromSupabase();
+      if (currentUser != null) {
+        // Actualizar el tema según el rol del usuario
+        ThemeService.instance.setUser(currentUser);
+        emit(AuthAuthenticated(currentUser));
+        debugPrint('✅ Sesión activa encontrada en Supabase');
+      } else {
+        emit(AuthUnauthenticated());
+        debugPrint('ℹ️ No hay sesión activa en Supabase');
+      }
     } catch (e) {
       emit(AuthFailure(e.toString()));
     }

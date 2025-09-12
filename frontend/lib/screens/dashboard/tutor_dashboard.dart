@@ -8,7 +8,10 @@ import '../../l10n/app_localizations.dart';
 import '../../config/app_config.dart';
 import '../../models/user.dart';
 import '../../blocs/approval_bloc.dart';
+import '../../services/theme_service.dart';
+import '../../themes/role_themes.dart';
 import '../approval/approval_screen.dart';
+import '../../widgets/common/language_selector.dart';
 import '../../router/app_router.dart';
 
 class TutorDashboard extends StatefulWidget {
@@ -52,10 +55,17 @@ class _TutorDashboardState extends State<TutorDashboard> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.tutorDashboardDev),
-        backgroundColor: Color(AppConfig.platformColor),
+        title: Row(
+          children: [
+            Text(RoleThemes.getEmojiForRole(widget.user.role)),
+            const SizedBox(width: 8),
+            Text(l10n.tutorDashboardDev),
+          ],
+        ),
+        backgroundColor: ThemeService.instance.currentPrimaryColor,
         foregroundColor: Colors.white,
         actions: [
+          const LanguageSelectorAppBar(),
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: _logout,
@@ -71,7 +81,7 @@ class _TutorDashboardState extends State<TutorDashboard> {
         children: [
           FloatingActionButton(
             onPressed: _navigateToApprovalWorkflow,
-            backgroundColor: Colors.green,
+            backgroundColor: ThemeService.instance.currentPrimaryColor,
             tooltip: l10n.approvalWorkflow,
             heroTag: 'approval',
             child: const Icon(Icons.gavel, color: Colors.white),
@@ -79,7 +89,7 @@ class _TutorDashboardState extends State<TutorDashboard> {
           const SizedBox(height: 8),
           FloatingActionButton(
             onPressed: _reviewAnteprojects,
-            backgroundColor: Color(AppConfig.platformColor),
+            backgroundColor: ThemeService.instance.currentAccentColor,
             tooltip: l10n.dashboardTutorMyAnteprojects,
             heroTag: 'review',
             child: const Icon(Icons.assignment, color: Colors.white),
