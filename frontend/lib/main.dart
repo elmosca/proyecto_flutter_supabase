@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'l10n/app_localizations.dart';
 import 'services/language_service.dart';
+import 'services/theme_service.dart';
 import 'services/auth_service.dart';
 import 'services/anteprojects_service.dart';
 import 'services/tasks_service.dart';
@@ -17,6 +19,16 @@ import 'router/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Inicializar SharedPreferences para Flutter Web
+  if (kIsWeb) {
+    try {
+      // Pre-inicializar SharedPreferences para evitar errores
+      await SharedPreferences.getInstance();
+    } catch (e) {
+      debugPrint('SharedPreferences initialization warning: $e');
+    }
+  }
 
   // Mostrar información de configuración
   // Configuración específica por plataforma (solo en desarrollo)
@@ -66,17 +78,37 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late LanguageService _languageService;
+  late ThemeService _themeService;
 
   @override
   void initState() {
     super.initState();
-    _languageService = LanguageService();
+    _languageService = LanguageService.instance;
+    _themeService = ThemeService.instance;
+    
+    // Inicializar el servicio de idioma
+    _languageService.initialize();
+    
+    // Verificar sesión al inicializar
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkAuthState();
+    });
+  }
+  
+  void _checkAuthState() {
+    // Verificar la sesión al inicializar la aplicación
+    // Esto se ejecutará después de que el widget esté construido
+    // y podremos acceder al AuthBloc
+    final authBloc = context.read<AuthBloc>();
+    authBloc.add(AuthCheckRequested());
   }
 
   @override
   Widget build(BuildContext context) => ListenableBuilder(
-    listenable: _languageService,
-    builder: (context, child) => MultiBlocProvider(
+    listenable: Listenable.merge([_languageService, _themeService]),
+    builder: (context, child) {
+      // Forzar reconstrucción cuando cambia el idioma o tema
+      return MultiBlocProvider(
       providers: [
         BlocProvider<AuthBloc>(
           create: (context) => AuthBloc(
@@ -107,14 +139,13 @@ class _MyAppState extends State<MyApp> {
         supportedLocales: LanguageService.supportedLocales,
         locale: _languageService.currentLocale,
 
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Color(AppConfig.platformColor),
-          ),
-          useMaterial3: true,
-        ),
+        theme: _themeService.currentTheme,
         routerConfig: AppRouter.router,
+        
+        // Configuración adicional para internacionalización
+        debugShowCheckedModeBanner: false,
       ),
-    ),
+    );
+    },
   );
 }

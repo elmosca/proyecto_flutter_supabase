@@ -12,12 +12,15 @@ import '../../blocs/anteprojects_bloc.dart';
 import '../../blocs/tasks_bloc.dart';
 import '../../services/anteprojects_service.dart';
 import '../../services/tasks_service.dart';
+import '../../services/theme_service.dart';
+import '../../themes/role_themes.dart';
 import '../../router/app_router.dart';
 import '../forms/anteproject_form.dart';
 import '../lists/anteprojects_list.dart';
 import '../lists/tasks_list.dart';
 import '../kanban/kanban_board.dart';
 import '../forms/task_form.dart';
+import '../../widgets/common/language_selector.dart';
 
 class StudentDashboard extends StatefulWidget {
   final User user;
@@ -61,14 +64,21 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.dashboardStudent),
-        backgroundColor: Color(AppConfig.platformColor),
+        title: Row(
+          children: [
+            Text(RoleThemes.getEmojiForRole(widget.user.role)),
+            const SizedBox(width: 8),
+            Text(l10n.dashboardStudent),
+          ],
+        ),
+        backgroundColor: ThemeService.instance.currentPrimaryColor,
         foregroundColor: Colors.white,
         actions: [
+          const LanguageSelectorAppBar(),
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: _logout,
-            tooltip: 'Cerrar sesión',
+            tooltip: l10n.logout,
           ),
         ],
       ),
@@ -77,8 +87,8 @@ class _StudentDashboardState extends State<StudentDashboard> {
           : _buildDashboardContent(),
       floatingActionButton: FloatingActionButton(
         onPressed: _createAnteproject,
-        backgroundColor: Color(AppConfig.platformColor),
-        tooltip: 'Crear anteproyecto',
+        backgroundColor: ThemeService.instance.currentPrimaryColor,
+        tooltip: l10n.anteprojectCreateButton,
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );
@@ -112,46 +122,51 @@ class _StudentDashboardState extends State<StudentDashboard> {
   );
 
   Widget _buildUserInfo() => Card(
-    child: Padding(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 30,
-            backgroundColor: Color(AppConfig.platformColor),
-            child: Text(
-              widget.user.email.substring(0, 1).toUpperCase(),
-              style: const TextStyle(fontSize: 24, color: Colors.white),
+    child: Container(
+      decoration: BoxDecoration(
+        gradient: ThemeService.instance.currentGradient,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 30,
+              backgroundColor: Colors.white.withOpacity(0.2),
+              child: Text(
+                RoleThemes.getEmojiForRole(widget.user.role),
+                style: const TextStyle(fontSize: 24),
+              ),
             ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                 Text(
-                  widget.user.email,
+                  widget.user.fullName,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
                 Text(
-                  'ID: ${widget.user.id}',
-                  style: const TextStyle(color: Colors.grey, fontSize: 12),
-                ),
-                Text(
-                  'Rol: Estudiante',
-                  style: TextStyle(
-                    color: Color(AppConfig.platformColor),
-                    fontWeight: FontWeight.w500,
+                  widget.user.email,
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 14,
                   ),
                 ),
+                const SizedBox(height: 4),
+                RoleBadge(role: widget.user.role),
               ],
             ),
           ),
         ],
       ),
+    ),
     ),
   );
 

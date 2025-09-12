@@ -1,10 +1,13 @@
 // ignore_for_file: avoid_print
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 import '../models/models.dart';
 import '../models/user.dart';
 
 class AuthService {
   final supabase.SupabaseClient _supabase = supabase.Supabase.instance.client;
+  static const String _sessionKey = 'user_session';
 
   /// Obtiene el usuario actual autenticado
   supabase.User? get currentUser => _supabase.auth.currentUser;
@@ -47,6 +50,33 @@ class AuthService {
     } catch (e) {
       print('❌ Error en login: $e');
       throw AuthException('Error de autenticación: $e');
+    }
+  }
+
+  /// Verifica si hay una sesión activa de Supabase
+  Future<User?> getCurrentUserFromSupabase() async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        print('ℹ️ No hay usuario autenticado en Supabase');
+        return null;
+      }
+
+      print('✅ Usuario encontrado en Supabase: ${user.email}');
+      
+      // Crear objeto User desde Supabase
+      return User(
+        id: user.id,
+        email: user.email ?? '',
+        fullName: user.userMetadata?['full_name'] ?? 'Usuario',
+        role: _parseUserRoleFromEmail(user.email ?? ''),
+        status: UserStatus.active,
+        createdAt: DateTime.parse(user.createdAt),
+        updatedAt: DateTime.parse(user.updatedAt ?? user.createdAt),
+      );
+    } catch (e) {
+      print('❌ Error obteniendo usuario de Supabase: $e');
+      return null;
     }
   }
 
@@ -189,6 +219,73 @@ class AuthService {
       return UserRole.admin;
     }
     return UserRole.student; // Por defecto
+  }
+
+  /// Guarda la sesión del usuario en SharedPreferences
+  Future<void> saveUserSession(User user) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userJson = jsonEncode({
+        'id': user.id,
+        'email': user.email,
+        'full_name': user.fullName,
+        'role': user.role.name,
+        'status': user.status,
+        'created_at': user.createdAt.toIso8601String(),
+        'updated_at': user.updatedAt.toIso8601String(),
+      });
+      await prefs.setString(_sessionKey, userJson);
+      print('✅ Sesión guardada en SharedPreferences');
+    } catch (e) {
+      print('❌ Error guardando sesión: $e');
+    }
+  }
+
+  /// Recupera la sesión del usuario desde SharedPreferences
+  Future<User?> getSavedUserSession() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userJson = prefs.getString(_sessionKey);
+      
+      if (userJson == null) {
+        print('ℹ️ No hay sesión guardada');
+        return null;
+      }
+      
+      final userData = jsonDecode(userJson) as Map<String, dynamic>;
+      final user = User(
+        id: userData['id'] as String,
+        email: userData['email'] as String,
+        fullName: userData['full_name'] as String,
+        role: UserRole.values.firstWhere(
+          (role) => role.name == userData['role'],
+          orElse: () => UserRole.student,
+        ),
+        status: UserStatus.values.firstWhere(
+          (status) => status.name == userData['status'],
+          orElse: () => UserStatus.active,
+        ),
+        createdAt: DateTime.parse(userData['created_at'] as String),
+        updatedAt: DateTime.parse(userData['updated_at'] as String),
+      );
+      
+      print('✅ Sesión recuperada desde SharedPreferences');
+      return user;
+    } catch (e) {
+      print('❌ Error recuperando sesión: $e');
+      return null;
+    }
+  }
+
+  /// Elimina la sesión guardada
+  Future<void> clearSavedSession() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_sessionKey);
+      print('✅ Sesión eliminada de SharedPreferences');
+    } catch (e) {
+      print('❌ Error eliminando sesión: $e');
+    }
   }
 }
 
