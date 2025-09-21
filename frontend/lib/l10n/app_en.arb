@@ -110,7 +110,7 @@
   },
   "status": "Status",
   "@status": {
-    "description": "Status field"
+    "description": "Label for status"
   },
   "complexity": "Complexity",
   "@complexity": {
@@ -202,7 +202,7 @@
   },
   "comments": "Comments",
   "@comments": {
-    "description": "Comments section"
+    "description": "Button to view comments"
   },
   "addComment": "Add comment",
   "@addComment": {
@@ -320,13 +320,13 @@
   "@reviewedAnteprojects": {
     "description": "Reviewed anteproyectos section"
   },
-  "approveAnteproject": "Approve Anteproject",
+  "approveAnteproject": "Approve",
   "@approveAnteproject": {
-    "description": "Approve anteproyecto action"
+    "description": "Button to approve anteproyecto"
   },
-  "rejectAnteproject": "Reject Anteproject",
+  "rejectAnteproject": "Reject",
   "@rejectAnteproject": {
-    "description": "Reject anteproyecto action"
+    "description": "Button to reject anteproyecto"
   },
   "requestChanges": "Request Changes",
   "@requestChanges": {
@@ -422,7 +422,7 @@
   },
   "viewDetails": "View details",
   "@viewDetails": {
-    "description": "View details action"
+    "description": "Action to view details of an item"
   },
   "createdOn": "Created on",
   "@createdOn": {
@@ -564,9 +564,15 @@
   "@anteprojectEditFormTitle": {
     "description": "Edit anteproyecto form title"
   },
-  "anteprojectTitle": "Title",
+  "anteprojectTitle": "Anteproject: {title}",
   "@anteprojectTitle": {
-    "description": "Anteproject title field"
+    "description": "Anteproject title in dialog",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "description": "Anteproject title"
+      }
+    }
   },
   "anteprojectType": "Project Type",
   "@anteprojectType": {
@@ -919,11 +925,11 @@
   },
   "pendingAnteprojects": "Pending Anteprojects",
   "@pendingAnteprojects": {
-    "description": "Pending anteproyectos section"
+    "description": "Section title for pending anteproyectos"
   },
   "assignedStudents": "Assigned Students",
   "@assignedStudents": {
-    "description": "Assigned students section"
+    "description": "Section title for assigned students"
   },
   "noAnteprojects": "No Anteprojects",
   "@noAnteprojects": {
@@ -1097,13 +1103,13 @@
   "@createTask": {
     "description": "Create task button"
   },
-  "approvalCommentsHint": "Enter approval comments",
+  "approvalCommentsHint": "Comments about the approval...",
   "@approvalCommentsHint": {
-    "description": "Approval comments hint"
+    "description": "Placeholder for approval comments"
   },
-  "rejectionCommentsHint": "Enter rejection comments",
+  "rejectionCommentsHint": "Reason for rejection...",
   "@rejectionCommentsHint": {
-    "description": "Rejection comments hint"
+    "description": "Placeholder for rejection comments"
   },
   "changesComments": "Changes Comments",
   "@changesComments": {
@@ -1184,5 +1190,459 @@
   "operationFailed": "Operation failed",
   "@operationFailed": {
     "description": "Operation failed message"
-  }
+  },
+  "tutorRole": "Tutor",
+  "@tutorRole": {
+    "description": "Tutor role"
+  },
+  "reviewed": "Reviewed",
+  "@reviewed": {
+    "description": "Section title for reviewed items"
+  },
+  "addStudents": "Add Students",
+  "@addStudents": {
+    "description": "Button to add students"
+  },
+  "studentsAssignedInfo": "You have {count} student{plural} assigned for {year}",
+  "@studentsAssignedInfo": {
+    "description": "Information about assigned students",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of students"
+      },
+      "plural": {
+        "type": "String",
+        "description": "Plural suffix (s or empty)"
+      },
+      "year": {
+        "type": "String",
+        "description": "Academic year"
+      }
+    }
+  },
+  "myStudents": "My Students",
+  "@myStudents": {
+    "description": "Title of tutor's student list screen"
+  },
+  "searchStudents": "Search students...",
+  "@searchStudents": {
+    "description": "Placeholder for searching students"
+  },
+  "noStudentsAssigned": "You have no students assigned",
+  "@noStudentsAssigned": {
+    "description": "Message when no students are assigned"
+  },
+  "noStudentsFound": "No students found",
+  "@noStudentsFound": {
+    "description": "Message when no students are found in search"
+  },
+  "useDashboardButtons": "Use the dashboard buttons to add students",
+  "@useDashboardButtons": {
+    "description": "Instruction to add students from dashboard"
+  },
+  "editStudent": "Edit",
+  "@editStudent": {
+    "description": "Action to edit student"
+  },
+  "deleteStudent": "Delete",
+  "@deleteStudent": {
+    "description": "Action to delete student"
+  },
+  "nre": "NRE",
+  "@nre": {
+    "description": "Label for student NRE"
+  },
+  "phone": "Phone",
+  "@phone": {
+    "description": "Label for phone"
+  },
+  "specialty": "Specialty",
+  "@specialty": {
+    "description": "Label for specialty"
+  },
+  "biography": "Biography",
+  "@biography": {
+    "description": "Label for biography"
+  },
+  "creationDate": "Creation date",
+  "@creationDate": {
+    "description": "Label for creation date"
+  },
+  "studentDeletedSuccess": "Student deleted successfully",
+  "@studentDeletedSuccess": {
+    "description": "Success message when deleting student"
+  },
+  "errorDeletingStudent": "Error deleting student: {error}",
+  "@errorDeletingStudent": {
+    "description": "Error message when deleting student",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "Error message"
+      }
+    }
+  },
+  "confirmDeletion": "Confirm deletion",
+  "@confirmDeletion": {
+    "description": "Title of deletion confirmation dialog"
+  },
+  "confirmDeleteStudent": "Are you sure you want to delete {name}?",
+  "@confirmDeleteStudent": {
+    "description": "Confirmation message to delete student",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "description": "Student name"
+      }
+    }
+  },
+  "anteprojectsReview": "Anteprojects Review",
+  "@anteprojectsReview": {
+    "description": "Title of anteproyectos review screen"
+  },
+  "pendingAnteprojectsTitle": "Pending Anteprojects",
+  "@pendingAnteprojectsTitle": {
+    "description": "Title for pending anteproyectos"
+  },
+  "reviewedAnteprojectsTitle": "Reviewed Anteprojects",
+  "@reviewedAnteprojectsTitle": {
+    "description": "Title for reviewed anteproyectos"
+  },
+  "submittedAnteprojects": "Submitted Anteprojects",
+  "@submittedAnteprojects": {
+    "description": "Title for submitted anteproyectos"
+  },
+  "underReviewAnteprojects": "Under Review Anteprojects",
+  "@underReviewAnteprojects": {
+    "description": "Title for under review anteproyectos"
+  },
+  "approvedAnteprojects": "Approved Anteprojects",
+  "@approvedAnteprojects": {
+    "description": "Title for approved anteproyectos"
+  },
+  "rejectedAnteprojects": "Rejected Anteprojects",
+  "@rejectedAnteprojects": {
+    "description": "Title for rejected anteproyectos"
+  },
+  "all": "All",
+  "@all": {
+    "description": "Filter to show all items"
+  },
+  "searchAnteprojects": "Search anteproyectos...",
+  "@searchAnteprojects": {
+    "description": "Placeholder for searching anteproyectos"
+  },
+  "filterByStatus": "Filter by status:",
+  "@filterByStatus": {
+    "description": "Label for status filter"
+  },
+  "errorLoadingAnteprojects": "Error loading anteproyectos: {error}",
+  "@errorLoadingAnteprojects": {
+    "description": "Error message when loading anteproyectos",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "Error message"
+      }
+    }
+  },
+  "noAnteprojectsFound": "No anteproyectos found matching \"{query}\"",
+  "@noAnteprojectsFound": {
+    "description": "Message when no anteproyectos are found in search",
+    "placeholders": {
+      "query": {
+        "type": "String",
+        "description": "Search term"
+      }
+    }
+  },
+  "noAnteprojectsWithStatus": "No anteproyectos with status \"{status}\"",
+  "@noAnteprojectsWithStatus": {
+    "description": "Message when no anteproyectos have a specific status",
+    "placeholders": {
+      "status": {
+        "type": "String",
+        "description": "Anteproject status"
+      }
+    }
+  },
+  "noAssignedAnteprojects": "You have no anteproyectos assigned for review",
+  "@noAssignedAnteprojects": {
+    "description": "Message when no anteproyectos are assigned"
+  },
+  "clearFilters": "Clear filters",
+  "@clearFilters": {
+    "description": "Button to clear filters"
+  },
+  "year": "Year:",
+  "@year": {
+    "description": "Label for academic year"
+  },
+  "created": "Created:",
+  "@created": {
+    "description": "Label for creation date"
+  },
+  "submitted": "Submitted:",
+  "@submitted": {
+    "description": "Label for submission date"
+  },
+  "approveAnteprojectTitle": "Approve Anteproject",
+  "@approveAnteprojectTitle": {
+    "description": "Title of approval dialog"
+  },
+  "rejectAnteprojectTitle": "Reject Anteproject",
+  "@rejectAnteprojectTitle": {
+    "description": "Title of rejection dialog"
+  },
+  "confirmApproveAnteproject": "Are you sure you want to approve this anteproyecto?",
+  "@confirmApproveAnteproject": {
+    "description": "Confirmation message to approve anteproyecto"
+  },
+  "confirmRejectAnteproject": "Are you sure you want to reject this anteproyecto?",
+  "@confirmRejectAnteproject": {
+    "description": "Confirmation message to reject anteproyecto"
+  },
+  "approvalCommentsOptional": "Comments (optional)",
+  "@approvalCommentsOptional": {
+    "description": "Label for optional approval comments"
+  },
+  "anteprojectApprovedSuccess": "Anteproject approved successfully",
+  "@anteprojectApprovedSuccess": {
+    "description": "Success message when approving anteproyecto"
+  },
+  "anteprojectRejectedSuccess": "Anteproject rejected",
+  "@anteprojectRejectedSuccess": {
+    "description": "Success message when rejecting anteproyecto"
+  },
+  "errorApprovingAnteproject": "Error approving anteproyecto: {error}",
+  "@errorApprovingAnteproject": {
+    "description": "Error message when approving anteproyecto",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "Error message"
+      }
+    }
+  },
+  "errorRejectingAnteproject": "Error rejecting anteproyecto: {error}",
+  "@errorRejectingAnteproject": {
+    "description": "Error message when rejecting anteproyecto",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "Error message"
+      }
+    }
+  },
+  "approved": "Approved",
+  "@approved": {
+    "description": "Approved status"
+  },
+  "rejected": "Rejected",
+  "@rejected": {
+    "description": "Rejected status"
+  },
+    "anteprojectTitleLabel": "Anteproject Title",
+    "@anteprojectTitleLabel": {
+      "description": "Label for anteproyecto title field"
+    },
+    "logoutTooltip": "Logout",
+    "@logoutTooltip": {
+      "description": "Tooltip for logout button"
+    },
+    "createAnteprojectTooltip": "Create anteproyecto",
+    "@createAnteprojectTooltip": {
+      "description": "Tooltip for create anteproyecto button"
+    },
+    "userId": "ID: {id}",
+    "@userId": {
+      "description": "Label for user ID",
+      "placeholders": {
+        "id": {
+          "type": "String",
+          "description": "User ID"
+        }
+      }
+    },
+    "studentRole": "Student",
+    "@studentRole": {
+      "description": "Student role"
+    },
+    "anteprojects": "Anteprojects",
+    "@anteprojects": {
+      "description": "Anteprojects section title"
+    },
+    "pendingTasks": "Pending Tasks",
+    "@pendingTasks": {
+      "description": "Pending tasks section title"
+    },
+    "completed": "Completed",
+    "@completed": {
+      "description": "Completed section title"
+    },
+    "approved": "APPROVED",
+    "@approved": {
+      "description": "Approved status in uppercase"
+    },
+    "anteprojectApprovedMessage": "Your anteproyecto has been approved. You can start development!",
+    "@anteprojectApprovedMessage": {
+      "description": "Message when anteproyecto is approved"
+    },
+    "academicYearLabel": "Year: {year}",
+    "@academicYearLabel": {
+      "description": "Label for academic year",
+      "placeholders": {
+        "year": {
+          "type": "String",
+          "description": "Academic year"
+        }
+      }
+    },
+    "statusLabel": "Status: {status}",
+    "@statusLabel": {
+      "description": "Label for status",
+      "placeholders": {
+        "status": {
+          "type": "String",
+          "description": "Element status"
+        }
+      }
+    },
+    "draft": "Draft",
+    "@draft": {
+      "description": "Draft status"
+    },
+    "submitted": "Submitted",
+    "@submitted": {
+      "description": "Submitted status"
+    },
+    "underReview": "Under Review",
+    "@underReview": {
+      "description": "Under review status"
+    },
+    "approvedStatus": "Approved",
+    "@approvedStatus": {
+      "description": "Approved status"
+    },
+    "rejectedStatus": "Rejected",
+    "@rejectedStatus": {
+      "description": "Rejected status"
+    },
+    "unknown": "Unknown",
+    "@unknown": {
+      "description": "Unknown status"
+    },
+    "pending": "Pending",
+    "@pending": {
+      "description": "Pending status"
+    },
+    "inProgress": "In Progress",
+    "@inProgress": {
+      "description": "In progress status"
+    },
+    "completedStatus": "Completed",
+    "@completedStatus": {
+      "description": "Completed status"
+    },
+    "unknownStatus": "Unknown",
+    "@unknownStatus": {
+      "description": "Unknown status"
+    },
+    "studentCreatedSuccess": "Student created successfully",
+    "@studentCreatedSuccess": {
+      "description": "Success message when creating student"
+    },
+    "errorCreatingStudent": "Error creating student: {error}",
+    "@errorCreatingStudent": {
+      "description": "Error message when creating student",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "addStudent": "Add Student",
+    "@addStudent": {
+      "description": "Add student form title"
+    },
+    "fullName": "Full Name",
+    "@fullName": {
+      "description": "Label for full name"
+    },
+    "email": "Email",
+    "@email": {
+      "description": "Label for email"
+    },
+    "nreLabel": "NRE (Student Registration Number)",
+    "@nreLabel": {
+      "description": "Label for NRE"
+    },
+    "phoneOptional": "Phone (Optional)",
+    "@phoneOptional": {
+      "description": "Label for optional phone"
+    },
+    "specialty": "Specialty",
+    "@specialty": {
+      "description": "Label for specialty"
+    },
+    "academicYear": "Academic Year",
+    "@academicYear": {
+      "description": "Label for academic year"
+    },
+    "biographyOptional": "Biography (Optional)",
+    "@biographyOptional": {
+      "description": "Label for optional biography"
+    },
+    "nameRequired": "Name is required",
+    "@nameRequired": {
+      "description": "Validation message for required name"
+    },
+    "emailRequired": "Email is required",
+    "@emailRequired": {
+      "description": "Validation message for required email"
+    },
+    "emailInvalid": "Invalid email",
+    "@emailInvalid": {
+      "description": "Validation message for invalid email"
+    },
+    "nreRequired": "NRE is required",
+    "@nreRequired": {
+      "description": "Validation message for required NRE"
+    },
+    "createStudent": "Create Student",
+    "@createStudent": {
+      "description": "Button to create student"
+    },
+    "studentUpdatedSuccess": "Student updated successfully",
+    "@studentUpdatedSuccess": {
+      "description": "Success message when updating student"
+    },
+    "errorUpdatingStudent": "Error updating student: {error}",
+    "@errorUpdatingStudent": {
+      "description": "Error message when updating student",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "editStudent": "Edit Student",
+    "@editStudent": {
+      "description": "Edit student form title"
+    },
+    "updateStudent": "Update Student",
+    "@updateStudent": {
+      "description": "Button to update student"
+    },
+    "status": "Status",
+    "@status": {
+      "description": "Label for status"
+    },
+    "role": "Role",
+    "@role": {
+      "description": "Label for role"
+    }
 }

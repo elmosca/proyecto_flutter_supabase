@@ -128,9 +128,15 @@
   "@anteprojectEditFormTitle": {
     "description": "Título del formulario de edición de anteproyecto"
   },
-  "anteprojectTitle": "Título",
+  "anteprojectTitle": "Anteproyecto: {title}",
   "@anteprojectTitle": {
-    "description": "Campo título del anteproyecto"
+    "description": "Título del anteproyecto en diálogo",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "description": "Título del anteproyecto"
+      }
+    }
   },
   "anteprojectType": "Tipo de proyecto",
   "@anteprojectType": {
@@ -760,13 +766,13 @@
   "@reviewedAnteprojects": {
     "description": "Sección de anteproyectos ya revisados"
   },
-  "approveAnteproject": "Aprobar Anteproyecto",
+  "approveAnteproject": "Aprobar",
   "@approveAnteproject": {
-    "description": "Acción de aprobar un anteproyecto"
+    "description": "Botón para aprobar anteproyecto"
   },
-  "rejectAnteproject": "Rechazar Anteproyecto",
+  "rejectAnteproject": "Rechazar",
   "@rejectAnteproject": {
-    "description": "Acción de rechazar un anteproyecto"
+    "description": "Botón para rechazar anteproyecto"
   },
   "requestChanges": "Solicitar Cambios",
   "@requestChanges": {
@@ -776,17 +782,17 @@
   "@approvalComments": {
     "description": "Campo para comentarios en el proceso de aprobación"
   },
-  "approvalCommentsHint": "Escribe comentarios sobre la aprobación (opcional)",
+  "approvalCommentsHint": "Comentarios sobre la aprobación...",
   "@approvalCommentsHint": {
-    "description": "Texto de ayuda para el campo de comentarios de aprobación"
+    "description": "Placeholder para comentarios de aprobación"
   },
   "rejectionComments": "Comentarios de Rechazo",
   "@rejectionComments": {
     "description": "Campo para comentarios en el proceso de rechazo"
   },
-  "rejectionCommentsHint": "Escribe los motivos del rechazo (obligatorio)",
+  "rejectionCommentsHint": "Motivo del rechazo...",
   "@rejectionCommentsHint": {
-    "description": "Texto de ayuda para el campo de comentarios de rechazo"
+    "description": "Placeholder para comentarios de rechazo"
   },
   "changesComments": "Comentarios sobre Cambios",
   "@changesComments": {
@@ -860,7 +866,7 @@
   "@anteprojectStatus": {
     "description": "Estado actual del anteproyecto"
   },
-  "viewDetails": "Ver Detalles",
+  "viewDetails": "Ver detalles",
   "@viewDetails": {
     "description": "Acción para ver detalles de un elemento"
   },
@@ -983,5 +989,475 @@
   "details": "Detalles",
   "@details": {
     "description": "Pestaña de detalles"
-  }
+  },
+  "tutorRole": "Tutor",
+  "@tutorRole": {
+    "description": "Rol de tutor"
+  },
+  "reviewed": "Revisados",
+  "@reviewed": {
+    "description": "Título de sección para elementos revisados"
+  },
+  "addStudents": "Añadir Estudiantes",
+  "@addStudents": {
+    "description": "Botón para añadir estudiantes"
+  },
+  "studentsAssignedInfo": "Tienes {count} estudiante{plural} asignado{plural} para {year}",
+  "@studentsAssignedInfo": {
+    "description": "Información de estudiantes asignados",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Número de estudiantes"
+      },
+      "plural": {
+        "type": "String",
+        "description": "Sufijo plural (s o vacío)"
+      },
+      "year": {
+        "type": "String",
+        "description": "Año académico"
+      }
+    }
+  },
+  "myStudents": "Mis Estudiantes",
+  "@myStudents": {
+    "description": "Título de la pantalla de lista de estudiantes del tutor"
+  },
+  "searchStudents": "Buscar estudiantes...",
+  "@searchStudents": {
+    "description": "Placeholder para buscar estudiantes"
+  },
+  "noStudentsAssigned": "No tienes estudiantes asignados",
+  "@noStudentsAssigned": {
+    "description": "Mensaje cuando no hay estudiantes asignados"
+  },
+  "noStudentsFound": "No se encontraron estudiantes",
+  "@noStudentsFound": {
+    "description": "Mensaje cuando no se encuentran estudiantes en la búsqueda"
+  },
+  "useDashboardButtons": "Usa los botones del dashboard para añadir estudiantes",
+  "@useDashboardButtons": {
+    "description": "Instrucción para añadir estudiantes desde el dashboard"
+  },
+  "editStudent": "Editar",
+  "@editStudent": {
+    "description": "Acción para editar estudiante"
+  },
+  "deleteStudent": "Eliminar",
+  "@deleteStudent": {
+    "description": "Acción para eliminar estudiante"
+  },
+  "nre": "NRE",
+  "@nre": {
+    "description": "Etiqueta para NRE del estudiante"
+  },
+  "phone": "Teléfono",
+  "@phone": {
+    "description": "Etiqueta para teléfono"
+  },
+  "specialty": "Especialidad",
+  "@specialty": {
+    "description": "Etiqueta para especialidad"
+  },
+  "biography": "Biografía",
+  "@biography": {
+    "description": "Etiqueta para biografía"
+  },
+  "creationDate": "Fecha de creación",
+  "@creationDate": {
+    "description": "Etiqueta para fecha de creación"
+  },
+  "studentDeletedSuccess": "Estudiante eliminado exitosamente",
+  "@studentDeletedSuccess": {
+    "description": "Mensaje de éxito al eliminar estudiante"
+  },
+  "errorDeletingStudent": "Error al eliminar estudiante: {error}",
+  "@errorDeletingStudent": {
+    "description": "Mensaje de error al eliminar estudiante",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "Mensaje de error"
+      }
+    }
+  },
+  "confirmDeletion": "Confirmar eliminación",
+  "@confirmDeletion": {
+    "description": "Título del diálogo de confirmación de eliminación"
+  },
+  "confirmDeleteStudent": "¿Estás seguro de que quieres eliminar a {name}?",
+  "@confirmDeleteStudent": {
+    "description": "Mensaje de confirmación para eliminar estudiante",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "description": "Nombre del estudiante"
+      }
+    }
+  },
+  "anteprojectsReview": "Revisión de Anteproyectos",
+  "@anteprojectsReview": {
+    "description": "Título de la pantalla de revisión de anteproyectos"
+  },
+  "pendingAnteprojectsTitle": "Anteproyectos Pendientes",
+  "@pendingAnteprojectsTitle": {
+    "description": "Título para anteproyectos pendientes"
+  },
+  "reviewedAnteprojectsTitle": "Anteproyectos Revisados",
+  "@reviewedAnteprojectsTitle": {
+    "description": "Título para anteproyectos revisados"
+  },
+  "submittedAnteprojects": "Anteproyectos Enviados",
+  "@submittedAnteprojects": {
+    "description": "Título para anteproyectos enviados"
+  },
+  "underReviewAnteprojects": "Anteproyectos En Revisión",
+  "@underReviewAnteprojects": {
+    "description": "Título para anteproyectos en revisión"
+  },
+  "approvedAnteprojects": "Anteproyectos Aprobados",
+  "@approvedAnteprojects": {
+    "description": "Título para anteproyectos aprobados"
+  },
+  "rejectedAnteprojects": "Anteproyectos Rechazados",
+  "@rejectedAnteprojects": {
+    "description": "Título para anteproyectos rechazados"
+  },
+  "all": "Todos",
+  "@all": {
+    "description": "Filtro para mostrar todos los elementos"
+  },
+  "searchAnteprojects": "Buscar anteproyectos...",
+  "@searchAnteprojects": {
+    "description": "Placeholder para buscar anteproyectos"
+  },
+  "filterByStatus": "Filtrar por estado:",
+  "@filterByStatus": {
+    "description": "Etiqueta para filtro por estado"
+  },
+  "errorLoadingAnteprojects": "Error al cargar anteproyectos: {error}",
+  "@errorLoadingAnteprojects": {
+    "description": "Mensaje de error al cargar anteproyectos",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "Mensaje de error"
+      }
+    }
+  },
+  "noAnteprojectsFound": "No se encontraron anteproyectos que coincidan con \"{query}\"",
+  "@noAnteprojectsFound": {
+    "description": "Mensaje cuando no se encuentran anteproyectos en la búsqueda",
+    "placeholders": {
+      "query": {
+        "type": "String",
+        "description": "Término de búsqueda"
+      }
+    }
+  },
+  "noAnteprojectsWithStatus": "No hay anteproyectos con estado \"{status}\"",
+  "@noAnteprojectsWithStatus": {
+    "description": "Mensaje cuando no hay anteproyectos con un estado específico",
+    "placeholders": {
+      "status": {
+        "type": "String",
+        "description": "Estado del anteproyecto"
+      }
+    }
+  },
+  "noAssignedAnteprojects": "No tienes anteproyectos asignados para revisar",
+  "@noAssignedAnteprojects": {
+    "description": "Mensaje cuando no hay anteproyectos asignados"
+  },
+  "clearFilters": "Limpiar filtros",
+  "@clearFilters": {
+    "description": "Botón para limpiar filtros"
+  },
+  "year": "Año:",
+  "@year": {
+    "description": "Etiqueta para año académico"
+  },
+  "created": "Creado:",
+  "@created": {
+    "description": "Etiqueta para fecha de creación"
+  },
+  "submitted": "Enviado:",
+  "@submitted": {
+    "description": "Etiqueta para fecha de envío"
+  },
+  "comments": "Comentarios",
+  "@comments": {
+    "description": "Botón para ver comentarios"
+  },
+  "approveAnteprojectTitle": "Aprobar Anteproyecto",
+  "@approveAnteprojectTitle": {
+    "description": "Título del diálogo de aprobación"
+  },
+  "rejectAnteprojectTitle": "Rechazar Anteproyecto",
+  "@rejectAnteprojectTitle": {
+    "description": "Título del diálogo de rechazo"
+  },
+  "confirmApproveAnteproject": "¿Estás seguro de que quieres aprobar este anteproyecto?",
+  "@confirmApproveAnteproject": {
+    "description": "Mensaje de confirmación para aprobar anteproyecto"
+  },
+  "confirmRejectAnteproject": "¿Estás seguro de que quieres rechazar este anteproyecto?",
+  "@confirmRejectAnteproject": {
+    "description": "Mensaje de confirmación para rechazar anteproyecto"
+  },
+  "approvalCommentsOptional": "Comentarios (opcional)",
+  "@approvalCommentsOptional": {
+    "description": "Etiqueta para comentarios de aprobación opcionales"
+  },
+  "anteprojectApprovedSuccess": "Anteproyecto aprobado exitosamente",
+  "@anteprojectApprovedSuccess": {
+    "description": "Mensaje de éxito al aprobar anteproyecto"
+  },
+  "anteprojectRejectedSuccess": "Anteproyecto rechazado",
+  "@anteprojectRejectedSuccess": {
+    "description": "Mensaje de éxito al rechazar anteproyecto"
+  },
+  "errorApprovingAnteproject": "Error al aprobar anteproyecto: {error}",
+  "@errorApprovingAnteproject": {
+    "description": "Mensaje de error al aprobar anteproyecto",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "Mensaje de error"
+      }
+    }
+  },
+  "errorRejectingAnteproject": "Error al rechazar anteproyecto: {error}",
+  "@errorRejectingAnteproject": {
+    "description": "Mensaje de error al rechazar anteproyecto",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "Mensaje de error"
+      }
+    }
+  },
+  "pending": "Pendiente",
+  "@pending": {
+    "description": "Estado pendiente"
+  },
+  "underReview": "En Revisión",
+  "@underReview": {
+    "description": "Estado en revisión"
+  },
+  "approved": "Aprobado",
+  "@approved": {
+    "description": "Estado aprobado"
+  },
+  "rejected": "Rechazado",
+  "@rejected": {
+    "description": "Estado rechazado"
+  },
+  "status": "Estado",
+  "@status": {
+    "description": "Etiqueta para estado"
+  },
+    "anteprojectTitleLabel": "Título del Anteproyecto",
+    "@anteprojectTitleLabel": {
+      "description": "Etiqueta para el campo de título del anteproyecto"
+    },
+    "logoutTooltip": "Cerrar sesión",
+    "@logoutTooltip": {
+      "description": "Tooltip para el botón de cerrar sesión"
+    },
+    "createAnteprojectTooltip": "Crear anteproyecto",
+    "@createAnteprojectTooltip": {
+      "description": "Tooltip para el botón de crear anteproyecto"
+    },
+    "userId": "ID: {id}",
+    "@userId": {
+      "description": "Etiqueta para ID de usuario",
+      "placeholders": {
+        "id": {
+          "type": "String",
+          "description": "ID del usuario"
+        }
+      }
+    },
+    "studentRole": "Estudiante",
+    "@studentRole": {
+      "description": "Rol de estudiante"
+    },
+    "anteprojects": "Anteproyectos",
+    "@anteprojects": {
+      "description": "Título de sección de anteproyectos"
+    },
+    "pendingTasks": "Tareas Pendientes",
+    "@pendingTasks": {
+      "description": "Título de sección de tareas pendientes"
+    },
+    "completed": "Completadas",
+    "@completed": {
+      "description": "Título de sección de tareas completadas"
+    },
+    "approved": "APROBADO",
+    "@approved": {
+      "description": "Estado aprobado en mayúsculas"
+    },
+    "anteprojectApprovedMessage": "Tu anteproyecto ha sido aprobado. ¡Puedes comenzar con el desarrollo!",
+    "@anteprojectApprovedMessage": {
+      "description": "Mensaje cuando el anteproyecto es aprobado"
+    },
+    "academicYearLabel": "Año: {year}",
+    "@academicYearLabel": {
+      "description": "Etiqueta para año académico",
+      "placeholders": {
+        "year": {
+          "type": "String",
+          "description": "Año académico"
+        }
+      }
+    },
+    "statusLabel": "Estado: {status}",
+    "@statusLabel": {
+      "description": "Etiqueta para estado",
+      "placeholders": {
+        "status": {
+          "type": "String",
+          "description": "Estado del elemento"
+        }
+      }
+    },
+    "draft": "Borrador",
+    "@draft": {
+      "description": "Estado borrador"
+    },
+    "submitted": "Enviado",
+    "@submitted": {
+      "description": "Estado enviado"
+    },
+    "underReview": "En Revisión",
+    "@underReview": {
+      "description": "Estado en revisión"
+    },
+    "approvedStatus": "Aprobado",
+    "@approvedStatus": {
+      "description": "Estado aprobado"
+    },
+    "rejectedStatus": "Rechazado",
+    "@rejectedStatus": {
+      "description": "Estado rechazado"
+    },
+    "unknown": "Desconocido",
+    "@unknown": {
+      "description": "Estado desconocido"
+    },
+    "pending": "Pendiente",
+    "@pending": {
+      "description": "Estado pendiente"
+    },
+    "inProgress": "En Progreso",
+    "@inProgress": {
+      "description": "Estado en progreso"
+    },
+    "completedStatus": "Completada",
+    "@completedStatus": {
+      "description": "Estado completada"
+    },
+    "unknownStatus": "Desconocido",
+    "@unknownStatus": {
+      "description": "Estado desconocido"
+    },
+    "studentCreatedSuccess": "Estudiante creado exitosamente",
+    "@studentCreatedSuccess": {
+      "description": "Mensaje de éxito al crear estudiante"
+    },
+    "errorCreatingStudent": "Error al crear estudiante: {error}",
+    "@errorCreatingStudent": {
+      "description": "Mensaje de error al crear estudiante",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "addStudent": "Añadir Estudiante",
+    "@addStudent": {
+      "description": "Título del formulario de añadir estudiante"
+    },
+    "fullName": "Nombre Completo",
+    "@fullName": {
+      "description": "Etiqueta para nombre completo"
+    },
+    "email": "Email",
+    "@email": {
+      "description": "Etiqueta para email"
+    },
+    "nreLabel": "NRE (Número de Registro de Estudiante)",
+    "@nreLabel": {
+      "description": "Etiqueta para NRE"
+    },
+    "phoneOptional": "Teléfono (Opcional)",
+    "@phoneOptional": {
+      "description": "Etiqueta para teléfono opcional"
+    },
+    "specialty": "Especialidad",
+    "@specialty": {
+      "description": "Etiqueta para especialidad"
+    },
+    "academicYear": "Año Académico",
+    "@academicYear": {
+      "description": "Etiqueta para año académico"
+    },
+    "biographyOptional": "Biografía (Opcional)",
+    "@biographyOptional": {
+      "description": "Etiqueta para biografía opcional"
+    },
+    "nameRequired": "El nombre es obligatorio",
+    "@nameRequired": {
+      "description": "Mensaje de validación para nombre requerido"
+    },
+    "emailRequired": "El email es obligatorio",
+    "@emailRequired": {
+      "description": "Mensaje de validación para email requerido"
+    },
+    "emailInvalid": "Email inválido",
+    "@emailInvalid": {
+      "description": "Mensaje de validación para email inválido"
+    },
+    "nreRequired": "El NRE es obligatorio",
+    "@nreRequired": {
+      "description": "Mensaje de validación para NRE requerido"
+    },
+    "createStudent": "Crear Estudiante",
+    "@createStudent": {
+      "description": "Botón para crear estudiante"
+    },
+    "studentUpdatedSuccess": "Estudiante actualizado exitosamente",
+    "@studentUpdatedSuccess": {
+      "description": "Mensaje de éxito al actualizar estudiante"
+    },
+    "errorUpdatingStudent": "Error al actualizar estudiante: {error}",
+    "@errorUpdatingStudent": {
+      "description": "Mensaje de error al actualizar estudiante",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "editStudent": "Editar Estudiante",
+    "@editStudent": {
+      "description": "Título del formulario de editar estudiante"
+    },
+    "updateStudent": "Actualizar Estudiante",
+    "@updateStudent": {
+      "description": "Botón para actualizar estudiante"
+    },
+    "status": "Estado",
+    "@status": {
+      "description": "Etiqueta para estado"
+    },
+    "role": "Rol",
+    "@role": {
+      "description": "Etiqueta para rol"
+    }
 }

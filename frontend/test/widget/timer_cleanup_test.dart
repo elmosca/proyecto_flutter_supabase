@@ -22,7 +22,7 @@ void main() {
       authService = AuthService();
       authBloc = AuthBloc(authService: authService);
       testUser = User(
-        id: '1',
+        id: 1,
         email: 'tutor@example.com',
         fullName: 'Test Tutor',
         role: UserRole.tutor,

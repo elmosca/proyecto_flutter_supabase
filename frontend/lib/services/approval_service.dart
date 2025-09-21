@@ -107,11 +107,20 @@ class ApprovalService {
         throw const ApprovalException('Usuario no autenticado');
       }
 
+      // Primero obtener el ID del usuario desde la tabla users
+      final userResponse = await _supabase
+          .from('users')
+          .select('id')
+          .eq('email', user.email!)
+          .single();
+
+      final userId = userResponse['id'] as int;
+
       final response = await _supabase
           .from('anteprojects')
           .select()
           .inFilter('status', ['submitted', 'under_review'])
-          .eq('tutor_id', user.id)
+          .eq('tutor_id', userId)
           .order('submitted_at', ascending: true);
 
       return response.map<Anteproject>(Anteproject.fromJson).toList();
@@ -128,11 +137,20 @@ class ApprovalService {
         throw const ApprovalException('Usuario no autenticado');
       }
 
+      // Primero obtener el ID del usuario desde la tabla users
+      final userResponse = await _supabase
+          .from('users')
+          .select('id')
+          .eq('email', user.email!)
+          .single();
+
+      final userId = userResponse['id'] as int;
+
       final response = await _supabase
           .from('anteprojects')
           .select()
           .inFilter('status', ['approved', 'rejected'])
-          .eq('tutor_id', user.id)
+          .eq('tutor_id', userId)
           .order('reviewed_at', ascending: false);
 
       return response.map<Anteproject>(Anteproject.fromJson).toList();
@@ -151,7 +169,7 @@ class ApprovalService {
       final response = await _supabase
           .from('users')
           .select('role')
-          .eq('id', user.id)
+          .eq('email', user.email!)
           .single();
 
       final role = response['role'] as String?;

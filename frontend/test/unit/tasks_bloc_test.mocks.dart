@@ -50,6 +50,16 @@ class MockTasksService extends _i1.Mock implements _i3.TasksService {
           as _i4.Future<List<_i2.Task>>);
 
   @override
+  _i4.Future<List<Map<String, dynamic>>> getStudentTasks() =>
+      (super.noSuchMethod(
+            Invocation.method(#getStudentTasks, []),
+            returnValue: _i4.Future<List<Map<String, dynamic>>>.value(
+              <Map<String, dynamic>>[],
+            ),
+          )
+          as _i4.Future<List<Map<String, dynamic>>>);
+
+  @override
   _i4.Future<List<_i2.Task>> getTasksByProject(int? projectId) =>
       (super.noSuchMethod(
             Invocation.method(#getTasksByProject, [projectId]),

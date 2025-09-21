@@ -6,18 +6,30 @@ part 'anteproject.g.dart';
 class Anteproject {
   final int id;
   final String title;
+  @JsonKey(name: 'project_type')
   final ProjectType projectType;
   final String description;
+  @JsonKey(name: 'academic_year')
   final String academicYear;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final String? objectives;
+  @JsonKey(name: 'expected_results')
   final Map<String, dynamic> expectedResults;
   final Map<String, dynamic> timeline;
   final AnteprojectStatus status;
-  final int tutorId;
+  @JsonKey(name: 'tutor_id')
+  final int? tutorId;
+  @JsonKey(name: 'submitted_at')
   final DateTime? submittedAt;
+  @JsonKey(name: 'reviewed_at')
   final DateTime? reviewedAt;
+  @JsonKey(name: 'project_id')
   final int? projectId;
+  @JsonKey(name: 'tutor_comments')
   final String? tutorComments;
+  @JsonKey(name: 'created_at')
   final DateTime createdAt;
+  @JsonKey(name: 'updated_at')
   final DateTime updatedAt;
 
   const Anteproject({
@@ -26,10 +38,11 @@ class Anteproject {
     required this.projectType,
     required this.description,
     required this.academicYear,
+    this.objectives,
     required this.expectedResults,
     required this.timeline,
     required this.status,
-    required this.tutorId,
+    this.tutorId,
     this.submittedAt,
     this.reviewedAt,
     this.projectId,
@@ -64,6 +77,7 @@ class Anteproject {
       projectType: projectType ?? this.projectType,
       description: description ?? this.description,
       academicYear: academicYear ?? this.academicYear,
+      objectives: objectives,
       expectedResults: expectedResults ?? this.expectedResults,
       timeline: timeline ?? this.timeline,
       status: status ?? this.status,

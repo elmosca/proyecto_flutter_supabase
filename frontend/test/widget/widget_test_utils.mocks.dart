@@ -221,6 +221,15 @@ class MockAnteprojectsService extends _i1.Mock
           as _i4.Future<void>);
 
   @override
+  _i4.Future<void> submitAnteprojectForApproval(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#submitAnteprojectForApproval, [id]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
   _i4.Future<void> approveAnteproject(int? id, String? comments) =>
       (super.noSuchMethod(
             Invocation.method(#approveAnteproject, [id, comments]),
@@ -259,6 +268,25 @@ class MockAnteprojectsService extends _i1.Mock
             ),
           )
           as _i4.Future<List<_i2.Anteproject>>);
+
+  @override
+  _i4.Future<List<_i2.Anteproject>> getStudentAnteprojects() =>
+      (super.noSuchMethod(
+            Invocation.method(#getStudentAnteprojects, []),
+            returnValue: _i4.Future<List<_i2.Anteproject>>.value(
+              <_i2.Anteproject>[],
+            ),
+          )
+          as _i4.Future<List<_i2.Anteproject>>);
+
+  @override
+  _i4.Future<void> deleteAnteproject(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteAnteproject, [id]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
 }
 
 /// A class which mocks [TasksService].
@@ -276,6 +304,16 @@ class MockTasksService extends _i1.Mock implements _i7.TasksService {
             returnValue: _i4.Future<List<_i2.Task>>.value(<_i2.Task>[]),
           )
           as _i4.Future<List<_i2.Task>>);
+
+  @override
+  _i4.Future<List<Map<String, dynamic>>> getStudentTasks() =>
+      (super.noSuchMethod(
+            Invocation.method(#getStudentTasks, []),
+            returnValue: _i4.Future<List<Map<String, dynamic>>>.value(
+              <Map<String, dynamic>>[],
+            ),
+          )
+          as _i4.Future<List<Map<String, dynamic>>>);
 
   @override
   _i4.Future<List<_i2.Task>> getTasksByProject(int? projectId) =>

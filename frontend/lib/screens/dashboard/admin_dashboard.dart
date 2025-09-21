@@ -84,8 +84,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
         _buildSystemSection(),
         const SizedBox(height: 24),
         _buildUsersSection(),
-        const SizedBox(height: 24),
-        _buildServerInfo(),
       ],
     ),
   );
@@ -274,71 +272,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
     );
   }
 
-  Widget _buildServerInfo() {
-    final l10n = AppLocalizations.of(context)!;
 
-    return Card(
-      color: Colors.blue.shade50,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.info, color: Colors.blue.shade700),
-                const SizedBox(width: 8),
-                Text(
-                  l10n.systemInfo,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue.shade700,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            _buildInfoRow(l10n.backendLabel(AppConfig.supabaseUrl), ''),
-            _buildInfoRow(l10n.platformLabel(AppConfig.platformName), ''),
-            _buildInfoRow(l10n.versionLabel(AppConfig.appVersion), ''),
-            _buildInfoRow(l10n.emailLabel, widget.user.email),
-            const SizedBox(height: 8),
-            Text(
-              l10n.connectedToServer,
-              style: const TextStyle(
-                color: Colors.green,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 80,
-            child: Text(
-              '$label:',
-              style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Future<void> _logout() async {
     try {

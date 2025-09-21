@@ -10,6 +10,7 @@ class AppConfig {
     'local': BackendConfig(
       supabaseUrl: 'http://localhost:54321',
       supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0',
+      supabaseServiceKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU',
       environment: 'local',
       debugMode: true,
     ),
@@ -39,6 +40,13 @@ class AppConfig {
       environment: 'external',
       debugMode: true,
     ),
+    'cloud': BackendConfig(
+      supabaseUrl: 'https://zkririyknhlwoxhsoqih.supabase.co',
+      supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InprcmlyaXlrbmhsd294aHNvcWloIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0MDkxNjUsImV4cCI6MjA3MTk4NTE2NX0.N9egQFLIqsYdbpjOeSELNiHy5G5RWqa0JY5luZWNBJg',
+      supabaseServiceKey: null, // No necesitamos service key para la app
+      environment: 'cloud',
+      debugMode: true,
+    ),
     'production': BackendConfig(
       supabaseUrl: 'https://tu-dominio.com:54321',
       supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0',
@@ -49,7 +57,7 @@ class AppConfig {
   
   /// Obtiene la configuración actual basada en la variable de entorno
   static BackendConfig get current {
-    const String env = String.fromEnvironment('ENVIRONMENT', defaultValue: 'network');
+    const String env = String.fromEnvironment('ENVIRONMENT', defaultValue: 'cloud');
     return _configs[env] ?? _configs['network']!;
   }
   
@@ -173,9 +181,9 @@ Is Production: $isProduction
     'student': 'student.test@alumno.cifpcarlos3.es',
     'tutor': 'tutor.test@cifpcarlos3.es',
     'admin': 'admin.test@cifpcarlos3.es',
-    'student_password': 'student123',
-    'tutor_password': 'tutor123',
-    'admin_password': 'admin123',
+    'student_password': 'password123',
+    'tutor_password': 'password123',
+    'admin_password': 'password123',
     'old_student': 'test.student@alumno.cifpcarlos3.es',
     'old_password': 'test123',
   };

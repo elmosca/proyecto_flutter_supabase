@@ -11,8 +11,13 @@ import '../models/user.dart';
 
 class AppRouter {
   static final GoRouter _router = GoRouter(
-    initialLocation: '/login',
+    initialLocation: '/',
     redirect: (context, state) {
+      // Redirigir la ruta raíz al login
+      if (state.uri.path == '/') {
+        return '/login';
+      }
+      
       // Solo redirigir si no estamos en login
       if (state.uri.path != '/login') {
         try {

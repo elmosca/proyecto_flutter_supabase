@@ -110,10 +110,10 @@ abstract class AppLocalizations {
   /// **'Iniciar Sesión'**
   String get login;
 
-  /// Campo de email
+  /// Etiqueta para email
   ///
   /// In es, this message translates to:
-  /// **'Correo Electrónico'**
+  /// **'Email'**
   String get email;
 
   /// Campo de contraseña
@@ -290,11 +290,11 @@ abstract class AppLocalizations {
   /// **'Editar Anteproyecto'**
   String get anteprojectEditFormTitle;
 
-  /// Campo título del anteproyecto
+  /// Título del anteproyecto en diálogo
   ///
   /// In es, this message translates to:
-  /// **'Título'**
-  String get anteprojectTitle;
+  /// **'Anteproyecto: {title}'**
+  String anteprojectTitle(String title);
 
   /// Campo tipo de proyecto del anteproyecto
   ///
@@ -662,7 +662,7 @@ abstract class AppLocalizations {
   /// **'No tienes anteproyectos creados. ¡Crea tu primer anteproyecto!'**
   String get noAnteprojects;
 
-  /// Sección de tareas pendientes
+  /// Título de sección de tareas pendientes
   ///
   /// In es, this message translates to:
   /// **'Tareas Pendientes'**
@@ -1202,16 +1202,16 @@ abstract class AppLocalizations {
   /// **'Anteproyectos Revisados'**
   String get reviewedAnteprojects;
 
-  /// Acción de aprobar un anteproyecto
+  /// Botón para aprobar anteproyecto
   ///
   /// In es, this message translates to:
-  /// **'Aprobar Anteproyecto'**
+  /// **'Aprobar'**
   String get approveAnteproject;
 
-  /// Acción de rechazar un anteproyecto
+  /// Botón para rechazar anteproyecto
   ///
   /// In es, this message translates to:
-  /// **'Rechazar Anteproyecto'**
+  /// **'Rechazar'**
   String get rejectAnteproject;
 
   /// Acción de solicitar cambios en un anteproyecto
@@ -1226,10 +1226,10 @@ abstract class AppLocalizations {
   /// **'Comentarios de Aprobación'**
   String get approvalComments;
 
-  /// Texto de ayuda para el campo de comentarios de aprobación
+  /// Placeholder para comentarios de aprobación
   ///
   /// In es, this message translates to:
-  /// **'Escribe comentarios sobre la aprobación (opcional)'**
+  /// **'Comentarios sobre la aprobación...'**
   String get approvalCommentsHint;
 
   /// Campo para comentarios en el proceso de rechazo
@@ -1238,10 +1238,10 @@ abstract class AppLocalizations {
   /// **'Comentarios de Rechazo'**
   String get rejectionComments;
 
-  /// Texto de ayuda para el campo de comentarios de rechazo
+  /// Placeholder para comentarios de rechazo
   ///
   /// In es, this message translates to:
-  /// **'Escribe los motivos del rechazo (obligatorio)'**
+  /// **'Motivo del rechazo...'**
   String get rejectionCommentsHint;
 
   /// Campo para comentarios sobre cambios solicitados
@@ -1355,7 +1355,7 @@ abstract class AppLocalizations {
   /// Acción para ver detalles de un elemento
   ///
   /// In es, this message translates to:
-  /// **'Ver Detalles'**
+  /// **'Ver detalles'**
   String get viewDetails;
 
   /// Mensaje de procesamiento en curso
@@ -1394,7 +1394,7 @@ abstract class AppLocalizations {
   /// **'Reintentar'**
   String get retry;
 
-  /// Año académico del anteproyecto
+  /// Etiqueta para año académico
   ///
   /// In es, this message translates to:
   /// **'Año Académico'**
@@ -1519,6 +1519,522 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Detalles'**
   String get details;
+
+  /// Rol de tutor
+  ///
+  /// In es, this message translates to:
+  /// **'Tutor'**
+  String get tutorRole;
+
+  /// Título de sección para elementos revisados
+  ///
+  /// In es, this message translates to:
+  /// **'Revisados'**
+  String get reviewed;
+
+  /// Botón para añadir estudiantes
+  ///
+  /// In es, this message translates to:
+  /// **'Añadir Estudiantes'**
+  String get addStudents;
+
+  /// Información de estudiantes asignados
+  ///
+  /// In es, this message translates to:
+  /// **'Tienes {count} estudiante{plural} asignado{plural} para {year}'**
+  String studentsAssignedInfo(int count, String plural, String year);
+
+  /// Título de la pantalla de lista de estudiantes del tutor
+  ///
+  /// In es, this message translates to:
+  /// **'Mis Estudiantes'**
+  String get myStudents;
+
+  /// Placeholder para buscar estudiantes
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar estudiantes...'**
+  String get searchStudents;
+
+  /// Mensaje cuando no hay estudiantes asignados
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes estudiantes asignados'**
+  String get noStudentsAssigned;
+
+  /// Mensaje cuando no se encuentran estudiantes en la búsqueda
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontraron estudiantes'**
+  String get noStudentsFound;
+
+  /// Instrucción para añadir estudiantes desde el dashboard
+  ///
+  /// In es, this message translates to:
+  /// **'Usa los botones del dashboard para añadir estudiantes'**
+  String get useDashboardButtons;
+
+  /// Título del formulario de editar estudiante
+  ///
+  /// In es, this message translates to:
+  /// **'Editar Estudiante'**
+  String get editStudent;
+
+  /// Acción para eliminar estudiante
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar'**
+  String get deleteStudent;
+
+  /// Etiqueta para NRE del estudiante
+  ///
+  /// In es, this message translates to:
+  /// **'NRE'**
+  String get nre;
+
+  /// Etiqueta para teléfono
+  ///
+  /// In es, this message translates to:
+  /// **'Teléfono'**
+  String get phone;
+
+  /// Etiqueta para especialidad
+  ///
+  /// In es, this message translates to:
+  /// **'Especialidad'**
+  String get specialty;
+
+  /// Etiqueta para biografía
+  ///
+  /// In es, this message translates to:
+  /// **'Biografía'**
+  String get biography;
+
+  /// Etiqueta para fecha de creación
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha de creación'**
+  String get creationDate;
+
+  /// Mensaje de éxito al eliminar estudiante
+  ///
+  /// In es, this message translates to:
+  /// **'Estudiante eliminado exitosamente'**
+  String get studentDeletedSuccess;
+
+  /// Mensaje de error al eliminar estudiante
+  ///
+  /// In es, this message translates to:
+  /// **'Error al eliminar estudiante: {error}'**
+  String errorDeletingStudent(String error);
+
+  /// Título del diálogo de confirmación de eliminación
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar eliminación'**
+  String get confirmDeletion;
+
+  /// Mensaje de confirmación para eliminar estudiante
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de que quieres eliminar a {name}?'**
+  String confirmDeleteStudent(String name);
+
+  /// Título de la pantalla de revisión de anteproyectos
+  ///
+  /// In es, this message translates to:
+  /// **'Revisión de Anteproyectos'**
+  String get anteprojectsReview;
+
+  /// Título para anteproyectos pendientes
+  ///
+  /// In es, this message translates to:
+  /// **'Anteproyectos Pendientes'**
+  String get pendingAnteprojectsTitle;
+
+  /// Título para anteproyectos revisados
+  ///
+  /// In es, this message translates to:
+  /// **'Anteproyectos Revisados'**
+  String get reviewedAnteprojectsTitle;
+
+  /// Título para anteproyectos enviados
+  ///
+  /// In es, this message translates to:
+  /// **'Anteproyectos Enviados'**
+  String get submittedAnteprojects;
+
+  /// Título para anteproyectos en revisión
+  ///
+  /// In es, this message translates to:
+  /// **'Anteproyectos En Revisión'**
+  String get underReviewAnteprojects;
+
+  /// Título para anteproyectos aprobados
+  ///
+  /// In es, this message translates to:
+  /// **'Anteproyectos Aprobados'**
+  String get approvedAnteprojects;
+
+  /// Título para anteproyectos rechazados
+  ///
+  /// In es, this message translates to:
+  /// **'Anteproyectos Rechazados'**
+  String get rejectedAnteprojects;
+
+  /// Filtro para mostrar todos los elementos
+  ///
+  /// In es, this message translates to:
+  /// **'Todos'**
+  String get all;
+
+  /// Placeholder para buscar anteproyectos
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar anteproyectos...'**
+  String get searchAnteprojects;
+
+  /// Etiqueta para filtro por estado
+  ///
+  /// In es, this message translates to:
+  /// **'Filtrar por estado:'**
+  String get filterByStatus;
+
+  /// Mensaje de error al cargar anteproyectos
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar anteproyectos: {error}'**
+  String errorLoadingAnteprojects(String error);
+
+  /// Mensaje cuando no se encuentran anteproyectos en la búsqueda
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontraron anteproyectos que coincidan con \"{query}\"'**
+  String noAnteprojectsFound(String query);
+
+  /// Mensaje cuando no hay anteproyectos con un estado específico
+  ///
+  /// In es, this message translates to:
+  /// **'No hay anteproyectos con estado \"{status}\"'**
+  String noAnteprojectsWithStatus(String status);
+
+  /// Mensaje cuando no hay anteproyectos asignados
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes anteproyectos asignados para revisar'**
+  String get noAssignedAnteprojects;
+
+  /// Botón para limpiar filtros
+  ///
+  /// In es, this message translates to:
+  /// **'Limpiar filtros'**
+  String get clearFilters;
+
+  /// Etiqueta para año académico
+  ///
+  /// In es, this message translates to:
+  /// **'Año:'**
+  String get year;
+
+  /// Etiqueta para fecha de creación
+  ///
+  /// In es, this message translates to:
+  /// **'Creado:'**
+  String get created;
+
+  /// Estado enviado
+  ///
+  /// In es, this message translates to:
+  /// **'Enviado'**
+  String get submitted;
+
+  /// Botón para ver comentarios
+  ///
+  /// In es, this message translates to:
+  /// **'Comentarios'**
+  String get comments;
+
+  /// Título del diálogo de aprobación
+  ///
+  /// In es, this message translates to:
+  /// **'Aprobar Anteproyecto'**
+  String get approveAnteprojectTitle;
+
+  /// Título del diálogo de rechazo
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazar Anteproyecto'**
+  String get rejectAnteprojectTitle;
+
+  /// Mensaje de confirmación para aprobar anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de que quieres aprobar este anteproyecto?'**
+  String get confirmApproveAnteproject;
+
+  /// Mensaje de confirmación para rechazar anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de que quieres rechazar este anteproyecto?'**
+  String get confirmRejectAnteproject;
+
+  /// Etiqueta para comentarios de aprobación opcionales
+  ///
+  /// In es, this message translates to:
+  /// **'Comentarios (opcional)'**
+  String get approvalCommentsOptional;
+
+  /// Mensaje de éxito al aprobar anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Anteproyecto aprobado exitosamente'**
+  String get anteprojectApprovedSuccess;
+
+  /// Mensaje de éxito al rechazar anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Anteproyecto rechazado'**
+  String get anteprojectRejectedSuccess;
+
+  /// Mensaje de error al aprobar anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Error al aprobar anteproyecto: {error}'**
+  String errorApprovingAnteproject(String error);
+
+  /// Mensaje de error al rechazar anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Error al rechazar anteproyecto: {error}'**
+  String errorRejectingAnteproject(String error);
+
+  /// Estado pendiente
+  ///
+  /// In es, this message translates to:
+  /// **'Pendiente'**
+  String get pending;
+
+  /// Estado en revisión
+  ///
+  /// In es, this message translates to:
+  /// **'En Revisión'**
+  String get underReview;
+
+  /// Estado aprobado en mayúsculas
+  ///
+  /// In es, this message translates to:
+  /// **'APROBADO'**
+  String get approved;
+
+  /// Estado rechazado
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazado'**
+  String get rejected;
+
+  /// Etiqueta para estado
+  ///
+  /// In es, this message translates to:
+  /// **'Estado'**
+  String get status;
+
+  /// Etiqueta para el campo de título del anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Título del Anteproyecto'**
+  String get anteprojectTitleLabel;
+
+  /// Tooltip para el botón de cerrar sesión
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar sesión'**
+  String get logoutTooltip;
+
+  /// Tooltip para el botón de crear anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Crear anteproyecto'**
+  String get createAnteprojectTooltip;
+
+  /// Etiqueta para ID de usuario
+  ///
+  /// In es, this message translates to:
+  /// **'ID: {id}'**
+  String userId(String id);
+
+  /// Rol de estudiante
+  ///
+  /// In es, this message translates to:
+  /// **'Estudiante'**
+  String get studentRole;
+
+  /// Título de sección de anteproyectos
+  ///
+  /// In es, this message translates to:
+  /// **'Anteproyectos'**
+  String get anteprojects;
+
+  /// Título de sección de tareas completadas
+  ///
+  /// In es, this message translates to:
+  /// **'Completadas'**
+  String get completed;
+
+  /// Mensaje cuando el anteproyecto es aprobado
+  ///
+  /// In es, this message translates to:
+  /// **'Tu anteproyecto ha sido aprobado. ¡Puedes comenzar con el desarrollo!'**
+  String get anteprojectApprovedMessage;
+
+  /// Etiqueta para año académico
+  ///
+  /// In es, this message translates to:
+  /// **'Año: {year}'**
+  String academicYearLabel(String year);
+
+  /// Etiqueta para estado
+  ///
+  /// In es, this message translates to:
+  /// **'Estado: {status}'**
+  String statusLabel(String status);
+
+  /// Estado borrador
+  ///
+  /// In es, this message translates to:
+  /// **'Borrador'**
+  String get draft;
+
+  /// Estado aprobado
+  ///
+  /// In es, this message translates to:
+  /// **'Aprobado'**
+  String get approvedStatus;
+
+  /// Estado rechazado
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazado'**
+  String get rejectedStatus;
+
+  /// Estado desconocido
+  ///
+  /// In es, this message translates to:
+  /// **'Desconocido'**
+  String get unknown;
+
+  /// Estado en progreso
+  ///
+  /// In es, this message translates to:
+  /// **'En Progreso'**
+  String get inProgress;
+
+  /// Estado completada
+  ///
+  /// In es, this message translates to:
+  /// **'Completada'**
+  String get completedStatus;
+
+  /// Estado desconocido
+  ///
+  /// In es, this message translates to:
+  /// **'Desconocido'**
+  String get unknownStatus;
+
+  /// Mensaje de éxito al crear estudiante
+  ///
+  /// In es, this message translates to:
+  /// **'Estudiante creado exitosamente'**
+  String get studentCreatedSuccess;
+
+  /// Mensaje de error al crear estudiante
+  ///
+  /// In es, this message translates to:
+  /// **'Error al crear estudiante: {error}'**
+  String errorCreatingStudent(String error);
+
+  /// Título del formulario de añadir estudiante
+  ///
+  /// In es, this message translates to:
+  /// **'Añadir Estudiante'**
+  String get addStudent;
+
+  /// Etiqueta para nombre completo
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre Completo'**
+  String get fullName;
+
+  /// Etiqueta para NRE
+  ///
+  /// In es, this message translates to:
+  /// **'NRE (Número de Registro de Estudiante)'**
+  String get nreLabel;
+
+  /// Etiqueta para teléfono opcional
+  ///
+  /// In es, this message translates to:
+  /// **'Teléfono (Opcional)'**
+  String get phoneOptional;
+
+  /// Etiqueta para biografía opcional
+  ///
+  /// In es, this message translates to:
+  /// **'Biografía (Opcional)'**
+  String get biographyOptional;
+
+  /// Mensaje de validación para nombre requerido
+  ///
+  /// In es, this message translates to:
+  /// **'El nombre es obligatorio'**
+  String get nameRequired;
+
+  /// Mensaje de validación para email requerido
+  ///
+  /// In es, this message translates to:
+  /// **'El email es obligatorio'**
+  String get emailRequired;
+
+  /// Mensaje de validación para email inválido
+  ///
+  /// In es, this message translates to:
+  /// **'Email inválido'**
+  String get emailInvalid;
+
+  /// Mensaje de validación para NRE requerido
+  ///
+  /// In es, this message translates to:
+  /// **'El NRE es obligatorio'**
+  String get nreRequired;
+
+  /// Botón para crear estudiante
+  ///
+  /// In es, this message translates to:
+  /// **'Crear Estudiante'**
+  String get createStudent;
+
+  /// Mensaje de éxito al actualizar estudiante
+  ///
+  /// In es, this message translates to:
+  /// **'Estudiante actualizado exitosamente'**
+  String get studentUpdatedSuccess;
+
+  /// Mensaje de error al actualizar estudiante
+  ///
+  /// In es, this message translates to:
+  /// **'Error al actualizar estudiante: {error}'**
+  String errorUpdatingStudent(String error);
+
+  /// Botón para actualizar estudiante
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizar Estudiante'**
+  String get updateStudent;
+
+  /// Etiqueta para rol
+  ///
+  /// In es, this message translates to:
+  /// **'Rol'**
+  String get role;
 }
 
 class _AppLocalizationsDelegate

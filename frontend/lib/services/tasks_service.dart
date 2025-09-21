@@ -36,6 +36,52 @@ class TasksService {
     }
   }
 
+  /// Obtiene tareas del estudiante actual (usando ID de la tabla users)
+  Future<List<Map<String, dynamic>>> getStudentTasks() async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        throw const TasksException('Usuario no autenticado');
+      }
+
+      // Obtener el ID del usuario desde la tabla users
+      final userResponse = await _supabase
+          .from('users')
+          .select('id')
+          .eq('email', user.email!)
+          .single();
+
+      final userId = userResponse['id'] as int;
+
+      // Obtener tareas asignadas al estudiante
+      final response = await _supabase
+          .from('task_assignees')
+          .select('''
+            task_id,
+            tasks (
+              *,
+              comments (*),
+              milestones (*)
+            )
+          ''')
+          .eq('user_id', userId)
+          .order('assigned_at', ascending: false);
+
+      // Convertir a lista de Map para el dashboard
+      final tasks = <Map<String, dynamic>>[];
+      for (final item in response) {
+        if (item['tasks'] != null) {
+          final taskData = item['tasks'] as Map<String, dynamic>;
+          tasks.add(taskData);
+        }
+      }
+
+      return tasks;
+    } catch (e) {
+      throw TasksException('Error al obtener tareas del estudiante: $e');
+    }
+  }
+
   /// Obtiene tareas por proyecto
   Future<List<Task>> getTasksByProject(int projectId) async {
     try {

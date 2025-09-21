@@ -34,17 +34,24 @@ class AuthService {
       
       print('✅ Login exitoso con Supabase Auth');
       
+      // Obtener el perfil completo del usuario desde la tabla users
+      final userProfile = await getCurrentUserProfile();
+      
+      if (userProfile == null) {
+        throw const AuthException('No se pudo obtener el perfil del usuario');
+      }
+      
       // Crear respuesta en el formato esperado
       return {
         'success': true,
         'user': {
-          'id': authResponse.user!.id,
-          'email': authResponse.user!.email,
-          'full_name': authResponse.user!.userMetadata?['full_name'] ?? 'Usuario',
-          'role': _parseUserRoleFromEmail(email).name,
-          'status': 'active',
-          'created_at': authResponse.user!.createdAt,
-          'updated_at': authResponse.user!.updatedAt,
+          'id': userProfile.id,
+          'email': userProfile.email,
+          'full_name': userProfile.fullName,
+          'role': userProfile.role.name,
+          'status': userProfile.status.name,
+          'created_at': userProfile.createdAt.toIso8601String(),
+          'updated_at': userProfile.updatedAt.toIso8601String(),
         }
       };
     } catch (e) {
@@ -95,9 +102,37 @@ class AuthService {
       final user = _supabase.auth.currentUser;
       if (user == null) return null;
       
-      // Crear un objeto User desde los datos de Supabase Auth
+      // Buscar el usuario en la tabla users por email
+      final response = await _supabase
+          .from('users')
+          .select('*')
+          .eq('email', user.email!)
+          .single();
+      
+      if (response.isNotEmpty) {
+        // Usar directamente la respuesta de la base de datos (ya tiene los nombres correctos)
+        final userData = {
+          'id': response['id'] is String ? int.parse(response['id']) : response['id'],
+          'full_name': response['full_name'],
+          'email': response['email'],
+          'nre': response['nre'],
+          'role': response['role'],
+          'phone': response['phone'],
+          'biography': response['biography'],
+          'status': response['status'],
+          'specialty': response['specialty'],
+          'tutor_id': response['tutor_id'] is String ? int.tryParse(response['tutor_id']) : response['tutor_id'],
+          'academic_year': response['academic_year'],
+          'created_at': response['created_at'],
+          'updated_at': response['updated_at'],
+        };
+        
+        return User.fromJson(userData);
+      }
+      
+      // Si no se encuentra en la tabla users, crear un usuario temporal
       return User(
-        id: user.id,
+        id: int.tryParse(user.id) ?? 0,
         fullName: user.userMetadata?['full_name'] ?? 'Usuario',
         email: user.email ?? '',
         nre: '',
@@ -109,7 +144,8 @@ class AuthService {
         updatedAt: DateTime.parse(user.updatedAt ?? user.createdAt),
       );
     } catch (e) {
-      throw AuthException('Error al obtener perfil: $e');
+      print('❌ Error al obtener perfil: $e');
+      return null;
     }
   }
 
@@ -123,23 +159,26 @@ class AuthService {
         
         print('🔍 Debug - Datos del usuario: $userData');
         
-        // Convertir el ID a String para compatibilidad (puede venir como int o String)
-        if (userData['id'] is int) {
-          userData['id'] = userData['id'].toString();
+        // Asegurar que el ID sea int (puede venir como int o String)
+        if (userData['id'] is String) {
+          userData['id'] = int.parse(userData['id']);
         }
         
-        // Convertir snake_case a camelCase para el modelo User
+        // Usar los nombres de la base de datos directamente (snake_case)
         final convertedData = <String, dynamic>{
           'id': userData['id'],
-          'fullName': userData['full_name'] ?? 'Usuario',
+          'full_name': userData['full_name'] ?? 'Usuario',
           'email': userData['email'] ?? '',
           'nre': userData['nre'] ?? '',
           'role': userData['role'] ?? 'student',
           'phone': userData['phone'] ?? '',
           'biography': userData['biography'] ?? '',
           'status': userData['status'] ?? 'active',
-          'createdAt': userData['created_at'] ?? DateTime.now().toIso8601String(),
-          'updatedAt': userData['updated_at'] ?? DateTime.now().toIso8601String(),
+          'specialty': userData['specialty'] ?? '',
+          'tutor_id': userData['tutor_id'],
+          'academic_year': userData['academic_year'] ?? '',
+          'created_at': userData['created_at'] ?? DateTime.now().toIso8601String(),
+          'updated_at': userData['updated_at'] ?? DateTime.now().toIso8601String(),
         };
         
         print('🔍 Debug - Datos finales del usuario: $convertedData');
@@ -213,10 +252,10 @@ class AuthService {
   UserRole _parseUserRoleFromEmail(String email) {
     if (email.contains('@alumno.cifpcarlos3.es')) {
       return UserRole.student;
-    } else if (email.contains('@cifpcarlos3.es') && !email.contains('admin')) {
-      return UserRole.tutor;
-    } else if (email.contains('admin@cifpcarlos3.es')) {
+    } else if (email.contains('admin.test@cifpcarlos3.es') || email.contains('admin@cifpcarlos3.es')) {
       return UserRole.admin;
+    } else if (email.contains('tutor.test@cifpcarlos3.es') || (email.contains('@cifpcarlos3.es') && !email.contains('admin'))) {
+      return UserRole.tutor;
     }
     return UserRole.student; // Por defecto
   }

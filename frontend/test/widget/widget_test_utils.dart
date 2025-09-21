@@ -57,7 +57,7 @@ class WidgetTestUtils {
 
   /// Crear usuario de prueba
   static User createTestUser({
-    String id = '1',
+    int id = 1,
     String email = 'test@example.com',
     String fullName = 'Test User',
     UserRole role = UserRole.student,
@@ -91,6 +91,7 @@ class WidgetTestUtils {
       title: title,
       projectType: projectType,
       description: description,
+      objectives: 'Test objectives for the project',
       academicYear: academicYear,
       expectedResults: {'result1': 'Expected result 1'},
       timeline: {'phase1': 'Phase 1 description'},
