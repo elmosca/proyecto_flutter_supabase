@@ -1,13 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../../blocs/auth_bloc.dart';
 import '../../l10n/app_localizations.dart';
 import '../../config/app_config.dart';
-import '../../screens/dashboard/student_dashboard.dart';
-import '../../screens/dashboard/tutor_dashboard.dart';
-import '../../screens/dashboard/admin_dashboard.dart';
 import '../../models/user.dart' as app_user;
+import '../../widgets/test_credentials_widget.dart';
 
 class LoginScreenBloc extends StatefulWidget {
   const LoginScreenBloc({super.key});
@@ -24,9 +23,7 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
   @override
   void initState() {
     super.initState();
-    // Usar credenciales de prueba por defecto
-    _emailController.text = AppConfig.testCredentials['student']!;
-    _passwordController.text = AppConfig.testCredentials['student_password']!;
+    // Los campos de email y contraseña estarán vacíos para que el usuario los complete
   }
 
   @override
@@ -144,29 +141,6 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
                 ),
               ),
               const SizedBox(height: 16),
-              
-              // Información de plataforma
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      Text(
-                        AppConfig.platformIcon,
-                        style: const TextStyle(fontSize: 24),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(l10n.platformLabel(AppConfig.platformName)),
-                      Text(l10n.versionLabel(AppConfig.appVersion)),
-                      const SizedBox(height: 8),
-                      Text(
-                        l10n.backendLabel(AppConfig.supabaseUrl),
-                        style: const TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
 
               // Información del servidor (expandible)
               if (_showServerInfo) ...[
@@ -262,15 +236,9 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
                 },
               ),
               const SizedBox(height: 16),
-              
-              // Información adicional
-              Text(
-                '${l10n.testCredentials}: ${l10n.studentEmail}',
-                style: Theme.of(context).textTheme.bodySmall,
-                textAlign: TextAlign.center,
-              ),
-              
-              const SizedBox(height: 16),
+
+              // Credenciales de prueba
+              const TestCredentialsWidget(),
 
               // Enlaces útiles
               Row(
@@ -346,22 +314,16 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
 
   void _navigateToDashboard(app_user.User user) {
     final role = user.role;
-
+    
     switch (role) {
       case app_user.UserRole.student:
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => StudentDashboard(user: user)),
-        );
+        context.go('/dashboard/student', extra: user);
         break;
       case app_user.UserRole.tutor:
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => TutorDashboard(user: user)),
-        );
+        context.go('/dashboard/tutor', extra: user);
         break;
       case app_user.UserRole.admin:
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => AdminDashboard(user: user)),
-        );
+        context.go('/dashboard/admin', extra: user);
         break;
     }
   }

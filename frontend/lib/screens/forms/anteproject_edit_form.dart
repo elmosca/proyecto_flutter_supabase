@@ -5,10 +5,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../blocs/anteprojects_bloc.dart';
 import '../../models/anteproject.dart';
+import '../../models/user.dart';
+import '../../services/auth_service.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/common/form_validators.dart';
 import '../../widgets/common/error_handler_widget.dart';
 import '../../widgets/common/loading_widget.dart';
+import '../../widgets/forms/hitos_list_widget.dart';
 
 class AnteprojectEditForm extends StatefulWidget {
   final Anteproject anteproject;
@@ -24,44 +27,66 @@ class AnteprojectEditForm extends StatefulWidget {
 
 class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final AuthService _authService = AuthService();
 
   late final TextEditingController _titleController;
   late final TextEditingController _descriptionController;
   late final TextEditingController _academicYearController;
-  late final TextEditingController _expectedResultsController;
   late final TextEditingController _timelineController;
   late final TextEditingController _tutorIdController;
+  late List<Hito> _hitos;
 
   late ProjectType _projectType;
   late AnteprojectStatus _status;
 
   bool _isSubmitting = false;
   bool _isLoading = true;
+  User? _currentUser;
 
   @override
   void initState() {
     super.initState();
     _initializeControllers();
+    _loadCurrentUser();
   }
 
   void _initializeControllers() {
     _titleController = TextEditingController(text: widget.anteproject.title);
     _descriptionController = TextEditingController(text: widget.anteproject.description);
     _academicYearController = TextEditingController(text: widget.anteproject.academicYear);
-    _expectedResultsController = TextEditingController(
-      text: jsonEncode(widget.anteproject.expectedResults),
-    );
     _timelineController = TextEditingController(
       text: jsonEncode(widget.anteproject.timeline),
     );
     _tutorIdController = TextEditingController(text: widget.anteproject.tutorId.toString());
+    
+    // Convertir expectedResults a lista de hitos
+    _hitos = _convertExpectedResultsToHitos(widget.anteproject.expectedResults);
 
     _projectType = widget.anteproject.projectType;
     _status = widget.anteproject.status;
+  }
 
-    setState(() {
-      _isLoading = false;
-    });
+  Future<void> _loadCurrentUser() async {
+    try {
+      final user = await _authService.getCurrentUserProfile();
+      if (mounted) {
+        setState(() {
+          _currentUser = user;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  bool _canEditTimeline() {
+    // Solo los tutores pueden editar la temporalización
+    return _currentUser?.role == UserRole.tutor;
   }
 
   @override
@@ -69,10 +94,41 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
     _titleController.dispose();
     _descriptionController.dispose();
     _academicYearController.dispose();
-    _expectedResultsController.dispose();
     _timelineController.dispose();
     _tutorIdController.dispose();
     super.dispose();
+  }
+
+  List<Hito> _convertExpectedResultsToHitos(Map<String, dynamic> expectedResults) {
+    if (expectedResults.isEmpty) {
+      return [const Hito(id: 'hito1', title: '', description: '')];
+    }
+
+    final List<Hito> hitos = [];
+    expectedResults.forEach((key, value) {
+      if (value is Map<String, dynamic>) {
+        // Formato nuevo: {hito1: {title: "...", description: "..."}}
+        hitos.add(Hito(
+          id: key,
+          title: value['title'] ?? '',
+          description: value['description'] ?? '',
+        ));
+      } else {
+        // Formato legacy: {hito1: "texto"}
+        hitos.add(Hito(
+          id: key,
+          title: value.toString(),
+          description: '',
+        ));
+      }
+    });
+
+    // Si no hay hitos, crear uno por defecto
+    if (hitos.isEmpty) {
+      hitos.add(const Hito(id: 'hito1', title: '', description: ''));
+    }
+
+    return hitos;
   }
 
   Map<String, dynamic> _tryParseJsonOrEmpty(String input) {
@@ -93,7 +149,15 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
 
-    final Map<String, dynamic> expectedResults = _tryParseJsonOrEmpty(_expectedResultsController.text);
+    // Convertir hitos a formato JSON para el backend
+    final Map<String, dynamic> expectedResults = {};
+    for (final hito in _hitos) {
+      expectedResults[hito.id] = {
+        'title': hito.title,
+        'description': hito.description,
+      };
+    }
+
     final Map<String, dynamic> timeline = _tryParseJsonOrEmpty(_timelineController.text);
 
     final int? tutorId = int.tryParse(_tutorIdController.text.trim());
@@ -235,7 +299,7 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
                 TextFormField(
                   controller: _titleController,
                   decoration: InputDecoration(
-                    labelText: l10n.anteprojectTitle,
+                    labelText: AppLocalizations.of(context)!.anteprojectTitleLabel,
                     border: const OutlineInputBorder(),
                   ),
                   validator: (String? value) => FormValidators.anteprojectTitle(value, context),
@@ -309,41 +373,54 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
                 ),
                 const SizedBox(height: 16),
 
-                // Resultados esperados
-                TextFormField(
-                  controller: _expectedResultsController,
-                  minLines: 3,
-                  maxLines: 8,
-                  decoration: InputDecoration(
-                    labelText: l10n.anteprojectExpectedResults,
-                    hintText: l10n.anteprojectExpectedResultsHint,
-                    border: const OutlineInputBorder(),
-                  ),
+                // Widget de lista de hitos en lugar de JSON
+                HitosListWidget(
+                  initialHitos: _hitos,
+                  onHitosChanged: (hitos) {
+                    setState(() {
+                      _hitos = hitos;
+                    });
+                  },
                 ),
                 const SizedBox(height: 16),
 
-                // Temporalización
+                // Temporalización (solo para tutores)
                 TextFormField(
                   controller: _timelineController,
                   minLines: 3,
                   maxLines: 8,
+                  enabled: _canEditTimeline(),
                   decoration: InputDecoration(
                     labelText: l10n.anteprojectTimeline,
-                    hintText: l10n.anteprojectTimelineHint,
+                    hintText: _canEditTimeline() 
+                        ? l10n.anteprojectTimelineHint 
+                        : 'Solo los tutores pueden editar la temporalización',
                     border: const OutlineInputBorder(),
+                    suffixIcon: _canEditTimeline() 
+                        ? null 
+                        : const Icon(Icons.lock, color: Colors.grey),
                   ),
                 ),
                 const SizedBox(height: 16),
 
-                // Tutor ID
+                // Tutor ID (solo para tutores)
                 TextFormField(
                   controller: _tutorIdController,
                   keyboardType: TextInputType.number,
+                  enabled: _canEditTimeline(),
                   decoration: InputDecoration(
                     labelText: l10n.anteprojectTutorId,
+                    hintText: _canEditTimeline() 
+                        ? null 
+                        : 'Solo los tutores pueden editar el ID del tutor',
                     border: const OutlineInputBorder(),
+                    suffixIcon: _canEditTimeline() 
+                        ? null 
+                        : const Icon(Icons.lock, color: Colors.grey),
                   ),
-                  validator: (String? value) => FormValidators.tutorId(value, context),
+                  validator: _canEditTimeline() 
+                      ? (String? value) => FormValidators.tutorId(value, context)
+                      : null,
                 ),
                 const SizedBox(height: 24),
 

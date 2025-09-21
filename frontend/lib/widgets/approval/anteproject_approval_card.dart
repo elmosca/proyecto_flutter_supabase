@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../models/models.dart';
 import '../../l10n/app_localizations.dart';
-import '../../screens/details/anteproject_detail_screen.dart';
+import '../../screens/anteprojects/anteproject_detail_screen.dart';
 import 'approval_actions_widget.dart';
 
 class AnteprojectApprovalCard extends StatelessWidget {

@@ -10,7 +10,13 @@ import '../../models/user.dart';
 import '../../blocs/approval_bloc.dart';
 import '../../services/theme_service.dart';
 import '../../themes/role_themes.dart';
+import '../../services/user_service.dart';
+import '../../services/anteprojects_service.dart';
+import '../../models/anteproject.dart';
 import '../approval/approval_screen.dart';
+import '../anteprojects/anteprojects_review_screen.dart';
+import '../student/student_list_screen.dart';
+import '../../widgets/dialogs/add_students_dialog.dart';
 import '../../widgets/common/language_selector.dart';
 import '../../router/app_router.dart';
 
@@ -26,6 +32,11 @@ class TutorDashboard extends StatefulWidget {
 class _TutorDashboardState extends State<TutorDashboard> {
   bool _isLoading = true;
   Timer? _loadingTimer;
+  List<User> _students = [];
+  List<Anteproject> _anteprojects = [];
+  String _selectedAcademicYear = '2024-2025';
+  final UserService _userService = UserService();
+  final AnteprojectsService _anteprojectsService = AnteprojectsService();
 
   @override
   void initState() {
@@ -40,13 +51,96 @@ class _TutorDashboardState extends State<TutorDashboard> {
   }
 
   Future<void> _loadData() async {
-    _loadingTimer = Timer(const Duration(seconds: 1), () {
+    try {
+      // Cargar estudiantes y anteproyectos del tutor en paralelo
+      final futures = await Future.wait([
+        _userService.getStudentsByTutor(widget.user.id),
+        _anteprojectsService.getTutorAnteprojects(),
+      ]);
+      
+      final students = futures[0] as List<User>;
+      final anteprojects = futures[1] as List<Anteproject>;
+      
+      if (mounted) {
+        setState(() {
+          _students = students;
+          _anteprojects = anteprojects;
+          
+          // Inicializar el año académico seleccionado si no está disponible
+          final availableYears = <String>{};
+          for (final student in students) {
+            if (student.academicYear != null && student.academicYear!.isNotEmpty) {
+              availableYears.add(student.academicYear!);
+            }
+          }
+          for (final anteproject in anteprojects) {
+            availableYears.add(anteproject.academicYear);
+          }
+          
+          // Solo cambiar el año si no hay datos para el año actual
+          if (availableYears.isNotEmpty && !availableYears.contains(_selectedAcademicYear)) {
+            // Buscar el año más reciente que tenga datos
+            final sortedYears = availableYears.toList()..sort((a, b) => b.compareTo(a));
+            _selectedAcademicYear = sortedYears.first;
+          }
+          
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error al cargar datos: $e');
       if (mounted) {
         setState(() {
           _isLoading = false;
         });
       }
-    });
+    }
+  }
+
+  List<User> get _filteredStudents {
+    return _students.where((student) {
+      return student.academicYear == _selectedAcademicYear;
+    }).toList();
+  }
+
+  List<Anteproject> get _pendingAnteprojects {
+    return _anteprojects.where((anteproject) {
+      return anteproject.status == AnteprojectStatus.submitted || 
+             anteproject.status == AnteprojectStatus.underReview;
+    }).toList();
+  }
+
+  List<Anteproject> get _reviewedAnteprojects {
+    return _anteprojects.where((anteproject) {
+      return anteproject.status == AnteprojectStatus.approved || 
+             anteproject.status == AnteprojectStatus.rejected;
+    }).toList();
+  }
+
+  List<String> get _availableAcademicYears {
+    final years = <String>{};
+    
+    // Añadir años de estudiantes
+    for (final student in _students) {
+      if (student.academicYear != null && student.academicYear!.isNotEmpty) {
+        years.add(student.academicYear!);
+      }
+    }
+    
+    // Añadir años de anteproyectos
+    for (final anteproject in _anteprojects) {
+      years.add(anteproject.academicYear);
+    }
+    
+    // Si no hay años, usar el año actual por defecto
+    if (years.isEmpty) {
+      final currentYear = DateTime.now().year;
+      years.add('$currentYear-${currentYear + 1}');
+    }
+    
+    // Ordenar años de más reciente a más antiguo
+    final sortedYears = years.toList()..sort((a, b) => b.compareTo(a));
+    return sortedYears;
   }
 
   @override
@@ -108,111 +202,52 @@ class _TutorDashboardState extends State<TutorDashboard> {
         const SizedBox(height: 24),
         _buildStatistics(),
         const SizedBox(height: 24),
-        _buildAnteprojectsSection(),
-        const SizedBox(height: 24),
         _buildStudentsSection(),
-        const SizedBox(height: 24),
-        _buildServerInfo(),
       ],
     ),
   );
 
-  Widget _buildUserInfo() => Card(
-    child: Padding(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 30,
-            backgroundColor: Color(AppConfig.platformColor),
-            child: Text(
-              widget.user.email.substring(0, 1).toUpperCase(),
-              style: const TextStyle(fontSize: 24, color: Colors.white),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.user.email,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  'ID: ${widget.user.id}',
-                  style: const TextStyle(color: Colors.grey, fontSize: 12),
-                ),
-                Text(
-                  'Rol: Tutor',
-                  style: TextStyle(
-                    color: Color(AppConfig.platformColor),
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-
-  Widget _buildStatistics() => Row(
-    children: [
-      Expanded(
-        child: _buildStatCard(
-          'Anteproyectos Pendientes',
-          '0',
-          Icons.pending_actions,
-          Colors.orange,
-        ),
-      ),
-      const SizedBox(width: 8),
-      Expanded(
-        child: _buildStatCard(
-          'Estudiantes Asignados',
-          '0',
-          Icons.people,
-          Colors.blue,
-        ),
-      ),
-      const SizedBox(width: 8),
-      Expanded(
-        child: _buildStatCard(
-          'Revisados',
-          '0',
-          Icons.check_circle,
-          Colors.green,
-        ),
-      ),
-    ],
-  );
-
-  Widget _buildStatCard(
-    String title,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
+  Widget _buildUserInfo() {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
+        padding: const EdgeInsets.all(16),
+        child: Row(
           children: [
-            Icon(icon, color: color, size: 32),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            CircleAvatar(
+              radius: 30,
+              backgroundColor: Color(AppConfig.platformColor),
+              child: Text(
+                widget.user.email.substring(0, 1).toUpperCase(),
+                style: const TextStyle(fontSize: 24, color: Colors.white),
+              ),
             ),
-            Text(
-              title,
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
-              textAlign: TextAlign.center,
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.user.email,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    'ID: ${widget.user.id}',
+                    style: const TextStyle(color: Colors.grey, fontSize: 12),
+                  ),
+                  Text(
+                    '${l10n.tutorRole}: ${l10n.tutor}',
+                    style: TextStyle(
+                      color: Color(AppConfig.platformColor),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -220,40 +255,77 @@ class _TutorDashboardState extends State<TutorDashboard> {
     );
   }
 
-  Widget _buildAnteprojectsSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildStatistics() {
+    final l10n = AppLocalizations.of(context)!;
+    
+    return Row(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Text(
-                AppLocalizations.of(context)!.pendingAnteprojects,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            TextButton(
-              onPressed: _viewAllAnteprojects,
-              child: Text(AppLocalizations.of(context)!.viewAll),
-            ),
-          ],
+        Expanded(
+          child: _buildStatCard(
+            title: l10n.pendingAnteprojects,
+            value: _pendingAnteprojects.length.toString(),
+            icon: Icons.pending_actions,
+            color: Colors.orange,
+            onTap: _reviewAnteprojects,
+          ),
         ),
-        const SizedBox(height: 8),
-        const Card(
-          child: Padding(
-            padding: EdgeInsets.all(16),
-            child: Text(
-              'No hay anteproyectos pendientes de revisión.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey),
-            ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: _buildStatCard(
+            title: l10n.assignedStudents,
+            value: _students.length.toString(),
+            icon: Icons.people,
+            color: Colors.blue,
+            onTap: _viewAllStudents,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: _buildStatCard(
+            title: l10n.reviewed,
+            value: _reviewedAnteprojects.length.toString(),
+            icon: Icons.check_circle,
+            color: Colors.green,
+            onTap: _viewAllAnteprojects,
           ),
         ),
       ],
     );
   }
+
+  Widget _buildStatCard({
+    required String title,
+    required String value,
+    required IconData icon,
+    required Color color,
+    VoidCallback? onTap,
+  }) {
+    return Card(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            children: [
+              Icon(icon, color: color, size: 32),
+              const SizedBox(height: 8),
+              Text(
+                value,
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                title,
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
 
   Widget _buildStudentsSection() {
     return Column(
@@ -269,95 +341,99 @@ class _TutorDashboardState extends State<TutorDashboard> {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            TextButton(
-              onPressed: _viewAllStudents,
-              child: Text(AppLocalizations.of(context)!.viewAll),
+            Row(
+              children: [
+                // Filtro por año académico dinámico
+                DropdownButton<String>(
+                  value: _availableAcademicYears.contains(_selectedAcademicYear) 
+                      ? _selectedAcademicYear 
+                      : (_availableAcademicYears.isNotEmpty ? _availableAcademicYears.first : null),
+                  items: _availableAcademicYears.map((year) {
+                    return DropdownMenuItem(
+                      value: year,
+                      child: Text(year),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        _selectedAcademicYear = value;
+                      });
+                      // Recargar datos cuando cambie el año académico
+                      _loadData();
+                    }
+                  },
+                ),
+                const SizedBox(width: 8),
+                TextButton(
+                  onPressed: _viewAllStudents,
+                  child: Text(AppLocalizations.of(context)!.viewAll),
+                ),
+              ],
             ),
           ],
         ),
-        const SizedBox(height: 8),
-        const Card(
-          child: Padding(
-            padding: EdgeInsets.all(16),
-            child: Text(
-              'No tienes estudiantes asignados actualmente.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey),
+        const SizedBox(height: 16),
+        // Botón principal para añadir estudiantes
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            onPressed: _showAddStudentsDialog,
+            icon: const Icon(Icons.person_add),
+            label: Text(AppLocalizations.of(context)!.addStudents),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
           ),
         ),
-      ],
-    );
-  }
-
-  Widget _buildServerInfo() {
-    final l10n = AppLocalizations.of(context)!;
-
-    return Card(
-      color: Colors.blue.shade50,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+        const SizedBox(height: 8),
+        // Información de estudiantes actuales
+        if (_filteredStudents.isNotEmpty)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade50,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.grey.shade300),
+            ),
+            child: Row(
               children: [
-                Icon(Icons.info, color: Colors.blue.shade700),
+                Icon(Icons.info_outline, color: Colors.blue.shade600, size: 20),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    l10n.systemInfo,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue.shade700,
+                    AppLocalizations.of(context)!.studentsAssignedInfo(
+                      _filteredStudents.length,
+                      _filteredStudents.length == 1 ? '' : 's',
+                      _selectedAcademicYear,
                     ),
-                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Colors.grey.shade700,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
-            _buildInfoRow(l10n.backendLabel(AppConfig.supabaseUrl), ''),
-            _buildInfoRow(l10n.platformLabel(AppConfig.platformName), ''),
-            _buildInfoRow(l10n.versionLabel(AppConfig.appVersion), ''),
-            _buildInfoRow(l10n.emailLabel, widget.user.email),
-            const SizedBox(height: 8),
-            Text(
-              l10n.connectedToServer,
-              style: const TextStyle(
-                color: Colors.green,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+      ],
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 80,
-            child: Text(
-              '$label:',
-              style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
-            ),
-          ),
-        ],
-      ),
-    );
+  void _showAddStudentsDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AddStudentsDialog(tutorId: widget.user.id),
+    ).then((_) => _loadData()); // Recargar datos al cerrar el diálogo
   }
+
+
 
   Future<void> _logout() async {
     try {
@@ -382,31 +458,27 @@ class _TutorDashboardState extends State<TutorDashboard> {
   }
 
   void _reviewAnteprojects() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          'Funcionalidad de revisión de anteproyectos en desarrollo',
-        ),
-        duration: Duration(seconds: 2),
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const AnteprojectsReviewScreen(initialFilter: 'pending'),
       ),
-    );
+    ).then((_) => _loadData()); // Recargar datos al volver
   }
 
   void _viewAllAnteprojects() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(AppLocalizations.of(context)!.anteprojectsListInDevelopment),
-        duration: const Duration(seconds: 2),
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const AnteprojectsReviewScreen(initialFilter: 'reviewed'),
       ),
-    );
+    ).then((_) => _loadData()); // Recargar datos al volver
   }
 
   void _viewAllStudents() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(AppLocalizations.of(context)!.studentsListInDevelopment),
-        duration: const Duration(seconds: 2),
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => StudentListScreen(tutorId: widget.user.id),
       ),
-    );
+    ).then((_) => _loadData()); // Recargar datos al volver
   }
+
 }

@@ -1,40 +1,6 @@
-# 🚀 REGLAS DEL PROYECTO FLUTTER + SUPABASE FCT
-
-## 📋 DESCRIPCIÓN DEL PROYECTO
-Sistema de Gestión de TFG (Trabajo de Fin de Grado) desarrollado con Flutter para el frontend y Supabase como backend-as-a-service, incluyendo autenticación, gestión de proyectos, tareas y sistema de roles (Estudiante, Tutor, Administrador).
-
 ---
-
-## 🏗️ ARQUITECTURA Y PATRONES
-
-### **1. ARQUITECTURA GENERAL**
-- **Frontend**: Flutter con arquitectura BLoC (Business Logic Component)
-- **Backend**: Supabase (PostgreSQL + Auth + Real-time + Storage)
-- **Estado**: Flutter BLoC para gestión de estado
-- **Navegación**: GoRouter para routing declarativo
-- **Internacionalización**: Flutter Localizations + ARB files
-
-### **2. PATRONES DE DISEÑO**
-- **BLoC Pattern**: Para separación de lógica de negocio y UI
-- **Repository Pattern**: Para abstracción de servicios de datos
-- **Dependency Injection**: Para inyección de dependencias
-- **Observer Pattern**: Para notificaciones y actualizaciones en tiempo real
-
-### **3. ESTRUCTURA DE CARPETAS**
-```
-lib/
-├── blocs/           # Lógica de negocio (BLoCs)
-├── models/          # Modelos de datos
-├── screens/         # Pantallas de la aplicación
-├── services/        # Servicios (API, local storage)
-├── widgets/         # Widgets reutilizables
-├── utils/           # Utilidades y helpers
-├── themes/          # Temas y estilos
-└── l10n/            # Archivos de internacionalización
-```
-
+alwaysApply: true
 ---
-
 ## 🌍 INTERNACIONALIZACIÓN (I18N)
 
 ### **4. CONFIGURACIÓN OBLIGATORIA**
@@ -50,14 +16,42 @@ lib/
 - ✅ **SIEMPRE** usar claves descriptivas y consistentes
 - ✅ **SIEMPRE** considerar pluralización y formatos de fecha/número
 
-### **6. EJEMPLO DE USO CORRECTO**
-```dart
-// ✅ CORRECTO
-Text(AppLocalizations.of(context)!.welcome)
+### **5.1. PROHIBICIÓN ABSOLUTA DE HARDCODEO DE TEXTO**
+- 🚨 **PROHIBIDO** hardcodear cualquier texto visible al usuario
+- 🚨 **PROHIBIDO** usar strings literales en widgets de UI
+- 🚨 **PROHIBIDO** hardcodear mensajes de error, validación o notificación
+- 🚨 **PROHIBIDO** usar texto en botones, etiquetas, títulos o descripciones
+- 🚨 **PROHIBIDO** hardcodear texto en comentarios de código que sea visible al usuario
+- ✅ **OBLIGATORIO** usar claves de internacionalización para TODO texto visible
+- ✅ **OBLIGATORIO** añadir nuevas claves a los archivos ARB cuando sea necesario
 
-// ❌ INCORRECTO
+### **6. EJEMPLOS DE USO CORRECTO E INCORRECTO**
+```dart
+// ✅ CORRECTO - Usando internacionalización
+Text(AppLocalizations.of(context)!.welcome)
+Text(AppLocalizations.of(context)!.loginButton)
+Text(AppLocalizations.of(context)!.errorMessage)
+ElevatedButton(
+  onPressed: () {},
+  child: Text(AppLocalizations.of(context)!.save),
+)
+
+// ❌ INCORRECTO - Hardcodeo prohibido
 Text('Bienvenido')
 Text('Welcome')
+Text('Iniciar Sesión')
+Text('Error: Usuario no encontrado')
+Text('Guardar')
+Text('Cancelar')
+Text('Confirmar')
+Text('Eliminar')
+Text('Editar')
+Text('Añadir')
+Text('Buscar')
+Text('Filtrar')
+Text('Cargando...')
+Text('No hay datos')
+Text('Inténtalo de nuevo')
 ```
 
 ### **7. ESTRUCTURA DE ARCHIVOS ARB**
@@ -363,6 +357,9 @@ class AppConfig {
 - [ ] Código compila sin errores
 - [ ] Tests pasan
 - [ ] Linting sin warnings críticos
+- [ ] **VERIFICACIÓN I18N**: No hay texto hardcodeado en widgets
+- [ ] **VERIFICACIÓN I18N**: Todos los textos usan `AppLocalizations.of(context)`
+- [ ] **VERIFICACIÓN I18N**: Nuevas claves añadidas a archivos ARB
 - [ ] Internacionalización implementada
 - [ ] Documentación actualizada
 - [ ] Seguridad verificada
@@ -397,7 +394,10 @@ class AppConfig {
 ## 🚨 VIOLACIONES CRÍTICAS
 
 ### **37. NUNCA PERMITIR**
-- ❌ Hardcodear strings sin internacionalización
+- ❌ **CRÍTICO**: Hardcodear strings sin internacionalización
+- ❌ **CRÍTICO**: Usar texto literal en cualquier widget de UI
+- ❌ **CRÍTICO**: Hardcodear mensajes de error, validación o notificación
+- ❌ **CRÍTICO**: Usar strings literales en botones, etiquetas o títulos
 - ❌ Deshabilitar RLS en producción
 - ❌ Exponer API keys en código
 - ❌ Ignorar errores de linting críticos
@@ -462,7 +462,37 @@ class AppConfig {
 ---
 
 **¡Recuerda: La calidad del código es responsabilidad de todos! 🚀**
-description:
-globs:
-alwaysApply: false
+
+---
+
+## 🎯 CONFIGURACIÓN DE APLICACIÓN
+
+### **46. DESCRIPCIÓN DE LA REGLA**
+Esta regla se aplica automáticamente a todo el proyecto Flutter + Supabase FCT para mantener consistencia en:
+- Arquitectura BLoC y patrones de diseño
+- Internacionalización obligatoria (español/inglés)
+- Estándares de código Flutter/Dart
+- Seguridad con Supabase y RLS
+- Calidad de código y testing
+- Documentación y mejores prácticas
+
+### **47. AUTO ATTACHMENTS**
+- **Archivos**: `**/*.dart`, `**/*.sql`, `**/*.md`, `**/*.yaml`, `**/*.json`
+- **Directorios**: `frontend/`, `backend/`, `docs/`, `lib/`, `test/`
+- **Contexto**: Siempre que se abra cualquier archivo del proyecto
+- **Activación**: Automática en todo el workspace del proyecto
+
+### **48. ALCANCE DE APLICACIÓN**
+- ✅ **Frontend Flutter**: Todos los archivos .dart
+- ✅ **Backend Supabase**: Migraciones, funciones, políticas
+- ✅ **Configuración**: pubspec.yaml, análisis, CI/CD
+- ✅ **Documentación**: README, guías, especificaciones
+- ✅ **Testing**: Tests unitarios, de widget e integración
+
+---
+
+**¡Esta regla garantiza la calidad y consistencia en todo el proyecto! 🚀**
+description: Reglas específicas para el proyecto Flutter + Supabase FCT que se aplican automáticamente a todo el código para mantener arquitectura BLoC, internacionalización, seguridad y calidad de código.
+globs: ["**/*.dart", "**/*.sql", "**/*.md", "**/*.yaml", "**/*.json", "frontend/**", "backend/**", "docs/**", "lib/**", "test/**"]
+alwaysApply: true
 ---

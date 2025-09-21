@@ -59,6 +59,7 @@ void main() {
         title: 'Test Project',
         projectType: ProjectType.execution,
         description: 'Test Description',
+        objectives: 'Test objectives for the project',
         academicYear: '2024-2025',
         expectedResults: {'result1': 'Expected result 1'},
         timeline: {'phase1': 'Phase 1 description'},
@@ -93,7 +94,7 @@ void main() {
       
       // Crear User
       final user = User(
-        id: '123',
+        id: 123,
         email: 'test@example.com',
         fullName: 'Test User',
         role: UserRole.student,
@@ -147,6 +148,7 @@ void main() {
         title: 'Original Title',
         projectType: ProjectType.execution,
         description: 'Original Description',
+        objectives: 'Original objectives for the project',
         academicYear: '2024-2025',
         expectedResults: {'result1': 'Expected result 1'},
         timeline: {'phase1': 'Phase 1 description'},
@@ -202,6 +204,7 @@ void main() {
         title: 'Test Project',
         projectType: ProjectType.execution,
         description: 'Test Description',
+        objectives: 'Test objectives for the project',
         academicYear: '2024-2025',
         expectedResults: {'result1': 'Expected result 1'},
         timeline: {'phase1': 'Phase 1 description'},
@@ -216,6 +219,7 @@ void main() {
         title: 'Test Project',
         projectType: ProjectType.execution,
         description: 'Test Description',
+        objectives: 'Test objectives for the project',
         academicYear: '2024-2025',
         expectedResults: {'result1': 'Expected result 1'},
         timeline: {'phase1': 'Phase 1 description'},

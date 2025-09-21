@@ -7,7 +7,7 @@ import '../../services/anteprojects_service.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/common/error_handler_widget.dart';
 import '../../widgets/common/loading_widget.dart';
-import '../forms/anteproject_edit_form.dart';
+import '../anteprojects/anteproject_detail_screen.dart';
 
 class AnteprojectsList extends StatefulWidget {
   const AnteprojectsList({super.key});
@@ -100,7 +100,6 @@ class _AnteprojectsListState extends State<AnteprojectsList> {
   }
 
   Widget _buildAnteprojectCard(BuildContext context, Anteproject anteproject) {
-    final l10n = AppLocalizations.of(context)!;
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
@@ -160,7 +159,7 @@ class _AnteprojectsListState extends State<AnteprojectsList> {
               ),
               const SizedBox(height: 12),
 
-              // Información adicional
+              // Información adicional y acciones
               Row(
                 children: [
                   Icon(
@@ -177,14 +176,25 @@ class _AnteprojectsListState extends State<AnteprojectsList> {
                     ),
                   ),
                   const Spacer(),
+                  // Botón de eliminar (solo para borradores)
+                  if (anteproject.status == AnteprojectStatus.draft) ...[
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red, size: 20),
+                      onPressed: () => _showDeleteDialog(anteproject),
+                      tooltip: 'Eliminar anteproyecto',
+                      constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                      padding: EdgeInsets.zero,
+                    ),
+                    const SizedBox(width: 8),
+                  ],
                   Icon(
-                    Icons.edit,
+                    Icons.visibility,
                     size: 16,
                     color: Colors.grey.shade600,
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    l10n.anteprojectsListEdit,
+                    'Ver detalles',
                     style: TextStyle(
                       color: Colors.grey.shade600,
                       fontSize: 12,
@@ -241,13 +251,66 @@ class _AnteprojectsListState extends State<AnteprojectsList> {
   void _navigateToEdit(Anteproject anteproject) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (BuildContext context) => BlocProvider<AnteprojectsBloc>(
-          create: (_) => AnteprojectsBloc(
-            anteprojectsService: AnteprojectsService(),
-          ),
-          child: AnteprojectEditForm(anteproject: anteproject),
-        ),
+        builder: (context) => AnteprojectDetailScreen(anteproject: anteproject),
       ),
     );
+  }
+
+  void _showDeleteDialog(Anteproject anteproject) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Eliminar Anteproyecto'),
+          content: Text(
+            '¿Estás seguro de que quieres eliminar el anteproyecto "${anteproject.title}"?\n\nEsta acción no se puede deshacer.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deleteAnteproject(anteproject);
+              },
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+              ),
+              child: const Text('Eliminar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _deleteAnteproject(Anteproject anteproject) async {
+    try {
+      final anteprojectsService = AnteprojectsService();
+      await anteprojectsService.deleteAnteproject(anteproject.id);
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Anteproyecto eliminado exitosamente'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        
+        // Recargar la lista
+        context.read<AnteprojectsBloc>().add(AnteprojectsLoadRequested());
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error al eliminar anteproyecto: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 }

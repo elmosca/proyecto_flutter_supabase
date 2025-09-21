@@ -7,29 +7,37 @@ part of 'user.dart';
 // **************************************************************************
 
 User _$UserFromJson(Map<String, dynamic> json) => User(
-  id: json['id'] as String,
-  fullName: json['fullName'] as String,
+  id: (json['id'] as num).toInt(),
+  fullName: json['full_name'] as String,
   email: json['email'] as String,
   nre: json['nre'] as String?,
   role: $enumDecode(_$UserRoleEnumMap, json['role']),
   phone: json['phone'] as String?,
   biography: json['biography'] as String?,
-  status: $enumDecode(_$UserStatusEnumMap, json['status']),
-  createdAt: DateTime.parse(json['createdAt'] as String),
-  updatedAt: DateTime.parse(json['updatedAt'] as String),
+  status:
+      $enumDecodeNullable(_$UserStatusEnumMap, json['status']) ??
+      UserStatus.active,
+  specialty: json['specialty'] as String?,
+  tutorId: (json['tutor_id'] as num?)?.toInt(),
+  academicYear: json['academic_year'] as String?,
+  createdAt: DateTime.parse(json['created_at'] as String),
+  updatedAt: DateTime.parse(json['updated_at'] as String),
 );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
   'id': instance.id,
-  'fullName': instance.fullName,
+  'full_name': instance.fullName,
   'email': instance.email,
   'nre': instance.nre,
   'role': _$UserRoleEnumMap[instance.role]!,
   'phone': instance.phone,
   'biography': instance.biography,
   'status': _$UserStatusEnumMap[instance.status]!,
-  'createdAt': instance.createdAt.toIso8601String(),
-  'updatedAt': instance.updatedAt.toIso8601String(),
+  'specialty': instance.specialty,
+  'tutor_id': instance.tutorId,
+  'academic_year': instance.academicYear,
+  'created_at': instance.createdAt.toIso8601String(),
+  'updated_at': instance.updatedAt.toIso8601String(),
 };
 
 const _$UserRoleEnumMap = {

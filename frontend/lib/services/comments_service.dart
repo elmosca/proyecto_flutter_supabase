@@ -131,13 +131,13 @@ class CommentsService {
   /// Verifica si un usuario puede editar un comentario
   bool canEditComment(Comment comment, User currentUser) {
     // Solo el autor del comentario puede editarlo
-    return comment.authorId == int.tryParse(currentUser.id);
+    return comment.authorId == currentUser.id;
   }
 
   /// Verifica si un usuario puede eliminar un comentario
   bool canDeleteComment(Comment comment, User currentUser) {
     // Solo el autor del comentario o un admin pueden eliminarlo
-    return comment.authorId == int.tryParse(currentUser.id) || currentUser.role == UserRole.admin;
+    return comment.authorId == currentUser.id || currentUser.role == UserRole.admin;
   }
 
   /// Verifica si un usuario puede ver comentarios internos

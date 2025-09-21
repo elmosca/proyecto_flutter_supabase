@@ -15,7 +15,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get login => 'Iniciar Sesión';
 
   @override
-  String get email => 'Correo Electrónico';
+  String get email => 'Email';
 
   @override
   String get password => 'Contraseña';
@@ -107,7 +107,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get anteprojectEditFormTitle => 'Editar Anteproyecto';
 
   @override
-  String get anteprojectTitle => 'Título';
+  String anteprojectTitle(String title) {
+    return 'Anteproyecto: $title';
+  }
 
   @override
   String get anteprojectType => 'Tipo de proyecto';
@@ -588,10 +590,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get reviewedAnteprojects => 'Anteproyectos Revisados';
 
   @override
-  String get approveAnteproject => 'Aprobar Anteproyecto';
+  String get approveAnteproject => 'Aprobar';
 
   @override
-  String get rejectAnteproject => 'Rechazar Anteproyecto';
+  String get rejectAnteproject => 'Rechazar';
 
   @override
   String get requestChanges => 'Solicitar Cambios';
@@ -600,15 +602,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get approvalComments => 'Comentarios de Aprobación';
 
   @override
-  String get approvalCommentsHint =>
-      'Escribe comentarios sobre la aprobación (opcional)';
+  String get approvalCommentsHint => 'Comentarios sobre la aprobación...';
 
   @override
   String get rejectionComments => 'Comentarios de Rechazo';
 
   @override
-  String get rejectionCommentsHint =>
-      'Escribe los motivos del rechazo (obligatorio)';
+  String get rejectionCommentsHint => 'Motivo del rechazo...';
 
   @override
   String get changesComments => 'Comentarios sobre Cambios';
@@ -669,7 +669,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get anteprojectStatus => 'Estado del Anteproyecto';
 
   @override
-  String get viewDetails => 'Ver Detalles';
+  String get viewDetails => 'Ver detalles';
 
   @override
   String get processing => 'Procesando...';
@@ -757,4 +757,293 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get details => 'Detalles';
+
+  @override
+  String get tutorRole => 'Tutor';
+
+  @override
+  String get reviewed => 'Revisados';
+
+  @override
+  String get addStudents => 'Añadir Estudiantes';
+
+  @override
+  String studentsAssignedInfo(int count, String plural, String year) {
+    return 'Tienes $count estudiante$plural asignado$plural para $year';
+  }
+
+  @override
+  String get myStudents => 'Mis Estudiantes';
+
+  @override
+  String get searchStudents => 'Buscar estudiantes...';
+
+  @override
+  String get noStudentsAssigned => 'No tienes estudiantes asignados';
+
+  @override
+  String get noStudentsFound => 'No se encontraron estudiantes';
+
+  @override
+  String get useDashboardButtons =>
+      'Usa los botones del dashboard para añadir estudiantes';
+
+  @override
+  String get editStudent => 'Editar Estudiante';
+
+  @override
+  String get deleteStudent => 'Eliminar';
+
+  @override
+  String get nre => 'NRE';
+
+  @override
+  String get phone => 'Teléfono';
+
+  @override
+  String get specialty => 'Especialidad';
+
+  @override
+  String get biography => 'Biografía';
+
+  @override
+  String get creationDate => 'Fecha de creación';
+
+  @override
+  String get studentDeletedSuccess => 'Estudiante eliminado exitosamente';
+
+  @override
+  String errorDeletingStudent(String error) {
+    return 'Error al eliminar estudiante: $error';
+  }
+
+  @override
+  String get confirmDeletion => 'Confirmar eliminación';
+
+  @override
+  String confirmDeleteStudent(String name) {
+    return '¿Estás seguro de que quieres eliminar a $name?';
+  }
+
+  @override
+  String get anteprojectsReview => 'Revisión de Anteproyectos';
+
+  @override
+  String get pendingAnteprojectsTitle => 'Anteproyectos Pendientes';
+
+  @override
+  String get reviewedAnteprojectsTitle => 'Anteproyectos Revisados';
+
+  @override
+  String get submittedAnteprojects => 'Anteproyectos Enviados';
+
+  @override
+  String get underReviewAnteprojects => 'Anteproyectos En Revisión';
+
+  @override
+  String get approvedAnteprojects => 'Anteproyectos Aprobados';
+
+  @override
+  String get rejectedAnteprojects => 'Anteproyectos Rechazados';
+
+  @override
+  String get all => 'Todos';
+
+  @override
+  String get searchAnteprojects => 'Buscar anteproyectos...';
+
+  @override
+  String get filterByStatus => 'Filtrar por estado:';
+
+  @override
+  String errorLoadingAnteprojects(String error) {
+    return 'Error al cargar anteproyectos: $error';
+  }
+
+  @override
+  String noAnteprojectsFound(String query) {
+    return 'No se encontraron anteproyectos que coincidan con \"$query\"';
+  }
+
+  @override
+  String noAnteprojectsWithStatus(String status) {
+    return 'No hay anteproyectos con estado \"$status\"';
+  }
+
+  @override
+  String get noAssignedAnteprojects =>
+      'No tienes anteproyectos asignados para revisar';
+
+  @override
+  String get clearFilters => 'Limpiar filtros';
+
+  @override
+  String get year => 'Año:';
+
+  @override
+  String get created => 'Creado:';
+
+  @override
+  String get submitted => 'Enviado';
+
+  @override
+  String get comments => 'Comentarios';
+
+  @override
+  String get approveAnteprojectTitle => 'Aprobar Anteproyecto';
+
+  @override
+  String get rejectAnteprojectTitle => 'Rechazar Anteproyecto';
+
+  @override
+  String get confirmApproveAnteproject =>
+      '¿Estás seguro de que quieres aprobar este anteproyecto?';
+
+  @override
+  String get confirmRejectAnteproject =>
+      '¿Estás seguro de que quieres rechazar este anteproyecto?';
+
+  @override
+  String get approvalCommentsOptional => 'Comentarios (opcional)';
+
+  @override
+  String get anteprojectApprovedSuccess => 'Anteproyecto aprobado exitosamente';
+
+  @override
+  String get anteprojectRejectedSuccess => 'Anteproyecto rechazado';
+
+  @override
+  String errorApprovingAnteproject(String error) {
+    return 'Error al aprobar anteproyecto: $error';
+  }
+
+  @override
+  String errorRejectingAnteproject(String error) {
+    return 'Error al rechazar anteproyecto: $error';
+  }
+
+  @override
+  String get pending => 'Pendiente';
+
+  @override
+  String get underReview => 'En Revisión';
+
+  @override
+  String get approved => 'APROBADO';
+
+  @override
+  String get rejected => 'Rechazado';
+
+  @override
+  String get status => 'Estado';
+
+  @override
+  String get anteprojectTitleLabel => 'Título del Anteproyecto';
+
+  @override
+  String get logoutTooltip => 'Cerrar sesión';
+
+  @override
+  String get createAnteprojectTooltip => 'Crear anteproyecto';
+
+  @override
+  String userId(String id) {
+    return 'ID: $id';
+  }
+
+  @override
+  String get studentRole => 'Estudiante';
+
+  @override
+  String get anteprojects => 'Anteproyectos';
+
+  @override
+  String get completed => 'Completadas';
+
+  @override
+  String get anteprojectApprovedMessage =>
+      'Tu anteproyecto ha sido aprobado. ¡Puedes comenzar con el desarrollo!';
+
+  @override
+  String academicYearLabel(String year) {
+    return 'Año: $year';
+  }
+
+  @override
+  String statusLabel(String status) {
+    return 'Estado: $status';
+  }
+
+  @override
+  String get draft => 'Borrador';
+
+  @override
+  String get approvedStatus => 'Aprobado';
+
+  @override
+  String get rejectedStatus => 'Rechazado';
+
+  @override
+  String get unknown => 'Desconocido';
+
+  @override
+  String get inProgress => 'En Progreso';
+
+  @override
+  String get completedStatus => 'Completada';
+
+  @override
+  String get unknownStatus => 'Desconocido';
+
+  @override
+  String get studentCreatedSuccess => 'Estudiante creado exitosamente';
+
+  @override
+  String errorCreatingStudent(String error) {
+    return 'Error al crear estudiante: $error';
+  }
+
+  @override
+  String get addStudent => 'Añadir Estudiante';
+
+  @override
+  String get fullName => 'Nombre Completo';
+
+  @override
+  String get nreLabel => 'NRE (Número de Registro de Estudiante)';
+
+  @override
+  String get phoneOptional => 'Teléfono (Opcional)';
+
+  @override
+  String get biographyOptional => 'Biografía (Opcional)';
+
+  @override
+  String get nameRequired => 'El nombre es obligatorio';
+
+  @override
+  String get emailRequired => 'El email es obligatorio';
+
+  @override
+  String get emailInvalid => 'Email inválido';
+
+  @override
+  String get nreRequired => 'El NRE es obligatorio';
+
+  @override
+  String get createStudent => 'Crear Estudiante';
+
+  @override
+  String get studentUpdatedSuccess => 'Estudiante actualizado exitosamente';
+
+  @override
+  String errorUpdatingStudent(String error) {
+    return 'Error al actualizar estudiante: $error';
+  }
+
+  @override
+  String get updateStudent => 'Actualizar Estudiante';
+
+  @override
+  String get role => 'Rol';
 }
