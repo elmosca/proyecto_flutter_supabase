@@ -52,3 +52,6 @@ supabase/.temp/
 coverage/
 .nyc_output/
 
+# Repositorios embebidos / submodulos
+mcp-resend/
+
