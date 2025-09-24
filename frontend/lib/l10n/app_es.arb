@@ -128,15 +128,9 @@
   "@anteprojectEditFormTitle": {
     "description": "Título del formulario de edición de anteproyecto"
   },
-  "anteprojectTitle": "Anteproyecto: {title}",
+  "anteprojectTitle": "Anteproyecto",
   "@anteprojectTitle": {
-    "description": "Título del anteproyecto en diálogo",
-    "placeholders": {
-      "title": {
-        "type": "String",
-        "description": "Título del anteproyecto"
-      }
-    }
+    "description": "Título del anteproyecto en diálogo"
   },
   "anteprojectType": "Tipo de proyecto",
   "@anteprojectType": {
@@ -1459,5 +1453,541 @@
     "role": "Rol",
     "@role": {
       "description": "Etiqueta para rol"
+    },
+    "noProjectAssigned": "No tienes un proyecto o anteproyecto asignado. Contacta con tu tutor.",
+    "@noProjectAssigned": {
+      "description": "Mensaje cuando no hay proyecto asignado"
+    },
+    "errorGettingProject": "Error al obtener proyecto: {error}",
+    "@errorGettingProject": {
+      "description": "Mensaje de error al obtener proyecto",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "deleteAnteproject": "Eliminar Anteproyecto",
+    "@deleteAnteproject": {
+      "description": "Título del diálogo de eliminación de anteproyecto"
+    },
+    "confirmDeleteAnteproject": "¿Estás seguro de que quieres eliminar el anteproyecto \"{title}\"?\n\nEsta acción no se puede deshacer.",
+    "@confirmDeleteAnteproject": {
+      "description": "Mensaje de confirmación para eliminar anteproyecto",
+      "placeholders": {
+        "title": {
+          "type": "String",
+          "description": "Título del anteproyecto"
+        }
+      }
+    },
+    "anteprojectDeletedSuccess": "Anteproyecto eliminado exitosamente",
+    "@anteprojectDeletedSuccess": {
+      "description": "Mensaje de éxito al eliminar anteproyecto"
+    },
+    "errorDeletingAnteproject": "Error al eliminar anteproyecto: {error}",
+    "@errorDeletingAnteproject": {
+      "description": "Mensaje de error al eliminar anteproyecto",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "templateLoadedSuccess": "✅ Plantilla cargada correctamente. Los 4 hitos de ejemplo han sido añadidos.",
+    "@templateLoadedSuccess": {
+      "description": "Mensaje de éxito al cargar plantilla"
+    },
+    "errorGeneratingPDF": "Error al generar PDF: {error}",
+    "@errorGeneratingPDF": {
+      "description": "Mensaje de error al generar PDF",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "downloadExampleTitle": "Descargar Ejemplo de Anteproyecto",
+    "@downloadExampleTitle": {
+      "description": "Título del diálogo de descarga de ejemplo"
+    },
+    "downloadExampleMessage": "¿Cómo deseas descargar el ejemplo de anteproyecto?",
+    "@downloadExampleMessage": {
+      "description": "Mensaje del diálogo de descarga de ejemplo"
+    },
+    "print": "Imprimir",
+    "@print": {
+      "description": "Botón para imprimir"
+    },
+    "save": "Guardar",
+    "@save": {
+      "description": "Botón para guardar"
+    },
+    "errorPrinting": "Error al imprimir: {error}",
+    "@errorPrinting": {
+      "description": "Mensaje de error al imprimir",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "pdfSavedAt": "PDF guardado en: {path}",
+    "@pdfSavedAt": {
+      "description": "Mensaje de éxito al guardar PDF",
+      "placeholders": {
+        "path": {
+          "type": "String",
+          "description": "Ruta del archivo"
+        }
+      }
+    },
+    "errorSaving": "Error al guardar: {error}",
+    "@errorSaving": {
+      "description": "Mensaje de error al guardar",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "downloadExamplePDF": "Descargar Ejemplo PDF",
+    "@downloadExamplePDF": {
+      "description": "Botón para descargar ejemplo PDF"
+    },
+    "loadTemplate": "Cargar Plantilla",
+    "@loadTemplate": {
+      "description": "Botón para cargar plantilla"
+    },
+    "errorLoadingSchedule": "Error al cargar cronograma: {error}",
+    "@errorLoadingSchedule": {
+      "description": "Mensaje de error al cargar cronograma",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "mustConfigureReviewDate": "Debe configurar al menos una fecha de revisión",
+    "@mustConfigureReviewDate": {
+      "description": "Mensaje de validación para fecha de revisión"
+    },
+    "scheduleSavedSuccess": "Cronograma guardado exitosamente",
+    "@scheduleSavedSuccess": {
+      "description": "Mensaje de éxito al guardar cronograma"
+    },
+    "errorSavingSchedule": "Error al guardar cronograma: {error}",
+    "@errorSavingSchedule": {
+      "description": "Mensaje de error al guardar cronograma",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "scheduleManagement": "Gestión de Cronograma",
+    "@scheduleManagement": {
+      "description": "Título de gestión de cronograma"
+    },
+    "regenerateDatesBasedOnMilestones": "Regenerar Fechas Basadas en Hitos",
+    "@regenerateDatesBasedOnMilestones": {
+      "description": "Botón para regenerar fechas"
+    },
+    "anteprojectDetails": "Detalles del Anteproyecto",
+    "@anteprojectDetails": {
+      "description": "Título de detalles del anteproyecto"
+    },
+    "editAnteproject": "Editar Anteproyecto",
+    "@editAnteproject": {
+      "description": "Botón para editar anteproyecto"
+    },
+    "viewAll": "Ver todos",
+    "@viewAll": {
+      "description": "Enlace para ver todos"
+    },
+    "anteprojectApprovedSuccess": "Anteproyecto aprobado exitosamente",
+    "@anteprojectApprovedSuccess": {
+      "description": "Mensaje de éxito al aprobar anteproyecto"
+    },
+    "errorApprovingAnteproject": "Error al aprobar anteproyecto: {error}",
+    "@errorApprovingAnteproject": {
+      "description": "Mensaje de error al aprobar anteproyecto",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "anteprojectRejected": "Anteproyecto rechazado",
+    "@anteprojectRejected": {
+      "description": "Mensaje de anteproyecto rechazado"
+    },
+    "errorRejectingAnteproject": "Error al rechazar anteproyecto: {error}",
+    "@errorRejectingAnteproject": {
+      "description": "Mensaje de error al rechazar anteproyecto",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "sendForApproval": "Enviar para Aprobación",
+    "@sendForApproval": {
+      "description": "Botón para enviar para aprobación"
+    },
+    "sendForApprovalTitle": "Enviar para Aprobación",
+    "@sendForApprovalTitle": {
+      "description": "Título del diálogo de envío para aprobación"
+    },
+    "sendForApprovalMessage": "¿Estás seguro de que quieres enviar este anteproyecto para aprobación? Una vez enviado, no podrás editarlo hasta que sea revisado.",
+    "@sendForApprovalMessage": {
+      "description": "Mensaje de confirmación para envío"
+    },
+    "send": "Enviar",
+    "@send": {
+      "description": "Botón para enviar"
+    },
+    "anteprojectSentForApproval": "Anteproyecto enviado para aprobación exitosamente",
+    "@anteprojectSentForApproval": {
+      "description": "Mensaje de éxito al enviar para aprobación"
+    },
+    "errorSendingAnteproject": "Error al enviar anteproyecto: {error}",
+    "@errorSendingAnteproject": {
+      "description": "Mensaje de error al enviar anteproyecto",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "anteprojectTitle": "Anteproyecto: {title}",
+    "@anteprojectTitle": {
+      "description": "Título del anteproyecto",
+      "placeholders": {
+        "title": {
+          "type": "String",
+          "description": "Título del anteproyecto"
+        }
+      }
+    },
+    "errorLoadingComments": "Error al cargar comentarios: {error}",
+    "@errorLoadingComments": {
+      "description": "Mensaje de error al cargar comentarios",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "pleaseWriteComment": "Por favor, escribe un comentario",
+    "@pleaseWriteComment": {
+      "description": "Mensaje de validación para comentario"
+    },
+    "commentAddedSuccess": "Comentario agregado exitosamente",
+    "@commentAddedSuccess": {
+      "description": "Mensaje de éxito al agregar comentario"
+    },
+    "errorAddingComment": "Error al agregar comentario: {error}",
+    "@errorAddingComment": {
+      "description": "Mensaje de error al agregar comentario",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "commentsTitle": "Comentarios - {title}",
+    "@commentsTitle": {
+      "description": "Título de comentarios",
+      "placeholders": {
+        "title": {
+          "type": "String",
+          "description": "Título del anteproyecto"
+        }
+      }
+    },
+    "copied": "Copiado: {text}",
+    "@copied": {
+      "description": "Mensaje de copiado",
+      "placeholders": {
+        "text": {
+          "type": "String",
+          "description": "Texto copiado"
+        }
+      }
+    },
+    "addStudents": "Añadir Estudiantes",
+    "@addStudents": {
+      "description": "Título para añadir estudiantes"
+    },
+    "addIndividually": "Añadir Individualmente",
+    "@addIndividually": {
+      "description": "Botón para añadir individualmente"
+    },
+    "importFromCSV": "Importar desde CSV",
+    "@importFromCSV": {
+      "description": "Botón para importar desde CSV"
+    },
+    "errorLoadingNotifications": "Error al cargar notificaciones: {error}",
+    "@errorLoadingNotifications": {
+      "description": "Mensaje de error al cargar notificaciones",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "errorMarkingAsRead": "Error al marcar como leída: {error}",
+    "@errorMarkingAsRead": {
+      "description": "Mensaje de error al marcar como leída",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "allNotificationsMarkedAsRead": "Todas las notificaciones marcadas como leídas",
+    "@allNotificationsMarkedAsRead": {
+      "description": "Mensaje de éxito al marcar todas como leídas"
+    },
+    "errorMarkingAllAsRead": "Error al marcar todas como leídas: {error}",
+    "@errorMarkingAllAsRead": {
+      "description": "Mensaje de error al marcar todas como leídas",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "errorDeletingNotification": "Error al eliminar notificación: {error}",
+    "@errorDeletingNotification": {
+      "description": "Mensaje de error al eliminar notificación",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "notifications": "Notificaciones",
+    "@notifications": {
+      "description": "Título de notificaciones"
+    },
+    "errorLoadingStudents": "Error al cargar estudiantes: {error}",
+    "@errorLoadingStudents": {
+      "description": "Mensaje de error al cargar estudiantes",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "dashboardTitle": "Dashboard - {name}",
+    "@dashboardTitle": {
+      "description": "Título del dashboard",
+      "placeholders": {
+        "name": {
+          "type": "String",
+          "description": "Nombre del usuario"
+        }
+      }
+    },
+    "allYears": "Todos los años",
+    "@allYears": {
+      "description": "Opción para todos los años"
+    },
+    "errorSelectingFile": "Error al seleccionar archivo: {error}",
+    "@errorSelectingFile": {
+      "description": "Mensaje de error al seleccionar archivo",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "noValidDataToImport": "No hay datos válidos para importar",
+    "@noValidDataToImport": {
+      "description": "Mensaje cuando no hay datos válidos"
+    },
+    "importCompleted": "Importación completada: {success} exitosos, {error} errores",
+    "@importCompleted": {
+      "description": "Mensaje de importación completada",
+      "placeholders": {
+        "success": {
+          "type": "int",
+          "description": "Número de éxitos"
+        },
+        "error": {
+          "type": "int",
+          "description": "Número de errores"
+        }
+      }
+    },
+    "errorDuringImport": "Error durante la importación: {error}",
+    "@errorDuringImport": {
+      "description": "Mensaje de error durante importación",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "importStudentsCSV": "Importar Estudiantes CSV",
+    "@importStudentsCSV": {
+      "description": "Título de importar estudiantes CSV"
+    },
+    "fullNameRequired": "• full_name (obligatorio)",
+    "@fullNameRequired": {
+      "description": "Campo obligatorio full_name"
+    },
+    "emailRequired": "• email (obligatorio)",
+    "@emailRequired": {
+      "description": "Campo obligatorio email"
+    },
+    "nreRequired": "• nre (obligatorio)",
+    "@nreRequired": {
+      "description": "Campo obligatorio nre"
+    },
+    "phoneOptional": "• phone (opcional)",
+    "@phoneOptional": {
+      "description": "Campo opcional phone"
+    },
+    "biographyOptional": "• biography (opcional)",
+    "@biographyOptional": {
+      "description": "Campo opcional biography"
+    },
+    "specialtyOptional": "• specialty (opcional)",
+    "@specialtyOptional": {
+      "description": "Campo opcional specialty"
+    },
+    "academicYearOptional": "• academic_year (opcional)",
+    "@academicYearOptional": {
+      "description": "Campo opcional academic_year"
+    },
+    "selectCSVFile": "Seleccionar Archivo CSV",
+    "@selectCSVFile": {
+      "description": "Botón para seleccionar archivo CSV"
+    },
+    "importStudents": "Importar {count} Estudiantes",
+    "@importStudents": {
+      "description": "Botón para importar estudiantes",
+      "placeholders": {
+        "count": {
+          "type": "int",
+          "description": "Número de estudiantes"
+        }
+      }
+    },
+    "importing": "Importando...",
+    "@importing": {
+      "description": "Mensaje de importación en progreso"
+    },
+    "studentsImportedSuccess": "Estudiantes importados exitosamente",
+    "@studentsImportedSuccess": {
+      "description": "Mensaje de éxito al importar estudiantes"
+    },
+    "creating": "Creando...",
+    "@creating": {
+      "description": "Mensaje de creación en progreso"
+    },
+    "createTutor": "Crear Tutor",
+    "@createTutor": {
+      "description": "Botón para crear tutor"
+    },
+    "tutorCreatedSuccess": "Tutor creado exitosamente",
+    "@tutorCreatedSuccess": {
+      "description": "Mensaje de éxito al crear tutor"
+    },
+    "errorUploadingFile": "Error al subir archivo: {error}",
+    "@errorUploadingFile": {
+      "description": "Mensaje de error al subir archivo",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "errorLoadingFiles": "Error al cargar archivos: {error}",
+    "@errorLoadingFiles": {
+      "description": "Mensaje de error al cargar archivos",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "errorDeletingFile": "Error al eliminar archivo: {error}",
+    "@errorDeletingFile": {
+      "description": "Mensaje de error al eliminar archivo",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "errorOpeningFile": "Error al abrir archivo: {error}",
+    "@errorOpeningFile": {
+      "description": "Mensaje de error al abrir archivo",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Mensaje de error"
+        }
+      }
+    },
+    "estimatedHours": "{hours}h",
+    "@estimatedHours": {
+      "description": "Horas estimadas",
+      "placeholders": {
+        "hours": {
+          "type": "int",
+          "description": "Número de horas"
+        }
+      }
+    },
+    "confirmDeleteTask": "¿Estás seguro de que quieres eliminar la tarea \"{title}\"?",
+    "@confirmDeleteTask": {
+      "description": "Mensaje de confirmación para eliminar tarea",
+      "placeholders": {
+        "title": {
+          "type": "String",
+          "description": "Título de la tarea"
+        }
+      }
+    },
+    "mustLoginToViewComments": "Debes iniciar sesión para ver los comentarios",
+  "anteprojectApprovedSuccess": "Anteproyecto aprobado exitosamente",
+  "errorApprovingAnteproject": "Error al aprobar anteproyecto: {error}",
+  "anteprojectRejected": "Anteproyecto rechazado",
+  "errorRejectingAnteproject": "Error al rechazar anteproyecto: {error}",
+  "send": "Enviar",
+  "errorSendingAnteproject": "Error al enviar anteproyecto: {error}",
+  "anteprojectTitle": "Anteproyecto",
+  "errorLoadingSchedule": "Error al cargar cronograma: {error}",
+  "scheduleSavedSuccess": "Cronograma guardado exitosamente",
+  "errorSavingSchedule": "Error al guardar cronograma: {error}",
+    "@mustLoginToViewComments": {
+      "description": "Mensaje para iniciar sesión"
     }
 }

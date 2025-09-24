@@ -392,6 +392,50 @@ scripts/start_server_system.bat  # Windows
 
 ---
 
+## 📧 **CONFIGURACIÓN DE CORREOS ELECTRÓNICOS**
+
+### **Subdominio fct.jualas.es**
+
+El proyecto utiliza un subdominio personalizado para el envío de correos electrónicos:
+
+- **Subdominio**: `fct.jualas.es`
+- **Servicio de email**: Resend
+- **Gestión DNS**: Cloudflare
+
+### **Configuración Rápida**
+
+1. **Configurar Cloudflare**:
+   ```bash
+   # Copiar archivo de configuración
+   cp config/cloudflare.env.example .env.cloudflare
+   
+   # Editar con tus credenciales
+   # CLOUDFLARE_API_TOKEN=tu_token_aqui
+   ```
+
+2. **Configurar registros DNS**:
+   ```bash
+   # Configurar automáticamente
+   node scripts/cloudflare-dns.js setup
+   ```
+
+3. **Verificar en Resend**:
+   - Añadir dominio `fct.jualas.es` en [resend.com/domains](https://resend.com/domains)
+   - Seguir las instrucciones de verificación
+
+4. **Probar envío**:
+   ```bash
+   # Enviar correo de prueba
+   RESEND_API_KEY=tu_key node scripts/test-email.js 3850437@alu.murciaeduca.es
+   ```
+
+### **Documentación Completa**
+
+Para una configuración detallada, consulta:
+- 📖 [Guía de configuración de Cloudflare](docs/CLOUDFLARE_SETUP.md)
+
+---
+
 ## 📄 **LICENCIA**
 
 Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para más detalles.

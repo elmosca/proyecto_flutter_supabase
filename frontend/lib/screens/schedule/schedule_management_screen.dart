@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/anteproject.dart';
 import '../../models/schedule.dart';
 import '../../models/user.dart';
@@ -73,7 +74,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error al cargar cronograma: $e'),
+            content: Text(AppLocalizations.of(context)!.errorLoadingSchedule(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -99,8 +100,8 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
   Future<void> _saveSchedule() async {
     if (_reviewDates.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Debe configurar al menos una fecha de revisión'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.mustConfigureReviewDate),
           backgroundColor: Colors.orange,
         ),
       );
@@ -134,8 +135,8 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Cronograma guardado exitosamente'),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.scheduleSavedSuccess),
             backgroundColor: Colors.green,
           ),
         );
@@ -145,7 +146,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error al guardar cronograma: $e'),
+            content: Text(AppLocalizations.of(context)!.errorSavingSchedule(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -219,7 +220,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gestión de Cronograma'),
+        title: Text(AppLocalizations.of(context)!.scheduleManagement),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         actions: [
@@ -352,7 +353,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
               child: ElevatedButton.icon(
                 onPressed: _generateDefaultSchedule,
                 icon: const Icon(Icons.refresh),
-                label: const Text('Regenerar Fechas Basadas en Hitos'),
+                label: Text(AppLocalizations.of(context)!.regenerateDatesBasedOnMilestones),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
@@ -504,7 +505,7 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
           child: OutlinedButton.icon(
             onPressed: _isLoading ? null : () => Navigator.of(context).pop(),
             icon: const Icon(Icons.cancel),
-            label: const Text('Cancelar'),
+            label: Text(AppLocalizations.of(context)!.cancel),
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
             ),
@@ -600,7 +601,7 @@ class _AddReviewDateDialogState extends State<_AddReviewDateDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancelar'),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
         ElevatedButton(
           onPressed: () {
@@ -609,7 +610,7 @@ class _AddReviewDateDialogState extends State<_AddReviewDateDialog> {
               Navigator.of(context).pop();
             }
           },
-          child: const Text('Guardar'),
+          child: Text(AppLocalizations.of(context)!.save),
         ),
       ],
     );

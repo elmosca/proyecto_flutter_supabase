@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../screens/forms/add_student_form.dart';
 import '../../screens/forms/import_students_csv_screen.dart';
 
@@ -10,11 +11,11 @@ class AddStudentsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Row(
+      title: Row(
         children: [
-          Icon(Icons.person_add, color: Colors.blue),
-          SizedBox(width: 8),
-          Text('Añadir Estudiantes'),
+          const Icon(Icons.person_add, color: Colors.blue),
+          const SizedBox(width: 8),
+          Text(AppLocalizations.of(context)!.addStudents),
         ],
       ),
       content: const Text(
@@ -31,7 +32,7 @@ class AddStudentsDialog extends StatelessWidget {
               _navigateToAddIndividual(context);
             },
             icon: const Icon(Icons.person_add),
-            label: const Text('Añadir Individualmente'),
+            label: Text(AppLocalizations.of(context)!.addIndividually),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue,
               foregroundColor: Colors.white,
@@ -49,7 +50,7 @@ class AddStudentsDialog extends StatelessWidget {
               _navigateToImportCSV(context);
             },
             icon: const Icon(Icons.upload_file),
-            label: const Text('Importar desde CSV'),
+            label: Text(AppLocalizations.of(context)!.importFromCSV),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green,
               foregroundColor: Colors.white,
@@ -63,7 +64,7 @@ class AddStudentsDialog extends StatelessWidget {
           width: double.infinity,
           child: TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancelar'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
         ),
       ],

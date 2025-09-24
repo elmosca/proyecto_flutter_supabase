@@ -96,7 +96,7 @@ class TestCredentialsWidget extends StatelessWidget {
               Clipboard.setData(ClipboardData(text: value));
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(l10n.copied),
+                  content: Text(l10n.copied(value)),
                   duration: const Duration(seconds: 1),
                 ),
               );

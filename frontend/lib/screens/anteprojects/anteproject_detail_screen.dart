@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/anteproject.dart';
 import '../../models/schedule.dart';
 import '../../models/user.dart';
@@ -122,7 +123,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detalles del Anteproyecto'),
+        title: Text(AppLocalizations.of(context)!.anteprojectDetails),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         actions: [
@@ -259,7 +260,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen> {
                   ElevatedButton.icon(
                     onPressed: _editAnteproject,
                     icon: const Icon(Icons.edit, size: 18),
-                    label: const Text('Editar Anteproyecto'),
+                    label: Text(AppLocalizations.of(context)!.editAnteproject),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue[700],
                       foregroundColor: Colors.white,
@@ -706,7 +707,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen> {
                 TextButton.icon(
                   onPressed: _viewComments,
                   icon: const Icon(Icons.open_in_new, size: 16),
-                  label: const Text('Ver todos'),
+                  label: Text(AppLocalizations.of(context)!.viewAll),
                   style: TextButton.styleFrom(
                     foregroundColor: Colors.blue.shade600,
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -951,8 +952,8 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen> {
             await _anteprojectsService.approveAnteproject(_anteproject.id, comments);
             if (mounted) {
               scaffoldMessenger.showSnackBar(
-                const SnackBar(
-                  content: Text('Anteproyecto aprobado exitosamente'),
+                SnackBar(
+                  content: Text(AppLocalizations.of(context)!.anteprojectApprovedSuccess),
                   backgroundColor: Colors.green,
                 ),
               );
@@ -962,7 +963,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen> {
             if (mounted) {
               scaffoldMessenger.showSnackBar(
                 SnackBar(
-                  content: Text('Error al aprobar anteproyecto: $e'),
+                  content: Text(AppLocalizations.of(context)!.errorApprovingAnteproject(e.toString())),
                   backgroundColor: Colors.red,
                 ),
               );
@@ -998,8 +999,8 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen> {
             await _anteprojectsService.rejectAnteproject(_anteproject.id, comments);
             if (mounted) {
               scaffoldMessenger.showSnackBar(
-                const SnackBar(
-                  content: Text('Anteproyecto rechazado'),
+                SnackBar(
+                  content: Text(AppLocalizations.of(context)!.anteprojectRejected),
                   backgroundColor: Colors.orange,
                 ),
               );
@@ -1009,7 +1010,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen> {
             if (mounted) {
               scaffoldMessenger.showSnackBar(
                 SnackBar(
-                  content: Text('Error al rechazar anteproyecto: $e'),
+                  content: Text(AppLocalizations.of(context)!.errorRejectingAnteproject(e.toString())),
                   backgroundColor: Colors.red,
                 ),
               );
@@ -1090,7 +1091,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen> {
               child: ElevatedButton.icon(
                 onPressed: _isLoading ? null : _submitForApproval,
                 icon: const Icon(Icons.send),
-                label: const Text('Enviar para Aprobación'),
+                label: Text(AppLocalizations.of(context)!.sendForApproval),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange[700],
                   foregroundColor: Colors.white,
@@ -1107,7 +1108,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Enviar para Aprobación'),
+        title: Text(AppLocalizations.of(context)!.sendForApprovalTitle),
         content: const Text(
           '¿Estás seguro de que quieres enviar este anteproyecto para aprobación? '
           'Una vez enviado, no podrás editarlo hasta que el tutor lo revise.',
@@ -1115,7 +1116,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancelar'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -1126,7 +1127,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen> {
               backgroundColor: Colors.orange[700],
               foregroundColor: Colors.white,
             ),
-            child: const Text('Enviar'),
+            child: Text(AppLocalizations.of(context)!.send),
           ),
         ],
       ),
@@ -1142,8 +1143,8 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen> {
       await _anteprojectsService.submitAnteprojectForApproval(_anteproject.id);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Anteproyecto enviado para aprobación exitosamente'),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.anteprojectSentForApproval),
             backgroundColor: Colors.green,
           ),
         );
@@ -1154,7 +1155,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error al enviar anteproyecto: $e'),
+            content: Text(AppLocalizations.of(context)!.errorSendingAnteproject(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -1204,7 +1205,7 @@ class _ApprovalDialogState extends State<_ApprovalDialog> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Anteproyecto: ${widget.anteproject.title}'),
+          Text('${AppLocalizations.of(context)!.anteprojectTitle}: ${widget.anteproject.title}'),
           const SizedBox(height: 16),
           Text(
             widget.isApproval 
@@ -1228,7 +1229,7 @@ class _ApprovalDialogState extends State<_ApprovalDialog> {
       actions: [
         TextButton(
           onPressed: _isLoading ? null : () => Navigator.of(context).pop(),
-          child: const Text('Cancelar'),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
         ElevatedButton(
           onPressed: _isLoading ? null : () async {

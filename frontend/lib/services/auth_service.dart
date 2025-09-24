@@ -71,15 +71,30 @@ class AuthService {
 
       print('✅ Usuario encontrado en Supabase: ${user.email}');
       
-      // Crear objeto User desde Supabase
+      // Obtener perfil completo desde la base de datos
+      final response = await _supabase
+          .from('profiles')
+          .select()
+          .eq('id', user.id)
+          .single();
+
+      print('🔍 Debug - Perfil obtenido: $response');
+      
+      // Crear objeto User desde el perfil de la base de datos
       return User(
-        id: user.id,
-        email: user.email ?? '',
-        fullName: user.userMetadata?['full_name'] ?? 'Usuario',
-        role: _parseUserRoleFromEmail(user.email ?? ''),
-        status: UserStatus.active,
-        createdAt: DateTime.parse(user.createdAt),
-        updatedAt: DateTime.parse(user.updatedAt ?? user.createdAt),
+        id: response['id'] as int,
+        email: response['email'] as String,
+        fullName: response['full_name'] as String,
+        role: UserRole.values.firstWhere(
+          (role) => role.name == response['role'],
+          orElse: () => UserRole.student,
+        ),
+        status: UserStatus.values.firstWhere(
+          (status) => status.name == response['status'],
+          orElse: () => UserStatus.active,
+        ),
+        createdAt: DateTime.parse(response['created_at'] as String),
+        updatedAt: DateTime.parse(response['updated_at'] as String),
       );
     } catch (e) {
       print('❌ Error obteniendo usuario de Supabase: $e');
@@ -293,7 +308,7 @@ class AuthService {
       
       final userData = jsonDecode(userJson) as Map<String, dynamic>;
       final user = User(
-        id: userData['id'] as String,
+        id: (userData['id'] as String).hashCode,
         email: userData['email'] as String,
         fullName: userData['full_name'] as String,
         role: UserRole.values.firstWhere(

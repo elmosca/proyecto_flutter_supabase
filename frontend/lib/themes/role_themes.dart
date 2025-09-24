@@ -199,7 +199,7 @@ class RoleInfoWidget extends StatelessWidget {
     final emoji = RoleThemes.getEmojiForRole(role);
     final gradient = RoleThemes.getGradientForRole(role);
 
-    Widget content = Row(
+    final Widget content = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         if (showEmoji) ...[
@@ -264,9 +264,9 @@ class RoleBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: primaryColor.withOpacity(0.1),
+        color: primaryColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: primaryColor.withOpacity(0.3)),
+        border: Border.all(color: primaryColor.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

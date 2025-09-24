@@ -1,0 +1,37 @@
+# Docker Compose para aplicación Flutter Web
+# Build local + Servidor estático
+version: '3.8'
+
+services:
+  # Servidor web para archivos estáticos
+  frontend-web:
+    build:
+      context: ../  # Contexto desde el directorio raíz del proyecto
+      dockerfile: docker/web/Dockerfile
+    container_name: tfg-frontend-web
+    ports:
+      - "8082:80"
+    volumes:
+      # Montar archivos build desde el directorio local
+      - ../build/web:/usr/share/nginx/html:ro
+    environment:
+      - NODE_ENV=production
+    networks:
+      - tfg-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  tfg-network:
+    driver: bridge
+    name: tfg-network
+
+# Volúmenes para persistencia (si es necesario)
+volumes:
+  nginx-logs:
+    driver: local

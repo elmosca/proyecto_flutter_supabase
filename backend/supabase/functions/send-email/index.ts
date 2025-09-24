@@ -1,6 +1,14 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 /// <reference path="./types.d.ts" />
 
+// Declaración de tipos para Deno
+declare const Deno: {
+  serve: (handler: (req: Request) => Response | Promise<Response>) => void;
+  env: {
+    get: (key: string) => string | undefined;
+  };
+};
+
 interface EmailData {
   to: string;
   subject: string;
@@ -28,6 +36,16 @@ interface StatusChangeNotificationData {
   anteprojectUrl: string;
 }
 
+interface TutorNotificationData {
+  tutorEmail: string;
+  tutorName: string;
+  studentName: string;
+  anteprojectTitle: string;
+  notificationType: string;
+  message: string;
+  anteprojectUrl: string;
+}
+
 // Obtener la API key de Resend
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 
@@ -39,6 +57,25 @@ if (!RESEND_API_KEY) {
 console.log('✅ Resend API Key configured');
 
 async function sendEmail(emailData: EmailData): Promise<Response> {
+  // TEMPORAL: Enviar todos los emails a jualas@gmail.com para testing
+  // hasta que se verifique un dominio en Resend
+  const testEmail = 'jualas@gmail.com';
+  const originalRecipient = emailData.to;
+  
+  // Modificar el asunto para incluir el destinatario original
+  const modifiedSubject = `[TEST - Para: ${originalRecipient}] ${emailData.subject}`;
+  
+  // Modificar el contenido HTML para mostrar el destinatario original
+  const modifiedHtml = emailData.html.replace(
+    '<div class="content">',
+    `<div class="content">
+      <div style="background: #fef3c7; border: 1px solid #f59e0b; padding: 10px; border-radius: 6px; margin-bottom: 20px;">
+        <strong>🧪 EMAIL DE PRUEBA</strong><br>
+        <strong>Destinatario original:</strong> ${originalRecipient}<br>
+        <strong>Enviado a:</strong> ${testEmail} (modo de prueba)
+      </div>`
+  );
+  
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
@@ -47,9 +84,9 @@ async function sendEmail(emailData: EmailData): Promise<Response> {
     },
     body: JSON.stringify({
       from: 'Sistema TFG <onboarding@resend.dev>',
-      to: [emailData.to],
-      subject: emailData.subject,
-      html: emailData.html,
+      to: [testEmail],
+      subject: modifiedSubject,
+      html: modifiedHtml,
       text: emailData.text,
     }),
   });
@@ -234,6 +271,80 @@ Sistema de Seguimiento de Proyectos TFG
   };
 }
 
+function generateTutorNotificationEmail(data: TutorNotificationData): EmailData {
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Notificación de Anteproyecto</title>
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #2563eb; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+        .content { background: #f8fafc; padding: 30px; border-radius: 0 0 8px 8px; }
+        .notification-box { background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #2563eb; margin: 20px 0; }
+        .button { display: inline-block; background: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+        .footer { text-align: center; color: #6b7280; font-size: 14px; margin-top: 30px; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>📋 Notificación de Anteproyecto</h1>
+        </div>
+        <div class="content">
+          <p>Hola <strong>${data.tutorName}</strong>,</p>
+          
+          <p>Has recibido una nueva notificación sobre un anteproyecto:</p>
+          
+          <div class="notification-box">
+            <h2>📋 ${data.anteprojectTitle}</h2>
+            <p><strong>Estudiante:</strong> ${data.studentName}</p>
+            <p><strong>Mensaje:</strong></p>
+            <p>${data.message}</p>
+          </div>
+          
+          <p>Puedes revisar el anteproyecto desde la plataforma:</p>
+          
+          <a href="${data.anteprojectUrl}" class="button">Revisar Anteproyecto</a>
+        </div>
+        <div class="footer">
+          <p>Sistema de Seguimiento de Proyectos TFG</p>
+          <p>Este es un mensaje automático, por favor no respondas a este correo.</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const text = `
+Notificación de Anteproyecto
+
+Hola ${data.tutorName},
+
+Has recibido una nueva notificación sobre un anteproyecto:
+
+Proyecto: ${data.anteprojectTitle}
+Estudiante: ${data.studentName}
+
+Mensaje:
+${data.message}
+
+Puedes revisar el anteproyecto desde: ${data.anteprojectUrl}
+
+Sistema de Seguimiento de Proyectos TFG
+  `;
+
+  return {
+    to: data.tutorEmail,
+    subject: `📋 Notificación: "${data.anteprojectTitle}"`,
+    html,
+    text,
+  };
+}
+
 Deno.serve(async (req: Request) => {
   try {
     const { type, data } = await req.json();
@@ -246,6 +357,9 @@ Deno.serve(async (req: Request) => {
         break;
       case 'status_change':
         emailData = generateStatusChangeEmail(data as StatusChangeNotificationData);
+        break;
+      case 'tutor_notification':
+        emailData = generateTutorNotificationEmail(data as TutorNotificationData);
         break;
       default:
         throw new Error(`Unknown email type: ${type}`);

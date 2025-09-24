@@ -564,15 +564,9 @@
   "@anteprojectEditFormTitle": {
     "description": "Edit anteproyecto form title"
   },
-  "anteprojectTitle": "Anteproject: {title}",
+  "anteprojectTitle": "Anteproject",
   "@anteprojectTitle": {
-    "description": "Anteproject title in dialog",
-    "placeholders": {
-      "title": {
-        "type": "String",
-        "description": "Anteproject title"
-      }
-    }
+    "description": "Anteproject title in dialog"
   },
   "anteprojectType": "Project Type",
   "@anteprojectType": {
@@ -1644,5 +1638,541 @@
     "role": "Role",
     "@role": {
       "description": "Label for role"
+    },
+    "noProjectAssigned": "You don't have a project or anteproject assigned. Contact your tutor.",
+    "@noProjectAssigned": {
+      "description": "Message when no project is assigned"
+    },
+    "errorGettingProject": "Error getting project: {error}",
+    "@errorGettingProject": {
+      "description": "Error message when getting project",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "deleteAnteproject": "Delete Anteproject",
+    "@deleteAnteproject": {
+      "description": "Delete anteproject dialog title"
+    },
+    "confirmDeleteAnteproject": "Are you sure you want to delete the anteproject \"{title}\"?\n\nThis action cannot be undone.",
+    "@confirmDeleteAnteproject": {
+      "description": "Confirmation message for deleting anteproject",
+      "placeholders": {
+        "title": {
+          "type": "String",
+          "description": "Anteproject title"
+        }
+      }
+    },
+    "anteprojectDeletedSuccess": "Anteproject deleted successfully",
+    "@anteprojectDeletedSuccess": {
+      "description": "Success message when deleting anteproject"
+    },
+    "errorDeletingAnteproject": "Error deleting anteproject: {error}",
+    "@errorDeletingAnteproject": {
+      "description": "Error message when deleting anteproject",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "templateLoadedSuccess": "✅ Template loaded successfully. 4 example milestones have been added.",
+    "@templateLoadedSuccess": {
+      "description": "Success message when loading template"
+    },
+    "errorGeneratingPDF": "Error generating PDF: {error}",
+    "@errorGeneratingPDF": {
+      "description": "Error message when generating PDF",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "downloadExampleTitle": "Download Anteproject Example",
+    "@downloadExampleTitle": {
+      "description": "Download example dialog title"
+    },
+    "downloadExampleMessage": "How would you like to download the anteproject example?",
+    "@downloadExampleMessage": {
+      "description": "Download example dialog message"
+    },
+    "print": "Print",
+    "@print": {
+      "description": "Print button"
+    },
+    "save": "Save",
+    "@save": {
+      "description": "Save button"
+    },
+    "errorPrinting": "Error printing: {error}",
+    "@errorPrinting": {
+      "description": "Error message when printing",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "pdfSavedAt": "PDF saved at: {path}",
+    "@pdfSavedAt": {
+      "description": "Success message when saving PDF",
+      "placeholders": {
+        "path": {
+          "type": "String",
+          "description": "File path"
+        }
+      }
+    },
+    "errorSaving": "Error saving: {error}",
+    "@errorSaving": {
+      "description": "Error message when saving",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "downloadExamplePDF": "Download Example PDF",
+    "@downloadExamplePDF": {
+      "description": "Download example PDF button"
+    },
+    "loadTemplate": "Load Template",
+    "@loadTemplate": {
+      "description": "Load template button"
+    },
+    "errorLoadingSchedule": "Error loading schedule: {error}",
+    "@errorLoadingSchedule": {
+      "description": "Error message when loading schedule",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "mustConfigureReviewDate": "You must configure at least one review date",
+    "@mustConfigureReviewDate": {
+      "description": "Validation message for review date"
+    },
+    "scheduleSavedSuccess": "Schedule saved successfully",
+    "@scheduleSavedSuccess": {
+      "description": "Success message when saving schedule"
+    },
+    "errorSavingSchedule": "Error saving schedule: {error}",
+    "@errorSavingSchedule": {
+      "description": "Error message when saving schedule",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "scheduleManagement": "Schedule Management",
+    "@scheduleManagement": {
+      "description": "Schedule management title"
+    },
+    "regenerateDatesBasedOnMilestones": "Regenerate Dates Based on Milestones",
+    "@regenerateDatesBasedOnMilestones": {
+      "description": "Regenerate dates button"
+    },
+    "anteprojectDetails": "Anteproject Details",
+    "@anteprojectDetails": {
+      "description": "Anteproject details title"
+    },
+    "editAnteproject": "Edit Anteproject",
+    "@editAnteproject": {
+      "description": "Edit anteproject button"
+    },
+    "viewAll": "View all",
+    "@viewAll": {
+      "description": "View all link"
+    },
+    "anteprojectApprovedSuccess": "Anteproject approved successfully",
+    "@anteprojectApprovedSuccess": {
+      "description": "Success message when approving anteproject"
+    },
+    "errorApprovingAnteproject": "Error approving anteproject: {error}",
+    "@errorApprovingAnteproject": {
+      "description": "Error message when approving anteproject",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "anteprojectRejected": "Anteproject rejected",
+    "@anteprojectRejected": {
+      "description": "Anteproject rejected message"
+    },
+    "errorRejectingAnteproject": "Error rejecting anteproject: {error}",
+    "@errorRejectingAnteproject": {
+      "description": "Error message when rejecting anteproject",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "sendForApproval": "Send for Approval",
+    "@sendForApproval": {
+      "description": "Send for approval button"
+    },
+    "sendForApprovalTitle": "Send for Approval",
+    "@sendForApprovalTitle": {
+      "description": "Send for approval dialog title"
+    },
+    "sendForApprovalMessage": "Are you sure you want to send this anteproject for approval? Once sent, you won't be able to edit it until it's reviewed.",
+    "@sendForApprovalMessage": {
+      "description": "Confirmation message for sending"
+    },
+    "send": "Send",
+    "@send": {
+      "description": "Send button"
+    },
+    "anteprojectSentForApproval": "Anteproject sent for approval successfully",
+    "@anteprojectSentForApproval": {
+      "description": "Success message when sending for approval"
+    },
+    "errorSendingAnteproject": "Error sending anteproject: {error}",
+    "@errorSendingAnteproject": {
+      "description": "Error message when sending anteproject",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "anteprojectTitle": "Anteproject: {title}",
+    "@anteprojectTitle": {
+      "description": "Anteproject title",
+      "placeholders": {
+        "title": {
+          "type": "String",
+          "description": "Anteproject title"
+        }
+      }
+    },
+    "errorLoadingComments": "Error loading comments: {error}",
+    "@errorLoadingComments": {
+      "description": "Error message when loading comments",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "pleaseWriteComment": "Please write a comment",
+    "@pleaseWriteComment": {
+      "description": "Validation message for comment"
+    },
+    "commentAddedSuccess": "Comment added successfully",
+    "@commentAddedSuccess": {
+      "description": "Success message when adding comment"
+    },
+    "errorAddingComment": "Error adding comment: {error}",
+    "@errorAddingComment": {
+      "description": "Error message when adding comment",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "commentsTitle": "Comments - {title}",
+    "@commentsTitle": {
+      "description": "Comments title",
+      "placeholders": {
+        "title": {
+          "type": "String",
+          "description": "Anteproject title"
+        }
+      }
+    },
+    "copied": "Copied: {text}",
+    "@copied": {
+      "description": "Copied message",
+      "placeholders": {
+        "text": {
+          "type": "String",
+          "description": "Copied text"
+        }
+      }
+    },
+    "addStudents": "Add Students",
+    "@addStudents": {
+      "description": "Add students title"
+    },
+    "addIndividually": "Add Individually",
+    "@addIndividually": {
+      "description": "Add individually button"
+    },
+    "importFromCSV": "Import from CSV",
+    "@importFromCSV": {
+      "description": "Import from CSV button"
+    },
+    "errorLoadingNotifications": "Error loading notifications: {error}",
+    "@errorLoadingNotifications": {
+      "description": "Error message when loading notifications",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "errorMarkingAsRead": "Error marking as read: {error}",
+    "@errorMarkingAsRead": {
+      "description": "Error message when marking as read",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "allNotificationsMarkedAsRead": "All notifications marked as read",
+    "@allNotificationsMarkedAsRead": {
+      "description": "Success message when marking all as read"
+    },
+    "errorMarkingAllAsRead": "Error marking all as read: {error}",
+    "@errorMarkingAllAsRead": {
+      "description": "Error message when marking all as read",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "errorDeletingNotification": "Error deleting notification: {error}",
+    "@errorDeletingNotification": {
+      "description": "Error message when deleting notification",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "notifications": "Notifications",
+    "@notifications": {
+      "description": "Notifications title"
+    },
+    "errorLoadingStudents": "Error loading students: {error}",
+    "@errorLoadingStudents": {
+      "description": "Error message when loading students",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "dashboardTitle": "Dashboard - {name}",
+    "@dashboardTitle": {
+      "description": "Dashboard title",
+      "placeholders": {
+        "name": {
+          "type": "String",
+          "description": "User name"
+        }
+      }
+    },
+    "allYears": "All years",
+    "@allYears": {
+      "description": "All years option"
+    },
+    "errorSelectingFile": "Error selecting file: {error}",
+    "@errorSelectingFile": {
+      "description": "Error message when selecting file",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "noValidDataToImport": "No valid data to import",
+    "@noValidDataToImport": {
+      "description": "Message when no valid data"
+    },
+    "importCompleted": "Import completed: {success} successful, {error} errors",
+    "@importCompleted": {
+      "description": "Import completed message",
+      "placeholders": {
+        "success": {
+          "type": "int",
+          "description": "Number of successes"
+        },
+        "error": {
+          "type": "int",
+          "description": "Number of errors"
+        }
+      }
+    },
+    "errorDuringImport": "Error during import: {error}",
+    "@errorDuringImport": {
+      "description": "Error message during import",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "importStudentsCSV": "Import Students CSV",
+    "@importStudentsCSV": {
+      "description": "Import students CSV title"
+    },
+    "fullNameRequired": "• full_name (required)",
+    "@fullNameRequired": {
+      "description": "Required field full_name"
+    },
+    "emailRequired": "• email (required)",
+    "@emailRequired": {
+      "description": "Required field email"
+    },
+    "nreRequired": "• nre (required)",
+    "@nreRequired": {
+      "description": "Required field nre"
+    },
+    "phoneOptional": "• phone (optional)",
+    "@phoneOptional": {
+      "description": "Optional field phone"
+    },
+    "biographyOptional": "• biography (optional)",
+    "@biographyOptional": {
+      "description": "Optional field biography"
+    },
+    "specialtyOptional": "• specialty (optional)",
+    "@specialtyOptional": {
+      "description": "Optional field specialty"
+    },
+    "academicYearOptional": "• academic_year (optional)",
+    "@academicYearOptional": {
+      "description": "Optional field academic_year"
+    },
+    "selectCSVFile": "Select CSV File",
+    "@selectCSVFile": {
+      "description": "Select CSV file button"
+    },
+    "importStudents": "Import {count} Students",
+    "@importStudents": {
+      "description": "Import students button",
+      "placeholders": {
+        "count": {
+          "type": "int",
+          "description": "Number of students"
+        }
+      }
+    },
+    "importing": "Importing...",
+    "@importing": {
+      "description": "Import in progress message"
+    },
+    "studentsImportedSuccess": "Students imported successfully",
+    "@studentsImportedSuccess": {
+      "description": "Success message when importing students"
+    },
+    "creating": "Creating...",
+    "@creating": {
+      "description": "Creation in progress message"
+    },
+    "createTutor": "Create Tutor",
+    "@createTutor": {
+      "description": "Create tutor button"
+    },
+    "tutorCreatedSuccess": "Tutor created successfully",
+    "@tutorCreatedSuccess": {
+      "description": "Success message when creating tutor"
+    },
+    "errorUploadingFile": "Error uploading file: {error}",
+    "@errorUploadingFile": {
+      "description": "Error message when uploading file",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "errorLoadingFiles": "Error loading files: {error}",
+    "@errorLoadingFiles": {
+      "description": "Error message when loading files",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "errorDeletingFile": "Error deleting file: {error}",
+    "@errorDeletingFile": {
+      "description": "Error message when deleting file",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "errorOpeningFile": "Error opening file: {error}",
+    "@errorOpeningFile": {
+      "description": "Error message when opening file",
+      "placeholders": {
+        "error": {
+          "type": "String",
+          "description": "Error message"
+        }
+      }
+    },
+    "estimatedHours": "{hours}h",
+    "@estimatedHours": {
+      "description": "Estimated hours",
+      "placeholders": {
+        "hours": {
+          "type": "int",
+          "description": "Number of hours"
+        }
+      }
+    },
+    "confirmDeleteTask": "Are you sure you want to delete the task \"{title}\"?",
+    "@confirmDeleteTask": {
+      "description": "Confirmation message for deleting task",
+      "placeholders": {
+        "title": {
+          "type": "String",
+          "description": "Task title"
+        }
+      }
+    },
+    "mustLoginToViewComments": "You must login to view comments",
+    "anteprojectApprovedSuccess": "Anteproject approved successfully",
+    "errorApprovingAnteproject": "Error approving anteproject: {error}",
+    "anteprojectRejected": "Anteproject rejected",
+    "errorRejectingAnteproject": "Error rejecting anteproject: {error}",
+    "send": "Send",
+    "errorSendingAnteproject": "Error sending anteproject: {error}",
+    "anteprojectTitle": "Anteproject",
+    "errorLoadingSchedule": "Error loading schedule: {error}",
+    "scheduleSavedSuccess": "Schedule saved successfully",
+    "errorSavingSchedule": "Error saving schedule: {error}",
+    "@mustLoginToViewComments": {
+      "description": "Message to login"
     }
 }

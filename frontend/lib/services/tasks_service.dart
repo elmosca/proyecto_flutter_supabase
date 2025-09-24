@@ -13,6 +13,15 @@ class TasksService {
         throw const TasksException('Usuario no autenticado');
       }
 
+      // Obtener el ID del usuario desde la tabla users
+      final userResponse = await _supabase
+          .from('users')
+          .select('id')
+          .eq('email', user.email!)
+          .single();
+
+      final userId = userResponse['id'] as int;
+
       // Obtener tareas asignadas al usuario
       final response = await _supabase
           .from('task_assignees')
@@ -24,7 +33,7 @@ class TasksService {
               milestones (*)
             )
           ''')
-          .eq('user_id', user.id)
+          .eq('user_id', userId)
           .order('assigned_at', ascending: false);
 
       return response.map<Task>((json) {
@@ -37,6 +46,7 @@ class TasksService {
   }
 
   /// Obtiene tareas del estudiante actual (usando ID de la tabla users)
+  /// Incluye tanto tareas de proyectos como de anteproyectos
   Future<List<Map<String, dynamic>>> getStudentTasks() async {
     try {
       final user = _supabase.auth.currentUser;
@@ -102,6 +112,47 @@ class TasksService {
     }
   }
 
+  /// Obtiene tareas del proyecto asignadas al usuario actual
+  Future<List<Task>> getProjectTasksForUser(int projectId) async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        throw const TasksException('Usuario no autenticado');
+      }
+
+      // Obtener el ID del usuario desde la tabla users
+      final userResponse = await _supabase
+          .from('users')
+          .select('id')
+          .eq('email', user.email!)
+          .single();
+
+      final userId = userResponse['id'] as int;
+
+      // Obtener tareas del proyecto asignadas al usuario
+      final response = await _supabase
+          .from('task_assignees')
+          .select('''
+            task_id,
+            tasks!inner (
+              *,
+              comments (*),
+              milestones (*)
+            )
+          ''')
+          .eq('user_id', userId)
+          .eq('tasks.project_id', projectId)
+          .order('assigned_at', ascending: false);
+
+      return response.map<Task>((json) {
+        final taskData = json['tasks'] as Map<String, dynamic>;
+        return Task.fromJson(taskData);
+      }).toList();
+    } catch (e) {
+      throw TasksException('Error al obtener tareas del proyecto para el usuario: $e');
+    }
+  }
+
   /// Obtiene una tarea específica por ID
   Future<Task?> getTask(int id) async {
     try {
@@ -137,7 +188,7 @@ class TasksService {
       data.remove('completed_at');
 
       // Obtener la siguiente posición Kanban
-      final maxPosition = await _getMaxKanbanPosition(task.projectId);
+      final maxPosition = await _getMaxKanbanPosition(task.projectId ?? 0);
       data['kanban_position'] = maxPosition + 1;
 
       final response = await _supabase
@@ -403,7 +454,7 @@ class TasksService {
           .limit(1)
           .single();
 
-      return response['kanban_position'] ?? 0;
+      return (response['kanban_position'] as int?) ?? 0;
     } catch (e) {
       return 0;
     }
