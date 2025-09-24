@@ -115,10 +115,10 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
     
     // Mostrar mensaje de confirmación
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('✅ Plantilla cargada correctamente. Los 4 hitos de ejemplo han sido añadidos.'),
+      SnackBar(
+        content: Text(AppLocalizations.of(context)!.templateLoadedSuccess),
         backgroundColor: Colors.green,
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
       ),
     );
   }
@@ -155,7 +155,7 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error al generar PDF: $e'),
+            content: Text(AppLocalizations.of(context)!.errorGeneratingPDF(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -167,28 +167,26 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Descargar Ejemplo de Anteproyecto'),
-        content: const Text(
-          '¿Cómo deseas descargar el ejemplo de anteproyecto?',
-        ),
+        title: Text(AppLocalizations.of(context)!.downloadExampleTitle),
+        content: Text(AppLocalizations.of(context)!.downloadExampleMessage),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
               _printPdf(pdfBytes);
             },
-            child: const Text('Imprimir'),
+            child: Text(AppLocalizations.of(context)!.print),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
               _savePdf(pdfBytes);
             },
-            child: const Text('Guardar'),
+            child: Text(AppLocalizations.of(context)!.save),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancelar'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
         ],
       ),
@@ -205,7 +203,7 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error al imprimir: $e'),
+            content: Text(AppLocalizations.of(context)!.errorPrinting(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -223,7 +221,7 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('PDF guardado en: $filePath'),
+            content: Text(AppLocalizations.of(context)!.pdfSavedAt(filePath)),
             backgroundColor: Colors.green,
           ),
         );
@@ -232,7 +230,7 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error al guardar: $e'),
+            content: Text(AppLocalizations.of(context)!.errorSaving(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -365,7 +363,7 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
                               child: ElevatedButton.icon(
                                 onPressed: _downloadExamplePdf,
                                 icon: const Icon(Icons.picture_as_pdf),
-                                label: const Text('Descargar Ejemplo PDF'),
+                                label: Text(AppLocalizations.of(context)!.downloadExamplePDF),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.red[50],
                                   foregroundColor: Colors.red[700],
@@ -377,7 +375,7 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
                               child: ElevatedButton.icon(
                                 onPressed: _loadTemplate,
                                 icon: const Icon(Icons.content_copy),
-                                label: const Text('Cargar Plantilla'),
+                                label: Text(AppLocalizations.of(context)!.loadTemplate),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.blue[50],
                                   foregroundColor: Colors.blue[700],

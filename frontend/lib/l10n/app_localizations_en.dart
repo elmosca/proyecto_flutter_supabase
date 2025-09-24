@@ -106,7 +106,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String anteprojectTitle(String title) {
-    return 'Anteproject: $title';
+    return 'Anteproject';
   }
 
   @override
@@ -196,7 +196,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get anteprojectDeleteTooltip => 'Delete anteproyecto';
 
   @override
-  String get commentsTitle => 'Comments';
+  String commentsTitle(String title) {
+    return 'Comments - $title';
+  }
 
   @override
   String get commentsAddComment => 'Add comment';
@@ -288,7 +290,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get myAnteprojects => 'My Anteprojects';
 
   @override
-  String get viewAll => 'View All';
+  String get viewAll => 'View all';
 
   @override
   String get pendingAnteprojects => 'Pending Anteprojects';
@@ -390,7 +392,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get copyToClipboard => 'Copy to Clipboard';
 
   @override
-  String get copied => 'Copied';
+  String copied(String text) {
+    return 'Copied: $text';
+  }
 
   @override
   String get anteprojectsListInDevelopment => 'Anteprojects List (Development)';
@@ -899,12 +903,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String errorApprovingAnteproject(String error) {
-    return 'Error approving anteproyecto: $error';
+    return 'Error approving anteproject: $error';
   }
 
   @override
   String errorRejectingAnteproject(String error) {
-    return 'Error rejecting anteproyecto: $error';
+    return 'Error rejecting anteproject: $error';
   }
 
   @override
@@ -998,22 +1002,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nreLabel => 'NRE (Student Registration Number)';
 
   @override
-  String get phoneOptional => 'Phone (Optional)';
+  String get phoneOptional => '• phone (optional)';
 
   @override
-  String get biographyOptional => 'Biography (Optional)';
+  String get biographyOptional => '• biography (optional)';
 
   @override
   String get nameRequired => 'Name is required';
 
   @override
-  String get emailRequired => 'Email is required';
+  String get emailRequired => '• email (required)';
 
   @override
   String get emailInvalid => 'Invalid email';
 
   @override
-  String get nreRequired => 'NRE is required';
+  String get nreRequired => '• nre (required)';
 
   @override
   String get createStudent => 'Create Student';
@@ -1031,4 +1035,271 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get role => 'Role';
+
+  @override
+  String get noProjectAssigned =>
+      'You don\'t have a project or anteproject assigned. Contact your tutor.';
+
+  @override
+  String errorGettingProject(String error) {
+    return 'Error getting project: $error';
+  }
+
+  @override
+  String get deleteAnteproject => 'Delete Anteproject';
+
+  @override
+  String confirmDeleteAnteproject(String title) {
+    return 'Are you sure you want to delete the anteproject \"$title\"?\n\nThis action cannot be undone.';
+  }
+
+  @override
+  String get anteprojectDeletedSuccess => 'Anteproject deleted successfully';
+
+  @override
+  String errorDeletingAnteproject(String error) {
+    return 'Error deleting anteproject: $error';
+  }
+
+  @override
+  String get templateLoadedSuccess =>
+      '✅ Template loaded successfully. 4 example milestones have been added.';
+
+  @override
+  String errorGeneratingPDF(String error) {
+    return 'Error generating PDF: $error';
+  }
+
+  @override
+  String get downloadExampleTitle => 'Download Anteproject Example';
+
+  @override
+  String get downloadExampleMessage =>
+      'How would you like to download the anteproject example?';
+
+  @override
+  String get print => 'Print';
+
+  @override
+  String errorPrinting(String error) {
+    return 'Error printing: $error';
+  }
+
+  @override
+  String pdfSavedAt(String path) {
+    return 'PDF saved at: $path';
+  }
+
+  @override
+  String errorSaving(String error) {
+    return 'Error saving: $error';
+  }
+
+  @override
+  String get downloadExamplePDF => 'Download Example PDF';
+
+  @override
+  String get loadTemplate => 'Load Template';
+
+  @override
+  String errorLoadingSchedule(String error) {
+    return 'Error loading schedule: $error';
+  }
+
+  @override
+  String get mustConfigureReviewDate =>
+      'You must configure at least one review date';
+
+  @override
+  String get scheduleSavedSuccess => 'Schedule saved successfully';
+
+  @override
+  String errorSavingSchedule(String error) {
+    return 'Error saving schedule: $error';
+  }
+
+  @override
+  String get scheduleManagement => 'Schedule Management';
+
+  @override
+  String get regenerateDatesBasedOnMilestones =>
+      'Regenerate Dates Based on Milestones';
+
+  @override
+  String get anteprojectDetails => 'Anteproject Details';
+
+  @override
+  String get editAnteproject => 'Edit Anteproject';
+
+  @override
+  String get anteprojectRejected => 'Anteproject rejected';
+
+  @override
+  String get sendForApproval => 'Send for Approval';
+
+  @override
+  String get sendForApprovalTitle => 'Send for Approval';
+
+  @override
+  String get sendForApprovalMessage =>
+      'Are you sure you want to send this anteproject for approval? Once sent, you won\'t be able to edit it until it\'s reviewed.';
+
+  @override
+  String get send => 'Send';
+
+  @override
+  String get anteprojectSentForApproval =>
+      'Anteproject sent for approval successfully';
+
+  @override
+  String errorSendingAnteproject(String error) {
+    return 'Error sending anteproject: $error';
+  }
+
+  @override
+  String errorLoadingComments(String error) {
+    return 'Error loading comments: $error';
+  }
+
+  @override
+  String get pleaseWriteComment => 'Please write a comment';
+
+  @override
+  String get commentAddedSuccess => 'Comment added successfully';
+
+  @override
+  String errorAddingComment(String error) {
+    return 'Error adding comment: $error';
+  }
+
+  @override
+  String get addIndividually => 'Add Individually';
+
+  @override
+  String get importFromCSV => 'Import from CSV';
+
+  @override
+  String errorLoadingNotifications(String error) {
+    return 'Error loading notifications: $error';
+  }
+
+  @override
+  String errorMarkingAsRead(String error) {
+    return 'Error marking as read: $error';
+  }
+
+  @override
+  String get allNotificationsMarkedAsRead => 'All notifications marked as read';
+
+  @override
+  String errorMarkingAllAsRead(String error) {
+    return 'Error marking all as read: $error';
+  }
+
+  @override
+  String errorDeletingNotification(String error) {
+    return 'Error deleting notification: $error';
+  }
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String errorLoadingStudents(String error) {
+    return 'Error loading students: $error';
+  }
+
+  @override
+  String dashboardTitle(String name) {
+    return 'Dashboard - $name';
+  }
+
+  @override
+  String get allYears => 'All years';
+
+  @override
+  String errorSelectingFile(String error) {
+    return 'Error selecting file: $error';
+  }
+
+  @override
+  String get noValidDataToImport => 'No valid data to import';
+
+  @override
+  String importCompleted(int success, int error) {
+    return 'Import completed: $success successful, $error errors';
+  }
+
+  @override
+  String errorDuringImport(String error) {
+    return 'Error during import: $error';
+  }
+
+  @override
+  String get importStudentsCSV => 'Import Students CSV';
+
+  @override
+  String get fullNameRequired => '• full_name (required)';
+
+  @override
+  String get specialtyOptional => '• specialty (optional)';
+
+  @override
+  String get academicYearOptional => '• academic_year (optional)';
+
+  @override
+  String get selectCSVFile => 'Select CSV File';
+
+  @override
+  String importStudents(int count) {
+    return 'Import $count Students';
+  }
+
+  @override
+  String get importing => 'Importing...';
+
+  @override
+  String get studentsImportedSuccess => 'Students imported successfully';
+
+  @override
+  String get creating => 'Creating...';
+
+  @override
+  String get createTutor => 'Create Tutor';
+
+  @override
+  String get tutorCreatedSuccess => 'Tutor created successfully';
+
+  @override
+  String errorUploadingFile(String error) {
+    return 'Error uploading file: $error';
+  }
+
+  @override
+  String errorLoadingFiles(String error) {
+    return 'Error loading files: $error';
+  }
+
+  @override
+  String errorDeletingFile(String error) {
+    return 'Error deleting file: $error';
+  }
+
+  @override
+  String errorOpeningFile(String error) {
+    return 'Error opening file: $error';
+  }
+
+  @override
+  String estimatedHours(int hours) {
+    return '${hours}h';
+  }
+
+  @override
+  String confirmDeleteTask(String title) {
+    return 'Are you sure you want to delete the task \"$title\"?';
+  }
+
+  @override
+  String get mustLoginToViewComments => 'You must login to view comments';
 }

@@ -18,12 +18,12 @@ class LoginScreenBloc extends StatefulWidget {
 class _LoginScreenBlocState extends State<LoginScreenBloc> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _showServerInfo = false;
+  // ✅ _showServerInfo variable removed (no longer used)
 
   @override
   void initState() {
     super.initState();
-    // Los campos de email y contraseña estarán vacíos para que el usuario los complete
+    // Email and password fields will be empty for user to complete
   }
 
   @override
@@ -39,18 +39,18 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('${l10n.login} TFG - ${AppConfig.platformName}'),
+        title: Text(l10n.login), // ✅ Only "Login" in production
         backgroundColor: Color(AppConfig.platformColor),
         foregroundColor: Colors.white,
         actions: [
-          // Botón de cambio de idioma
+          // Language change button
           PopupMenuButton<String>(
             icon: const Icon(Icons.language),
             tooltip: l10n.language,
             onSelected: (String value) {
-              // Aquí implementaríamos el cambio de idioma
+              // Here we would implement language change
               if (kDebugMode) {
-                debugPrint('Cambiar idioma a: $value');
+                debugPrint('Change language to: $value');
               }
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
@@ -76,15 +76,7 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
               ),
             ],
           ),
-          IconButton(
-            icon: Icon(_showServerInfo ? Icons.info : Icons.info_outline),
-            onPressed: () {
-              setState(() {
-                _showServerInfo = !_showServerInfo;
-              });
-            },
-            tooltip: l10n.serverInfo,
-          ),
+          // ✅ Server info button removed for production
         ],
       ),
       body: BlocListener<AuthBloc, AuthState>(
@@ -99,11 +91,11 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
           } else if (state is AuthAuthenticated) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('${l10n.loginSuccessTitle}: ${state.user.email}'),
+                content: Text('${AppLocalizations.of(context)!.loginSuccessTitle}: ${state.user.email}'),
                 backgroundColor: Colors.green,
               ),
             );
-            // Navegar al dashboard correspondiente
+            // Navigate to corresponding dashboard
             _navigateToDashboard(state.user);
           }
         },
@@ -116,7 +108,7 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-              // Información de la aplicación
+              // Application information
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -142,56 +134,11 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
               ),
               const SizedBox(height: 16),
 
-              // Información del servidor (expandible)
-              if (_showServerInfo) ...[
-                const SizedBox(height: 16),
-                Card(
-                  color: Colors.blue.shade50,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.dns, color: Colors.blue.shade700),
-                            const SizedBox(width: 8),
-                            Text(
-                              l10n.serverInfo,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue.shade700,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        _buildServerInfoRow(
-                          l10n.serverUrl,
-                          AppConfig.supabaseUrl,
-                        ),
-                        _buildServerInfoRow(
-                          l10n.version,
-                          AppConfig.serverInfo['port']!,
-                        ),
-                        _buildServerInfoRow('Storage S3', AppConfig.storageUrl),
-                        _buildServerInfoRow(
-                          'Supabase Studio',
-                          AppConfig.supabaseStudioUrl,
-                        ),
-                        _buildServerInfoRow(
-                          'Email Testing',
-                          AppConfig.inbucketUrl,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+              // ✅ Server information section removed for production
 
               const SizedBox(height: 32),
               
-              // Formulario de login
+              // Login form
               TextField(
                 controller: _emailController,
                 decoration: InputDecoration(
@@ -214,7 +161,7 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
               ),
               const SizedBox(height: 24),
               
-              // Botón de login
+              // Login button
               BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, state) {
                   return SizedBox(
@@ -237,25 +184,10 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
               ),
               const SizedBox(height: 16),
 
-              // Credenciales de prueba
+              // Credenciales de prueba para testing
               const TestCredentialsWidget(),
 
-              // Enlaces útiles
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  TextButton.icon(
-                    onPressed: () => _openUrl(AppConfig.supabaseStudioUrl),
-                    icon: const Icon(Icons.dashboard, size: 16),
-                    label: Text(l10n.studio),
-                  ),
-                  TextButton.icon(
-                    onPressed: () => _openUrl(AppConfig.inbucketUrl),
-                    icon: const Icon(Icons.email, size: 16),
-                    label: Text(l10n.emailLabel),
-                  ),
-                ],
-              ),
+              // ✅ Development links removed for production
             ],
             ),
           ),
@@ -264,41 +196,9 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
     );
   }
 
-  Widget _buildServerInfoRow(String label, String value) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 4),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 100,
-          child: Text(
-            '$label:',
-            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
-          ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: const TextStyle(fontSize: 12, color: Colors.grey),
-          ),
-        ),
-      ],
-    ),
-  );
+  // ✅ _buildServerInfoRow method removed (no longer used)
 
-  void _openUrl(String url) {
-    // En una aplicación real, usaríamos url_launcher
-    if (kDebugMode) {
-      debugPrint('Abrir URL: $url');
-    }
-    final l10n = AppLocalizations.of(context)!;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${l10n.loading} $url'),
-        duration: const Duration(seconds: 2),
-      ),
-    );
-  }
+  // ✅ _openUrl method removed (no longer used in production)
 
   void _handleLogin() {
     if (_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty) {

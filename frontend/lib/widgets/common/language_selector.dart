@@ -149,7 +149,7 @@ class LanguageSelector extends StatelessWidget {
       onPressed: () => _changeLanguage(languageService, languageCode),
       style: OutlinedButton.styleFrom(
         backgroundColor: isSelected 
-            ? Theme.of(context).primaryColor.withOpacity(0.1)
+            ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
             : null,
         side: BorderSide(
           color: isSelected 

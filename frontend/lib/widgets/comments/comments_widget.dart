@@ -50,7 +50,7 @@ class _CommentsWidgetState extends State<CommentsWidget> {
                 const Icon(Icons.comment, size: 24),
                 const SizedBox(width: 8),
                 Text(
-                  l10n.commentsTitle,
+                  l10n.comments,
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,

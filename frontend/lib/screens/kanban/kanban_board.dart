@@ -8,11 +8,13 @@ import '../../utils/task_localizations.dart';
 import '../forms/task_form.dart';
 
 class KanbanBoard extends StatefulWidget {
-  final int projectId;
+  final int? projectId;
+  final int? anteprojectId;
 
   const KanbanBoard({
     super.key,
-    required this.projectId,
+    this.projectId,
+    this.anteprojectId,
   });
 
   @override
@@ -24,7 +26,10 @@ class _KanbanBoardState extends State<KanbanBoard> {
   void initState() {
     super.initState();
     // Cargar tareas al inicializar
-    context.read<TasksBloc>().add(TasksLoadRequested(projectId: widget.projectId));
+    context.read<TasksBloc>().add(TasksLoadRequested(
+      projectId: widget.projectId,
+      anteprojectId: widget.anteprojectId,
+    ));
   }
 
   @override
@@ -134,133 +139,218 @@ class _KanbanBoardState extends State<KanbanBoard> {
     final columnTitle = _getColumnTitle(status, l10n);
     final columnColor = _getColumnColor(status);
 
-    return Container(
-      width: 300,
-      margin: const EdgeInsets.all(8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: columnColor,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              children: [
-                Text(
-                  columnTitle,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    '${columnTasks.length}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Expanded(
-            child: ListView.builder(
-              itemCount: columnTasks.length,
-              itemBuilder: (context, index) {
-                final task = columnTasks[index];
-                return _buildTaskCard(task, l10n);
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTaskCard(Task task, AppLocalizations l10n) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: InkWell(
-        onTap: () => _editTask(task),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
+    return DragTarget<Task>(
+      onAcceptWithDetails: (details) {
+        final task = details.data;
+        if (task.status != status) {
+          _updateTaskStatus(task, status);
+        }
+      },
+      onWillAcceptWithDetails: (details) {
+        final task = details.data;
+        return task.status != status;
+      },
+      builder: (context, candidateData, rejectedData) {
+        final isHighlighted = candidateData.isNotEmpty;
+        
+        return Container(
+          width: 300,
+          margin: const EdgeInsets.all(8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                task.title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: isHighlighted ? columnColor.withValues(alpha: 0.8) : columnColor,
+                  borderRadius: BorderRadius.circular(8),
+                  border: isHighlighted 
+                    ? Border.all(color: Colors.white, width: 2)
+                    : null,
                 ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                task.description,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  _buildComplexityChip(task.complexity, l10n),
-                  if (task.estimatedHours != null) ...[
-                    const SizedBox(width: 4),
+                child: Row(
+                  children: [
+                    Text(
+                      columnTitle,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: Colors.blue[100],
-                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.white.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        '${task.estimatedHours}h',
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: Colors.blue[800],
-                          fontWeight: FontWeight.w500,
+                        '${columnTasks.length}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
                         ),
                       ),
                     ),
                   ],
+                ),
+              ),
+              const SizedBox(height: 8),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: isHighlighted 
+                      ? columnColor.withValues(alpha: 0.1)
+                      : Colors.transparent,
+                    borderRadius: BorderRadius.circular(8),
+                    border: isHighlighted 
+                      ? Border.all(color: columnColor, width: 2, style: BorderStyle.solid)
+                      : null,
+                  ),
+                  child: ListView.builder(
+                    itemCount: columnTasks.length,
+                    itemBuilder: (context, index) {
+                      final task = columnTasks[index];
+                      return _buildTaskCard(task, l10n);
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTaskCard(Task task, AppLocalizations l10n) {
+    return Draggable<Task>(
+      data: task,
+      feedback: Material(
+        elevation: 8,
+        borderRadius: BorderRadius.circular(8),
+        child: SizedBox(
+          width: 280,
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    task.title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    task.description,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ],
               ),
-              if (task.dueDate != null) ...[
+            ),
+          ),
+        ),
+      ),
+      childWhenDragging: Card(
+        margin: const EdgeInsets.only(bottom: 8),
+        child: SizedBox(
+          height: 100,
+          child: Center(
+            child: Text(
+              'Moviendo...',
+              style: TextStyle(
+                color: Colors.grey[400],
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ),
+        ),
+      ),
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 8),
+        child: InkWell(
+          onTap: () => _editTask(task),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  task.title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 const SizedBox(height: 4),
+                Text(
+                  task.description,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
                 Row(
                   children: [
-                    Icon(Icons.schedule, size: 12, color: Colors.grey[600]),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${task.dueDate!.day}/${task.dueDate!.month}',
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.grey[600],
+                    _buildComplexityChip(task.complexity, l10n),
+                    if (task.estimatedHours != null) ...[
+                      const SizedBox(width: 4),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.blue[100],
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          '${task.estimatedHours}h',
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.blue[800],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
+                if (task.dueDate != null) ...[
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(Icons.schedule, size: 12, color: Colors.grey[600]),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${task.dueDate!.day}/${task.dueDate!.month}',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),
@@ -347,6 +437,16 @@ class _KanbanBoardState extends State<KanbanBoard> {
           value: context.read<TasksBloc>(),
           child: TaskForm(projectId: widget.projectId, task: task),
         ),
+      ),
+    );
+  }
+
+  void _updateTaskStatus(Task task, TaskStatus newStatus) {
+    // Actualizar el estado de la tarea usando el BLoC
+    context.read<TasksBloc>().add(
+      TaskStatusUpdateRequested(
+        taskId: task.id,
+        status: newStatus,
       ),
     );
   }

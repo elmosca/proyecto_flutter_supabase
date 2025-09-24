@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../config/app_config.dart';
 import '../../models/user.dart';
 import '../../models/anteproject.dart';
 import '../../blocs/auth_bloc.dart';
@@ -13,6 +12,7 @@ import '../../blocs/anteprojects_bloc.dart';
 import '../../blocs/tasks_bloc.dart';
 import '../../services/anteprojects_service.dart';
 import '../../services/tasks_service.dart';
+import '../../services/projects_service.dart';
 import '../../services/theme_service.dart';
 import '../../themes/role_themes.dart';
 import '../../router/app_router.dart';
@@ -172,45 +172,47 @@ class _StudentDashboardState extends State<StudentDashboard> {
             children: [
               CircleAvatar(
                 radius: 30,
-                backgroundColor: Colors.white.withOpacity(0.2),
+                backgroundColor: Colors.white.withValues(alpha: 0.2),
                 child: Text(
                   RoleThemes.getEmojiForRole(widget.user.role),
                   style: const TextStyle(fontSize: 24),
                 ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                Text(
-                  widget.user.fullName,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.user.fullName,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      widget.user.email,
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                      ),
+                    ),
+                    Text(
+                      '${l10n.role}: ${l10n.studentRole}',
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    RoleBadge(role: widget.user.role),
+                  ],
                 ),
-                Text(
-                  widget.user.email,
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 14,
-                  ),
-                ),
-                Text(
-                  '${l10n.role}: ${l10n.studentRole}',
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                RoleBadge(role: widget.user.role),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -693,37 +695,109 @@ class _StudentDashboardState extends State<StudentDashboard> {
     );
   }
 
-  void _viewKanbanBoard() {
-    // Obtener projectId del usuario autenticado
-    final authState = context.read<AuthBloc>().state;
-    final projectId = authState is AuthAuthenticated ? authState.user.id : 1;
-    
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (BuildContext context) => BlocProvider<TasksBloc>(
-          create: (_) => TasksBloc(
-            tasksService: TasksService(),
+  void _viewKanbanBoard() async {
+    try {
+      // Obtener projectId del usuario usando el servicio de proyectos
+      final projectsService = ProjectsService();
+      final projectId = await projectsService.getUserProjectId();
+      
+      int? anteprojectId;
+      
+      if (projectId == null) {
+        // Si no hay proyecto, buscar anteproyectos del estudiante
+        if (_anteprojects.isNotEmpty) {
+          // Usar el primer anteproyecto (o se podría mostrar un selector)
+          anteprojectId = _anteprojects.first.id;
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.noProjectAssigned),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          }
+          return;
+        }
+      }
+      
+      if (mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (BuildContext context) => BlocProvider<TasksBloc>(
+              create: (_) => TasksBloc(
+                tasksService: TasksService(),
+              ),
+              child: KanbanBoard(
+                projectId: projectId,
+                anteprojectId: anteprojectId,
+              ),
+            ),
           ),
-          child: KanbanBoard(projectId: projectId),
-        ),
-      ),
-    );
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.errorGettingProject(e.toString())),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
-  void _createTask() {
-    // Obtener projectId del usuario autenticado
-    final authState = context.read<AuthBloc>().state;
-    final projectId = authState is AuthAuthenticated ? authState.user.id : 1;
-    
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (BuildContext context) => BlocProvider<TasksBloc>(
-          create: (_) => TasksBloc(
-            tasksService: TasksService(),
+  void _createTask() async {
+    try {
+      // Obtener projectId del usuario usando el servicio de proyectos
+      final projectsService = ProjectsService();
+      final projectId = await projectsService.getUserProjectId();
+      
+      int? anteprojectId;
+      
+      if (projectId == null) {
+        // Si no hay proyecto, buscar anteproyectos del estudiante
+        if (_anteprojects.isNotEmpty) {
+          // Usar el primer anteproyecto (o se podría mostrar un selector)
+          anteprojectId = _anteprojects.first.id;
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.noProjectAssigned),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          }
+          return;
+        }
+      }
+      
+      if (mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (BuildContext context) => BlocProvider<TasksBloc>(
+              create: (_) => TasksBloc(
+                tasksService: TasksService(),
+              ),
+              child: TaskForm(
+                projectId: projectId,
+                anteprojectId: anteprojectId,
+              ),
+            ),
           ),
-          child: TaskForm(projectId: projectId),
-        ),
-      ),
-    );
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.errorGettingProject(e.toString())),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 }

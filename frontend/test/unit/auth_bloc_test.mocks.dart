@@ -89,6 +89,14 @@ class MockAuthService extends _i1.Mock implements _i2.AuthService {
           as _i3.Future<Map<String, dynamic>>);
 
   @override
+  _i3.Future<_i5.User?> getCurrentUserFromSupabase() =>
+      (super.noSuchMethod(
+            Invocation.method(#getCurrentUserFromSupabase, []),
+            returnValue: _i3.Future<_i5.User?>.value(),
+          )
+          as _i3.Future<_i5.User?>);
+
+  @override
   _i3.Future<void> signOut() =>
       (super.noSuchMethod(
             Invocation.method(#signOut, []),
@@ -136,4 +144,30 @@ class MockAuthService extends _i1.Mock implements _i2.AuthService {
             returnValue: _i3.Future<bool>.value(false),
           )
           as _i3.Future<bool>);
+
+  @override
+  _i3.Future<void> saveUserSession(_i5.User? user) =>
+      (super.noSuchMethod(
+            Invocation.method(#saveUserSession, [user]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<_i5.User?> getSavedUserSession() =>
+      (super.noSuchMethod(
+            Invocation.method(#getSavedUserSession, []),
+            returnValue: _i3.Future<_i5.User?>.value(),
+          )
+          as _i3.Future<_i5.User?>);
+
+  @override
+  _i3.Future<void> clearSavedSession() =>
+      (super.noSuchMethod(
+            Invocation.method(#clearSavedSession, []),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
 }

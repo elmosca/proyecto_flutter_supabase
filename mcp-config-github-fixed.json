@@ -1,0 +1,33 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@supabase/mcp-server-supabase@latest",
+        "--project-ref=zkririyknhlwoxhsoqih"
+      ],
+      "env": {
+        "SUPABASE_ACCESS_TOKEN": "sbp_1d3a91da3f32d0067b960260ab2fba02b4429fed"
+      }
+    },
+    "github": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\Jualas\\.npm-global\\node_modules\\@modelcontextprotocol\\server-github\\dist\\index.js"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "ghp_3sz0D08Uws31vaqwn11Vba1qFvaIR0TUqI6"
+      }
+    },
+    "resend": {
+      "command": "node",
+      "args": [
+        "C:\\dev\\proyecto_flutter_supabase\\mcp-resend\\build\\index.js"
+      ],
+      "env": {
+        "RESEND_API_KEY": "YOUR_RESEND_API_KEY_HERE"
+      }
+    }
+  }
+}

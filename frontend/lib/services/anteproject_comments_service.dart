@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/anteproject_comment.dart';
+import 'email_notification_service.dart';
 
 class AnteprojectCommentsService {
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -120,32 +121,63 @@ class AnteprojectCommentsService {
       
       final comment = AnteprojectComment.fromJson(commentData);
 
-      // Crear notificación para el estudiante si el comentario no es interno
+      // Crear notificación y enviar email para el estudiante si el comentario no es interno
       if (!isInternal) {
         try {
           // Buscar estudiantes asociados al anteproyecto
           final studentsResponse = await _supabase
               .from('anteproject_students')
-              .select('student_id')
+              .select('''
+                student_id,
+                students:users!anteproject_students_student_id_fkey (
+                  id, full_name, email
+                )
+              ''')
               .eq('anteproject_id', anteprojectId);
 
           // Solo crear notificaciones si hay estudiantes asignados
           if (studentsResponse.isNotEmpty) {
-            // Crear notificaciones para cada estudiante
+            // Obtener información del anteproyecto para el email
+            final anteprojectResponse = await _supabase
+                .from('anteprojects')
+                .select('title')
+                .eq('id', anteprojectId)
+                .single();
+
+            final anteprojectTitle = anteprojectResponse['title'] as String;
+            final tutorName = authorResponse['full_name'] as String;
+
+            // Crear notificaciones y enviar emails para cada estudiante
             for (final student in studentsResponse) {
               final studentId = student['student_id'] as int;
+              final studentData = student['students'] as Map<String, dynamic>;
+              final studentName = studentData['full_name'] as String;
+              final studentEmail = studentData['email'] as String;
+
+              // Crear notificación en la base de datos
               await createCommentNotification(
                 anteprojectId: anteprojectId,
                 studentId: studentId,
                 commentContent: content,
+              );
+
+              // Enviar email de notificación
+              await EmailNotificationService.sendCommentNotification(
+                studentEmail: studentEmail,
+                studentName: studentName,
+                tutorName: tutorName,
+                anteprojectTitle: anteprojectTitle,
+                commentContent: content,
+                section: section,
+                anteprojectUrl: 'https://app.cifpcarlos3.es/anteprojects/$anteprojectId',
               );
             }
           } else {
             debugPrint('No hay estudiantes asignados al anteproyecto $anteprojectId');
           }
         } catch (e) {
-          // No fallar si no se puede crear la notificación
-          debugPrint('Error al crear notificación: $e');
+          // No fallar si no se puede crear la notificación o enviar el email
+          debugPrint('Error al crear notificación o enviar email: $e');
         }
       }
 

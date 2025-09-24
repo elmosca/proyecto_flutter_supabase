@@ -106,6 +106,14 @@ class MockAuthService extends _i1.Mock implements _i3.AuthService {
           as _i4.Future<Map<String, dynamic>>);
 
   @override
+  _i4.Future<_i2.User?> getCurrentUserFromSupabase() =>
+      (super.noSuchMethod(
+            Invocation.method(#getCurrentUserFromSupabase, []),
+            returnValue: _i4.Future<_i2.User?>.value(),
+          )
+          as _i4.Future<_i2.User?>);
+
+  @override
   _i4.Future<void> signOut() =>
       (super.noSuchMethod(
             Invocation.method(#signOut, []),
@@ -153,6 +161,32 @@ class MockAuthService extends _i1.Mock implements _i3.AuthService {
             returnValue: _i4.Future<bool>.value(false),
           )
           as _i4.Future<bool>);
+
+  @override
+  _i4.Future<void> saveUserSession(_i2.User? user) =>
+      (super.noSuchMethod(
+            Invocation.method(#saveUserSession, [user]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<_i2.User?> getSavedUserSession() =>
+      (super.noSuchMethod(
+            Invocation.method(#getSavedUserSession, []),
+            returnValue: _i4.Future<_i2.User?>.value(),
+          )
+          as _i4.Future<_i2.User?>);
+
+  @override
+  _i4.Future<void> clearSavedSession() =>
+      (super.noSuchMethod(
+            Invocation.method(#clearSavedSession, []),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
 }
 
 /// A class which mocks [AnteprojectsService].
@@ -278,6 +312,14 @@ class MockAnteprojectsService extends _i1.Mock
             ),
           )
           as _i4.Future<List<_i2.Anteproject>>);
+
+  @override
+  _i4.Future<_i2.User?> getAnteprojectStudent(int? anteprojectId) =>
+      (super.noSuchMethod(
+            Invocation.method(#getAnteprojectStudent, [anteprojectId]),
+            returnValue: _i4.Future<_i2.User?>.value(),
+          )
+          as _i4.Future<_i2.User?>);
 
   @override
   _i4.Future<void> deleteAnteproject(int? id) =>

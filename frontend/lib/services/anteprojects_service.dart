@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import '../models/models.dart';
+import 'email_notification_service.dart';
 
 class AnteprojectsService {
   final supabase.SupabaseClient _supabase = supabase.Supabase.instance.client;
@@ -172,6 +174,9 @@ class AnteprojectsService {
             'updated_at': DateTime.now().toIso8601String(),
           })
           .eq('id', id);
+
+      // Enviar notificación al tutor
+      await _notifyTutorOnSubmission(id);
     } catch (e) {
       throw AnteprojectsException('Error al enviar anteproyecto: $e');
     }
@@ -347,6 +352,57 @@ class AnteprojectsService {
     } catch (e) {
       // Si no se encuentra el estudiante, retornar null
       return null;
+    }
+  }
+
+  /// Notifica al tutor cuando un estudiante envía un anteproyecto
+  Future<void> _notifyTutorOnSubmission(int anteprojectId) async {
+    try {
+      // Obtener información del anteproyecto
+      final anteprojectResponse = await _supabase
+          .from('anteprojects')
+          .select('title, tutor_id')
+          .eq('id', anteprojectId)
+          .single();
+
+      final anteprojectTitle = anteprojectResponse['title'] as String;
+      final tutorId = anteprojectResponse['tutor_id'] as int;
+
+      // Obtener información del tutor
+      final tutorResponse = await _supabase
+          .from('users')
+          .select('full_name, email')
+          .eq('id', tutorId)
+          .single();
+
+      final tutorName = tutorResponse['full_name'] as String;
+      final tutorEmail = tutorResponse['email'] as String;
+
+      // Obtener información del estudiante
+      final user = _supabase.auth.currentUser;
+      if (user != null) {
+        final studentResponse = await _supabase
+            .from('users')
+            .select('full_name')
+            .eq('email', user.email!)
+            .single();
+
+        final studentName = studentResponse['full_name'] as String;
+
+        // Enviar email de notificación al tutor
+        await EmailNotificationService.sendTutorNotification(
+          tutorEmail: tutorEmail,
+          tutorName: tutorName,
+          studentName: studentName,
+          anteprojectTitle: anteprojectTitle,
+          notificationType: 'submission',
+          message: '$studentName ha enviado el anteproyecto "$anteprojectTitle" para revisión.',
+          anteprojectUrl: 'https://app.cifpcarlos3.es/anteprojects/$anteprojectId',
+        );
+      }
+    } catch (e) {
+      // No fallar si no se puede enviar la notificación
+      debugPrint('Error al notificar al tutor: $e');
     }
   }
 

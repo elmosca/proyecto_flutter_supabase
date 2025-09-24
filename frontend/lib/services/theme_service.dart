@@ -87,8 +87,8 @@ class ThemeService extends ChangeNotifier {
   Map<String, dynamic> getThemeInfo() {
     return {
       'role': _currentRole?.displayName ?? 'Sin rol',
-      'primaryColor': currentPrimaryColor.value.toRadixString(16),
-      'accentColor': currentAccentColor.value.toRadixString(16),
+      'primaryColor': currentPrimaryColor.toARGB32().toRadixString(16),
+      'accentColor': currentAccentColor.toARGB32().toRadixString(16),
       'icon': currentIcon.codePoint,
       'emoji': currentEmoji,
     };

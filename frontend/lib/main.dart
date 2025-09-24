@@ -50,19 +50,23 @@ void main() async {
     }
   }
 
-  // Solo inicializar Supabase si no estamos en modo test
-  if (!kIsWeb || !const bool.fromEnvironment('dart.vm.product')) {
-    try {
-      // Configuración de Supabase para servidor de red
-      await Supabase.initialize(
-        url: AppConfig.supabaseUrl,
-        anonKey: AppConfig.supabaseAnonKey,
-      );
-    } catch (e) {
-      // En caso de error, continuar sin Supabase (útil para tests)
-      if (kDebugMode) {
-        debugPrint('⚠️ Supabase initialization failed: $e');
-      }
+  // Inicializar Supabase siempre (excepto en tests)
+  try {
+    // Configuración de Supabase
+    await Supabase.initialize(
+      url: AppConfig.supabaseUrl,
+      anonKey: AppConfig.supabaseAnonKey,
+    );
+    
+    if (kDebugMode) {
+      debugPrint('✅ Supabase inicializado correctamente');
+      debugPrint('   URL: ${AppConfig.supabaseUrl}');
+      debugPrint('   Entorno: ${AppConfig.environment}');
+    }
+  } catch (e) {
+    // En caso de error, continuar sin Supabase (útil para tests)
+    if (kDebugMode) {
+      debugPrint('⚠️ Supabase initialization failed: $e');
     }
   }
 
@@ -88,19 +92,6 @@ class _MyAppState extends State<MyApp> {
     
     // Inicializar el servicio de idioma
     _languageService.initialize();
-    
-    // Verificar sesión al inicializar
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkAuthState();
-    });
-  }
-  
-  void _checkAuthState() {
-    // Verificar la sesión al inicializar la aplicación
-    // Esto se ejecutará después de que el widget esté construido
-    // y podremos acceder al AuthBloc
-    final authBloc = context.read<AuthBloc>();
-    authBloc.add(AuthCheckRequested());
   }
 
   @override
@@ -126,24 +117,41 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
       ],
-      child: MaterialApp.router(
-        title: AppConfig.appName,
+      child: Builder(
+        builder: (context) {
+          // Verificar sesión después de que el MultiBlocProvider esté construido
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            try {
+              final authBloc = context.read<AuthBloc>();
+              authBloc.add(AuthCheckRequested());
+            } catch (e) {
+              // Ignorar errores si el contexto no está disponible
+              if (kDebugMode) {
+                debugPrint('Auth check skipped: $e');
+              }
+            }
+          });
+          
+          return MaterialApp.router(
+            title: AppConfig.appName,
 
-        // Configuración de internacionalización
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: LanguageService.supportedLocales,
-        locale: _languageService.currentLocale,
+            // Configuración de internacionalización
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: LanguageService.supportedLocales,
+            locale: _languageService.currentLocale,
 
-        theme: _themeService.currentTheme,
-        routerConfig: AppRouter.router,
-        
-        // Configuración adicional para internacionalización
-        debugShowCheckedModeBanner: false,
+            theme: _themeService.currentTheme,
+            routerConfig: AppRouter.router,
+            
+            // Configuración adicional para internacionalización
+            debugShowCheckedModeBanner: false,
+          );
+        },
       ),
     );
     },

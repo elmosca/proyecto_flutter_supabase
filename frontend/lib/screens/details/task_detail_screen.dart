@@ -71,7 +71,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> with SingleTickerPr
           unselectedLabelColor: theme.colorScheme.onPrimary.withValues(alpha: 0.7),
           tabs: [
             Tab(text: l10n.details),
-            Tab(text: l10n.commentsTitle),
+            Tab(text: l10n.comments),
             Tab(text: l10n.filesAttached),
           ],
         ),
@@ -231,8 +231,8 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> with SingleTickerPr
     final authState = context.read<AuthBloc>().state;
     
     if (authState is! AuthAuthenticated) {
-      return const Center(
-        child: Text('Debes iniciar sesión para ver los comentarios'),
+      return Center(
+        child: Text(AppLocalizations.of(context)!.mustLoginToViewComments),
       );
     }
     

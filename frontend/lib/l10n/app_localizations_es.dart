@@ -108,7 +108,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String anteprojectTitle(String title) {
-    return 'Anteproyecto: $title';
+    return 'Anteproyecto';
   }
 
   @override
@@ -200,7 +200,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get anteprojectDeleteTooltip => 'Eliminar anteproyecto';
 
   @override
-  String get commentsTitle => 'Comentarios';
+  String commentsTitle(String title) {
+    return 'Comentarios - $title';
+  }
 
   @override
   String get commentsAddComment => 'Añadir comentario';
@@ -397,7 +399,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get copyToClipboard => 'Copiar al portapapeles';
 
   @override
-  String get copied => '¡Copiado!';
+  String copied(String text) {
+    return 'Copiado: $text';
+  }
 
   @override
   String get anteprojectsListInDevelopment =>
@@ -1013,22 +1017,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String get nreLabel => 'NRE (Número de Registro de Estudiante)';
 
   @override
-  String get phoneOptional => 'Teléfono (Opcional)';
+  String get phoneOptional => '• phone (opcional)';
 
   @override
-  String get biographyOptional => 'Biografía (Opcional)';
+  String get biographyOptional => '• biography (opcional)';
 
   @override
   String get nameRequired => 'El nombre es obligatorio';
 
   @override
-  String get emailRequired => 'El email es obligatorio';
+  String get emailRequired => '• email (obligatorio)';
 
   @override
   String get emailInvalid => 'Email inválido';
 
   @override
-  String get nreRequired => 'El NRE es obligatorio';
+  String get nreRequired => '• nre (obligatorio)';
 
   @override
   String get createStudent => 'Crear Estudiante';
@@ -1046,4 +1050,273 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get role => 'Rol';
+
+  @override
+  String get noProjectAssigned =>
+      'No tienes un proyecto o anteproyecto asignado. Contacta con tu tutor.';
+
+  @override
+  String errorGettingProject(String error) {
+    return 'Error al obtener proyecto: $error';
+  }
+
+  @override
+  String get deleteAnteproject => 'Eliminar Anteproyecto';
+
+  @override
+  String confirmDeleteAnteproject(String title) {
+    return '¿Estás seguro de que quieres eliminar el anteproyecto \"$title\"?\n\nEsta acción no se puede deshacer.';
+  }
+
+  @override
+  String get anteprojectDeletedSuccess => 'Anteproyecto eliminado exitosamente';
+
+  @override
+  String errorDeletingAnteproject(String error) {
+    return 'Error al eliminar anteproyecto: $error';
+  }
+
+  @override
+  String get templateLoadedSuccess =>
+      '✅ Plantilla cargada correctamente. Los 4 hitos de ejemplo han sido añadidos.';
+
+  @override
+  String errorGeneratingPDF(String error) {
+    return 'Error al generar PDF: $error';
+  }
+
+  @override
+  String get downloadExampleTitle => 'Descargar Ejemplo de Anteproyecto';
+
+  @override
+  String get downloadExampleMessage =>
+      '¿Cómo deseas descargar el ejemplo de anteproyecto?';
+
+  @override
+  String get print => 'Imprimir';
+
+  @override
+  String errorPrinting(String error) {
+    return 'Error al imprimir: $error';
+  }
+
+  @override
+  String pdfSavedAt(String path) {
+    return 'PDF guardado en: $path';
+  }
+
+  @override
+  String errorSaving(String error) {
+    return 'Error al guardar: $error';
+  }
+
+  @override
+  String get downloadExamplePDF => 'Descargar Ejemplo PDF';
+
+  @override
+  String get loadTemplate => 'Cargar Plantilla';
+
+  @override
+  String errorLoadingSchedule(String error) {
+    return 'Error al cargar cronograma: $error';
+  }
+
+  @override
+  String get mustConfigureReviewDate =>
+      'Debe configurar al menos una fecha de revisión';
+
+  @override
+  String get scheduleSavedSuccess => 'Cronograma guardado exitosamente';
+
+  @override
+  String errorSavingSchedule(String error) {
+    return 'Error al guardar cronograma: $error';
+  }
+
+  @override
+  String get scheduleManagement => 'Gestión de Cronograma';
+
+  @override
+  String get regenerateDatesBasedOnMilestones =>
+      'Regenerar Fechas Basadas en Hitos';
+
+  @override
+  String get anteprojectDetails => 'Detalles del Anteproyecto';
+
+  @override
+  String get editAnteproject => 'Editar Anteproyecto';
+
+  @override
+  String get anteprojectRejected => 'Anteproyecto rechazado';
+
+  @override
+  String get sendForApproval => 'Enviar para Aprobación';
+
+  @override
+  String get sendForApprovalTitle => 'Enviar para Aprobación';
+
+  @override
+  String get sendForApprovalMessage =>
+      '¿Estás seguro de que quieres enviar este anteproyecto para aprobación? Una vez enviado, no podrás editarlo hasta que sea revisado.';
+
+  @override
+  String get send => 'Enviar';
+
+  @override
+  String get anteprojectSentForApproval =>
+      'Anteproyecto enviado para aprobación exitosamente';
+
+  @override
+  String errorSendingAnteproject(String error) {
+    return 'Error al enviar anteproyecto: $error';
+  }
+
+  @override
+  String errorLoadingComments(String error) {
+    return 'Error al cargar comentarios: $error';
+  }
+
+  @override
+  String get pleaseWriteComment => 'Por favor, escribe un comentario';
+
+  @override
+  String get commentAddedSuccess => 'Comentario agregado exitosamente';
+
+  @override
+  String errorAddingComment(String error) {
+    return 'Error al agregar comentario: $error';
+  }
+
+  @override
+  String get addIndividually => 'Añadir Individualmente';
+
+  @override
+  String get importFromCSV => 'Importar desde CSV';
+
+  @override
+  String errorLoadingNotifications(String error) {
+    return 'Error al cargar notificaciones: $error';
+  }
+
+  @override
+  String errorMarkingAsRead(String error) {
+    return 'Error al marcar como leída: $error';
+  }
+
+  @override
+  String get allNotificationsMarkedAsRead =>
+      'Todas las notificaciones marcadas como leídas';
+
+  @override
+  String errorMarkingAllAsRead(String error) {
+    return 'Error al marcar todas como leídas: $error';
+  }
+
+  @override
+  String errorDeletingNotification(String error) {
+    return 'Error al eliminar notificación: $error';
+  }
+
+  @override
+  String get notifications => 'Notificaciones';
+
+  @override
+  String errorLoadingStudents(String error) {
+    return 'Error al cargar estudiantes: $error';
+  }
+
+  @override
+  String dashboardTitle(String name) {
+    return 'Dashboard - $name';
+  }
+
+  @override
+  String get allYears => 'Todos los años';
+
+  @override
+  String errorSelectingFile(String error) {
+    return 'Error al seleccionar archivo: $error';
+  }
+
+  @override
+  String get noValidDataToImport => 'No hay datos válidos para importar';
+
+  @override
+  String importCompleted(int success, int error) {
+    return 'Importación completada: $success exitosos, $error errores';
+  }
+
+  @override
+  String errorDuringImport(String error) {
+    return 'Error durante la importación: $error';
+  }
+
+  @override
+  String get importStudentsCSV => 'Importar Estudiantes CSV';
+
+  @override
+  String get fullNameRequired => '• full_name (obligatorio)';
+
+  @override
+  String get specialtyOptional => '• specialty (opcional)';
+
+  @override
+  String get academicYearOptional => '• academic_year (opcional)';
+
+  @override
+  String get selectCSVFile => 'Seleccionar Archivo CSV';
+
+  @override
+  String importStudents(int count) {
+    return 'Importar $count Estudiantes';
+  }
+
+  @override
+  String get importing => 'Importando...';
+
+  @override
+  String get studentsImportedSuccess => 'Estudiantes importados exitosamente';
+
+  @override
+  String get creating => 'Creando...';
+
+  @override
+  String get createTutor => 'Crear Tutor';
+
+  @override
+  String get tutorCreatedSuccess => 'Tutor creado exitosamente';
+
+  @override
+  String errorUploadingFile(String error) {
+    return 'Error al subir archivo: $error';
+  }
+
+  @override
+  String errorLoadingFiles(String error) {
+    return 'Error al cargar archivos: $error';
+  }
+
+  @override
+  String errorDeletingFile(String error) {
+    return 'Error al eliminar archivo: $error';
+  }
+
+  @override
+  String errorOpeningFile(String error) {
+    return 'Error al abrir archivo: $error';
+  }
+
+  @override
+  String estimatedHours(int hours) {
+    return '${hours}h';
+  }
+
+  @override
+  String confirmDeleteTask(String title) {
+    return '¿Estás seguro de que quieres eliminar la tarea \"$title\"?';
+  }
+
+  @override
+  String get mustLoginToViewComments =>
+      'Debes iniciar sesión para ver los comentarios';
 }

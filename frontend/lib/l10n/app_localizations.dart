@@ -206,7 +206,7 @@ abstract class AppLocalizations {
   /// **'Cancelar'**
   String get cancel;
 
-  /// Botón de guardar
+  /// Botón para guardar
   ///
   /// In es, this message translates to:
   /// **'Guardar'**
@@ -290,10 +290,10 @@ abstract class AppLocalizations {
   /// **'Editar Anteproyecto'**
   String get anteprojectEditFormTitle;
 
-  /// Título del anteproyecto en diálogo
+  /// Título del anteproyecto
   ///
   /// In es, this message translates to:
-  /// **'Anteproyecto: {title}'**
+  /// **'Anteproyecto'**
   String anteprojectTitle(String title);
 
   /// Campo tipo de proyecto del anteproyecto
@@ -464,11 +464,11 @@ abstract class AppLocalizations {
   /// **'Eliminar anteproyecto'**
   String get anteprojectDeleteTooltip;
 
-  /// Título de la sección de comentarios
+  /// Título de comentarios
   ///
   /// In es, this message translates to:
-  /// **'Comentarios'**
-  String get commentsTitle;
+  /// **'Comentarios - {title}'**
+  String commentsTitle(String title);
 
   /// Botón para añadir un nuevo comentario
   ///
@@ -638,7 +638,7 @@ abstract class AppLocalizations {
   /// **'Mis Anteproyectos'**
   String get myAnteprojects;
 
-  /// Enlace para ver todos los elementos
+  /// Enlace para ver todos
   ///
   /// In es, this message translates to:
   /// **'Ver todos'**
@@ -830,11 +830,11 @@ abstract class AppLocalizations {
   /// **'Copiar al portapapeles'**
   String get copyToClipboard;
 
-  /// Mensaje de confirmación de copiado
+  /// Mensaje de copiado
   ///
   /// In es, this message translates to:
-  /// **'¡Copiado!'**
-  String get copied;
+  /// **'Copiado: {text}'**
+  String copied(String text);
 
   /// Mensaje de funcionalidad en desarrollo
   ///
@@ -1532,7 +1532,7 @@ abstract class AppLocalizations {
   /// **'Revisados'**
   String get reviewed;
 
-  /// Botón para añadir estudiantes
+  /// Título para añadir estudiantes
   ///
   /// In es, this message translates to:
   /// **'Añadir Estudiantes'**
@@ -1970,16 +1970,16 @@ abstract class AppLocalizations {
   /// **'NRE (Número de Registro de Estudiante)'**
   String get nreLabel;
 
-  /// Etiqueta para teléfono opcional
+  /// Campo opcional phone
   ///
   /// In es, this message translates to:
-  /// **'Teléfono (Opcional)'**
+  /// **'• phone (opcional)'**
   String get phoneOptional;
 
-  /// Etiqueta para biografía opcional
+  /// Campo opcional biography
   ///
   /// In es, this message translates to:
-  /// **'Biografía (Opcional)'**
+  /// **'• biography (opcional)'**
   String get biographyOptional;
 
   /// Mensaje de validación para nombre requerido
@@ -1988,10 +1988,10 @@ abstract class AppLocalizations {
   /// **'El nombre es obligatorio'**
   String get nameRequired;
 
-  /// Mensaje de validación para email requerido
+  /// Campo obligatorio email
   ///
   /// In es, this message translates to:
-  /// **'El email es obligatorio'**
+  /// **'• email (obligatorio)'**
   String get emailRequired;
 
   /// Mensaje de validación para email inválido
@@ -2000,10 +2000,10 @@ abstract class AppLocalizations {
   /// **'Email inválido'**
   String get emailInvalid;
 
-  /// Mensaje de validación para NRE requerido
+  /// Campo obligatorio nre
   ///
   /// In es, this message translates to:
-  /// **'El NRE es obligatorio'**
+  /// **'• nre (obligatorio)'**
   String get nreRequired;
 
   /// Botón para crear estudiante
@@ -2035,6 +2035,414 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Rol'**
   String get role;
+
+  /// Mensaje cuando no hay proyecto asignado
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes un proyecto o anteproyecto asignado. Contacta con tu tutor.'**
+  String get noProjectAssigned;
+
+  /// Mensaje de error al obtener proyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Error al obtener proyecto: {error}'**
+  String errorGettingProject(String error);
+
+  /// Título del diálogo de eliminación de anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar Anteproyecto'**
+  String get deleteAnteproject;
+
+  /// Mensaje de confirmación para eliminar anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de que quieres eliminar el anteproyecto \"{title}\"?\n\nEsta acción no se puede deshacer.'**
+  String confirmDeleteAnteproject(String title);
+
+  /// Mensaje de éxito al eliminar anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Anteproyecto eliminado exitosamente'**
+  String get anteprojectDeletedSuccess;
+
+  /// Mensaje de error al eliminar anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Error al eliminar anteproyecto: {error}'**
+  String errorDeletingAnteproject(String error);
+
+  /// Mensaje de éxito al cargar plantilla
+  ///
+  /// In es, this message translates to:
+  /// **'✅ Plantilla cargada correctamente. Los 4 hitos de ejemplo han sido añadidos.'**
+  String get templateLoadedSuccess;
+
+  /// Mensaje de error al generar PDF
+  ///
+  /// In es, this message translates to:
+  /// **'Error al generar PDF: {error}'**
+  String errorGeneratingPDF(String error);
+
+  /// Título del diálogo de descarga de ejemplo
+  ///
+  /// In es, this message translates to:
+  /// **'Descargar Ejemplo de Anteproyecto'**
+  String get downloadExampleTitle;
+
+  /// Mensaje del diálogo de descarga de ejemplo
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cómo deseas descargar el ejemplo de anteproyecto?'**
+  String get downloadExampleMessage;
+
+  /// Botón para imprimir
+  ///
+  /// In es, this message translates to:
+  /// **'Imprimir'**
+  String get print;
+
+  /// Mensaje de error al imprimir
+  ///
+  /// In es, this message translates to:
+  /// **'Error al imprimir: {error}'**
+  String errorPrinting(String error);
+
+  /// Mensaje de éxito al guardar PDF
+  ///
+  /// In es, this message translates to:
+  /// **'PDF guardado en: {path}'**
+  String pdfSavedAt(String path);
+
+  /// Mensaje de error al guardar
+  ///
+  /// In es, this message translates to:
+  /// **'Error al guardar: {error}'**
+  String errorSaving(String error);
+
+  /// Botón para descargar ejemplo PDF
+  ///
+  /// In es, this message translates to:
+  /// **'Descargar Ejemplo PDF'**
+  String get downloadExamplePDF;
+
+  /// Botón para cargar plantilla
+  ///
+  /// In es, this message translates to:
+  /// **'Cargar Plantilla'**
+  String get loadTemplate;
+
+  /// Mensaje de error al cargar cronograma
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar cronograma: {error}'**
+  String errorLoadingSchedule(String error);
+
+  /// Mensaje de validación para fecha de revisión
+  ///
+  /// In es, this message translates to:
+  /// **'Debe configurar al menos una fecha de revisión'**
+  String get mustConfigureReviewDate;
+
+  /// Mensaje de éxito al guardar cronograma
+  ///
+  /// In es, this message translates to:
+  /// **'Cronograma guardado exitosamente'**
+  String get scheduleSavedSuccess;
+
+  /// Mensaje de error al guardar cronograma
+  ///
+  /// In es, this message translates to:
+  /// **'Error al guardar cronograma: {error}'**
+  String errorSavingSchedule(String error);
+
+  /// Título de gestión de cronograma
+  ///
+  /// In es, this message translates to:
+  /// **'Gestión de Cronograma'**
+  String get scheduleManagement;
+
+  /// Botón para regenerar fechas
+  ///
+  /// In es, this message translates to:
+  /// **'Regenerar Fechas Basadas en Hitos'**
+  String get regenerateDatesBasedOnMilestones;
+
+  /// Título de detalles del anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Detalles del Anteproyecto'**
+  String get anteprojectDetails;
+
+  /// Botón para editar anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Editar Anteproyecto'**
+  String get editAnteproject;
+
+  /// Mensaje de anteproyecto rechazado
+  ///
+  /// In es, this message translates to:
+  /// **'Anteproyecto rechazado'**
+  String get anteprojectRejected;
+
+  /// Botón para enviar para aprobación
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar para Aprobación'**
+  String get sendForApproval;
+
+  /// Título del diálogo de envío para aprobación
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar para Aprobación'**
+  String get sendForApprovalTitle;
+
+  /// Mensaje de confirmación para envío
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de que quieres enviar este anteproyecto para aprobación? Una vez enviado, no podrás editarlo hasta que sea revisado.'**
+  String get sendForApprovalMessage;
+
+  /// Botón para enviar
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar'**
+  String get send;
+
+  /// Mensaje de éxito al enviar para aprobación
+  ///
+  /// In es, this message translates to:
+  /// **'Anteproyecto enviado para aprobación exitosamente'**
+  String get anteprojectSentForApproval;
+
+  /// Mensaje de error al enviar anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Error al enviar anteproyecto: {error}'**
+  String errorSendingAnteproject(String error);
+
+  /// Mensaje de error al cargar comentarios
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar comentarios: {error}'**
+  String errorLoadingComments(String error);
+
+  /// Mensaje de validación para comentario
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor, escribe un comentario'**
+  String get pleaseWriteComment;
+
+  /// Mensaje de éxito al agregar comentario
+  ///
+  /// In es, this message translates to:
+  /// **'Comentario agregado exitosamente'**
+  String get commentAddedSuccess;
+
+  /// Mensaje de error al agregar comentario
+  ///
+  /// In es, this message translates to:
+  /// **'Error al agregar comentario: {error}'**
+  String errorAddingComment(String error);
+
+  /// Botón para añadir individualmente
+  ///
+  /// In es, this message translates to:
+  /// **'Añadir Individualmente'**
+  String get addIndividually;
+
+  /// Botón para importar desde CSV
+  ///
+  /// In es, this message translates to:
+  /// **'Importar desde CSV'**
+  String get importFromCSV;
+
+  /// Mensaje de error al cargar notificaciones
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar notificaciones: {error}'**
+  String errorLoadingNotifications(String error);
+
+  /// Mensaje de error al marcar como leída
+  ///
+  /// In es, this message translates to:
+  /// **'Error al marcar como leída: {error}'**
+  String errorMarkingAsRead(String error);
+
+  /// Mensaje de éxito al marcar todas como leídas
+  ///
+  /// In es, this message translates to:
+  /// **'Todas las notificaciones marcadas como leídas'**
+  String get allNotificationsMarkedAsRead;
+
+  /// Mensaje de error al marcar todas como leídas
+  ///
+  /// In es, this message translates to:
+  /// **'Error al marcar todas como leídas: {error}'**
+  String errorMarkingAllAsRead(String error);
+
+  /// Mensaje de error al eliminar notificación
+  ///
+  /// In es, this message translates to:
+  /// **'Error al eliminar notificación: {error}'**
+  String errorDeletingNotification(String error);
+
+  /// Título de notificaciones
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones'**
+  String get notifications;
+
+  /// Mensaje de error al cargar estudiantes
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar estudiantes: {error}'**
+  String errorLoadingStudents(String error);
+
+  /// Título del dashboard
+  ///
+  /// In es, this message translates to:
+  /// **'Dashboard - {name}'**
+  String dashboardTitle(String name);
+
+  /// Opción para todos los años
+  ///
+  /// In es, this message translates to:
+  /// **'Todos los años'**
+  String get allYears;
+
+  /// Mensaje de error al seleccionar archivo
+  ///
+  /// In es, this message translates to:
+  /// **'Error al seleccionar archivo: {error}'**
+  String errorSelectingFile(String error);
+
+  /// Mensaje cuando no hay datos válidos
+  ///
+  /// In es, this message translates to:
+  /// **'No hay datos válidos para importar'**
+  String get noValidDataToImport;
+
+  /// Mensaje de importación completada
+  ///
+  /// In es, this message translates to:
+  /// **'Importación completada: {success} exitosos, {error} errores'**
+  String importCompleted(int success, int error);
+
+  /// Mensaje de error durante importación
+  ///
+  /// In es, this message translates to:
+  /// **'Error durante la importación: {error}'**
+  String errorDuringImport(String error);
+
+  /// Título de importar estudiantes CSV
+  ///
+  /// In es, this message translates to:
+  /// **'Importar Estudiantes CSV'**
+  String get importStudentsCSV;
+
+  /// Campo obligatorio full_name
+  ///
+  /// In es, this message translates to:
+  /// **'• full_name (obligatorio)'**
+  String get fullNameRequired;
+
+  /// Campo opcional specialty
+  ///
+  /// In es, this message translates to:
+  /// **'• specialty (opcional)'**
+  String get specialtyOptional;
+
+  /// Campo opcional academic_year
+  ///
+  /// In es, this message translates to:
+  /// **'• academic_year (opcional)'**
+  String get academicYearOptional;
+
+  /// Botón para seleccionar archivo CSV
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar Archivo CSV'**
+  String get selectCSVFile;
+
+  /// Botón para importar estudiantes
+  ///
+  /// In es, this message translates to:
+  /// **'Importar {count} Estudiantes'**
+  String importStudents(int count);
+
+  /// Mensaje de importación en progreso
+  ///
+  /// In es, this message translates to:
+  /// **'Importando...'**
+  String get importing;
+
+  /// Mensaje de éxito al importar estudiantes
+  ///
+  /// In es, this message translates to:
+  /// **'Estudiantes importados exitosamente'**
+  String get studentsImportedSuccess;
+
+  /// Mensaje de creación en progreso
+  ///
+  /// In es, this message translates to:
+  /// **'Creando...'**
+  String get creating;
+
+  /// Botón para crear tutor
+  ///
+  /// In es, this message translates to:
+  /// **'Crear Tutor'**
+  String get createTutor;
+
+  /// Mensaje de éxito al crear tutor
+  ///
+  /// In es, this message translates to:
+  /// **'Tutor creado exitosamente'**
+  String get tutorCreatedSuccess;
+
+  /// Mensaje de error al subir archivo
+  ///
+  /// In es, this message translates to:
+  /// **'Error al subir archivo: {error}'**
+  String errorUploadingFile(String error);
+
+  /// Mensaje de error al cargar archivos
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar archivos: {error}'**
+  String errorLoadingFiles(String error);
+
+  /// Mensaje de error al eliminar archivo
+  ///
+  /// In es, this message translates to:
+  /// **'Error al eliminar archivo: {error}'**
+  String errorDeletingFile(String error);
+
+  /// Mensaje de error al abrir archivo
+  ///
+  /// In es, this message translates to:
+  /// **'Error al abrir archivo: {error}'**
+  String errorOpeningFile(String error);
+
+  /// Horas estimadas
+  ///
+  /// In es, this message translates to:
+  /// **'{hours}h'**
+  String estimatedHours(int hours);
+
+  /// Mensaje de confirmación para eliminar tarea
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de que quieres eliminar la tarea \"{title}\"?'**
+  String confirmDeleteTask(String title);
+
+  /// Mensaje para iniciar sesión
+  ///
+  /// In es, this message translates to:
+  /// **'Debes iniciar sesión para ver los comentarios'**
+  String get mustLoginToViewComments;
 }
 
 class _AppLocalizationsDelegate

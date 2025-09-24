@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide User;
 import '../models/models.dart';
+import 'email_notification_service.dart';
 
 class ApprovalService {
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -26,7 +28,12 @@ class ApprovalService {
         throw ApprovalException('Error al aprobar anteproyecto: $error');
       }
 
-      return ApprovalResult.fromJson(response.data);
+      final result = ApprovalResult.fromJson(response.data);
+
+      // Enviar email de notificación al estudiante
+      await _sendStatusChangeEmail(anteprojectId, 'approved', comments);
+
+      return result;
     } catch (e) {
       if (e is ApprovalException) rethrow;
       throw ApprovalException('Error al aprobar anteproyecto: $e');
@@ -59,7 +66,12 @@ class ApprovalService {
         throw ApprovalException('Error al rechazar anteproyecto: $error');
       }
 
-      return ApprovalResult.fromJson(response.data);
+      final result = ApprovalResult.fromJson(response.data);
+
+      // Enviar email de notificación al estudiante
+      await _sendStatusChangeEmail(anteprojectId, 'rejected', comments);
+
+      return result;
     } catch (e) {
       if (e is ApprovalException) rethrow;
       throw ApprovalException('Error al rechazar anteproyecto: $e');
@@ -176,6 +188,61 @@ class ApprovalService {
       return role == 'tutor' || role == 'admin';
     } catch (e) {
       return false;
+    }
+  }
+
+  /// Envía email de notificación de cambio de estado
+  Future<void> _sendStatusChangeEmail(int anteprojectId, String status, String? comments) async {
+    try {
+      // Obtener información del anteproyecto y estudiantes
+      final anteprojectResponse = await _supabase
+          .from('anteprojects')
+          .select('title, tutor_id')
+          .eq('id', anteprojectId)
+          .single();
+
+      final anteprojectTitle = anteprojectResponse['title'] as String;
+      final tutorId = anteprojectResponse['tutor_id'] as int;
+
+      // Obtener información del tutor
+      final tutorResponse = await _supabase
+          .from('users')
+          .select('full_name')
+          .eq('id', tutorId)
+          .single();
+
+      final tutorName = tutorResponse['full_name'] as String;
+
+      // Obtener estudiantes del anteproyecto
+      final studentsResponse = await _supabase
+          .from('anteproject_students')
+          .select('''
+            student_id,
+            students:users!anteproject_students_student_id_fkey (
+              id, full_name, email
+            )
+          ''')
+          .eq('anteproject_id', anteprojectId);
+
+      // Enviar email a cada estudiante
+      for (final student in studentsResponse) {
+        final studentData = student['students'] as Map<String, dynamic>;
+        final studentName = studentData['full_name'] as String;
+        final studentEmail = studentData['email'] as String;
+
+        await EmailNotificationService.sendStatusChangeNotification(
+          studentEmail: studentEmail,
+          studentName: studentName,
+          tutorName: tutorName,
+          anteprojectTitle: anteprojectTitle,
+          newStatus: status,
+          tutorComments: comments,
+          anteprojectUrl: 'https://app.cifpcarlos3.es/anteprojects/$anteprojectId',
+        );
+      }
+    } catch (e) {
+      // No fallar si no se puede enviar el email
+      debugPrint('Error al enviar email de cambio de estado: $e');
     }
   }
 }

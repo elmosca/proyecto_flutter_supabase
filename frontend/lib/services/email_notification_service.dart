@@ -141,4 +141,41 @@ class EmailNotificationService {
       debugPrint('❌ Error en sendReminderNotification: $e');
     }
   }
+
+  /// Enviar notificación al tutor
+  static Future<void> sendTutorNotification({
+    required String tutorEmail,
+    required String tutorName,
+    required String studentName,
+    required String anteprojectTitle,
+    required String notificationType,
+    required String message,
+    required String anteprojectUrl,
+  }) async {
+    try {
+      final response = await _supabase.functions.invoke(
+        'send-email',
+        body: {
+          'type': 'tutor_notification',
+          'data': {
+            'tutorEmail': tutorEmail,
+            'tutorName': tutorName,
+            'studentName': studentName,
+            'anteprojectTitle': anteprojectTitle,
+            'notificationType': notificationType,
+            'message': message,
+            'anteprojectUrl': anteprojectUrl,
+          },
+        },
+      );
+
+      if (response.status == 200) {
+        debugPrint('✅ Email de notificación al tutor enviado exitosamente');
+      } else {
+        debugPrint('❌ Error enviando email al tutor: ${response.data}');
+      }
+    } catch (e) {
+      debugPrint('❌ Error en sendTutorNotification: $e');
+    }
+  }
 }

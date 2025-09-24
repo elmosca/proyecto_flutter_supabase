@@ -261,14 +261,14 @@ class _AnteprojectsListState extends State<AnteprojectsList> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Eliminar Anteproyecto'),
+          title: Text(AppLocalizations.of(context)!.deleteAnteproject),
           content: Text(
-            '¿Estás seguro de que quieres eliminar el anteproyecto "${anteproject.title}"?\n\nEsta acción no se puede deshacer.',
+            AppLocalizations.of(context)!.confirmDeleteAnteproject(anteproject.title),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancelar'),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
             TextButton(
               onPressed: () {
@@ -278,7 +278,7 @@ class _AnteprojectsListState extends State<AnteprojectsList> {
               style: TextButton.styleFrom(
                 foregroundColor: Colors.red,
               ),
-              child: const Text('Eliminar'),
+              child: Text(AppLocalizations.of(context)!.delete),
             ),
           ],
         );
@@ -293,8 +293,8 @@ class _AnteprojectsListState extends State<AnteprojectsList> {
       
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Anteproyecto eliminado exitosamente'),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.anteprojectDeletedSuccess),
             backgroundColor: Colors.green,
           ),
         );
@@ -306,7 +306,7 @@ class _AnteprojectsListState extends State<AnteprojectsList> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error al eliminar anteproyecto: $e'),
+            content: Text(AppLocalizations.of(context)!.errorDeletingAnteproject(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
