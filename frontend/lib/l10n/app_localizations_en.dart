@@ -105,11 +105,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get anteprojectEditFormTitle => 'Edit Anteproject';
 
   @override
-  String anteprojectTitle(String title) {
-    return 'Anteproject';
-  }
-
-  @override
   String get anteprojectType => 'Project Type';
 
   @override
@@ -194,11 +189,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get anteprojectDeleteTooltip => 'Delete anteproyecto';
-
-  @override
-  String commentsTitle(String title) {
-    return 'Comments - $title';
-  }
 
   @override
   String get commentsAddComment => 'Add comment';
@@ -335,16 +325,47 @@ class AppLocalizationsEn extends AppLocalizations {
   String get connectedToServer => 'Connected to server';
 
   @override
-  String get tasksListDev => 'Tasks List (Development)';
-
-  @override
-  String get adminDashboardDev => 'Admin Dashboard (Development)';
-
-  @override
   String get dashboardAdminUsersManagement => 'Users Management';
 
   @override
-  String get tutorDashboardDev => 'Tutor Dashboard (Development)';
+  String get dashboardTutor => 'Tutor Dashboard';
+
+  @override
+  String get dashboardAdmin => 'Admin Dashboard';
+
+  @override
+  String get comingSoon => 'Coming Soon';
+
+  @override
+  String get supabaseStudio => 'Supabase Studio';
+
+  @override
+  String get openSupabaseStudio => 'Open Supabase Studio';
+
+  @override
+  String get supabaseStudioDescription =>
+      'Direct access to database administration panel';
+
+  @override
+  String get openInbucket => 'Open Inbucket';
+
+  @override
+  String get totalUsers => 'Total Users';
+
+  @override
+  String get activeProjects => 'Active Projects';
+
+  @override
+  String get tutors => 'Tutors';
+
+  @override
+  String get noUsers => 'No users';
+
+  @override
+  String get systemStatus => 'System Status';
+
+  @override
+  String get close => 'Close';
 
   @override
   String get dashboardTutorMyAnteprojects => 'My Anteprojects';
@@ -392,26 +413,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get copyToClipboard => 'Copy to Clipboard';
 
   @override
-  String copied(String text) {
-    return 'Copied: $text';
-  }
-
-  @override
-  String get anteprojectsListInDevelopment => 'Anteprojects List (Development)';
-
-  @override
-  String get studentsListInDevelopment => 'Students List (Development)';
-
-  @override
-  String get userManagementInDevelopment => 'User Management (Development)';
-
-  @override
-  String get systemStatusInDevelopment => 'System Status (Development)';
-
-  @override
-  String get usersListInDevelopment => 'Users List (Development)';
-
-  @override
   String get validationError => 'Validation Error';
 
   @override
@@ -437,9 +438,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get unknownErrorMessage =>
       'An unexpected error occurred. Please try again.';
-
-  @override
-  String get close => 'Close';
 
   @override
   String get confirm => 'Confirm';
@@ -1081,11 +1079,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get print => 'Print';
 
   @override
-  String errorPrinting(String error) {
-    return 'Error printing: $error';
-  }
-
-  @override
   String pdfSavedAt(String path) {
     return 'PDF saved at: $path';
   }
@@ -1157,6 +1150,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String anteprojectTitle(String title) {
+    return 'Anteproject';
+  }
+
+  @override
   String errorLoadingComments(String error) {
     return 'Error loading comments: $error';
   }
@@ -1170,6 +1168,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String errorAddingComment(String error) {
     return 'Error adding comment: $error';
+  }
+
+  @override
+  String commentsTitle(String title) {
+    return 'Comments - $title';
+  }
+
+  @override
+  String copied(String text) {
+    return 'Copied: $text';
   }
 
   @override
@@ -1302,4 +1310,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mustLoginToViewComments => 'You must login to view comments';
+
+  @override
+  String get permissionRequired => 'Permissions Required';
+
+  @override
+  String get permissionRequiredMessage =>
+      'This application needs access to storage to select files. Please grant the necessary permissions.';
+
+  @override
+  String get openSettings => 'Open Settings';
+
+  @override
+  String get tryAgain => 'Try Again';
+
+  @override
+  String get fileSavedSuccessfully => 'Archivo guardado con éxito';
+
+  @override
+  String errorPrinting(String error) {
+    return 'Error printing: $error';
+  }
 }

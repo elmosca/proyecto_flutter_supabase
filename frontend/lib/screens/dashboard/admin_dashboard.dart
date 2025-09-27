@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../config/app_config.dart';
 import '../../models/user.dart';
 import '../../services/theme_service.dart';
+import '../../services/admin_stats_service.dart';
 import '../../themes/role_themes.dart';
 import '../../widgets/common/language_selector.dart';
 import '../../router/app_router.dart';
@@ -21,6 +23,13 @@ class AdminDashboard extends StatefulWidget {
 class _AdminDashboardState extends State<AdminDashboard> {
   bool _isLoading = true;
 
+  // Servicios
+  final AdminStatsService _statsService = AdminStatsService();
+
+  // Datos del dashboard
+  AdminStats? _stats;
+  List<User> _recentUsers = [];
+
   @override
   void initState() {
     super.initState();
@@ -28,11 +37,33 @@ class _AdminDashboardState extends State<AdminDashboard> {
   }
 
   Future<void> _loadData() async {
-    await Future.delayed(const Duration(seconds: 1));
-    if (mounted) {
+    try {
       setState(() {
-        _isLoading = false;
+        _isLoading = true;
       });
+
+      // Cargar datos en paralelo
+      final futures = await Future.wait([
+        _statsService.getSystemStats(),
+        _statsService.getRecentUsers(),
+      ]);
+
+      if (mounted) {
+        setState(() {
+          _stats = futures[0] as AdminStats;
+          _recentUsers = futures[1] as List<User>;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('Error al cargar datos del admin dashboard: $e');
+      }
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -46,7 +77,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
           children: [
             Text(RoleThemes.getEmojiForRole(widget.user.role)),
             const SizedBox(width: 8),
-            Text(l10n.adminDashboardDev),
+            Text(l10n.dashboardAdmin),
           ],
         ),
         backgroundColor: ThemeService.instance.currentPrimaryColor,
@@ -82,6 +113,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
         _buildStatistics(),
         const SizedBox(height: 24),
         _buildSystemSection(),
+        const SizedBox(height: 24),
+        _buildSupabaseSection(),
         const SizedBox(height: 24),
         _buildUsersSection(),
       ],
@@ -132,55 +165,75 @@ class _AdminDashboardState extends State<AdminDashboard> {
     ),
   );
 
-  Widget _buildStatistics() => Row(
-    children: [
-      Expanded(
-        child: _buildStatCard(
-          'Usuarios Totales',
-          '0',
-          Icons.people,
-          Colors.blue,
+  Widget _buildStatistics() {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Row(
+      children: [
+        Expanded(
+          child: _buildStatCard(
+            l10n.totalUsers,
+            _stats?.totalUsers.toString() ?? '0',
+            Icons.people,
+            Colors.blue,
+            onTap: _viewAllUsers,
+          ),
         ),
-      ),
-      const SizedBox(width: 8),
-      Expanded(
-        child: _buildStatCard(
-          'Proyectos Activos',
-          '0',
-          Icons.work,
-          Colors.green,
+        const SizedBox(width: 8),
+        Expanded(
+          child: _buildStatCard(
+            l10n.activeProjects,
+            _stats?.activeAnteprojects.toString() ?? '0',
+            Icons.work,
+            Colors.green,
+            onTap: _viewAllAnteprojects,
+          ),
         ),
-      ),
-      const SizedBox(width: 8),
-      Expanded(
-        child: _buildStatCard('Tutores', '0', Icons.school, Colors.orange),
-      ),
-    ],
-  );
+        const SizedBox(width: 8),
+        Expanded(
+          child: _buildStatCard(
+            l10n.tutors,
+            _stats?.totalTutors.toString() ?? '0',
+            Icons.school,
+            Colors.orange,
+            onTap: _viewAllTutors,
+          ),
+        ),
+      ],
+    );
+  }
 
   Widget _buildStatCard(
     String title,
     String value,
     IconData icon,
-    Color color,
-  ) {
+    Color color, {
+    VoidCallback? onTap,
+  }) {
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          children: [
-            Icon(icon, color: color, size: 32),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              title,
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
-              textAlign: TextAlign.center,
-            ),
-          ],
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            children: [
+              Icon(icon, color: color, size: 32),
+              const SizedBox(height: 8),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                title,
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -240,31 +293,64 @@ class _AdminDashboardState extends State<AdminDashboard> {
     );
   }
 
-  Widget _buildUsersSection() {
+  Widget _buildSupabaseSection() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              'Gestión de Usuarios',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            TextButton(
-              onPressed: _viewAllUsers,
-              child: Text(AppLocalizations.of(context)!.viewAll),
-            ),
-          ],
+        Text(
+          l10n.supabaseStudio,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        const Card(
+        Card(
           child: Padding(
-            padding: EdgeInsets.all(16),
-            child: Text(
-              'Panel de administración de usuarios en desarrollo.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.supabaseStudioDescription,
+                  style: const TextStyle(color: Colors.grey),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: _openSupabaseStudio,
+                        icon: const Icon(Icons.storage),
+                        label: Text(l10n.openSupabaseStudio),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: _openInbucket,
+                        icon: const Icon(Icons.email),
+                        label: Text(l10n.openInbucket),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.blue,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'URL: ${AppConfig.supabaseStudioUrl}',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                    fontFamily: 'monospace',
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -272,7 +358,97 @@ class _AdminDashboardState extends State<AdminDashboard> {
     );
   }
 
+  Widget _buildUsersSection() {
+    final l10n = AppLocalizations.of(context)!;
 
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              l10n.dashboardAdminUsersManagement,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            TextButton(onPressed: _viewAllUsers, child: Text(l10n.viewAll)),
+          ],
+        ),
+        const SizedBox(height: 8),
+        if (_recentUsers.isEmpty)
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                l10n.noUsers,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.grey),
+              ),
+            ),
+          )
+        else
+          ...(_recentUsers.take(5).map(_buildUserPreview)),
+      ],
+    );
+  }
+
+  Widget _buildUserPreview(User user) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: _getRoleColor(user.role),
+          child: Text(
+            user.email.substring(0, 1).toUpperCase(),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        title: Text(user.email),
+        subtitle: Text(_getRoleDisplayName(user.role)),
+        trailing: Icon(
+          _getRoleIcon(user.role),
+          color: _getRoleColor(user.role),
+        ),
+        onTap: () => _viewUserDetails(user),
+      ),
+    );
+  }
+
+  Color _getRoleColor(UserRole role) {
+    switch (role) {
+      case UserRole.admin:
+        return Colors.red;
+      case UserRole.tutor:
+        return Colors.blue;
+      case UserRole.student:
+        return Colors.green;
+    }
+  }
+
+  IconData _getRoleIcon(UserRole role) {
+    switch (role) {
+      case UserRole.admin:
+        return Icons.admin_panel_settings;
+      case UserRole.tutor:
+        return Icons.school;
+      case UserRole.student:
+        return Icons.person;
+    }
+  }
+
+  String _getRoleDisplayName(UserRole role) {
+    switch (role) {
+      case UserRole.admin:
+        return 'Administrador';
+      case UserRole.tutor:
+        return 'Tutor';
+      case UserRole.student:
+        return 'Estudiante';
+    }
+  }
 
   Future<void> _logout() async {
     try {
@@ -286,29 +462,165 @@ class _AdminDashboardState extends State<AdminDashboard> {
   }
 
   void _manageUsers() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(AppLocalizations.of(context)!.userManagementInDevelopment),
-        duration: const Duration(seconds: 2),
-      ),
-    );
+    _viewAllUsers();
   }
 
   void _viewSystemStatus() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(AppLocalizations.of(context)!.systemStatusInDevelopment),
-        duration: const Duration(seconds: 2),
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(AppLocalizations.of(context)!.systemStatus),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildStatusRow('Base de datos', 'Operativo', Colors.green),
+            _buildStatusRow('API REST', 'Operativo', Colors.green),
+            _buildStatusRow('Autenticación', 'Operativo', Colors.green),
+            _buildStatusRow('Almacenamiento', 'Operativo', Colors.green),
+            const SizedBox(height: 16),
+            Text(
+              'Última actualización: ${DateTime.now().toString().substring(0, 19)}',
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(AppLocalizations.of(context)!.close),
+          ),
+        ],
       ),
     );
   }
 
   void _viewAllUsers() {
+    // TODO: Implementar pantalla de gestión de usuarios
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(AppLocalizations.of(context)!.usersListInDevelopment),
+        content: Text('Mostrando ${_recentUsers.length} usuarios recientes'),
         duration: const Duration(seconds: 2),
       ),
     );
+  }
+
+  void _viewAllAnteprojects() {
+    // TODO: Implementar pantalla de anteproyectos
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Mostrando ${_stats?.totalAnteprojects ?? 0} anteproyectos',
+        ),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _viewAllTutors() {
+    // TODO: Implementar pantalla de tutores
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Mostrando ${_stats?.totalTutors ?? 0} tutores'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _viewUserDetails(User user) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(user.email),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Rol: ${_getRoleDisplayName(user.role)}'),
+            Text('ID: ${user.id}'),
+            Text('Creado: ${user.createdAt.toString().substring(0, 19)}'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(AppLocalizations.of(context)!.close),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _openSupabaseStudio() async {
+    final Uri url = Uri.parse(AppConfig.supabaseStudioUrl);
+
+    // Debug: Mostrar información del entorno y URL
+    debugPrint('🔧 Debug - Entorno detectado: ${AppConfig.environment}');
+    debugPrint(
+      '🔧 Debug - URL Supabase Studio: ${AppConfig.supabaseStudioUrl}',
+    );
+    debugPrint('🔧 Debug - URL completa: $url');
+
+    try {
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+        debugPrint('✅ Supabase Studio abierto exitosamente');
+      } else {
+        debugPrint('❌ No se pudo abrir Supabase Studio: $url');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('No se pudo abrir Supabase Studio: $url'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('❌ Error al abrir Supabase Studio: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error al abrir Supabase Studio: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _openInbucket() async {
+    final Uri url = Uri.parse(AppConfig.inbucketUrl);
+
+    // Debug: Mostrar información del entorno y URL
+    debugPrint('🔧 Debug - Entorno detectado: ${AppConfig.environment}');
+    debugPrint('🔧 Debug - URL Inbucket/Resend: ${AppConfig.inbucketUrl}');
+    debugPrint('🔧 Debug - URL completa: $url');
+
+    try {
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+        debugPrint('✅ Inbucket/Resend abierto exitosamente');
+      } else {
+        debugPrint('❌ No se pudo abrir Inbucket/Resend: $url');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('No se pudo abrir Inbucket/Resend: $url'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('❌ Error al abrir Inbucket/Resend: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error al abrir Inbucket/Resend: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 }

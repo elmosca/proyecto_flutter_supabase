@@ -1,7 +1,9 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../services/files_service.dart';
+import '../../services/permissions_service.dart';
 import '../../l10n/app_localizations.dart';
 
 class FileUploadWidget extends StatefulWidget {
@@ -20,6 +22,7 @@ class FileUploadWidget extends StatefulWidget {
 
 class _FileUploadWidgetState extends State<FileUploadWidget> {
   final FilesService _filesService = FilesService();
+  final PermissionsService _permissionsService = PermissionsService.instance;
   bool _isUploading = false;
   double _uploadProgress = 0.0;
   String? _selectedFileName;
@@ -27,15 +30,40 @@ class _FileUploadWidgetState extends State<FileUploadWidget> {
 
   Future<void> _selectFile() async {
     try {
+      // Verificar permisos antes de seleccionar archivo
+      final hasPermission = await _permissionsService.hasStoragePermission();
+
+      if (!hasPermission) {
+        final status = await _permissionsService.requestStoragePermission();
+
+        if (status != PermissionStatus.granted) {
+          if (mounted) {
+            _showPermissionDialog(status);
+          }
+          return;
+        }
+      }
+
       final result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ['pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png', 'gif', 'zip', 'rar'],
+        allowedExtensions: [
+          'pdf',
+          'doc',
+          'docx',
+          'txt',
+          'jpg',
+          'jpeg',
+          'png',
+          'gif',
+          'zip',
+          'rar',
+        ],
         withData: true,
       );
 
       if (result != null && result.files.isNotEmpty) {
         final file = result.files.first;
-        
+
         if (file.bytes == null) {
           throw Exception('No se pudo leer el archivo');
         }
@@ -91,11 +119,13 @@ class _FileUploadWidgetState extends State<FileUploadWidget> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.fileUploadedSuccessfully),
+            content: Text(
+              AppLocalizations.of(context)!.fileUploadedSuccessfully,
+            ),
             backgroundColor: Colors.green,
           ),
         );
-        
+
         // Regresar con resultado exitoso
         Navigator.of(context).pop(true);
       }
@@ -117,12 +147,12 @@ class _FileUploadWidgetState extends State<FileUploadWidget> {
     Future.doWhile(() async {
       await Future.delayed(const Duration(milliseconds: 100));
       if (!mounted || _uploadProgress >= 0.9) return false;
-      
+
       setState(() {
         _uploadProgress += 0.05;
         if (_uploadProgress > 0.9) _uploadProgress = 0.9;
       });
-      
+
       return _isUploading && _uploadProgress < 0.9;
     });
   }
@@ -132,6 +162,54 @@ class _FileUploadWidgetState extends State<FileUploadWidget> {
       _selectedFileName = null;
       _selectedFileBytes = null;
     });
+  }
+
+  /// Muestra un diálogo explicando por qué se necesitan los permisos
+  void _showPermissionDialog(PermissionStatus status) {
+    final l10n = AppLocalizations.of(context)!;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.permissionRequired),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l10n.permissionRequiredMessage),
+            const SizedBox(height: 16),
+            Text(
+              _permissionsService.getPermissionStatusMessage(status),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.error,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.cancel),
+          ),
+          if (status == PermissionStatus.permanentlyDenied)
+            FilledButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _permissionsService.openAppSettings();
+              },
+              child: Text(l10n.openSettings),
+            )
+          else
+            FilledButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _selectFile(); // Intentar de nuevo
+              },
+              child: Text(l10n.tryAgain),
+            ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -149,10 +227,7 @@ class _FileUploadWidgetState extends State<FileUploadWidget> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Título
-            Text(
-              l10n.uploadFile,
-              style: theme.textTheme.headlineSmall,
-            ),
+            Text(l10n.uploadFile, style: theme.textTheme.headlineSmall),
             const SizedBox(height: 24),
 
             // Área de selección de archivo
@@ -169,7 +244,9 @@ class _FileUploadWidgetState extends State<FileUploadWidget> {
                       style: BorderStyle.solid,
                     ),
                     borderRadius: BorderRadius.circular(12),
-                    color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                    color: theme.colorScheme.surfaceContainerHighest.withValues(
+                      alpha: 0.3,
+                    ),
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -237,7 +314,8 @@ class _FileUploadWidgetState extends State<FileUploadWidget> {
                         const SizedBox(height: 16),
                         LinearProgressIndicator(
                           value: _uploadProgress,
-                          backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                          backgroundColor:
+                              theme.colorScheme.surfaceContainerHighest,
                         ),
                         const SizedBox(height: 8),
                         Text(
@@ -257,7 +335,9 @@ class _FileUploadWidgetState extends State<FileUploadWidget> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
-                  onPressed: _isUploading ? null : () => Navigator.of(context).pop(),
+                  onPressed: _isUploading
+                      ? null
+                      : () => Navigator.of(context).pop(),
                   child: Text(l10n.cancel),
                 ),
                 const SizedBox(width: 8),

@@ -110,10 +110,10 @@ abstract class AppLocalizations {
   /// **'Iniciar Sesión'**
   String get login;
 
-  /// Etiqueta para email
+  /// Campo de email
   ///
   /// In es, this message translates to:
-  /// **'Email'**
+  /// **'Correo Electrónico'**
   String get email;
 
   /// Campo de contraseña
@@ -206,7 +206,7 @@ abstract class AppLocalizations {
   /// **'Cancelar'**
   String get cancel;
 
-  /// Botón para guardar
+  /// Botón de guardar
   ///
   /// In es, this message translates to:
   /// **'Guardar'**
@@ -289,12 +289,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Editar Anteproyecto'**
   String get anteprojectEditFormTitle;
-
-  /// Título del anteproyecto
-  ///
-  /// In es, this message translates to:
-  /// **'Anteproyecto'**
-  String anteprojectTitle(String title);
 
   /// Campo tipo de proyecto del anteproyecto
   ///
@@ -464,12 +458,6 @@ abstract class AppLocalizations {
   /// **'Eliminar anteproyecto'**
   String get anteprojectDeleteTooltip;
 
-  /// Título de comentarios
-  ///
-  /// In es, this message translates to:
-  /// **'Comentarios - {title}'**
-  String commentsTitle(String title);
-
   /// Botón para añadir un nuevo comentario
   ///
   /// In es, this message translates to:
@@ -638,7 +626,7 @@ abstract class AppLocalizations {
   /// **'Mis Anteproyectos'**
   String get myAnteprojects;
 
-  /// Enlace para ver todos
+  /// Enlace para ver todos los elementos
   ///
   /// In es, this message translates to:
   /// **'Ver todos'**
@@ -662,7 +650,7 @@ abstract class AppLocalizations {
   /// **'No tienes anteproyectos creados. ¡Crea tu primer anteproyecto!'**
   String get noAnteprojects;
 
-  /// Título de sección de tareas pendientes
+  /// Sección de tareas pendientes
   ///
   /// In es, this message translates to:
   /// **'Tareas Pendientes'**
@@ -716,29 +704,89 @@ abstract class AppLocalizations {
   /// **'Estado: Conectado al servidor de red'**
   String get connectedToServer;
 
-  /// Mensaje temporal para lista de tareas en desarrollo
-  ///
-  /// In es, this message translates to:
-  /// **'Lista de tareas en desarrollo'**
-  String get tasksListDev;
-
-  /// Mensaje temporal para dashboard de admin en desarrollo
-  ///
-  /// In es, this message translates to:
-  /// **'Dashboard de admin en desarrollo'**
-  String get adminDashboardDev;
-
   /// Sección de gestión de usuarios en dashboard de admin
   ///
   /// In es, this message translates to:
   /// **'Gestión de Usuarios'**
   String get dashboardAdminUsersManagement;
 
-  /// Mensaje temporal para dashboard de tutor en desarrollo
+  /// Título del dashboard de tutor
   ///
   /// In es, this message translates to:
-  /// **'Dashboard de tutor en desarrollo'**
-  String get tutorDashboardDev;
+  /// **'Dashboard de Tutor'**
+  String get dashboardTutor;
+
+  /// Título del dashboard de administrador
+  ///
+  /// In es, this message translates to:
+  /// **'Dashboard de Administrador'**
+  String get dashboardAdmin;
+
+  /// Mensaje para funcionalidades que estarán disponibles pronto
+  ///
+  /// In es, this message translates to:
+  /// **'Próximamente'**
+  String get comingSoon;
+
+  /// Título para acceso a Supabase Studio
+  ///
+  /// In es, this message translates to:
+  /// **'Supabase Studio'**
+  String get supabaseStudio;
+
+  /// Botón para abrir Supabase Studio
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir Supabase Studio'**
+  String get openSupabaseStudio;
+
+  /// Descripción del acceso a Supabase Studio
+  ///
+  /// In es, this message translates to:
+  /// **'Acceso directo al panel de administración de la base de datos'**
+  String get supabaseStudioDescription;
+
+  /// Botón para abrir Inbucket (gestión de emails)
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir Inbucket'**
+  String get openInbucket;
+
+  /// Título para estadística de usuarios totales
+  ///
+  /// In es, this message translates to:
+  /// **'Usuarios Totales'**
+  String get totalUsers;
+
+  /// Título para estadística de proyectos activos
+  ///
+  /// In es, this message translates to:
+  /// **'Proyectos Activos'**
+  String get activeProjects;
+
+  /// Título para estadística de tutores
+  ///
+  /// In es, this message translates to:
+  /// **'Tutores'**
+  String get tutors;
+
+  /// Mensaje cuando no hay usuarios
+  ///
+  /// In es, this message translates to:
+  /// **'No hay usuarios'**
+  String get noUsers;
+
+  /// Título para el estado del sistema
+  ///
+  /// In es, this message translates to:
+  /// **'Estado del Sistema'**
+  String get systemStatus;
+
+  /// Botón para cerrar diálogos
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar'**
+  String get close;
 
   /// Sección de anteproyectos en dashboard de tutor
   ///
@@ -830,42 +878,6 @@ abstract class AppLocalizations {
   /// **'Copiar al portapapeles'**
   String get copyToClipboard;
 
-  /// Mensaje de copiado
-  ///
-  /// In es, this message translates to:
-  /// **'Copiado: {text}'**
-  String copied(String text);
-
-  /// Mensaje de funcionalidad en desarrollo
-  ///
-  /// In es, this message translates to:
-  /// **'Lista de anteproyectos en desarrollo'**
-  String get anteprojectsListInDevelopment;
-
-  /// Mensaje de funcionalidad en desarrollo
-  ///
-  /// In es, this message translates to:
-  /// **'Lista de estudiantes en desarrollo'**
-  String get studentsListInDevelopment;
-
-  /// Mensaje de funcionalidad en desarrollo
-  ///
-  /// In es, this message translates to:
-  /// **'Panel de gestión de usuarios en desarrollo'**
-  String get userManagementInDevelopment;
-
-  /// Mensaje de funcionalidad en desarrollo
-  ///
-  /// In es, this message translates to:
-  /// **'Estado detallado del sistema en desarrollo'**
-  String get systemStatusInDevelopment;
-
-  /// Mensaje de funcionalidad en desarrollo
-  ///
-  /// In es, this message translates to:
-  /// **'Lista de usuarios en desarrollo'**
-  String get usersListInDevelopment;
-
   /// Título de error de validación
   ///
   /// In es, this message translates to:
@@ -913,12 +925,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.'**
   String get unknownErrorMessage;
-
-  /// Botón para cerrar
-  ///
-  /// In es, this message translates to:
-  /// **'Cerrar'**
-  String get close;
 
   /// Botón para confirmar
   ///
@@ -1394,7 +1400,7 @@ abstract class AppLocalizations {
   /// **'Reintentar'**
   String get retry;
 
-  /// Etiqueta para año académico
+  /// Año académico del anteproyecto
   ///
   /// In es, this message translates to:
   /// **'Año Académico'**
@@ -1532,7 +1538,7 @@ abstract class AppLocalizations {
   /// **'Revisados'**
   String get reviewed;
 
-  /// Título para añadir estudiantes
+  /// Botón para añadir estudiantes
   ///
   /// In es, this message translates to:
   /// **'Añadir Estudiantes'**
@@ -1574,10 +1580,10 @@ abstract class AppLocalizations {
   /// **'Usa los botones del dashboard para añadir estudiantes'**
   String get useDashboardButtons;
 
-  /// Título del formulario de editar estudiante
+  /// Acción para editar estudiante
   ///
   /// In es, this message translates to:
-  /// **'Editar Estudiante'**
+  /// **'Editar'**
   String get editStudent;
 
   /// Acción para eliminar estudiante
@@ -1742,10 +1748,10 @@ abstract class AppLocalizations {
   /// **'Creado:'**
   String get created;
 
-  /// Estado enviado
+  /// Etiqueta para fecha de envío
   ///
   /// In es, this message translates to:
-  /// **'Enviado'**
+  /// **'Enviado:'**
   String get submitted;
 
   /// Botón para ver comentarios
@@ -1820,10 +1826,10 @@ abstract class AppLocalizations {
   /// **'En Revisión'**
   String get underReview;
 
-  /// Estado aprobado en mayúsculas
+  /// Estado aprobado
   ///
   /// In es, this message translates to:
-  /// **'APROBADO'**
+  /// **'Aprobado'**
   String get approved;
 
   /// Estado rechazado
@@ -1970,16 +1976,16 @@ abstract class AppLocalizations {
   /// **'NRE (Número de Registro de Estudiante)'**
   String get nreLabel;
 
-  /// Campo opcional phone
+  /// Etiqueta para teléfono opcional
   ///
   /// In es, this message translates to:
-  /// **'• phone (opcional)'**
+  /// **'Teléfono (Opcional)'**
   String get phoneOptional;
 
-  /// Campo opcional biography
+  /// Etiqueta para biografía opcional
   ///
   /// In es, this message translates to:
-  /// **'• biography (opcional)'**
+  /// **'Biografía (Opcional)'**
   String get biographyOptional;
 
   /// Mensaje de validación para nombre requerido
@@ -1988,10 +1994,10 @@ abstract class AppLocalizations {
   /// **'El nombre es obligatorio'**
   String get nameRequired;
 
-  /// Campo obligatorio email
+  /// Mensaje de validación para email requerido
   ///
   /// In es, this message translates to:
-  /// **'• email (obligatorio)'**
+  /// **'El email es obligatorio'**
   String get emailRequired;
 
   /// Mensaje de validación para email inválido
@@ -2000,10 +2006,10 @@ abstract class AppLocalizations {
   /// **'Email inválido'**
   String get emailInvalid;
 
-  /// Campo obligatorio nre
+  /// Mensaje de validación para NRE requerido
   ///
   /// In es, this message translates to:
-  /// **'• nre (obligatorio)'**
+  /// **'El NRE es obligatorio'**
   String get nreRequired;
 
   /// Botón para crear estudiante
@@ -2101,12 +2107,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Imprimir'**
   String get print;
-
-  /// Mensaje de error al imprimir
-  ///
-  /// In es, this message translates to:
-  /// **'Error al imprimir: {error}'**
-  String errorPrinting(String error);
 
   /// Mensaje de éxito al guardar PDF
   ///
@@ -2222,6 +2222,12 @@ abstract class AppLocalizations {
   /// **'Error al enviar anteproyecto: {error}'**
   String errorSendingAnteproject(String error);
 
+  /// Título del anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Anteproyecto: {title}'**
+  String anteprojectTitle(String title);
+
   /// Mensaje de error al cargar comentarios
   ///
   /// In es, this message translates to:
@@ -2245,6 +2251,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Error al agregar comentario: {error}'**
   String errorAddingComment(String error);
+
+  /// Título de comentarios
+  ///
+  /// In es, this message translates to:
+  /// **'Comentarios - {title}'**
+  String commentsTitle(String title);
+
+  /// Mensaje de copiado
+  ///
+  /// In es, this message translates to:
+  /// **'Copiado: {text}'**
+  String copied(String text);
 
   /// Botón para añadir individualmente
   ///
@@ -2443,6 +2461,42 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Debes iniciar sesión para ver los comentarios'**
   String get mustLoginToViewComments;
+
+  /// Título del diálogo de permisos
+  ///
+  /// In es, this message translates to:
+  /// **'Permisos Requeridos'**
+  String get permissionRequired;
+
+  /// Mensaje explicativo sobre por qué se necesitan los permisos
+  ///
+  /// In es, this message translates to:
+  /// **'Esta aplicación necesita acceso al almacenamiento para seleccionar archivos. Por favor, concede los permisos necesarios.'**
+  String get permissionRequiredMessage;
+
+  /// Botón para abrir la configuración de la aplicación
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir Configuración'**
+  String get openSettings;
+
+  /// Botón para intentar solicitar permisos nuevamente
+  ///
+  /// In es, this message translates to:
+  /// **'Intentar de Nuevo'**
+  String get tryAgain;
+
+  /// Mensaje de éxito al guardar archivo
+  ///
+  /// In es, this message translates to:
+  /// **'Archivo guardado con éxito'**
+  String get fileSavedSuccessfully;
+
+  /// Mensaje de error al imprimir
+  ///
+  /// In es, this message translates to:
+  /// **'Error al imprimir: {error}'**
+  String errorPrinting(String error);
 }
 
 class _AppLocalizationsDelegate

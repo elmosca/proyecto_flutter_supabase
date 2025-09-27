@@ -947,13 +947,14 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen> {
           // Capturar el context antes de la operación async
           final scaffoldMessenger = ScaffoldMessenger.of(context);
           final navigator = Navigator.of(context);
+          final localizations = AppLocalizations.of(context)!;
           
           try {
             await _anteprojectsService.approveAnteproject(_anteproject.id, comments);
             if (mounted) {
               scaffoldMessenger.showSnackBar(
                 SnackBar(
-                  content: Text(AppLocalizations.of(context)!.anteprojectApprovedSuccess),
+                  content: Text(localizations.anteprojectApprovedSuccess),
                   backgroundColor: Colors.green,
                 ),
               );
@@ -963,7 +964,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen> {
             if (mounted) {
               scaffoldMessenger.showSnackBar(
                 SnackBar(
-                  content: Text(AppLocalizations.of(context)!.errorApprovingAnteproject(e.toString())),
+                  content: Text(localizations.errorApprovingAnteproject(e.toString())),
                   backgroundColor: Colors.red,
                 ),
               );
@@ -994,13 +995,14 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen> {
           // Capturar el context antes de la operación async
           final scaffoldMessenger = ScaffoldMessenger.of(context);
           final navigator = Navigator.of(context);
+          final localizations = AppLocalizations.of(context)!;
           
           try {
             await _anteprojectsService.rejectAnteproject(_anteproject.id, comments);
             if (mounted) {
               scaffoldMessenger.showSnackBar(
                 SnackBar(
-                  content: Text(AppLocalizations.of(context)!.anteprojectRejected),
+                  content: Text(localizations.anteprojectRejected),
                   backgroundColor: Colors.orange,
                 ),
               );
@@ -1010,7 +1012,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen> {
             if (mounted) {
               scaffoldMessenger.showSnackBar(
                 SnackBar(
-                  content: Text(AppLocalizations.of(context)!.errorRejectingAnteproject(e.toString())),
+                  content: Text(localizations.errorRejectingAnteproject(e.toString())),
                   backgroundColor: Colors.red,
                 ),
               );
