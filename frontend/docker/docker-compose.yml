@@ -1,6 +1,6 @@
+# docker/docker-compose.yml
 # Docker Compose para aplicación Flutter Web
 # Build local + Servidor estático
-version: '3.8'
 
 services:
   # Servidor web para archivos estáticos

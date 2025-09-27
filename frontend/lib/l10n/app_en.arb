@@ -965,21 +965,61 @@
   "@connectedToServer": {
     "description": "Connected to server message"
   },
-  "tasksListDev": "Tasks List (Development)",
-  "@tasksListDev": {
-    "description": "Tasks list development title"
-  },
-  "adminDashboardDev": "Admin Dashboard (Development)",
-  "@adminDashboardDev": {
-    "description": "Admin dashboard development title"
-  },
   "dashboardAdminUsersManagement": "Users Management",
   "@dashboardAdminUsersManagement": {
     "description": "Admin users management section"
   },
-  "tutorDashboardDev": "Tutor Dashboard (Development)",
-  "@tutorDashboardDev": {
-    "description": "Tutor dashboard development title"
+  "dashboardTutor": "Tutor Dashboard",
+  "@dashboardTutor": {
+    "description": "Tutor dashboard title"
+  },
+  "dashboardAdmin": "Admin Dashboard",
+  "@dashboardAdmin": {
+    "description": "Admin dashboard title"
+  },
+  "comingSoon": "Coming Soon",
+  "@comingSoon": {
+    "description": "Message for features that will be available soon"
+  },
+  "supabaseStudio": "Supabase Studio",
+  "@supabaseStudio": {
+    "description": "Title for Supabase Studio access"
+  },
+  "openSupabaseStudio": "Open Supabase Studio",
+  "@openSupabaseStudio": {
+    "description": "Button to open Supabase Studio"
+  },
+  "supabaseStudioDescription": "Direct access to database administration panel",
+  "@supabaseStudioDescription": {
+    "description": "Description of Supabase Studio access"
+  },
+  "openInbucket": "Open Inbucket",
+  "@openInbucket": {
+    "description": "Button to open Inbucket (email management)"
+  },
+  "totalUsers": "Total Users",
+  "@totalUsers": {
+    "description": "Title for total users statistic"
+  },
+  "activeProjects": "Active Projects",
+  "@activeProjects": {
+    "description": "Title for active projects statistic"
+  },
+  "tutors": "Tutors",
+  "@tutors": {
+    "description": "Title for tutors statistic"
+  },
+  "noUsers": "No users",
+  "@noUsers": {
+    "description": "Message when there are no users"
+  },
+  "systemStatus": "System Status",
+  "@systemStatus": {
+    "description": "Title for system status"
+  },
+  "close": "Close",
+  "@close": {
+    "description": "Button to close dialogs"
   },
   "dashboardTutorMyAnteprojects": "My Anteprojects",
   "@dashboardTutorMyAnteprojects": {
@@ -1032,26 +1072,6 @@
   "copied": "Copied",
   "@copied": {
     "description": "Copied message"
-  },
-  "anteprojectsListInDevelopment": "Anteprojects List (Development)",
-  "@anteprojectsListInDevelopment": {
-    "description": "Anteprojects list development title"
-  },
-  "studentsListInDevelopment": "Students List (Development)",
-  "@studentsListInDevelopment": {
-    "description": "Students list development title"
-  },
-  "userManagementInDevelopment": "User Management (Development)",
-  "@userManagementInDevelopment": {
-    "description": "User management development title"
-  },
-  "systemStatusInDevelopment": "System Status (Development)",
-  "@systemStatusInDevelopment": {
-    "description": "System status development title"
-  },
-  "usersListInDevelopment": "Users List (Development)",
-  "@usersListInDevelopment": {
-    "description": "Users list development title"
   },
   "validationError": "Validation Error",
   "@validationError": {
@@ -1861,7 +1881,8 @@
       "placeholders": {
         "title": {
           "type": "String",
-          "description": "Anteproject title"
+          "description": "Anteproject title",
+          "example": "New App Development"
         }
       }
     },
@@ -1899,7 +1920,8 @@
       "placeholders": {
         "title": {
           "type": "String",
-          "description": "Anteproject title"
+          "description": "Anteproject title",
+          "example": "Smart IoT Platform"
         }
       }
     },
@@ -1909,7 +1931,8 @@
       "placeholders": {
         "text": {
           "type": "String",
-          "description": "Copied text"
+          "description": "Copied text",
+          "example": "admin@test.com"
         }
       }
     },
@@ -2147,7 +2170,8 @@
       "placeholders": {
         "hours": {
           "type": "int",
-          "description": "Number of hours"
+          "description": "Number of hours",
+          "example": "12"
         }
       }
     },
@@ -2174,5 +2198,21 @@
     "errorSavingSchedule": "Error saving schedule: {error}",
     "@mustLoginToViewComments": {
       "description": "Message to login"
+    },
+    "permissionRequired": "Permissions Required",
+    "@permissionRequired": {
+      "description": "Permission dialog title"
+    },
+    "permissionRequiredMessage": "This application needs access to storage to select files. Please grant the necessary permissions.",
+    "@permissionRequiredMessage": {
+      "description": "Explanatory message about why permissions are needed"
+    },
+    "openSettings": "Open Settings",
+    "@openSettings": {
+      "description": "Button to open app settings"
+    },
+    "tryAgain": "Try Again",
+    "@tryAgain": {
+      "description": "Button to try requesting permissions again"
     }
 }

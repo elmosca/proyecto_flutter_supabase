@@ -57,33 +57,36 @@ class _TutorDashboardState extends State<TutorDashboard> {
         _userService.getStudentsByTutor(widget.user.id),
         _anteprojectsService.getTutorAnteprojects(),
       ]);
-      
+
       final students = futures[0] as List<User>;
       final anteprojects = futures[1] as List<Anteproject>;
-      
+
       if (mounted) {
         setState(() {
           _students = students;
           _anteprojects = anteprojects;
-          
+
           // Inicializar el año académico seleccionado si no está disponible
           final availableYears = <String>{};
           for (final student in students) {
-            if (student.academicYear != null && student.academicYear!.isNotEmpty) {
+            if (student.academicYear != null &&
+                student.academicYear!.isNotEmpty) {
               availableYears.add(student.academicYear!);
             }
           }
           for (final anteproject in anteprojects) {
             availableYears.add(anteproject.academicYear);
           }
-          
+
           // Solo cambiar el año si no hay datos para el año actual
-          if (availableYears.isNotEmpty && !availableYears.contains(_selectedAcademicYear)) {
+          if (availableYears.isNotEmpty &&
+              !availableYears.contains(_selectedAcademicYear)) {
             // Buscar el año más reciente que tenga datos
-            final sortedYears = availableYears.toList()..sort((a, b) => b.compareTo(a));
+            final sortedYears = availableYears.toList()
+              ..sort((a, b) => b.compareTo(a));
             _selectedAcademicYear = sortedYears.first;
           }
-          
+
           _isLoading = false;
         });
       }
@@ -105,39 +108,39 @@ class _TutorDashboardState extends State<TutorDashboard> {
 
   List<Anteproject> get _pendingAnteprojects {
     return _anteprojects.where((anteproject) {
-      return anteproject.status == AnteprojectStatus.submitted || 
-             anteproject.status == AnteprojectStatus.underReview;
+      return anteproject.status == AnteprojectStatus.submitted ||
+          anteproject.status == AnteprojectStatus.underReview;
     }).toList();
   }
 
   List<Anteproject> get _reviewedAnteprojects {
     return _anteprojects.where((anteproject) {
-      return anteproject.status == AnteprojectStatus.approved || 
-             anteproject.status == AnteprojectStatus.rejected;
+      return anteproject.status == AnteprojectStatus.approved ||
+          anteproject.status == AnteprojectStatus.rejected;
     }).toList();
   }
 
   List<String> get _availableAcademicYears {
     final years = <String>{};
-    
+
     // Añadir años de estudiantes
     for (final student in _students) {
       if (student.academicYear != null && student.academicYear!.isNotEmpty) {
         years.add(student.academicYear!);
       }
     }
-    
+
     // Añadir años de anteproyectos
     for (final anteproject in _anteprojects) {
       years.add(anteproject.academicYear);
     }
-    
+
     // Si no hay años, usar el año actual por defecto
     if (years.isEmpty) {
       final currentYear = DateTime.now().year;
       years.add('$currentYear-${currentYear + 1}');
     }
-    
+
     // Ordenar años de más reciente a más antiguo
     final sortedYears = years.toList()..sort((a, b) => b.compareTo(a));
     return sortedYears;
@@ -153,7 +156,7 @@ class _TutorDashboardState extends State<TutorDashboard> {
           children: [
             Text(RoleThemes.getEmojiForRole(widget.user.role)),
             const SizedBox(width: 8),
-            Text(l10n.tutorDashboardDev),
+            Text(l10n.dashboardTutor),
           ],
         ),
         backgroundColor: ThemeService.instance.currentPrimaryColor,
@@ -209,7 +212,7 @@ class _TutorDashboardState extends State<TutorDashboard> {
 
   Widget _buildUserInfo() {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -257,7 +260,7 @@ class _TutorDashboardState extends State<TutorDashboard> {
 
   Widget _buildStatistics() {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Row(
       children: [
         Expanded(
@@ -312,7 +315,10 @@ class _TutorDashboardState extends State<TutorDashboard> {
               const SizedBox(height: 8),
               Text(
                 value,
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Text(
                 title,
@@ -326,7 +332,6 @@ class _TutorDashboardState extends State<TutorDashboard> {
     );
   }
 
-
   Widget _buildStudentsSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -337,7 +342,10 @@ class _TutorDashboardState extends State<TutorDashboard> {
             Expanded(
               child: Text(
                 AppLocalizations.of(context)!.assignedStudents,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -345,14 +353,13 @@ class _TutorDashboardState extends State<TutorDashboard> {
               children: [
                 // Filtro por año académico dinámico
                 DropdownButton<String>(
-                  value: _availableAcademicYears.contains(_selectedAcademicYear) 
-                      ? _selectedAcademicYear 
-                      : (_availableAcademicYears.isNotEmpty ? _availableAcademicYears.first : null),
+                  value: _availableAcademicYears.contains(_selectedAcademicYear)
+                      ? _selectedAcademicYear
+                      : (_availableAcademicYears.isNotEmpty
+                            ? _availableAcademicYears.first
+                            : null),
                   items: _availableAcademicYears.map((year) {
-                    return DropdownMenuItem(
-                      value: year,
-                      child: Text(year),
-                    );
+                    return DropdownMenuItem(value: year, child: Text(year));
                   }).toList(),
                   onChanged: (value) {
                     if (value != null) {
@@ -413,10 +420,7 @@ class _TutorDashboardState extends State<TutorDashboard> {
                       _filteredStudents.length == 1 ? '' : 's',
                       _selectedAcademicYear,
                     ),
-                    style: TextStyle(
-                      color: Colors.grey.shade700,
-                      fontSize: 14,
-                    ),
+                    style: TextStyle(color: Colors.grey.shade700, fontSize: 14),
                   ),
                 ),
               ],
@@ -432,8 +436,6 @@ class _TutorDashboardState extends State<TutorDashboard> {
       builder: (context) => AddStudentsDialog(tutorId: widget.user.id),
     ).then((_) => _loadData()); // Recargar datos al cerrar el diálogo
   }
-
-
 
   Future<void> _logout() async {
     try {
@@ -458,27 +460,34 @@ class _TutorDashboardState extends State<TutorDashboard> {
   }
 
   void _reviewAnteprojects() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const AnteprojectsReviewScreen(initialFilter: 'pending'),
-      ),
-    ).then((_) => _loadData()); // Recargar datos al volver
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (context) =>
+                const AnteprojectsReviewScreen(initialFilter: 'pending'),
+          ),
+        )
+        .then((_) => _loadData()); // Recargar datos al volver
   }
 
   void _viewAllAnteprojects() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const AnteprojectsReviewScreen(initialFilter: 'reviewed'),
-      ),
-    ).then((_) => _loadData()); // Recargar datos al volver
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (context) =>
+                const AnteprojectsReviewScreen(initialFilter: 'reviewed'),
+          ),
+        )
+        .then((_) => _loadData()); // Recargar datos al volver
   }
 
   void _viewAllStudents() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => StudentListScreen(tutorId: widget.user.id),
-      ),
-    ).then((_) => _loadData()); // Recargar datos al volver
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (context) => StudentListScreen(tutorId: widget.user.id),
+          ),
+        )
+        .then((_) => _loadData()); // Recargar datos al volver
   }
-
 }

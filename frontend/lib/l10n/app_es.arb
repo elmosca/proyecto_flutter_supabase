@@ -128,10 +128,6 @@
   "@anteprojectEditFormTitle": {
     "description": "Título del formulario de edición de anteproyecto"
   },
-  "anteprojectTitle": "Anteproyecto",
-  "@anteprojectTitle": {
-    "description": "Título del anteproyecto en diálogo"
-  },
   "anteprojectType": "Tipo de proyecto",
   "@anteprojectType": {
     "description": "Campo tipo de proyecto del anteproyecto"
@@ -243,10 +239,6 @@
   "anteprojectDeleteTooltip": "Eliminar anteproyecto",
   "@anteprojectDeleteTooltip": {
     "description": "Tooltip para el botón de eliminar anteproyecto"
-  },
-  "commentsTitle": "Comentarios",
-  "@commentsTitle": {
-    "description": "Título de la sección de comentarios"
   },
   "commentsAddComment": "Añadir comentario",
   "@commentsAddComment": {
@@ -436,21 +428,61 @@
   "@connectedToServer": {
     "description": "Mensaje de estado de conexión al servidor"
   },
-  "tasksListDev": "Lista de tareas en desarrollo",
-  "@tasksListDev": {
-    "description": "Mensaje temporal para lista de tareas en desarrollo"
-  },
-  "adminDashboardDev": "Dashboard de admin en desarrollo",
-  "@adminDashboardDev": {
-    "description": "Mensaje temporal para dashboard de admin en desarrollo"
-  },
   "dashboardAdminUsersManagement": "Gestión de Usuarios",
   "@dashboardAdminUsersManagement": {
     "description": "Sección de gestión de usuarios en dashboard de admin"
   },
-  "tutorDashboardDev": "Dashboard de tutor en desarrollo",
-  "@tutorDashboardDev": {
-    "description": "Mensaje temporal para dashboard de tutor en desarrollo"
+  "dashboardTutor": "Dashboard de Tutor",
+  "@dashboardTutor": {
+    "description": "Título del dashboard de tutor"
+  },
+  "dashboardAdmin": "Dashboard de Administrador",
+  "@dashboardAdmin": {
+    "description": "Título del dashboard de administrador"
+  },
+  "comingSoon": "Próximamente",
+  "@comingSoon": {
+    "description": "Mensaje para funcionalidades que estarán disponibles pronto"
+  },
+  "supabaseStudio": "Supabase Studio",
+  "@supabaseStudio": {
+    "description": "Título para acceso a Supabase Studio"
+  },
+  "openSupabaseStudio": "Abrir Supabase Studio",
+  "@openSupabaseStudio": {
+    "description": "Botón para abrir Supabase Studio"
+  },
+  "supabaseStudioDescription": "Acceso directo al panel de administración de la base de datos",
+  "@supabaseStudioDescription": {
+    "description": "Descripción del acceso a Supabase Studio"
+  },
+  "openInbucket": "Abrir Inbucket",
+  "@openInbucket": {
+    "description": "Botón para abrir Inbucket (gestión de emails)"
+  },
+  "totalUsers": "Usuarios Totales",
+  "@totalUsers": {
+    "description": "Título para estadística de usuarios totales"
+  },
+  "activeProjects": "Proyectos Activos",
+  "@activeProjects": {
+    "description": "Título para estadística de proyectos activos"
+  },
+  "tutors": "Tutores",
+  "@tutors": {
+    "description": "Título para estadística de tutores"
+  },
+  "noUsers": "No hay usuarios",
+  "@noUsers": {
+    "description": "Mensaje cuando no hay usuarios"
+  },
+  "systemStatus": "Estado del Sistema",
+  "@systemStatus": {
+    "description": "Título para el estado del sistema"
+  },
+  "close": "Cerrar",
+  "@close": {
+    "description": "Botón para cerrar diálogos"
   },
   "dashboardTutorMyAnteprojects": "Mis Anteproyectos",
   "@dashboardTutorMyAnteprojects": {
@@ -512,30 +544,6 @@
   "@copyToClipboard": {
     "description": "Acción de copiar al portapapeles"
   },
-  "copied": "¡Copiado!",
-  "@copied": {
-    "description": "Mensaje de confirmación de copiado"
-  },
-  "anteprojectsListInDevelopment": "Lista de anteproyectos en desarrollo",
-  "@anteprojectsListInDevelopment": {
-    "description": "Mensaje de funcionalidad en desarrollo"
-  },
-  "studentsListInDevelopment": "Lista de estudiantes en desarrollo",
-  "@studentsListInDevelopment": {
-    "description": "Mensaje de funcionalidad en desarrollo"
-  },
-  "userManagementInDevelopment": "Panel de gestión de usuarios en desarrollo",
-  "@userManagementInDevelopment": {
-    "description": "Mensaje de funcionalidad en desarrollo"
-  },
-  "systemStatusInDevelopment": "Estado detallado del sistema en desarrollo",
-  "@systemStatusInDevelopment": {
-    "description": "Mensaje de funcionalidad en desarrollo"
-  },
-  "usersListInDevelopment": "Lista de usuarios en desarrollo",
-  "@usersListInDevelopment": {
-    "description": "Mensaje de funcionalidad en desarrollo"
-  },
   "validationError": "Error de validación",
   "@validationError": {
     "description": "Título de error de validación"
@@ -567,10 +575,6 @@
   "unknownErrorMessage": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo.",
   "@unknownErrorMessage": {
     "description": "Mensaje de error desconocido"
-  },
-  "close": "Cerrar",
-  "@close": {
-    "description": "Botón para cerrar"
   },
   "confirm": "Confirmar",
   "@confirm": {
@@ -1282,17 +1286,9 @@
     "@anteprojects": {
       "description": "Título de sección de anteproyectos"
     },
-    "pendingTasks": "Tareas Pendientes",
-    "@pendingTasks": {
-      "description": "Título de sección de tareas pendientes"
-    },
     "completed": "Completadas",
     "@completed": {
       "description": "Título de sección de tareas completadas"
-    },
-    "approved": "APROBADO",
-    "@approved": {
-      "description": "Estado aprobado en mayúsculas"
     },
     "anteprojectApprovedMessage": "Tu anteproyecto ha sido aprobado. ¡Puedes comenzar con el desarrollo!",
     "@anteprojectApprovedMessage": {
@@ -1322,14 +1318,6 @@
     "@draft": {
       "description": "Estado borrador"
     },
-    "submitted": "Enviado",
-    "@submitted": {
-      "description": "Estado enviado"
-    },
-    "underReview": "En Revisión",
-    "@underReview": {
-      "description": "Estado en revisión"
-    },
     "approvedStatus": "Aprobado",
     "@approvedStatus": {
       "description": "Estado aprobado"
@@ -1341,10 +1329,6 @@
     "unknown": "Desconocido",
     "@unknown": {
       "description": "Estado desconocido"
-    },
-    "pending": "Pendiente",
-    "@pending": {
-      "description": "Estado pendiente"
     },
     "inProgress": "En Progreso",
     "@inProgress": {
@@ -1380,10 +1364,6 @@
     "@fullName": {
       "description": "Etiqueta para nombre completo"
     },
-    "email": "Email",
-    "@email": {
-      "description": "Etiqueta para email"
-    },
     "nreLabel": "NRE (Número de Registro de Estudiante)",
     "@nreLabel": {
       "description": "Etiqueta para NRE"
@@ -1391,14 +1371,6 @@
     "phoneOptional": "Teléfono (Opcional)",
     "@phoneOptional": {
       "description": "Etiqueta para teléfono opcional"
-    },
-    "specialty": "Especialidad",
-    "@specialty": {
-      "description": "Etiqueta para especialidad"
-    },
-    "academicYear": "Año Académico",
-    "@academicYear": {
-      "description": "Etiqueta para año académico"
     },
     "biographyOptional": "Biografía (Opcional)",
     "@biographyOptional": {
@@ -1438,17 +1410,9 @@
         }
       }
     },
-    "editStudent": "Editar Estudiante",
-    "@editStudent": {
-      "description": "Título del formulario de editar estudiante"
-    },
     "updateStudent": "Actualizar Estudiante",
     "@updateStudent": {
       "description": "Botón para actualizar estudiante"
-    },
-    "status": "Estado",
-    "@status": {
-      "description": "Etiqueta para estado"
     },
     "role": "Rol",
     "@role": {
@@ -1522,20 +1486,6 @@
     "@print": {
       "description": "Botón para imprimir"
     },
-    "save": "Guardar",
-    "@save": {
-      "description": "Botón para guardar"
-    },
-    "errorPrinting": "Error al imprimir: {error}",
-    "@errorPrinting": {
-      "description": "Mensaje de error al imprimir",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Mensaje de error"
-        }
-      }
-    },
     "pdfSavedAt": "PDF guardado en: {path}",
     "@pdfSavedAt": {
       "description": "Mensaje de éxito al guardar PDF",
@@ -1608,37 +1558,9 @@
     "@editAnteproject": {
       "description": "Botón para editar anteproyecto"
     },
-    "viewAll": "Ver todos",
-    "@viewAll": {
-      "description": "Enlace para ver todos"
-    },
-    "anteprojectApprovedSuccess": "Anteproyecto aprobado exitosamente",
-    "@anteprojectApprovedSuccess": {
-      "description": "Mensaje de éxito al aprobar anteproyecto"
-    },
-    "errorApprovingAnteproject": "Error al aprobar anteproyecto: {error}",
-    "@errorApprovingAnteproject": {
-      "description": "Mensaje de error al aprobar anteproyecto",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Mensaje de error"
-        }
-      }
-    },
     "anteprojectRejected": "Anteproyecto rechazado",
     "@anteprojectRejected": {
       "description": "Mensaje de anteproyecto rechazado"
-    },
-    "errorRejectingAnteproject": "Error al rechazar anteproyecto: {error}",
-    "@errorRejectingAnteproject": {
-      "description": "Mensaje de error al rechazar anteproyecto",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Mensaje de error"
-        }
-      }
     },
     "sendForApproval": "Enviar para Aprobación",
     "@sendForApproval": {
@@ -1676,7 +1598,8 @@
       "placeholders": {
         "title": {
           "type": "String",
-          "description": "Título del anteproyecto"
+          "description": "Título del anteproyecto",
+          "example": "Gestión de Inventario"
         }
       }
     },
@@ -1714,7 +1637,8 @@
       "placeholders": {
         "title": {
           "type": "String",
-          "description": "Título del anteproyecto"
+          "description": "Título del anteproyecto",
+          "example": "Sistema CRM"
         }
       }
     },
@@ -1724,13 +1648,10 @@
       "placeholders": {
         "text": {
           "type": "String",
-          "description": "Texto copiado"
+          "description": "Texto copiado",
+          "example": "tutor@test.com"
         }
       }
-    },
-    "addStudents": "Añadir Estudiantes",
-    "@addStudents": {
-      "description": "Título para añadir estudiantes"
     },
     "addIndividually": "Añadir Individualmente",
     "@addIndividually": {
@@ -1858,22 +1779,6 @@
     "@fullNameRequired": {
       "description": "Campo obligatorio full_name"
     },
-    "emailRequired": "• email (obligatorio)",
-    "@emailRequired": {
-      "description": "Campo obligatorio email"
-    },
-    "nreRequired": "• nre (obligatorio)",
-    "@nreRequired": {
-      "description": "Campo obligatorio nre"
-    },
-    "phoneOptional": "• phone (opcional)",
-    "@phoneOptional": {
-      "description": "Campo opcional phone"
-    },
-    "biographyOptional": "• biography (opcional)",
-    "@biographyOptional": {
-      "description": "Campo opcional biography"
-    },
     "specialtyOptional": "• specialty (opcional)",
     "@specialtyOptional": {
       "description": "Campo opcional specialty"
@@ -1962,7 +1867,8 @@
       "placeholders": {
         "hours": {
           "type": "int",
-          "description": "Número de horas"
+          "description": "Número de horas",
+          "example": "8"
         }
       }
     },
@@ -1977,17 +1883,37 @@
       }
     },
     "mustLoginToViewComments": "Debes iniciar sesión para ver los comentarios",
-  "anteprojectApprovedSuccess": "Anteproyecto aprobado exitosamente",
-  "errorApprovingAnteproject": "Error al aprobar anteproyecto: {error}",
-  "anteprojectRejected": "Anteproyecto rechazado",
-  "errorRejectingAnteproject": "Error al rechazar anteproyecto: {error}",
-  "send": "Enviar",
-  "errorSendingAnteproject": "Error al enviar anteproyecto: {error}",
-  "anteprojectTitle": "Anteproyecto",
-  "errorLoadingSchedule": "Error al cargar cronograma: {error}",
-  "scheduleSavedSuccess": "Cronograma guardado exitosamente",
-  "errorSavingSchedule": "Error al guardar cronograma: {error}",
     "@mustLoginToViewComments": {
       "description": "Mensaje para iniciar sesión"
+    },
+    "permissionRequired": "Permisos Requeridos",
+    "@permissionRequired": {
+      "description": "Título del diálogo de permisos"
+    },
+    "permissionRequiredMessage": "Esta aplicación necesita acceso al almacenamiento para seleccionar archivos. Por favor, concede los permisos necesarios.",
+    "@permissionRequiredMessage": {
+      "description": "Mensaje explicativo sobre por qué se necesitan los permisos"
+    },
+    "openSettings": "Abrir Configuración",
+    "@openSettings": {
+      "description": "Botón para abrir la configuración de la aplicación"
+    },
+    "tryAgain": "Intentar de Nuevo",
+    "@tryAgain": {
+      "description": "Botón para intentar solicitar permisos nuevamente"
+    },
+  "fileSavedSuccessfully": "Archivo guardado con éxito",
+  "@fileSavedSuccessfully": {
+    "description": "Mensaje de éxito al guardar archivo"
+  },
+  "errorPrinting": "Error al imprimir: {error}",
+  "@errorPrinting": {
+    "description": "Mensaje de error al imprimir",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "Mensaje de error"
+      }
     }
+  }
 }

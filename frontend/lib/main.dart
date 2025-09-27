@@ -52,22 +52,30 @@ void main() async {
 
   // Inicializar Supabase siempre (excepto en tests)
   try {
-    // Configuración de Supabase
-    await Supabase.initialize(
-      url: AppConfig.supabaseUrl,
-      anonKey: AppConfig.supabaseAnonKey,
-    );
-    
-    if (kDebugMode) {
-      debugPrint('✅ Supabase inicializado correctamente');
-      debugPrint('   URL: ${AppConfig.supabaseUrl}');
-      debugPrint('   Entorno: ${AppConfig.environment}');
+    // Verificar configuración antes de inicializar
+    final supabaseUrl = AppConfig.supabaseUrl;
+    final supabaseAnonKey = AppConfig.supabaseAnonKey;
+
+    debugPrint('🔧 Debug - Inicializando Supabase...');
+    debugPrint('🔧 Debug - URL: $supabaseUrl');
+    debugPrint('🔧 Debug - AnonKey: ${supabaseAnonKey.substring(0, 20)}...');
+    debugPrint('🔧 Debug - Environment: ${AppConfig.environment}');
+
+    // Verificar que no estén vacíos
+    if (supabaseUrl.isEmpty || supabaseAnonKey.isEmpty) {
+      throw Exception('Supabase URL o AnonKey están vacíos');
     }
+
+    // Configuración de Supabase
+    await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
+
+    debugPrint('✅ Supabase inicializado correctamente');
+    debugPrint('   URL: $supabaseUrl');
+    debugPrint('   Entorno: ${AppConfig.environment}');
   } catch (e) {
     // En caso de error, continuar sin Supabase (útil para tests)
-    if (kDebugMode) {
-      debugPrint('⚠️ Supabase initialization failed: $e');
-    }
+    debugPrint('❌ Supabase initialization failed: $e');
+    debugPrint('❌ Stack trace: ${StackTrace.current}');
   }
 
   runApp(const MyApp());
@@ -89,7 +97,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     _languageService = LanguageService.instance;
     _themeService = ThemeService.instance;
-    
+
     // Inicializar el servicio de idioma
     _languageService.initialize();
   }
@@ -100,60 +108,55 @@ class _MyAppState extends State<MyApp> {
     builder: (context, child) {
       // Forzar reconstrucción cuando cambia el idioma o tema
       return MultiBlocProvider(
-      providers: [
-        BlocProvider<AuthBloc>(
-          create: (context) => AuthBloc(
-            authService: AuthService(),
+        providers: [
+          BlocProvider<AuthBloc>(
+            create: (context) => AuthBloc(authService: AuthService()),
           ),
-        ),
-        BlocProvider<AnteprojectsBloc>(
-          create: (context) => AnteprojectsBloc(
-            anteprojectsService: AnteprojectsService(),
+          BlocProvider<AnteprojectsBloc>(
+            create: (context) =>
+                AnteprojectsBloc(anteprojectsService: AnteprojectsService()),
           ),
-        ),
-        BlocProvider<TasksBloc>(
-          create: (context) => TasksBloc(
-            tasksService: TasksService(),
+          BlocProvider<TasksBloc>(
+            create: (context) => TasksBloc(tasksService: TasksService()),
           ),
-        ),
-      ],
-      child: Builder(
-        builder: (context) {
-          // Verificar sesión después de que el MultiBlocProvider esté construido
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            try {
-              final authBloc = context.read<AuthBloc>();
-              authBloc.add(AuthCheckRequested());
-            } catch (e) {
-              // Ignorar errores si el contexto no está disponible
-              if (kDebugMode) {
-                debugPrint('Auth check skipped: $e');
+        ],
+        child: Builder(
+          builder: (context) {
+            // Verificar sesión después de que el MultiBlocProvider esté construido
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              try {
+                final authBloc = context.read<AuthBloc>();
+                authBloc.add(AuthCheckRequested());
+              } catch (e) {
+                // Ignorar errores si el contexto no está disponible
+                if (kDebugMode) {
+                  debugPrint('Auth check skipped: $e');
+                }
               }
-            }
-          });
-          
-          return MaterialApp.router(
-            title: AppConfig.appName,
+            });
 
-            // Configuración de internacionalización
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: LanguageService.supportedLocales,
-            locale: _languageService.currentLocale,
+            return MaterialApp.router(
+              title: AppConfig.appName,
 
-            theme: _themeService.currentTheme,
-            routerConfig: AppRouter.router,
-            
-            // Configuración adicional para internacionalización
-            debugShowCheckedModeBanner: false,
-          );
-        },
-      ),
-    );
+              // Configuración de internacionalización
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: LanguageService.supportedLocales,
+              locale: _languageService.currentLocale,
+
+              theme: _themeService.currentTheme,
+              routerConfig: AppRouter.router,
+
+              // Configuración adicional para internacionalización
+              debugShowCheckedModeBanner: false,
+            );
+          },
+        ),
+      );
     },
   );
 }

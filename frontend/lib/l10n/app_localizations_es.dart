@@ -15,7 +15,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get login => 'Iniciar Sesión';
 
   @override
-  String get email => 'Email';
+  String get email => 'Correo Electrónico';
 
   @override
   String get password => 'Contraseña';
@@ -107,11 +107,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get anteprojectEditFormTitle => 'Editar Anteproyecto';
 
   @override
-  String anteprojectTitle(String title) {
-    return 'Anteproyecto';
-  }
-
-  @override
   String get anteprojectType => 'Tipo de proyecto';
 
   @override
@@ -198,11 +193,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get anteprojectDeleteTooltip => 'Eliminar anteproyecto';
-
-  @override
-  String commentsTitle(String title) {
-    return 'Comentarios - $title';
-  }
 
   @override
   String get commentsAddComment => 'Añadir comentario';
@@ -342,16 +332,47 @@ class AppLocalizationsEs extends AppLocalizations {
   String get connectedToServer => 'Estado: Conectado al servidor de red';
 
   @override
-  String get tasksListDev => 'Lista de tareas en desarrollo';
-
-  @override
-  String get adminDashboardDev => 'Dashboard de admin en desarrollo';
-
-  @override
   String get dashboardAdminUsersManagement => 'Gestión de Usuarios';
 
   @override
-  String get tutorDashboardDev => 'Dashboard de tutor en desarrollo';
+  String get dashboardTutor => 'Dashboard de Tutor';
+
+  @override
+  String get dashboardAdmin => 'Dashboard de Administrador';
+
+  @override
+  String get comingSoon => 'Próximamente';
+
+  @override
+  String get supabaseStudio => 'Supabase Studio';
+
+  @override
+  String get openSupabaseStudio => 'Abrir Supabase Studio';
+
+  @override
+  String get supabaseStudioDescription =>
+      'Acceso directo al panel de administración de la base de datos';
+
+  @override
+  String get openInbucket => 'Abrir Inbucket';
+
+  @override
+  String get totalUsers => 'Usuarios Totales';
+
+  @override
+  String get activeProjects => 'Proyectos Activos';
+
+  @override
+  String get tutors => 'Tutores';
+
+  @override
+  String get noUsers => 'No hay usuarios';
+
+  @override
+  String get systemStatus => 'Estado del Sistema';
+
+  @override
+  String get close => 'Cerrar';
 
   @override
   String get dashboardTutorMyAnteprojects => 'Mis Anteproyectos';
@@ -399,29 +420,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get copyToClipboard => 'Copiar al portapapeles';
 
   @override
-  String copied(String text) {
-    return 'Copiado: $text';
-  }
-
-  @override
-  String get anteprojectsListInDevelopment =>
-      'Lista de anteproyectos en desarrollo';
-
-  @override
-  String get studentsListInDevelopment => 'Lista de estudiantes en desarrollo';
-
-  @override
-  String get userManagementInDevelopment =>
-      'Panel de gestión de usuarios en desarrollo';
-
-  @override
-  String get systemStatusInDevelopment =>
-      'Estado detallado del sistema en desarrollo';
-
-  @override
-  String get usersListInDevelopment => 'Lista de usuarios en desarrollo';
-
-  @override
   String get validationError => 'Error de validación';
 
   @override
@@ -448,9 +446,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get unknownErrorMessage =>
       'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.';
-
-  @override
-  String get close => 'Cerrar';
 
   @override
   String get confirm => 'Confirmar';
@@ -793,7 +788,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Usa los botones del dashboard para añadir estudiantes';
 
   @override
-  String get editStudent => 'Editar Estudiante';
+  String get editStudent => 'Editar';
 
   @override
   String get deleteStudent => 'Eliminar';
@@ -888,7 +883,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get created => 'Creado:';
 
   @override
-  String get submitted => 'Enviado';
+  String get submitted => 'Enviado:';
 
   @override
   String get comments => 'Comentarios';
@@ -933,7 +928,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get underReview => 'En Revisión';
 
   @override
-  String get approved => 'APROBADO';
+  String get approved => 'Aprobado';
 
   @override
   String get rejected => 'Rechazado';
@@ -1017,22 +1012,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String get nreLabel => 'NRE (Número de Registro de Estudiante)';
 
   @override
-  String get phoneOptional => '• phone (opcional)';
+  String get phoneOptional => 'Teléfono (Opcional)';
 
   @override
-  String get biographyOptional => '• biography (opcional)';
+  String get biographyOptional => 'Biografía (Opcional)';
 
   @override
   String get nameRequired => 'El nombre es obligatorio';
 
   @override
-  String get emailRequired => '• email (obligatorio)';
+  String get emailRequired => 'El email es obligatorio';
 
   @override
   String get emailInvalid => 'Email inválido';
 
   @override
-  String get nreRequired => '• nre (obligatorio)';
+  String get nreRequired => 'El NRE es obligatorio';
 
   @override
   String get createStudent => 'Crear Estudiante';
@@ -1094,11 +1089,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get print => 'Imprimir';
-
-  @override
-  String errorPrinting(String error) {
-    return 'Error al imprimir: $error';
-  }
 
   @override
   String pdfSavedAt(String path) {
@@ -1172,6 +1162,11 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String anteprojectTitle(String title) {
+    return 'Anteproyecto: $title';
+  }
+
+  @override
   String errorLoadingComments(String error) {
     return 'Error al cargar comentarios: $error';
   }
@@ -1185,6 +1180,16 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String errorAddingComment(String error) {
     return 'Error al agregar comentario: $error';
+  }
+
+  @override
+  String commentsTitle(String title) {
+    return 'Comentarios - $title';
+  }
+
+  @override
+  String copied(String text) {
+    return 'Copiado: $text';
   }
 
   @override
@@ -1319,4 +1324,25 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get mustLoginToViewComments =>
       'Debes iniciar sesión para ver los comentarios';
+
+  @override
+  String get permissionRequired => 'Permisos Requeridos';
+
+  @override
+  String get permissionRequiredMessage =>
+      'Esta aplicación necesita acceso al almacenamiento para seleccionar archivos. Por favor, concede los permisos necesarios.';
+
+  @override
+  String get openSettings => 'Abrir Configuración';
+
+  @override
+  String get tryAgain => 'Intentar de Nuevo';
+
+  @override
+  String get fileSavedSuccessfully => 'Archivo guardado con éxito';
+
+  @override
+  String errorPrinting(String error) {
+    return 'Error al imprimir: $error';
+  }
 }

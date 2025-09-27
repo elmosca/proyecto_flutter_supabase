@@ -13,7 +13,8 @@ class AuthService {
   supabase.User? get currentUser => _supabase.auth.currentUser;
 
   /// Stream de cambios en el estado de autenticación
-  Stream<supabase.AuthState> get authStateChanges => _supabase.auth.onAuthStateChange;
+  Stream<supabase.AuthState> get authStateChanges =>
+      _supabase.auth.onAuthStateChange;
 
   /// Inicia sesión con email y password usando Supabase Auth
   Future<Map<String, dynamic>> signIn({
@@ -22,25 +23,25 @@ class AuthService {
   }) async {
     try {
       print('🔐 Intentando login con Supabase Auth para: $email');
-      
+
       final authResponse = await _supabase.auth.signInWithPassword(
         email: email,
         password: password,
       );
-      
+
       if (authResponse.user == null) {
         throw const AuthException('Credenciales inválidas');
       }
-      
+
       print('✅ Login exitoso con Supabase Auth');
-      
+
       // Obtener el perfil completo del usuario desde la tabla users
       final userProfile = await getCurrentUserProfile();
-      
+
       if (userProfile == null) {
         throw const AuthException('No se pudo obtener el perfil del usuario');
       }
-      
+
       // Crear respuesta en el formato esperado
       return {
         'success': true,
@@ -52,7 +53,7 @@ class AuthService {
           'status': userProfile.status.name,
           'created_at': userProfile.createdAt.toIso8601String(),
           'updated_at': userProfile.updatedAt.toIso8601String(),
-        }
+        },
       };
     } catch (e) {
       print('❌ Error en login: $e');
@@ -70,19 +71,26 @@ class AuthService {
       }
 
       print('✅ Usuario encontrado en Supabase: ${user.email}');
-      
+
       // Obtener perfil completo desde la base de datos
       final response = await _supabase
-          .from('profiles')
+          .from('users')
           .select()
-          .eq('id', user.id)
+          .eq('email', user.email!)
           .single();
 
       print('🔍 Debug - Perfil obtenido: $response');
-      
+
       // Crear objeto User desde el perfil de la base de datos
+      // Manejar tanto ID String (profiles) como int (users)
+      final idValue = response['id'];
+      final userId = idValue is String
+          ? int.tryParse(idValue) ??
+                0 // Convertir String a int
+          : idValue as int; // Ya es int
+
       return User(
-        id: response['id'] as int,
+        id: userId,
         email: response['email'] as String,
         fullName: response['full_name'] as String,
         role: UserRole.values.firstWhere(
@@ -116,36 +124,47 @@ class AuthService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) return null;
-      
+
+      print('✅ Usuario encontrado en Supabase: ${user.email}');
+
       // Buscar el usuario en la tabla users por email
       final response = await _supabase
           .from('users')
           .select('*')
-          .eq('email', user.email!)
-          .single();
-      
-      if (response.isNotEmpty) {
+          .eq('email', user.email!);
+
+      print('🔍 Respuesta de la consulta users: $response');
+
+      if (response.isNotEmpty && response.length == 1) {
+        final userData = response.first;
         // Usar directamente la respuesta de la base de datos (ya tiene los nombres correctos)
-        final userData = {
-          'id': response['id'] is String ? int.parse(response['id']) : response['id'],
-          'full_name': response['full_name'],
-          'email': response['email'],
-          'nre': response['nre'],
-          'role': response['role'],
-          'phone': response['phone'],
-          'biography': response['biography'],
-          'status': response['status'],
-          'specialty': response['specialty'],
-          'tutor_id': response['tutor_id'] is String ? int.tryParse(response['tutor_id']) : response['tutor_id'],
-          'academic_year': response['academic_year'],
-          'created_at': response['created_at'],
-          'updated_at': response['updated_at'],
+        final userDataMap = {
+          'id': userData['id'] is String
+              ? int.parse(userData['id'])
+              : userData['id'],
+          'full_name': userData['full_name'],
+          'email': userData['email'],
+          'nre': userData['nre'],
+          'role': userData['role'],
+          'phone': userData['phone'],
+          'biography': userData['biography'],
+          'status': userData['status'],
+          'specialty': userData['specialty'],
+          'tutor_id': userData['tutor_id'] is String
+              ? int.tryParse(userData['tutor_id'])
+              : userData['tutor_id'],
+          'academic_year': userData['academic_year'],
+          'created_at': userData['created_at'],
+          'updated_at': userData['updated_at'],
         };
-        
-        return User.fromJson(userData);
+
+        return User.fromJson(userDataMap);
       }
-      
+
       // Si no se encuentra en la tabla users, crear un usuario temporal
+      print(
+        '⚠️ Usuario no encontrado en tabla users, creando usuario temporal',
+      );
       return User(
         id: int.tryParse(user.id) ?? 0,
         fullName: user.userMetadata?['full_name'] ?? 'Usuario',
@@ -168,17 +187,17 @@ class AuthService {
   User? createUserFromLoginResponse(Map<String, dynamic> loginResponse) {
     try {
       print('🔍 Debug - Respuesta de login: $loginResponse');
-      
+
       if (loginResponse['success'] == true && loginResponse['user'] != null) {
         final userData = Map<String, dynamic>.from(loginResponse['user']);
-        
+
         print('🔍 Debug - Datos del usuario: $userData');
-        
+
         // Asegurar que el ID sea int (puede venir como int o String)
         if (userData['id'] is String) {
           userData['id'] = int.parse(userData['id']);
         }
-        
+
         // Usar los nombres de la base de datos directamente (snake_case)
         final convertedData = <String, dynamic>{
           'id': userData['id'],
@@ -192,22 +211,25 @@ class AuthService {
           'specialty': userData['specialty'] ?? '',
           'tutor_id': userData['tutor_id'],
           'academic_year': userData['academic_year'] ?? '',
-          'created_at': userData['created_at'] ?? DateTime.now().toIso8601String(),
-          'updated_at': userData['updated_at'] ?? DateTime.now().toIso8601String(),
+          'created_at':
+              userData['created_at'] ?? DateTime.now().toIso8601String(),
+          'updated_at':
+              userData['updated_at'] ?? DateTime.now().toIso8601String(),
         };
-        
+
         print('🔍 Debug - Datos finales del usuario: $convertedData');
-        
+
         return User.fromJson(convertedData);
       }
       print('❌ Debug - Respuesta de login inválida o sin usuario');
       return null;
     } catch (e) {
       print('❌ Debug - Error al crear usuario: $e');
-      throw AuthException('Error al crear usuario desde respuesta de login: $e');
+      throw AuthException(
+        'Error al crear usuario desde respuesta de login: $e',
+      );
     }
   }
-
 
   /// Actualiza el perfil del usuario
   Future<void> updateProfile({
@@ -267,9 +289,11 @@ class AuthService {
   UserRole _parseUserRoleFromEmail(String email) {
     if (email.contains('@alumno.cifpcarlos3.es')) {
       return UserRole.student;
-    } else if (email.contains('admin.test@cifpcarlos3.es') || email.contains('admin@cifpcarlos3.es')) {
+    } else if (email.contains('admin.test@cifpcarlos3.es') ||
+        email.contains('admin@cifpcarlos3.es')) {
       return UserRole.admin;
-    } else if (email.contains('tutor.test@cifpcarlos3.es') || (email.contains('@cifpcarlos3.es') && !email.contains('admin'))) {
+    } else if (email.contains('tutor.test@cifpcarlos3.es') ||
+        (email.contains('@cifpcarlos3.es') && !email.contains('admin'))) {
       return UserRole.tutor;
     }
     return UserRole.student; // Por defecto
@@ -300,12 +324,12 @@ class AuthService {
     try {
       final prefs = await SharedPreferences.getInstance();
       final userJson = prefs.getString(_sessionKey);
-      
+
       if (userJson == null) {
         print('ℹ️ No hay sesión guardada');
         return null;
       }
-      
+
       final userData = jsonDecode(userJson) as Map<String, dynamic>;
       final user = User(
         id: (userData['id'] as String).hashCode,
@@ -322,7 +346,7 @@ class AuthService {
         createdAt: DateTime.parse(userData['created_at'] as String),
         updatedAt: DateTime.parse(userData['updated_at'] as String),
       );
-      
+
       print('✅ Sesión recuperada desde SharedPreferences');
       return user;
     } catch (e) {
@@ -346,9 +370,9 @@ class AuthService {
 /// Excepción personalizada para errores de autenticación
 class AuthException implements Exception {
   final String message;
-  
+
   const AuthException(this.message);
-  
+
   @override
   String toString() => 'AuthException: $message';
 }
