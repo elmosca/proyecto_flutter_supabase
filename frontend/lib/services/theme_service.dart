@@ -4,10 +4,11 @@ import '../themes/role_themes.dart';
 
 /// Servicio para gestionar temas dinámicos por rol
 class ThemeService extends ChangeNotifier {
-  static ThemeService? _instance;
-  static ThemeService get instance => _instance ??= ThemeService._();
+  static final ThemeService _instance = ThemeService._internal();
+  factory ThemeService() => _instance;
+  ThemeService._internal();
   
-  ThemeService._();
+  static ThemeService get instance => _instance;
 
   UserRole? _currentRole;
   ThemeData _currentTheme = ThemeData.light();

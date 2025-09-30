@@ -1325,7 +1325,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tryAgain => 'Try Again';
 
   @override
-  String get fileSavedSuccessfully => 'Archivo guardado con éxito';
+  String get fileSavedSuccessfully => 'File saved successfully';
 
   @override
   String errorPrinting(String error) {

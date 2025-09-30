@@ -6,7 +6,14 @@ import '../models/models.dart';
 import '../models/user.dart';
 
 class AuthService {
-  final supabase.SupabaseClient _supabase = supabase.Supabase.instance.client;
+  supabase.SupabaseClient get _supabase {
+    try {
+      return supabase.Supabase.instance.client;
+    } catch (e) {
+      throw AuthException('Supabase no está inicializado: $e');
+    }
+  }
+  
   static const String _sessionKey = 'user_session';
 
   /// Obtiene el usuario actual autenticado
@@ -73,21 +80,19 @@ class AuthService {
       print('✅ Usuario encontrado en Supabase: ${user.email}');
 
       // Obtener perfil completo desde la base de datos
+      // SIEMPRE consultar la tabla users primero (ID int)
+      print('🔍 Debug - Consultando tabla users para: ${user.email}');
+
       final response = await _supabase
           .from('users')
           .select()
           .eq('email', user.email!)
           .single();
 
-      print('🔍 Debug - Perfil obtenido: $response');
+      print('🔍 Debug - Perfil obtenido desde users: $response');
 
       // Crear objeto User desde el perfil de la base de datos
-      // Manejar tanto ID String (profiles) como int (users)
-      final idValue = response['id'];
-      final userId = idValue is String
-          ? int.tryParse(idValue) ??
-                0 // Convertir String a int
-          : idValue as int; // Ya es int
+      final userId = response['id'] as int;
 
       return User(
         id: userId,

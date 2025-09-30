@@ -16,6 +16,7 @@ import 'services/tasks_service.dart';
 import 'blocs/blocs.dart';
 import 'config/app_config.dart';
 import 'router/app_router.dart';
+import 'widgets/error_boundary.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,6 +52,7 @@ void main() async {
   }
 
   // Inicializar Supabase siempre (excepto en tests)
+  bool supabaseInitialized = false;
   try {
     // Verificar configuración antes de inicializar
     final supabaseUrl = AppConfig.supabaseUrl;
@@ -60,14 +62,26 @@ void main() async {
     debugPrint('🔧 Debug - URL: $supabaseUrl');
     debugPrint('🔧 Debug - AnonKey: ${supabaseAnonKey.substring(0, 20)}...');
     debugPrint('🔧 Debug - Environment: ${AppConfig.environment}');
+    debugPrint('🔧 Debug - kDebugMode: $kDebugMode');
+    debugPrint('🔧 Debug - kIsWeb: $kIsWeb');
 
     // Verificar que no estén vacíos
     if (supabaseUrl.isEmpty || supabaseAnonKey.isEmpty) {
       throw Exception('Supabase URL o AnonKey están vacíos');
     }
 
-    // Configuración de Supabase
-    await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
+    // Configuración de Supabase con timeout
+    await Supabase.initialize(
+      url: supabaseUrl, 
+      anonKey: supabaseAnonKey,
+    ).timeout(
+      const Duration(seconds: 10),
+      onTimeout: () {
+        throw Exception('Timeout inicializando Supabase');
+      },
+    );
+    
+    supabaseInitialized = true;
 
     debugPrint('✅ Supabase inicializado correctamente');
     debugPrint('   URL: $supabaseUrl');
@@ -76,6 +90,7 @@ void main() async {
     // En caso de error, continuar sin Supabase (útil para tests)
     debugPrint('❌ Supabase initialization failed: $e');
     debugPrint('❌ Stack trace: ${StackTrace.current}');
+    supabaseInitialized = false;
   }
 
   runApp(const MyApp());
@@ -89,15 +104,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late LanguageService _languageService;
-  late ThemeService _themeService;
+  final LanguageService _languageService = LanguageService.instance;
+  final ThemeService _themeService = ThemeService.instance;
 
   @override
   void initState() {
     super.initState();
-    _languageService = LanguageService.instance;
-    _themeService = ThemeService.instance;
-
     // Inicializar el servicio de idioma
     _languageService.initialize();
   }
@@ -110,7 +122,15 @@ class _MyAppState extends State<MyApp> {
       return MultiBlocProvider(
         providers: [
           BlocProvider<AuthBloc>(
-            create: (context) => AuthBloc(authService: AuthService()),
+            create: (context) {
+              try {
+                return AuthBloc(authService: AuthService());
+              } catch (e) {
+                debugPrint('❌ Error creando AuthBloc: $e');
+                // Crear un AuthBloc con manejo de errores
+                return AuthBloc(authService: AuthService());
+              }
+            },
           ),
           BlocProvider<AnteprojectsBloc>(
             create: (context) =>
@@ -153,6 +173,11 @@ class _MyAppState extends State<MyApp> {
 
               // Configuración adicional para internacionalización
               debugShowCheckedModeBanner: false,
+              
+              // Manejo de errores global
+              builder: (context, child) {
+                return ErrorBoundary(child: child ?? const SizedBox.shrink());
+              },
             );
           },
         ),
