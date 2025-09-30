@@ -17,6 +17,7 @@ import 'blocs/blocs.dart';
 import 'config/app_config.dart';
 import 'router/app_router.dart';
 import 'widgets/error_boundary.dart';
+import 'widgets/environment_info.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +30,15 @@ void main() async {
     } catch (e) {
       debugPrint('SharedPreferences initialization warning: $e');
     }
+  }
+
+  // Añadir delay específico según el entorno de acceso
+  if (AppConfig.isExternalDomain) {
+    // Delay más largo para acceso externo (dominio)
+    await Future.delayed(const Duration(milliseconds: 1000));
+  } else {
+    // Delay normal para acceso interno
+    await Future.delayed(const Duration(milliseconds: 200));
   }
 
   // Mostrar información de configuración
@@ -58,38 +68,52 @@ void main() async {
     final supabaseUrl = AppConfig.supabaseUrl;
     final supabaseAnonKey = AppConfig.supabaseAnonKey;
 
-    debugPrint('🔧 Debug - Inicializando Supabase...');
-    debugPrint('🔧 Debug - URL: $supabaseUrl');
-    debugPrint('🔧 Debug - AnonKey: ${supabaseAnonKey.substring(0, 20)}...');
-    debugPrint('🔧 Debug - Environment: ${AppConfig.environment}');
-    debugPrint('🔧 Debug - kDebugMode: $kDebugMode');
-    debugPrint('🔧 Debug - kIsWeb: $kIsWeb');
+    if (kDebugMode) {
+      debugPrint('🔧 Debug - Inicializando Supabase...');
+      debugPrint('🔧 Debug - URL: $supabaseUrl');
+      debugPrint('🔧 Debug - AnonKey: ${supabaseAnonKey.substring(0, 20)}...');
+      debugPrint('🔧 Debug - Environment: ${AppConfig.environment}');
+      debugPrint('🔧 Debug - Red Interna: ${AppConfig.isInternalNetwork}');
+      debugPrint('🔧 Debug - Dominio Externo: ${AppConfig.isExternalDomain}');
+      debugPrint('🔧 Debug - kDebugMode: $kDebugMode');
+      debugPrint('🔧 Debug - kIsWeb: $kIsWeb');
+    }
 
     // Verificar que no estén vacíos
     if (supabaseUrl.isEmpty || supabaseAnonKey.isEmpty) {
       throw Exception('Supabase URL o AnonKey están vacíos');
     }
 
-    // Configuración de Supabase con timeout
+    // Configuración de Supabase con timeout específico según entorno
+    final timeoutDuration = AppConfig.isExternalDomain
+        ? const Duration(seconds: 20) // Timeout más largo para dominio externo
+        : const Duration(seconds: 10); // Timeout normal para red interna
+
     await Supabase.initialize(
-      url: supabaseUrl, 
+      url: supabaseUrl,
       anonKey: supabaseAnonKey,
     ).timeout(
-      const Duration(seconds: 10),
+      timeoutDuration,
       onTimeout: () {
-        throw Exception('Timeout inicializando Supabase');
+        throw Exception(
+          'Timeout inicializando Supabase (${timeoutDuration.inSeconds}s)',
+        );
       },
     );
-    
+
     supabaseInitialized = true;
 
-    debugPrint('✅ Supabase inicializado correctamente');
-    debugPrint('   URL: $supabaseUrl');
-    debugPrint('   Entorno: ${AppConfig.environment}');
+    if (kDebugMode) {
+      debugPrint('✅ Supabase inicializado correctamente');
+      debugPrint('   URL: $supabaseUrl');
+      debugPrint('   Entorno: ${AppConfig.environment}');
+    }
   } catch (e) {
     // En caso de error, continuar sin Supabase (útil para tests)
-    debugPrint('❌ Supabase initialization failed: $e');
-    debugPrint('❌ Stack trace: ${StackTrace.current}');
+    if (kDebugMode) {
+      debugPrint('❌ Supabase initialization failed: $e');
+      debugPrint('❌ Stack trace: ${StackTrace.current}');
+    }
     supabaseInitialized = false;
   }
 
@@ -173,10 +197,21 @@ class _MyAppState extends State<MyApp> {
 
               // Configuración adicional para internacionalización
               debugShowCheckedModeBanner: false,
-              
+
               // Manejo de errores global
               builder: (context, child) {
-                return ErrorBoundary(child: child ?? const SizedBox.shrink());
+                return ErrorBoundary(
+                  child: Stack(
+                    children: [
+                      child ?? const SizedBox.shrink(),
+                      const Positioned(
+                        top: 0,
+                        right: 0,
+                        child: EnvironmentInfo(),
+                      ),
+                    ],
+                  ),
+                );
               },
             );
           },

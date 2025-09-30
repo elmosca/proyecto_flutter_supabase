@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_print
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -10,10 +11,13 @@ class AuthService {
     try {
       return supabase.Supabase.instance.client;
     } catch (e) {
+      if (kDebugMode) {
+        debugPrint('❌ Error accediendo a Supabase client: $e');
+      }
       throw AuthException('Supabase no está inicializado: $e');
     }
   }
-  
+
   static const String _sessionKey = 'user_session';
 
   /// Obtiene el usuario actual autenticado

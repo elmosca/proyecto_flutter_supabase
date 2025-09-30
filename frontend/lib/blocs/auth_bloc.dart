@@ -80,46 +80,51 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthService _authService;
 
   AuthBloc({required AuthService authService})
-      : _authService = authService,
-        super(AuthInitial()) {
-    
+    : _authService = authService,
+      super(AuthInitial()) {
     on<AuthLoginRequested>(_onAuthLoginRequested);
     on<AuthLogoutRequested>(_onAuthLogoutRequested);
     on<AuthCheckRequested>(_onAuthCheckRequested);
     on<AuthUserChanged>(_onAuthUserChanged);
-    
+
     // Escuchar cambios en el estado de autenticación de Supabase
     try {
-      _authService.authStateChanges.listen((supabase.AuthState supabaseAuthState) {
-      debugPrint('🔄 Cambio de estado de autenticación: ${supabaseAuthState.event}');
-      
-      if (supabaseAuthState.event == supabase.AuthChangeEvent.signedOut) {
-        debugPrint('🚪 Usuario deslogueado');
-        add(const AuthUserChanged(user: null));
-      } else if (supabaseAuthState.event == supabase.AuthChangeEvent.signedIn) {
-        debugPrint('🔑 Usuario logueado');
-        // Obtener el perfil del usuario desde Supabase
-        _authService.getCurrentUserFromSupabase().then((user) {
-          if (user != null) {
-            ThemeService.instance.setUser(user);
-          }
-          add(AuthUserChanged(user: user));
-        });
-      } else if (supabaseAuthState.event == supabase.AuthChangeEvent.tokenRefreshed) {
-        debugPrint('🔄 Token refrescado');
-        // Verificar si el usuario sigue autenticado
-        _authService.getCurrentUserFromSupabase().then((user) {
-          if (user != null) {
-            ThemeService.instance.setUser(user);
-          }
-          add(AuthUserChanged(user: user));
-        });
-      }
-    });
+      _authService.authStateChanges.listen((
+        supabase.AuthState supabaseAuthState,
+      ) {
+        debugPrint(
+          '🔄 Cambio de estado de autenticación: ${supabaseAuthState.event}',
+        );
+
+        if (supabaseAuthState.event == supabase.AuthChangeEvent.signedOut) {
+          debugPrint('🚪 Usuario deslogueado');
+          add(const AuthUserChanged(user: null));
+        } else if (supabaseAuthState.event ==
+            supabase.AuthChangeEvent.signedIn) {
+          debugPrint('🔑 Usuario logueado');
+          // Obtener el perfil del usuario desde Supabase
+          _authService.getCurrentUserFromSupabase().then((user) {
+            if (user != null) {
+              ThemeService.instance.setUser(user);
+            }
+            add(AuthUserChanged(user: user));
+          });
+        } else if (supabaseAuthState.event ==
+            supabase.AuthChangeEvent.tokenRefreshed) {
+          debugPrint('🔄 Token refrescado');
+          // Verificar si el usuario sigue autenticado
+          _authService.getCurrentUserFromSupabase().then((user) {
+            if (user != null) {
+              ThemeService.instance.setUser(user);
+            }
+            add(AuthUserChanged(user: user));
+          });
+        }
+      });
     } catch (e) {
       debugPrint('❌ Error inicializando AuthBloc: $e');
       // Si hay error, emitir estado de fallo
-      add(AuthUserChanged(user: null));
+      add(const AuthUserChanged(user: null));
     }
   }
 
@@ -128,13 +133,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
-    
+
     try {
       final response = await _authService.signIn(
         email: event.email,
         password: event.password,
       );
-      
+
       if (response['success'] == true && response['user'] != null) {
         // Crear el usuario directamente desde la respuesta de login
         final userProfile = _authService.createUserFromLoginResponse(response);
@@ -162,7 +167,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
-    
+
     try {
       await _authService.signOut();
       // Resetear el tema al logout
@@ -178,7 +183,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
-    
+
     try {
       // Verificar si hay una sesión activa en Supabase
       final currentUser = await _authService.getCurrentUserFromSupabase();
@@ -196,15 +201,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  void _onAuthUserChanged(
-    AuthUserChanged event,
-    Emitter<AuthState> emit,
-  ) {
+  void _onAuthUserChanged(AuthUserChanged event, Emitter<AuthState> emit) {
     if (event.user != null) {
       emit(AuthAuthenticated(event.user!));
     } else {
       emit(AuthUnauthenticated());
     }
   }
-
 }

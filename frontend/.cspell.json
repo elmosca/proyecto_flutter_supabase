@@ -14,7 +14,16 @@
     "retornar",
     "proyectos",
     "obtener",
-    "específico"
+    "específico",
+    "Parsea",
+    "cifpcarlos",
+    "prefs",
+    "anteprojects",
+    "Anteprojects",
+    "anteproyecto",
+    "Anteproyecto",
+    "anteproyectos",
+    "Anteproyectos"
   ],
   "ignoreWords": [
     "supabase",
