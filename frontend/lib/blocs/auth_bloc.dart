@@ -89,7 +89,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthUserChanged>(_onAuthUserChanged);
     
     // Escuchar cambios en el estado de autenticación de Supabase
-    _authService.authStateChanges.listen((supabase.AuthState supabaseAuthState) {
+    try {
+      _authService.authStateChanges.listen((supabase.AuthState supabaseAuthState) {
       debugPrint('🔄 Cambio de estado de autenticación: ${supabaseAuthState.event}');
       
       if (supabaseAuthState.event == supabase.AuthChangeEvent.signedOut) {
@@ -115,6 +116,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         });
       }
     });
+    } catch (e) {
+      debugPrint('❌ Error inicializando AuthBloc: $e');
+      // Si hay error, emitir estado de fallo
+      add(AuthUserChanged(user: null));
+    }
   }
 
   Future<void> _onAuthLoginRequested(

@@ -2214,5 +2214,9 @@
     "tryAgain": "Try Again",
     "@tryAgain": {
       "description": "Button to try requesting permissions again"
+    },
+    "fileSavedSuccessfully": "File saved successfully",
+    "@fileSavedSuccessfully": {
+      "description": "Success message when saving file"
     }
 }
