@@ -103,7 +103,7 @@ class AppConfig {
   static const Map<String, String> testCredentials = {
     'student': 'student.test@alumno.cifpcarlos3.es',
     'tutor': 'tutor.test@cifpcarlos3.es',
-    'admin': 'admin.test@cifpcarlos3.es',
+    'admin': 'admin@jualas.es',
     'student_password': 'password123',
     'tutor_password': 'password123',
     'admin_password': 'password123',
