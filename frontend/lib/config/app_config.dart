@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'dart:html' as html;
 
 /// Configuración simplificada de la aplicación
 ///
@@ -9,8 +10,46 @@ class AppConfig {
   static const String _supabaseAnonKey =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InprcmlyaXlrbmhsd294aHNvcWloIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0MDkxNjUsImV4cCI6MjA3MTk4NTE2NX0.N9egQFLIqsYdbpjOeSELNiHy5G5RWqa0JY5luZWNBJg';
   static const String _environment = 'cloud';
-  static const bool _debugMode = true; // Siempre mostrar credenciales de prueba
+  static const bool _debugMode = kDebugMode; // Usar el valor real de kDebugMode
   static const String _platformName = 'Flutter Web';
+
+  // Detectar el entorno de acceso
+  static bool get isInternalNetwork {
+    if (kIsWeb) {
+      try {
+        final hostname = html.window.location.hostname;
+        if (hostname == null) return false;
+
+        // Detectar si es acceso interno (localhost, IP local, o dominio interno)
+        return hostname == 'localhost' ||
+            hostname == '127.0.0.1' ||
+            hostname.startsWith('192.168.') ||
+            hostname.startsWith('10.') ||
+            hostname.startsWith('172.') ||
+            hostname.contains('.local');
+      } catch (e) {
+        return false;
+      }
+    }
+    return true; // En otras plataformas, asumir red interna
+  }
+
+  static bool get isExternalDomain {
+    if (kIsWeb) {
+      try {
+        final hostname = html.window.location.hostname;
+        if (hostname == null) return false;
+
+        // Detectar si es acceso externo por dominio
+        return hostname == 'fct.jualas.es' ||
+            hostname.contains('jualas.es') ||
+            (!isInternalNetwork && hostname != 'localhost');
+      } catch (e) {
+        return false;
+      }
+    }
+    return false;
+  }
 
   // Getters principales
   static String get supabaseUrl {
@@ -85,6 +124,8 @@ class AppConfig {
       debugPrint('   Environment: $_environment');
       debugPrint('   Debug Mode: $_debugMode');
       debugPrint('   Platform: $_platformName');
+      debugPrint('   Red Interna: $isInternalNetwork');
+      debugPrint('   Dominio Externo: $isExternalDomain');
       debugPrint('   Supabase Studio: $supabaseStudioUrl');
       debugPrint('   Resend Dashboard: $inbucketUrl');
     }
