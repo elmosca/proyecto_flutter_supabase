@@ -18,7 +18,7 @@ class AppConfig {
     if (kIsWeb) {
       try {
         final hostname = html.window.location.hostname;
-        if (hostname == null) return false;
+        if (hostname == null) return false; // Manejo de null safety
 
         // Detectar si es acceso interno (localhost, IP local, o dominio interno)
         return hostname == 'localhost' ||
@@ -38,7 +38,7 @@ class AppConfig {
     if (kIsWeb) {
       try {
         final hostname = html.window.location.hostname;
-        if (hostname == null) return false;
+        if (hostname == null) return false; // Manejo de null safety
 
         // Detectar si es acceso externo por dominio
         return hostname == 'fct.jualas.es' ||
@@ -110,9 +110,8 @@ class AppConfig {
   };
 
   // Métodos de compatibilidad (simplificados)
-  static bool get isDevelopment =>
-      true; // Siempre en modo desarrollo para mostrar credenciales
-  static bool get isProduction => false;
+  static bool get isDevelopment => true; // Siempre mostrar credenciales
+  static bool get isProduction => false; // No es producción real
   static String get debugInfo =>
       'Environment: $_environment, Debug Mode: $_debugMode';
   static int get platformColor => 0xFF2196F3; // Azul por defecto
