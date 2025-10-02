@@ -1,5 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import '../models/models.dart';
+import '../utils/notification_localizations.dart';
 import 'logging_service.dart';
 
 class TasksService {
@@ -95,6 +96,9 @@ class TasksService {
   /// Obtiene tareas por proyecto
   Future<List<Task>> getTasksByProject(int projectId) async {
     try {
+      // Inicializar posiciones Kanban si es necesario
+      await initializeKanbanPositions(projectId);
+
       final response = await _supabase
           .from('tasks')
           .select('''
@@ -149,7 +153,9 @@ class TasksService {
         return Task.fromJson(taskData);
       }).toList();
     } catch (e) {
-      throw TasksException('Error al obtener tareas del proyecto para el usuario: $e');
+      throw TasksException(
+        'Error al obtener tareas del proyecto para el usuario: $e',
+      );
     }
   }
 
@@ -217,6 +223,12 @@ class TasksService {
       data.remove('created_at');
       data['updated_at'] = DateTime.now().toIso8601String();
 
+      // Si kanbanPosition es null, asignar una posición por defecto
+      if (data['kanban_position'] == null) {
+        final maxPosition = await _getMaxKanbanPosition(task.projectId ?? 0);
+        data['kanban_position'] = maxPosition + 1;
+      }
+
       final response = await _supabase
           .from('tasks')
           .update(data)
@@ -248,10 +260,7 @@ class TasksService {
         updateData['completed_at'] = DateTime.now().toIso8601String();
       }
 
-      await _supabase
-          .from('tasks')
-          .update(updateData)
-          .eq('id', id);
+      await _supabase.from('tasks').update(updateData).eq('id', id);
 
       // Crear notificación de cambio de estado
       await _createStatusChangeNotification(id, status);
@@ -268,14 +277,12 @@ class TasksService {
         throw const TasksException('Usuario no autenticado');
       }
 
-      await _supabase
-          .from('task_assignees')
-          .upsert({
-            'task_id': taskId,
-            'user_id': userId,
-            'assigned_by': user.id,
-            'assigned_at': DateTime.now().toIso8601String(),
-          });
+      await _supabase.from('task_assignees').upsert({
+        'task_id': taskId,
+        'user_id': userId,
+        'assigned_by': user.id,
+        'assigned_at': DateTime.now().toIso8601String(),
+      });
 
       // Crear notificación de asignación
       await _createAssignmentNotification(taskId, userId);
@@ -303,7 +310,11 @@ class TasksService {
   }
 
   /// Añade un comentario a una tarea
-  Future<Comment> addComment(int taskId, String content, {bool isInternal = false}) async {
+  Future<Comment> addComment(
+    int taskId,
+    String content, {
+    bool isInternal = false,
+  }) async {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
@@ -369,6 +380,81 @@ class TasksService {
     }
   }
 
+  /// Actualiza múltiples posiciones Kanban de una vez
+  Future<void> updateMultipleKanbanPositions(
+    Map<int, int> positionUpdates,
+  ) async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        throw const TasksException('Usuario no autenticado');
+      }
+
+      // Actualizar cada tarea individualmente
+      for (final entry in positionUpdates.entries) {
+        await _supabase
+            .from('tasks')
+            .update({
+              'kanban_position': entry.value,
+              'updated_at': DateTime.now().toIso8601String(),
+            })
+            .eq('id', entry.key);
+      }
+    } catch (e) {
+      throw TasksException('Error al actualizar posiciones Kanban: $e');
+    }
+  }
+
+  /// Recalcula las posiciones Kanban para evitar conflictos
+  Future<void> recalculateKanbanPositions(int? projectId) async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        throw const TasksException('Usuario no autenticado');
+      }
+
+      // Obtener todas las tareas del proyecto ordenadas por estado y posición actual
+      final response = projectId != null
+          ? await _supabase
+                .from('tasks')
+                .select('id, status, kanban_position')
+                .eq('project_id', projectId)
+                .order('status')
+                .order('kanban_position')
+          : await _supabase
+                .from('tasks')
+                .select('id, status, kanban_position')
+                .order('status')
+                .order('kanban_position');
+
+      // Agrupar por estado y recalcular posiciones
+      final Map<String, List<Map<String, dynamic>>> tasksByStatus = {};
+      for (final task in response) {
+        final status = task['status'] as String;
+        tasksByStatus.putIfAbsent(status, () => []).add(task);
+      }
+
+      // Actualizar posiciones secuencialmente por estado
+      for (final statusTasks in tasksByStatus.values) {
+        for (int i = 0; i < statusTasks.length; i++) {
+          final taskId = statusTasks[i]['id'] as int;
+          final newPosition =
+              (i + 1) * 100; // Espaciar posiciones para futuras inserciones
+
+          await _supabase
+              .from('tasks')
+              .update({
+                'kanban_position': newPosition,
+                'updated_at': DateTime.now().toIso8601String(),
+              })
+              .eq('id', taskId);
+        }
+      }
+    } catch (e) {
+      throw TasksException('Error al recalcular posiciones Kanban: $e');
+    }
+  }
+
   /// Obtiene tareas por estado
   Future<List<Task>> getTasksByStatus(TaskStatus status) async {
     try {
@@ -403,7 +489,7 @@ class TasksService {
   Future<List<Task>> getTasksWithUpcomingDeadline({int daysAhead = 7}) async {
     try {
       final deadline = DateTime.now().add(Duration(days: daysAhead));
-      
+
       final response = await _supabase
           .from('tasks')
           .select('*')
@@ -414,7 +500,9 @@ class TasksService {
 
       return response.map<Task>(Task.fromJson).toList();
     } catch (e) {
-      throw TasksException('Error al obtener tareas con fecha límite próxima: $e');
+      throw TasksException(
+        'Error al obtener tareas con fecha límite próxima: $e',
+      );
     }
   }
 
@@ -432,10 +520,7 @@ class TasksService {
         throw const TasksException('No se puede eliminar una tarea completada');
       }
 
-      await _supabase
-          .from('tasks')
-          .delete()
-          .eq('id', id);
+      await _supabase.from('tasks').delete().eq('id', id);
     } catch (e) {
       throw TasksException('Error al eliminar tarea: $e');
     }
@@ -450,6 +535,78 @@ class TasksService {
           .from('tasks')
           .select('kanban_position')
           .eq('project_id', projectId)
+          .not('kanban_position', 'is', null)
+          .order('kanban_position', ascending: false)
+          .limit(1)
+          .single();
+
+      return (response['kanban_position'] as int?) ?? 0;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  /// Inicializa las posiciones Kanban para tareas que no las tienen
+  Future<void> initializeKanbanPositions(int projectId) async {
+    try {
+      // Obtener tareas sin posición Kanban
+      final tasksWithoutPosition = await _supabase
+          .from('tasks')
+          .select('id, status')
+          .eq('project_id', projectId)
+          .isFilter('kanban_position', null);
+
+      if (tasksWithoutPosition.isEmpty) return;
+
+      // Agrupar por estado
+      final Map<TaskStatus, List<Map<String, dynamic>>> tasksByStatus = {};
+      for (final task in tasksWithoutPosition) {
+        final status = TaskStatus.values.firstWhere(
+          (s) => s.name == task['status'],
+          orElse: () => TaskStatus.pending,
+        );
+        tasksByStatus.putIfAbsent(status, () => []).add(task);
+      }
+
+      // Asignar posiciones secuenciales por estado
+      for (final entry in tasksByStatus.entries) {
+        final status = entry.key;
+        final tasks = entry.value;
+
+        // Obtener la máxima posición actual para este estado
+        final maxPosition = await _getMaxKanbanPositionForStatus(
+          projectId,
+          status,
+        );
+
+        // Actualizar cada tarea con una posición secuencial
+        for (int i = 0; i < tasks.length; i++) {
+          await _supabase
+              .from('tasks')
+              .update({'kanban_position': maxPosition + i + 1})
+              .eq('id', tasks[i]['id']);
+        }
+      }
+    } catch (e) {
+      LoggingService.error(
+        'Error initializing Kanban positions: $e',
+        'TaskService',
+      );
+    }
+  }
+
+  /// Obtiene la máxima posición Kanban para un estado específico
+  Future<int> _getMaxKanbanPositionForStatus(
+    int projectId,
+    TaskStatus status,
+  ) async {
+    try {
+      final response = await _supabase
+          .from('tasks')
+          .select('kanban_position')
+          .eq('project_id', projectId)
+          .eq('status', status.name)
+          .not('kanban_position', 'is', null)
           .order('kanban_position', ascending: false)
           .limit(1)
           .single();
@@ -461,7 +618,10 @@ class TasksService {
   }
 
   /// Crea notificación de cambio de estado
-  Future<void> _createStatusChangeNotification(int taskId, TaskStatus status) async {
+  Future<void> _createStatusChangeNotification(
+    int taskId,
+    TaskStatus status,
+  ) async {
     try {
       final task = await getTask(taskId);
       if (task == null) return;
@@ -469,22 +629,24 @@ class TasksService {
       final notificationData = {
         'user_id': task.projectId, // Notificar al tutor del proyecto
         'type': 'task_status_changed',
-        'title': 'Estado de tarea actualizado',
-        'message': 'La tarea "${task.title}" cambió a estado: ${_getStatusDisplayName(status)}',
+        'title': NotificationLocalizations.getTaskStatusUpdatedTitle(),
+        'message': NotificationLocalizations.getTaskStatusChangedMessage(
+          task.title,
+          status.name,
+        ),
         'action_url': '/tasks/$taskId',
-        'metadata': {
-          'task_id': taskId,
-          'new_status': status.name,
-        },
+        'metadata': {'task_id': taskId, 'new_status': status.name},
         'created_at': DateTime.now().toIso8601String(),
       };
 
-      await _supabase
-          .from('notifications')
-          .insert(notificationData);
+      await _supabase.from('notifications').insert(notificationData);
     } catch (e) {
       // No fallar si la notificación falla
-      LoggingService.error('Error al crear notificación de cambio de estado', e, 'TaskStatus');
+      LoggingService.error(
+        'Error al crear notificación de cambio de estado',
+        e,
+        'TaskStatus',
+      );
     }
   }
 
@@ -497,22 +659,21 @@ class TasksService {
       final notificationData = {
         'user_id': userId,
         'type': 'task_assigned',
-        'title': 'Tarea asignada',
-        'message': 'Se te ha asignado la tarea: "${task.title}"',
+        'title': NotificationLocalizations.getTaskAssignedTitle(),
+        'message': NotificationLocalizations.getTaskAssignedMessage(task.title),
         'action_url': '/tasks/$taskId',
-        'metadata': {
-          'task_id': taskId,
-          'project_id': task.projectId,
-        },
+        'metadata': {'task_id': taskId, 'project_id': task.projectId},
         'created_at': DateTime.now().toIso8601String(),
       };
 
-      await _supabase
-          .from('notifications')
-          .insert(notificationData);
+      await _supabase.from('notifications').insert(notificationData);
     } catch (e) {
       // No fallar si la notificación falla
-      LoggingService.error('Error al crear notificación de asignación', e, 'TaskAssignment');
+      LoggingService.error(
+        'Error al crear notificación de asignación',
+        e,
+        'TaskAssignment',
+      );
     }
   }
 
@@ -529,40 +690,31 @@ class TasksService {
           .eq('task_id', taskId);
 
       for (final assignee in assignees) {
+        final commentPreview = content.length > 50
+            ? '${content.substring(0, 50)}...'
+            : content;
         final notificationData = {
           'user_id': assignee['user_id'],
           'type': 'new_comment',
-          'title': 'Nuevo comentario en tarea',
-          'message': 'Nuevo comentario en "${task.title}": ${content.length > 50 ? '${content.substring(0, 50)}...' : content}',
+          'title': NotificationLocalizations.getNewCommentTitle(),
+          'message': NotificationLocalizations.getNewCommentMessage(
+            task.title,
+            commentPreview,
+          ),
           'action_url': '/tasks/$taskId',
-          'metadata': {
-            'task_id': taskId,
-            'comment_preview': content,
-          },
+          'metadata': {'task_id': taskId, 'comment_preview': content},
           'created_at': DateTime.now().toIso8601String(),
         };
 
-        await _supabase
-            .from('notifications')
-            .insert(notificationData);
+        await _supabase.from('notifications').insert(notificationData);
       }
     } catch (e) {
       // No fallar si la notificación falla
-      LoggingService.error('Error al crear notificación de comentario', e, 'TaskComment');
-    }
-  }
-
-  /// Helper method to get status display name without BuildContext
-  String _getStatusDisplayName(TaskStatus status) {
-    switch (status) {
-      case TaskStatus.pending:
-        return 'Pendiente';
-      case TaskStatus.inProgress:
-        return 'En Progreso';
-      case TaskStatus.underReview:
-        return 'En Revisión';
-      case TaskStatus.completed:
-        return 'Completada';
+      LoggingService.error(
+        'Error al crear notificación de comentario',
+        e,
+        'TaskComment',
+      );
     }
   }
 }
@@ -570,9 +722,9 @@ class TasksService {
 /// Excepción personalizada para errores de tareas
 class TasksException implements Exception {
   final String message;
-  
+
   const TasksException(this.message);
-  
+
   @override
   String toString() => 'TasksException: $message';
 }

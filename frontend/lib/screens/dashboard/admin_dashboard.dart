@@ -128,7 +128,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
         children: [
           CircleAvatar(
             radius: 30,
-            backgroundColor: Color(AppConfig.platformColor),
+            backgroundColor: const Color(AppConfig.platformColor),
             child: Text(
               widget.user.email.substring(0, 1).toUpperCase(),
               style: const TextStyle(fontSize: 24, color: Colors.white),
@@ -150,7 +150,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   'ID: ${widget.user.id}',
                   style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
-                Text(
+                const Text(
                   'Rol: Administrador',
                   style: TextStyle(
                     color: Color(AppConfig.platformColor),
@@ -342,9 +342,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   ],
                 ),
                 const SizedBox(height: 8),
-                Text(
+                const Text(
                   'URL: ${AppConfig.supabaseStudioUrl}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
                     color: Colors.grey,
                     fontFamily: 'monospace',

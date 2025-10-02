@@ -744,6 +744,68 @@
   "@kanbanColumnCompleted": {
     "description": "Columna de tareas completadas en Kanban"
   },
+  "taskReorderedSuccess": "Tarea reordenada exitosamente",
+  "@taskReorderedSuccess": {
+    "description": "Mensaje de éxito al reordenar tarea en Kanban"
+  },
+  "taskPositionUpdatedSuccess": "Posición de tarea actualizada",
+  "@taskPositionUpdatedSuccess": {
+    "description": "Mensaje de éxito al actualizar posición de tarea"
+  },
+  "movingTask": "Moviendo...",
+  "@movingTask": {
+    "description": "Texto mostrado mientras se mueve una tarea"
+  },
+  "taskStatusUpdatedNotification": "Estado de tarea actualizado",
+  "@taskStatusUpdatedNotification": {
+    "description": "Título de notificación cuando se actualiza el estado de una tarea"
+  },
+  "taskStatusChangedMessage": "La tarea \"{taskTitle}\" cambió a estado: {status}",
+  "@taskStatusChangedMessage": {
+    "description": "Mensaje de notificación cuando cambia el estado de una tarea",
+    "placeholders": {
+      "taskTitle": {
+        "type": "String",
+        "description": "Título de la tarea"
+      },
+      "status": {
+        "type": "String", 
+        "description": "Nuevo estado de la tarea"
+      }
+    }
+  },
+  "taskAssignedNotification": "Tarea asignada",
+  "@taskAssignedNotification": {
+    "description": "Título de notificación cuando se asigna una tarea"
+  },
+  "taskAssignedMessage": "Se te ha asignado la tarea: \"{taskTitle}\"",
+  "@taskAssignedMessage": {
+    "description": "Mensaje de notificación cuando se asigna una tarea",
+    "placeholders": {
+      "taskTitle": {
+        "type": "String",
+        "description": "Título de la tarea asignada"
+      }
+    }
+  },
+  "newCommentNotification": "Nuevo comentario en tarea",
+  "@newCommentNotification": {
+    "description": "Título de notificación cuando se añade un comentario a una tarea"
+  },
+  "newCommentMessage": "Nuevo comentario en \"{taskTitle}\": {commentPreview}",
+  "@newCommentMessage": {
+    "description": "Mensaje de notificación cuando se añade un comentario",
+    "placeholders": {
+      "taskTitle": {
+        "type": "String",
+        "description": "Título de la tarea"
+      },
+      "commentPreview": {
+        "type": "String",
+        "description": "Vista previa del comentario"
+      }
+    }
+  },
   "selectDate": "Seleccionar fecha",
   "@selectDate": {
     "description": "Texto para seleccionar fecha"

@@ -220,7 +220,7 @@ class _TutorDashboardState extends State<TutorDashboard> {
           children: [
             CircleAvatar(
               radius: 30,
-              backgroundColor: Color(AppConfig.platformColor),
+              backgroundColor: const Color(AppConfig.platformColor),
               child: Text(
                 widget.user.email.substring(0, 1).toUpperCase(),
                 style: const TextStyle(fontSize: 24, color: Colors.white),
@@ -244,7 +244,7 @@ class _TutorDashboardState extends State<TutorDashboard> {
                   ),
                   Text(
                     '${l10n.tutorRole}: ${l10n.tutor}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Color(AppConfig.platformColor),
                       fontWeight: FontWeight.w500,
                     ),

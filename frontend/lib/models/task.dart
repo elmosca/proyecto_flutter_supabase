@@ -19,7 +19,7 @@ class Task {
   @JsonKey(name: 'completed_at')
   final DateTime? completedAt;
   @JsonKey(name: 'kanban_position')
-  final int kanbanPosition;
+  final int? kanbanPosition;
   @JsonKey(name: 'estimated_hours')
   final int? estimatedHours;
   @JsonKey(name: 'actual_hours')
@@ -45,7 +45,7 @@ class Task {
     required this.status,
     this.dueDate,
     this.completedAt,
-    required this.kanbanPosition,
+    this.kanbanPosition,
     this.estimatedHours,
     this.actualHours,
     required this.complexity,
@@ -137,7 +137,7 @@ enum TaskComplexity {
 extension TaskStatusExtension on TaskStatus {
   // Los métodos displayName y shortName ahora requieren AppLocalizations
   // Se moverán a un helper o se usarán directamente en los widgets
-  
+
   bool get isCompleted => this == TaskStatus.completed;
   bool get isInProgress => this == TaskStatus.inProgress;
   bool get isPending => this == TaskStatus.pending;
@@ -147,7 +147,7 @@ extension TaskStatusExtension on TaskStatus {
 extension TaskComplexityExtension on TaskComplexity {
   // El método displayName ahora requiere AppLocalizations
   // Se usará directamente en los widgets
-  
+
   int get estimatedHours {
     switch (this) {
       case TaskComplexity.simple:

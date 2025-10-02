@@ -17,7 +17,6 @@ import 'blocs/blocs.dart';
 import 'config/app_config.dart';
 import 'router/app_router.dart';
 import 'widgets/error_boundary.dart';
-import 'widgets/environment_info.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,20 +31,11 @@ void main() async {
     }
   }
 
-  // Añadir delay específico según el entorno de acceso
-  if (AppConfig.isExternalDomain) {
-    // Delay más largo para acceso externo (dominio)
-    await Future.delayed(const Duration(milliseconds: 1000));
-  } else {
-    // Delay normal para acceso interno
-    await Future.delayed(const Duration(milliseconds: 200));
-  }
+  // Pequeño delay para asegurar que SharedPreferences esté listo
+  await Future.delayed(const Duration(milliseconds: 100));
 
-  // Mostrar información de configuración
-  // Configuración específica por plataforma (solo en desarrollo)
+  // Debug de plataforma (solo en desarrollo)
   if (kDebugMode) {
-    AppConfig.printConfig();
-
     if (kIsWeb) {
       debugPrint('🌐 Ejecutando en Web');
     } else if (Platform.isWindows) {
@@ -61,60 +51,20 @@ void main() async {
     }
   }
 
-  // Inicializar Supabase siempre (excepto en tests)
-  bool supabaseInitialized = false;
+  // Inicializar Supabase
   try {
-    // Verificar configuración antes de inicializar
-    final supabaseUrl = AppConfig.supabaseUrl;
-    final supabaseAnonKey = AppConfig.supabaseAnonKey;
-
-    if (kDebugMode) {
-      debugPrint('🔧 Debug - Inicializando Supabase...');
-      debugPrint('🔧 Debug - URL: $supabaseUrl');
-      debugPrint('🔧 Debug - AnonKey: ${supabaseAnonKey.substring(0, 20)}...');
-      debugPrint('🔧 Debug - Environment: ${AppConfig.environment}');
-      debugPrint('🔧 Debug - Red Interna: ${AppConfig.isInternalNetwork}');
-      debugPrint('🔧 Debug - Dominio Externo: ${AppConfig.isExternalDomain}');
-      debugPrint('🔧 Debug - kDebugMode: $kDebugMode');
-      debugPrint('🔧 Debug - kIsWeb: $kIsWeb');
-    }
-
-    // Verificar que no estén vacíos
-    if (supabaseUrl.isEmpty || supabaseAnonKey.isEmpty) {
-      throw Exception('Supabase URL o AnonKey están vacíos');
-    }
-
-    // Configuración de Supabase con timeout específico según entorno
-    final timeoutDuration = AppConfig.isExternalDomain
-        ? const Duration(seconds: 20) // Timeout más largo para dominio externo
-        : const Duration(seconds: 10); // Timeout normal para red interna
-
     await Supabase.initialize(
-      url: supabaseUrl,
-      anonKey: supabaseAnonKey,
-    ).timeout(
-      timeoutDuration,
-      onTimeout: () {
-        throw Exception(
-          'Timeout inicializando Supabase (${timeoutDuration.inSeconds}s)',
-        );
-      },
+      url: AppConfig.supabaseUrl,
+      anonKey: AppConfig.supabaseAnonKey,
     );
-
-    supabaseInitialized = true;
 
     if (kDebugMode) {
       debugPrint('✅ Supabase inicializado correctamente');
-      debugPrint('   URL: $supabaseUrl');
-      debugPrint('   Entorno: ${AppConfig.environment}');
     }
   } catch (e) {
-    // En caso de error, continuar sin Supabase (útil para tests)
     if (kDebugMode) {
-      debugPrint('❌ Supabase initialization failed: $e');
-      debugPrint('❌ Stack trace: ${StackTrace.current}');
+      debugPrint('❌ Error inicializando Supabase: $e');
     }
-    supabaseInitialized = false;
   }
 
   runApp(const MyApp());
@@ -146,15 +96,7 @@ class _MyAppState extends State<MyApp> {
       return MultiBlocProvider(
         providers: [
           BlocProvider<AuthBloc>(
-            create: (context) {
-              try {
-                return AuthBloc(authService: AuthService());
-              } catch (e) {
-                debugPrint('❌ Error creando AuthBloc: $e');
-                // Crear un AuthBloc con manejo de errores
-                return AuthBloc(authService: AuthService());
-              }
-            },
+            create: (context) => AuthBloc(authService: AuthService()),
           ),
           BlocProvider<AnteprojectsBloc>(
             create: (context) =>
@@ -172,7 +114,6 @@ class _MyAppState extends State<MyApp> {
                 final authBloc = context.read<AuthBloc>();
                 authBloc.add(AuthCheckRequested());
               } catch (e) {
-                // Ignorar errores si el contexto no está disponible
                 if (kDebugMode) {
                   debugPrint('Auth check skipped: $e');
                 }
@@ -200,18 +141,7 @@ class _MyAppState extends State<MyApp> {
 
               // Manejo de errores global
               builder: (context, child) {
-                return ErrorBoundary(
-                  child: Stack(
-                    children: [
-                      child ?? const SizedBox.shrink(),
-                      const Positioned(
-                        top: 0,
-                        right: 0,
-                        child: EnvironmentInfo(),
-                      ),
-                    ],
-                  ),
-                );
+                return ErrorBoundary(child: child ?? const SizedBox.shrink());
               },
             );
           },

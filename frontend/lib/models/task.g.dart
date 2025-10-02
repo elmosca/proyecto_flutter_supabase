@@ -8,7 +8,8 @@ part of 'task.dart';
 
 Task _$TaskFromJson(Map<String, dynamic> json) => Task(
   id: (json['id'] as num).toInt(),
-  projectId: (json['project_id'] as num).toInt(),
+  projectId: (json['project_id'] as num?)?.toInt(),
+  anteprojectId: (json['anteproject_id'] as num?)?.toInt(),
   milestoneId: (json['milestone_id'] as num?)?.toInt(),
   title: json['title'] as String,
   description: json['description'] as String,
@@ -19,7 +20,7 @@ Task _$TaskFromJson(Map<String, dynamic> json) => Task(
   completedAt: json['completed_at'] == null
       ? null
       : DateTime.parse(json['completed_at'] as String),
-  kanbanPosition: (json['kanban_position'] as num).toInt(),
+  kanbanPosition: (json['kanban_position'] as num?)?.toInt(),
   estimatedHours: (json['estimated_hours'] as num?)?.toInt(),
   actualHours: (json['actual_hours'] as num?)?.toInt(),
   complexity: $enumDecode(_$TaskComplexityEnumMap, json['complexity']),
@@ -33,6 +34,7 @@ Task _$TaskFromJson(Map<String, dynamic> json) => Task(
 Map<String, dynamic> _$TaskToJson(Task instance) => <String, dynamic>{
   'id': instance.id,
   'project_id': instance.projectId,
+  'anteproject_id': instance.anteprojectId,
   'milestone_id': instance.milestoneId,
   'title': instance.title,
   'description': instance.description,

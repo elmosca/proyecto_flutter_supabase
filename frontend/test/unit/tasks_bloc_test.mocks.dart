@@ -68,6 +68,14 @@ class MockTasksService extends _i1.Mock implements _i3.TasksService {
           as _i4.Future<List<_i2.Task>>);
 
   @override
+  _i4.Future<List<_i2.Task>> getProjectTasksForUser(int? projectId) =>
+      (super.noSuchMethod(
+            Invocation.method(#getProjectTasksForUser, [projectId]),
+            returnValue: _i4.Future<List<_i2.Task>>.value(<_i2.Task>[]),
+          )
+          as _i4.Future<List<_i2.Task>>);
+
+  @override
   _i4.Future<_i2.Task?> getTask(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#getTask, [id]),
@@ -165,6 +173,28 @@ class MockTasksService extends _i1.Mock implements _i3.TasksService {
           as _i4.Future<void>);
 
   @override
+  _i4.Future<void> updateMultipleKanbanPositions(
+    Map<int, int>? positionUpdates,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateMultipleKanbanPositions, [
+              positionUpdates,
+            ]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> recalculateKanbanPositions(int? projectId) =>
+      (super.noSuchMethod(
+            Invocation.method(#recalculateKanbanPositions, [projectId]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
   _i4.Future<List<_i2.Task>> getTasksByStatus(_i2.TaskStatus? status) =>
       (super.noSuchMethod(
             Invocation.method(#getTasksByStatus, [status]),
@@ -198,6 +228,15 @@ class MockTasksService extends _i1.Mock implements _i3.TasksService {
   _i4.Future<void> deleteTask(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteTask, [id]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> initializeKanbanPositions(int? projectId) =>
+      (super.noSuchMethod(
+            Invocation.method(#initializeKanbanPositions, [projectId]),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),
           )

@@ -1109,6 +1109,68 @@
   "@kanbanColumnCompleted": {
     "description": "Kanban completed column"
   },
+  "taskReorderedSuccess": "Task reordered successfully",
+  "@taskReorderedSuccess": {
+    "description": "Success message when reordering task in Kanban"
+  },
+  "taskPositionUpdatedSuccess": "Task position updated",
+  "@taskPositionUpdatedSuccess": {
+    "description": "Success message when updating task position"
+  },
+  "movingTask": "Moving...",
+  "@movingTask": {
+    "description": "Text shown while moving a task"
+  },
+  "taskStatusUpdatedNotification": "Task status updated",
+  "@taskStatusUpdatedNotification": {
+    "description": "Notification title when task status is updated"
+  },
+  "taskStatusChangedMessage": "Task \"{taskTitle}\" changed to status: {status}",
+  "@taskStatusChangedMessage": {
+    "description": "Notification message when task status changes",
+    "placeholders": {
+      "taskTitle": {
+        "type": "String",
+        "description": "Task title"
+      },
+      "status": {
+        "type": "String", 
+        "description": "New task status"
+      }
+    }
+  },
+  "taskAssignedNotification": "Task assigned",
+  "@taskAssignedNotification": {
+    "description": "Notification title when a task is assigned"
+  },
+  "taskAssignedMessage": "You have been assigned the task: \"{taskTitle}\"",
+  "@taskAssignedMessage": {
+    "description": "Notification message when a task is assigned",
+    "placeholders": {
+      "taskTitle": {
+        "type": "String",
+        "description": "Assigned task title"
+      }
+    }
+  },
+  "newCommentNotification": "New comment on task",
+  "@newCommentNotification": {
+    "description": "Notification title when a comment is added to a task"
+  },
+  "newCommentMessage": "New comment on \"{taskTitle}\": {commentPreview}",
+  "@newCommentMessage": {
+    "description": "Notification message when a comment is added",
+    "placeholders": {
+      "taskTitle": {
+        "type": "String",
+        "description": "Task title"
+      },
+      "commentPreview": {
+        "type": "String",
+        "description": "Comment preview"
+      }
+    }
+  },
   "selectDate": "Select Date",
   "@selectDate": {
     "description": "Select date button"
