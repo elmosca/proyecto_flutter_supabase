@@ -566,6 +566,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get kanbanColumnCompleted => 'Completed';
 
   @override
+  String get taskReorderedSuccess => 'Task reordered successfully';
+
+  @override
+  String get taskPositionUpdatedSuccess => 'Task position updated';
+
+  @override
+  String get movingTask => 'Moving...';
+
+  @override
+  String get taskStatusUpdatedNotification => 'Task status updated';
+
+  @override
+  String taskStatusChangedMessage(String taskTitle, String status) {
+    return 'Task \"$taskTitle\" changed to status: $status';
+  }
+
+  @override
+  String get taskAssignedNotification => 'Task assigned';
+
+  @override
+  String taskAssignedMessage(String taskTitle) {
+    return 'You have been assigned the task: \"$taskTitle\"';
+  }
+
+  @override
+  String get newCommentNotification => 'New comment on task';
+
+  @override
+  String newCommentMessage(String taskTitle, String commentPreview) {
+    return 'New comment on \"$taskTitle\": $commentPreview';
+  }
+
+  @override
   String get selectDate => 'Select Date';
 
   @override

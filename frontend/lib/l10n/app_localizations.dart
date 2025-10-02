@@ -1178,6 +1178,60 @@ abstract class AppLocalizations {
   /// **'Completadas'**
   String get kanbanColumnCompleted;
 
+  /// Mensaje de éxito al reordenar tarea en Kanban
+  ///
+  /// In es, this message translates to:
+  /// **'Tarea reordenada exitosamente'**
+  String get taskReorderedSuccess;
+
+  /// Mensaje de éxito al actualizar posición de tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Posición de tarea actualizada'**
+  String get taskPositionUpdatedSuccess;
+
+  /// Texto mostrado mientras se mueve una tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Moviendo...'**
+  String get movingTask;
+
+  /// Título de notificación cuando se actualiza el estado de una tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Estado de tarea actualizado'**
+  String get taskStatusUpdatedNotification;
+
+  /// Mensaje de notificación cuando cambia el estado de una tarea
+  ///
+  /// In es, this message translates to:
+  /// **'La tarea \"{taskTitle}\" cambió a estado: {status}'**
+  String taskStatusChangedMessage(String taskTitle, String status);
+
+  /// Título de notificación cuando se asigna una tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Tarea asignada'**
+  String get taskAssignedNotification;
+
+  /// Mensaje de notificación cuando se asigna una tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Se te ha asignado la tarea: \"{taskTitle}\"'**
+  String taskAssignedMessage(String taskTitle);
+
+  /// Título de notificación cuando se añade un comentario a una tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo comentario en tarea'**
+  String get newCommentNotification;
+
+  /// Mensaje de notificación cuando se añade un comentario
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo comentario en \"{taskTitle}\": {commentPreview}'**
+  String newCommentMessage(String taskTitle, String commentPreview);
+
   /// Texto para seleccionar fecha
   ///
   /// In es, this message translates to:

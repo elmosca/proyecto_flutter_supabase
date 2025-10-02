@@ -11,11 +11,7 @@ class KanbanBoard extends StatefulWidget {
   final int? projectId;
   final int? anteprojectId;
 
-  const KanbanBoard({
-    super.key,
-    this.projectId,
-    this.anteprojectId,
-  });
+  const KanbanBoard({super.key, this.projectId, this.anteprojectId});
 
   @override
   State<KanbanBoard> createState() => _KanbanBoardState();
@@ -26,10 +22,12 @@ class _KanbanBoardState extends State<KanbanBoard> {
   void initState() {
     super.initState();
     // Cargar tareas al inicializar
-    context.read<TasksBloc>().add(TasksLoadRequested(
-      projectId: widget.projectId,
-      anteprojectId: widget.anteprojectId,
-    ));
+    context.read<TasksBloc>().add(
+      TasksLoadRequested(
+        projectId: widget.projectId,
+        anteprojectId: widget.anteprojectId,
+      ),
+    );
   }
 
   @override
@@ -42,56 +40,77 @@ class _KanbanBoardState extends State<KanbanBoard> {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: () => context.read<TasksBloc>().add(TasksLoadRequested(projectId: widget.projectId)),
+            onPressed: () => context.read<TasksBloc>().add(
+              TasksLoadRequested(projectId: widget.projectId),
+            ),
             tooltip: l10n.tasksListRefresh,
           ),
         ],
       ),
-      body: BlocBuilder<TasksBloc, TasksState>(
+      body: BlocConsumer<TasksBloc, TasksState>(
+        listener: (context, state) {
+          if (state is TasksFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.messageKey),
+                backgroundColor: Colors.red,
+              ),
+            );
+          } else if (state is TaskOperationSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(l10n.taskUpdatedSuccess),
+                backgroundColor: Colors.green,
+              ),
+            );
+          }
+        },
         builder: (context, state) {
           if (state is TasksLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is TasksFailure) {
+          }
+
+          if (state is TasksFailure) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 64,
-                    color: Colors.red[300],
-                  ),
+                  Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
                   const SizedBox(height: 16),
                   Text(
                     state.messageKey,
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: const TextStyle(fontSize: 16),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: () => context.read<TasksBloc>().add(TasksLoadRequested(projectId: widget.projectId)),
+                    onPressed: () => context.read<TasksBloc>().add(
+                      TasksLoadRequested(projectId: widget.projectId),
+                    ),
                     child: Text(l10n.retry),
                   ),
                 ],
               ),
             );
-          } else if (state is TasksLoaded) {
+          }
+
+          if (state is TasksLoaded) {
             final tasks = state.tasks;
-            
+
             if (tasks.isEmpty) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
-                      Icons.dashboard,
+                      Icons.inbox_outlined,
                       size: 64,
                       color: Colors.grey[400],
                     ),
                     const SizedBox(height: 16),
                     Text(
                       l10n.tasksListEmpty,
-                      style: Theme.of(context).textTheme.titleMedium,
+                      style: const TextStyle(fontSize: 16),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 16),
@@ -105,22 +124,20 @@ class _KanbanBoardState extends State<KanbanBoard> {
               );
             }
 
-            return RefreshIndicator(
-              onRefresh: () async {
-                context.read<TasksBloc>().add(TasksLoadRequested(projectId: widget.projectId));
-              },
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildColumn(TaskStatus.pending, tasks, l10n),
-                    _buildColumn(TaskStatus.inProgress, tasks, l10n),
-                    _buildColumn(TaskStatus.underReview, tasks, l10n),
-                    _buildColumn(TaskStatus.completed, tasks, l10n),
-                  ],
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: _buildColumn(TaskStatus.pending, tasks, l10n)),
+                Expanded(
+                  child: _buildColumn(TaskStatus.inProgress, tasks, l10n),
                 ),
-              ),
+                Expanded(
+                  child: _buildColumn(TaskStatus.underReview, tasks, l10n),
+                ),
+                Expanded(
+                  child: _buildColumn(TaskStatus.completed, tasks, l10n),
+                ),
+              ],
             );
           }
 
@@ -134,8 +151,16 @@ class _KanbanBoardState extends State<KanbanBoard> {
     );
   }
 
-  Widget _buildColumn(TaskStatus status, List<Task> tasks, AppLocalizations l10n) {
+  Widget _buildColumn(
+    TaskStatus status,
+    List<Task> tasks,
+    AppLocalizations l10n,
+  ) {
     final columnTasks = tasks.where((task) => task.status == status).toList();
+    columnTasks.sort(
+      (a, b) => (a.kanbanPosition ?? 0).compareTo(b.kanbanPosition ?? 0),
+    );
+
     final columnTitle = _getColumnTitle(status, l10n);
     final columnColor = _getColumnColor(status);
 
@@ -143,31 +168,37 @@ class _KanbanBoardState extends State<KanbanBoard> {
       onAcceptWithDetails: (details) {
         final task = details.data;
         if (task.status != status) {
-          _updateTaskStatus(task, status);
+          _handleTaskDrop(task, status, columnTasks.length);
         }
       },
       onWillAcceptWithDetails: (details) {
-        final task = details.data;
-        return task.status != status;
+        return details.data.status != status;
       },
       builder: (context, candidateData, rejectedData) {
         final isHighlighted = candidateData.isNotEmpty;
-        
+
         return Container(
-          width: 300,
           margin: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.grey[50],
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.grey[300]!),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Header de la columna
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: isHighlighted ? columnColor.withValues(alpha: 0.8) : columnColor,
-                  borderRadius: BorderRadius.circular(8),
-                  border: isHighlighted 
-                    ? Border.all(color: Colors.white, width: 2)
-                    : null,
+                  color: isHighlighted
+                      ? columnColor.withValues(alpha: 0.8)
+                      : columnColor,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    topRight: Radius.circular(8),
+                  ),
                 ),
                 child: Row(
                   children: [
@@ -181,7 +212,10 @@ class _KanbanBoardState extends State<KanbanBoard> {
                     ),
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(12),
@@ -198,25 +232,26 @@ class _KanbanBoardState extends State<KanbanBoard> {
                   ],
                 ),
               ),
-              const SizedBox(height: 8),
+              // Lista de tareas con scroll
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: isHighlighted 
-                      ? columnColor.withValues(alpha: 0.1)
-                      : Colors.transparent,
-                    borderRadius: BorderRadius.circular(8),
-                    border: isHighlighted 
-                      ? Border.all(color: columnColor, width: 2, style: BorderStyle.solid)
-                      : null,
+                    color: isHighlighted
+                        ? columnColor.withValues(alpha: 0.05)
+                        : Colors.white,
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(8),
+                      bottomRight: Radius.circular(8),
+                    ),
+                    border: isHighlighted
+                        ? Border.all(
+                            color: columnColor,
+                            width: 2,
+                            style: BorderStyle.solid,
+                          )
+                        : null,
                   ),
-                  child: ListView.builder(
-                    itemCount: columnTasks.length,
-                    itemBuilder: (context, index) {
-                      final task = columnTasks[index];
-                      return _buildTaskCard(task, l10n);
-                    },
-                  ),
+                  child: _buildTaskList(columnTasks, l10n),
                 ),
               ),
             ],
@@ -226,61 +261,37 @@ class _KanbanBoardState extends State<KanbanBoard> {
     );
   }
 
-  Widget _buildTaskCard(Task task, AppLocalizations l10n) {
+  Widget _buildTaskList(List<Task> tasks, AppLocalizations l10n) {
+    if (tasks.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(
+            l10n.tasksListEmpty,
+            style: TextStyle(color: Colors.grey[600]),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    }
+
+    return ListView.separated(
+      padding: const EdgeInsets.all(8),
+      itemCount: tasks.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 8),
+      itemBuilder: (context, index) {
+        final task = tasks[index];
+        return _buildTaskCard(task, l10n, key: ValueKey(task.id));
+      },
+    );
+  }
+
+  Widget _buildTaskCard(Task task, AppLocalizations l10n, {Key? key}) {
     return Draggable<Task>(
+      key: key,
       data: task,
-      feedback: Material(
-        elevation: 8,
-        borderRadius: BorderRadius.circular(8),
-        child: SizedBox(
-          width: 280,
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    task.title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    task.description,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-      childWhenDragging: Card(
-        margin: const EdgeInsets.only(bottom: 8),
-        child: SizedBox(
-          height: 100,
-          child: Center(
-            child: Text(
-              'Moviendo...',
-              style: TextStyle(
-                color: Colors.grey[400],
-                fontStyle: FontStyle.italic,
-              ),
-            ),
-          ),
-        ),
-      ),
+      feedback: _buildDragFeedback(task),
+      childWhenDragging: _buildDragPlaceholder(l10n),
       child: Card(
         margin: const EdgeInsets.only(bottom: 8),
         child: InkWell(
@@ -290,22 +301,30 @@ class _KanbanBoardState extends State<KanbanBoard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  task.title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        task.title,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Icon(
+                      Icons.drag_indicator,
+                      color: Colors.grey[400],
+                      size: 16,
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 4),
                 Text(
                   task.description,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -316,7 +335,10 @@ class _KanbanBoardState extends State<KanbanBoard> {
                     if (task.estimatedHours != null) ...[
                       const SizedBox(width: 4),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.blue[100],
                           borderRadius: BorderRadius.circular(8),
@@ -341,10 +363,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
                       const SizedBox(width: 4),
                       Text(
                         '${task.dueDate!.day}/${task.dueDate!.month}',
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: Colors.grey[600],
-                        ),
+                        style: TextStyle(fontSize: 10, color: Colors.grey[600]),
                       ),
                     ],
                   ),
@@ -357,36 +376,129 @@ class _KanbanBoardState extends State<KanbanBoard> {
     );
   }
 
-  Widget _buildComplexityChip(TaskComplexity complexity, AppLocalizations l10n) {
-    Color backgroundColor;
-    Color textColor;
+  Widget _buildDragFeedback(Task task) {
+    return Material(
+      elevation: 12,
+      borderRadius: BorderRadius.circular(8),
+      shadowColor: Colors.black.withValues(alpha: 0.3),
+      child: Container(
+        width: 280,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: _getColumnColor(task.status), width: 2),
+        ),
+        child: Card(
+          elevation: 0,
+          margin: EdgeInsets.zero,
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: _getColumnColor(task.status),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        task.title,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  task.description,
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
+  Widget _buildDragPlaceholder(AppLocalizations l10n) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: Container(
+        height: 100,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: Colors.grey[100],
+          border: Border.all(
+            color: Colors.grey[300]!,
+            width: 2,
+            style: BorderStyle.solid,
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.drag_indicator, color: Colors.grey[400], size: 24),
+              const SizedBox(height: 8),
+              Text(
+                l10n.movingTask,
+                style: TextStyle(
+                  color: Colors.grey[400],
+                  fontStyle: FontStyle.italic,
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildComplexityChip(
+    TaskComplexity complexity,
+    AppLocalizations l10n,
+  ) {
+    Color color;
     switch (complexity) {
       case TaskComplexity.simple:
-        backgroundColor = Colors.green[100]!;
-        textColor = Colors.green[800]!;
+        color = Colors.green;
         break;
       case TaskComplexity.medium:
-        backgroundColor = Colors.yellow[100]!;
-        textColor = Colors.yellow[800]!;
+        color = Colors.orange;
         break;
       case TaskComplexity.complex:
-        backgroundColor = Colors.red[100]!;
-        textColor = Colors.red[800]!;
+        color = Colors.red;
         break;
     }
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Text(
         TaskLocalizations.getTaskComplexityDisplayName(complexity, l10n),
         style: TextStyle(
           fontSize: 10,
-          color: textColor,
+          color: color,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -396,26 +508,26 @@ class _KanbanBoardState extends State<KanbanBoard> {
   String _getColumnTitle(TaskStatus status, AppLocalizations l10n) {
     switch (status) {
       case TaskStatus.pending:
-        return l10n.kanbanColumnPending;
+        return l10n.taskStatusPending;
       case TaskStatus.inProgress:
-        return l10n.kanbanColumnInProgress;
+        return l10n.taskStatusInProgress;
       case TaskStatus.underReview:
-        return l10n.kanbanColumnUnderReview;
+        return l10n.taskStatusUnderReview;
       case TaskStatus.completed:
-        return l10n.kanbanColumnCompleted;
+        return l10n.taskStatusCompleted;
     }
   }
 
   Color _getColumnColor(TaskStatus status) {
     switch (status) {
       case TaskStatus.pending:
-        return Colors.orange;
+        return Colors.grey[600]!;
       case TaskStatus.inProgress:
-        return Colors.blue;
+        return Colors.blue[600]!;
       case TaskStatus.underReview:
-        return Colors.purple;
+        return Colors.orange[600]!;
       case TaskStatus.completed:
-        return Colors.green;
+        return Colors.green[600]!;
     }
   }
 
@@ -441,13 +553,21 @@ class _KanbanBoardState extends State<KanbanBoard> {
     );
   }
 
-  void _updateTaskStatus(Task task, TaskStatus newStatus) {
-    // Actualizar el estado de la tarea usando el BLoC
-    context.read<TasksBloc>().add(
-      TaskStatusUpdateRequested(
-        taskId: task.id,
-        status: newStatus,
-      ),
-    );
+  void _handleTaskDrop(Task task, TaskStatus newStatus, int newPosition) {
+    // Si la tarea cambia de estado, usar el evento de reordenamiento
+    if (task.status != newStatus) {
+      context.read<TasksBloc>().add(
+        TaskReorderRequested(
+          taskId: task.id,
+          newStatus: newStatus,
+          newPosition: newPosition,
+        ),
+      );
+    } else {
+      // Si solo cambia la posición dentro de la misma columna
+      context.read<TasksBloc>().add(
+        TaskPositionUpdateRequested(taskId: task.id, newPosition: newPosition),
+      );
+    }
   }
 }

@@ -19,15 +19,12 @@ class TestCredentialsWidget extends StatelessWidget {
                 const SizedBox(width: 8),
                 const Text(
                   'Credenciales de Prueba',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            
+
             // Credenciales específicas del proyecto
             const Text(
               'Credenciales del Proyecto',
@@ -38,19 +35,31 @@ class TestCredentialsWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            
+
+            // Administrador
+            _buildCredentialCard(
+              context,
+              title: 'Administrador',
+              email: 'admin@jualas.es',
+              password: 'password123',
+              color: Colors.purple,
+              icon: Icons.admin_panel_settings,
+            ),
+
+            const SizedBox(height: 12),
+
             // Tutor específico
             _buildCredentialCard(
               context,
               title: 'Tutor - Jualas',
               email: 'jualas@jualas.es',
-              password: 'tutor123',
+              password: 'password123',
               color: Colors.green,
               icon: Icons.person,
             ),
-            
+
             const SizedBox(height: 12),
-            
+
             // Estudiante específico
             _buildCredentialCard(
               context,
@@ -60,52 +69,17 @@ class TestCredentialsWidget extends StatelessWidget {
               color: Colors.blue,
               icon: Icons.school,
             ),
-            
-            const SizedBox(height: 16),
-            
-            // Credenciales de prueba genéricas
-            const Text(
-              'Credenciales de Prueba Genéricas',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey,
-              ),
-            ),
+
             const SizedBox(height: 12),
-            
-            // Credenciales de Estudiante genérico
+
+            // Estudiante de prueba
             _buildCredentialCard(
               context,
-              title: 'Estudiante Genérico',
+              title: 'Estudiante de Prueba',
               email: 'student.test@alumno.cifpcarlos3.es',
               password: 'student123',
               color: Colors.blue.shade300,
               icon: Icons.school,
-            ),
-            
-            const SizedBox(height: 12),
-            
-            // Credenciales de Tutor genérico
-            _buildCredentialCard(
-              context,
-              title: 'Tutor Genérico',
-              email: 'tutor.test@cifpcarlos3.es',
-              password: 'password123',
-              color: Colors.green.shade300,
-              icon: Icons.person,
-            ),
-            
-            const SizedBox(height: 12),
-            
-            // Credenciales de Admin
-            _buildCredentialCard(
-              context,
-              title: 'Administrador',
-              email: 'admin.test@cifpcarlos3.es',
-              password: 'password123',
-              color: Colors.purple,
-              icon: Icons.admin_panel_settings,
             ),
           ],
         ),
@@ -146,7 +120,7 @@ class TestCredentialsWidget extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          
+
           // Email
           _buildCredentialField(
             context,
@@ -154,9 +128,9 @@ class TestCredentialsWidget extends StatelessWidget {
             value: email,
             onCopy: () => _copyToClipboard(context, email),
           ),
-          
+
           const SizedBox(height: 4),
-          
+
           // Password
           _buildCredentialField(
             context,
@@ -181,10 +155,7 @@ class TestCredentialsWidget extends StatelessWidget {
           width: 80,
           child: Text(
             '$label:',
-            style: const TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 12,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
           ),
         ),
         Expanded(
@@ -197,10 +168,7 @@ class TestCredentialsWidget extends StatelessWidget {
             ),
             child: Text(
               value,
-              style: const TextStyle(
-                fontSize: 12,
-                fontFamily: 'monospace',
-              ),
+              style: const TextStyle(fontSize: 12, fontFamily: 'monospace'),
             ),
           ),
         ),
@@ -210,10 +178,7 @@ class TestCredentialsWidget extends StatelessWidget {
           icon: const Icon(Icons.copy, size: 16),
           tooltip: 'Copiar $label',
           padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(
-            minWidth: 24,
-            minHeight: 24,
-          ),
+          constraints: const BoxConstraints(minWidth: 24, minHeight: 24),
         ),
       ],
     );
