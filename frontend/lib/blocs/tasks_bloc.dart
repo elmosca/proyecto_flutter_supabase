@@ -172,7 +172,7 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
             completedAt: taskData['completed_at'] != null
                 ? DateTime.parse(taskData['completed_at'] as String)
                 : null,
-            kanbanPosition: taskData['kanban_position'] as int,
+            kanbanPosition: (taskData['kanban_position'] as num?)?.toDouble(),
             estimatedHours: taskData['estimated_hours'] as int?,
             actualHours: taskData['actual_hours'] as int?,
             complexity: TaskComplexity.values.firstWhere(
@@ -297,7 +297,7 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
         // Actualizar estado y posición
         final updatedTask = currentTask.copyWith(
           status: event.newStatus,
-          kanbanPosition: event.newPosition,
+          kanbanPosition: event.newPosition.toDouble(),
           updatedAt: DateTime.now(),
         );
 
