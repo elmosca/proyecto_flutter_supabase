@@ -1,6 +1,50 @@
-# Desarrollo Local con Supabase
+# ⚠️ DOCUMENTO OBSOLETO - Desarrollo Local con Supabase
 
-## Configuración para Desarrollo Local
+> **IMPORTANTE**: Este documento está obsoleto desde el 4 de octubre de 2025.  
+> El proyecto ahora utiliza **Supabase Cloud** exclusivamente.  
+> Para recuperar la configuración local, usar la rama: `backup-supabase-local`
+
+---
+
+## 📋 Estado del Documento
+
+- **Estado**: ⚠️ OBSOLETO
+- **Fecha de obsolescencia**: 4 de octubre de 2025
+- **Razón**: Migración a Supabase Cloud
+- **Alternativa**: Usar Supabase Cloud (https://app.supabase.com)
+- **Backup disponible**: Rama `backup-supabase-local`
+
+---
+
+## 🔄 Recuperación de Configuración Local (Si Necesario)
+
+Si necesitas recuperar la configuración local de Supabase:
+
+```bash
+# Cambiar a la rama de backup
+git checkout backup-supabase-local
+
+# Ver archivos preservados
+ls backend/supabase/
+
+# Copiar archivos específicos si los necesitas
+git checkout backup-supabase-local -- backend/supabase/
+```
+
+---
+
+## 📚 Documentación Actual
+
+Para la configuración actual del proyecto, consulta:
+- [README Principal](../README.md)
+- [Migraciones de Base de Datos](base_datos/migraciones/README.md)
+- [Configuración de Supabase Cloud](desarrollo/03-guias-tecnicas/supabase-cloud.md)
+
+---
+
+# ⚠️ Contenido Original (Obsoleto)
+
+## Configuración para Desarrollo Local (OBSOLETO)
 
 ### 1. Servidor MCP
 

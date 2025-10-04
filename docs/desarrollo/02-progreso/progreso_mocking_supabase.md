@@ -167,3 +167,11 @@ class SupabaseMock {
 **Responsable**: Equipo Frontend  
 **Estado**: ✅ **PROBLEMA RESUELTO**  
 **Próximo hito**: Implementación de funcionalidades críticas restantes
+
+## 🔄 Actualización Kanban (octubre 2025)
+
+- Se migró `tasks.kanban_position` a `double precision` para permitir inserciones intermedias usando promedios.
+- Índice compuesto `idx_tasks_project_status_position` recreado para ordenar columnas por `project_id`, `status` y `kanban_position`.
+- Datos normalizados a formato `n.0` con actualización masiva: `UPDATE public.tasks SET kanban_position = floor(COALESCE(kanban_position, 0))::double precision`.
+- Los modelos Flutter (`Task`) y servicios ajustados para trabajar con `double?` tras regenerar JSON (`flutter pub run build_runner build --delete-conflicting-outputs`).
+- Migración pendiente de aplicar en Supabase (`supabase db push` requiere `supabase link` en la máquina local antes de ejecutarse).

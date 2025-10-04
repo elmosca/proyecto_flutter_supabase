@@ -19,7 +19,7 @@ class Task {
   @JsonKey(name: 'completed_at')
   final DateTime? completedAt;
   @JsonKey(name: 'kanban_position')
-  final int? kanbanPosition;
+  final double? kanbanPosition;
   @JsonKey(name: 'estimated_hours')
   final int? estimatedHours;
   @JsonKey(name: 'actual_hours')
@@ -68,7 +68,7 @@ class Task {
     TaskStatus? status,
     DateTime? dueDate,
     DateTime? completedAt,
-    int? kanbanPosition,
+    double? kanbanPosition,
     int? estimatedHours,
     int? actualHours,
     TaskComplexity? complexity,

@@ -20,7 +20,7 @@ Task _$TaskFromJson(Map<String, dynamic> json) => Task(
   completedAt: json['completed_at'] == null
       ? null
       : DateTime.parse(json['completed_at'] as String),
-  kanbanPosition: (json['kanban_position'] as num?)?.toInt(),
+  kanbanPosition: (json['kanban_position'] as num?)?.toDouble(),
   estimatedHours: (json['estimated_hours'] as num?)?.toInt(),
   actualHours: (json['actual_hours'] as num?)?.toInt(),
   complexity: $enumDecode(_$TaskComplexityEnumMap, json['complexity']),

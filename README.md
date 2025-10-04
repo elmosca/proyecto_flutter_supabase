@@ -54,12 +54,13 @@ Sistema de gestión colaborativa para Trabajos de Fin de Grado (TFG) del ciclo f
 
 ## 🏗️ **ARQUITECTURA TÉCNICA**
 
-### **Backend (Supabase)**
-- **Base de datos**: PostgreSQL con 19 tablas
+### **Backend (Supabase Cloud)**
+- **Base de datos**: PostgreSQL con 19 tablas (Cloud)
 - **Autenticación**: Supabase Auth con JWT
 - **APIs**: Edge Functions (REST)
 - **Seguridad**: Row Level Security (RLS)
 - **Realtime**: Suscripciones en tiempo real
+- **Entorno**: Supabase Cloud (https://app.supabase.com)
 
 ### **Frontend (Flutter)**
 - **Framework**: Flutter 3.x multiplataforma
@@ -77,7 +78,6 @@ Sistema de gestión colaborativa para Trabajos de Fin de Grado (TFG) del ciclo f
 # Verificar instalaciones
 flutter --version  # Flutter 3.0+
 dart --version     # Dart 3.0+
-supabase --version # Supabase CLI
 ```
 
 ### **1. Clonar el Repositorio**
@@ -86,22 +86,30 @@ git clone https://github.com/tu-usuario/proyecto_flutter_supabase.git
 cd proyecto_flutter_supabase
 ```
 
-### **2. Configurar Backend**
+### **2. Configurar Backend (Supabase Cloud)**
 ```bash
-# Navegar al directorio del backend
-cd backend/supabase
+# 1. Crear proyecto en Supabase Cloud
+# Ir a: https://app.supabase.com
+# Crear nuevo proyecto
 
-# Iniciar Supabase local
-supabase start
+# 2. Aplicar migraciones
+# Ir a: SQL Editor en Supabase Dashboard
+# Ejecutar migraciones en orden desde: docs/base_datos/migraciones/
 
-# Verificar estado
-supabase status
+# 3. Obtener credenciales del proyecto
+# Ir a: Settings > API
+# Copiar: URL del proyecto y anon key
 ```
 
 ### **3. Configurar Frontend**
 ```bash
 # Navegar al directorio del frontend
 cd frontend
+
+# Configurar variables de entorno
+# Crear archivo .env con:
+# SUPABASE_URL=tu_url_del_proyecto
+# SUPABASE_ANON_KEY=tu_anon_key
 
 # Instalar dependencias
 flutter pub get
@@ -112,9 +120,9 @@ flutter run -d chrome
 
 ### **4. Probar la Aplicación**
 ```bash
-# Usar credenciales de prueba:
-# Email: carlos.lopez@alumno.cifpcarlos3.es
-# Password: password123
+# Usar credenciales creadas en Supabase Auth:
+# Email: tu_email@ejemplo.com
+# Password: tu_password
 ```
 
 ---
@@ -123,26 +131,23 @@ flutter run -d chrome
 
 ```
 proyecto_flutter_supabase/
-├── backend/
-│   └── supabase/
-│       ├── migrations/          # Migraciones de BD
-│       ├── functions/           # APIs REST (Edge Functions)
-│       ├── tests/               # Scripts de prueba
-│       └── README.md           # Documentación del backend
+├── docs/
+│   ├── arquitectura/           # Especificaciones técnicas
+│   ├── base_datos/            # Documentación de BD
+│   │   └── migraciones/       # Migraciones SQL para Supabase Cloud
+│   ├── desarrollo/             # Guías de desarrollo
+│   └── despliegue/             # Guías de despliegue
 ├── frontend/
 │   ├── lib/
 │   │   ├── models/             # Modelos de datos
 │   │   ├── services/           # Servicios de comunicación
-│   │   ├── blocs/              # Gestión de estado
+│   │   ├── blocs/              # Gestión de estado (BLoC)
 │   │   ├── screens/            # Pantallas de la app
 │   │   ├── widgets/            # Widgets reutilizables
+│   │   ├── config/             # Configuración (Supabase Cloud)
 │   │   └── utils/              # Utilidades
-│   ├── test/                   # Tests
+│   ├── test/                   # Tests (unit, widget, integration)
 │   └── pubspec.yaml           # Dependencias
-├── docs/                       # Documentación del proyecto
-│   ├── arquitectura/           # Especificaciones técnicas
-│   ├── desarrollo/             # Guías de desarrollo
-│   └── despliegue/             # Guías de despliegue
 └── README.md                   # Este archivo
 ```
 
@@ -213,20 +218,19 @@ proyecto_flutter_supabase/
 
 ## 🛠️ **COMANDOS ÚTILES**
 
-### **Backend**
+### **Backend (Supabase Cloud)**
 ```bash
-# Iniciar Supabase
-cd backend/supabase
-supabase start
+# Acceder al Dashboard
+# https://app.supabase.com
 
-# Verificar estado
-supabase status
+# Aplicar migraciones
+# SQL Editor > Ejecutar archivos de: docs/base_datos/migraciones/
 
-# Resetear base de datos
-supabase db reset
+# Ver logs en tiempo real
+# Logs > Seleccionar servicio (API, Auth, Storage, etc.)
 
-# Ver logs
-supabase logs
+# Configurar Edge Functions
+# Edge Functions > Deploy desde Dashboard
 ```
 
 ### **Frontend**
@@ -261,36 +265,21 @@ flutter format .
 flutter clean
 ```
 
-### **Acceso Externo con Ngrok**
+### **Desarrollo y Despliegue**
 ```bash
-# Iniciar Supabase
-cd backend/supabase
-supabase start
-
-# Crear túnel ngrok (en otra terminal)
-ngrok http 54321 --subdomain=tu-proyecto-tfg
-
-# Ejecutar frontend con ngrok
-cd frontend
-flutter run --dart-define=ENVIRONMENT=ngrok
-
-# O usar script automatizado
-scripts/start_ngrok.bat  # Windows
-./scripts/start_ngrok.sh # Linux/macOS
-```
-
-### **Servidor (Actualización y Despliegue)**
-```bash
-# Actualizar repositorio en servidor
+# Actualizar repositorio
 git pull origin develop
 
-# Levantar sistema completo en servidor
-scripts/start_server_system.bat  # Windows
-./scripts/start_server_system.sh # Linux/macOS
+# Build para producción
+cd frontend
+flutter build web
 
-# URLs resultantes:
-# Backend: https://tu-proyecto-tfg.ngrok.io
-# Web App: https://tu-proyecto-tfg-web.ngrok.io
+# Deploy a hosting (ej: Firebase Hosting, Netlify, Vercel)
+# Seguir guías específicas de cada plataforma
+
+# Configurar variables de entorno en producción
+# SUPABASE_URL=https://tu-proyecto.supabase.co
+# SUPABASE_ANON_KEY=tu-anon-key
 ```
 
 ---
@@ -318,19 +307,18 @@ scripts/start_server_system.bat  # Windows
 ### **Documentación Técnica**
 - [Especificación Funcional](docs/arquitectura/especificacion_funcional.md)
 - [Modelo de Datos](docs/base_datos/modelo_datos.md)
+- [Migraciones SQL](docs/base_datos/migraciones/README.md)
 - [Lógica de Datos](docs/arquitectura/logica_datos.md)
 
 ### **Guías de Desarrollo**
 - [Plan de Implementación](docs/desarrollo/plan_implementacion.md)
 - [Checklist MVP Detallado](docs/desarrollo/checklist_mvp_detallado.md)
-- [Progreso Mocking de Supabase](docs/desarrollo/progreso_mocking_supabase.md)
 - [Guía de Inicio Frontend](docs/desarrollo/guia_inicio_frontend.md)
-
-### **Guías de Configuración**
-- [Configuración Backend](backend/supabase/README.md)
 - [Configuración Android](docs/desarrollo/android_setup.md)
-- [Guía Ngrok para Backend Local](docs/desarrollo/guia_ngrok_backend_local.md)
-- [Configuración Ngrok - Ejemplo](docs/desarrollo/configuracion_ngrok_ejemplo.md)
+
+### **Configuración de Supabase Cloud**
+- [Migraciones de Base de Datos](docs/base_datos/migraciones/README.md)
+- [Configuración de Variables de Entorno](frontend/lib/config/app_config.dart)
 
 ---
 
