@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../models/task.dart';
 import '../services/tasks_service.dart';
+import '../services/logging_service.dart';
 
 // Events
 abstract class TasksEvent extends Equatable {
@@ -282,10 +283,17 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
     TaskReorderRequested event,
     Emitter<TasksState> emit,
   ) async {
+    LoggingService.debug('🎯 BLoC: TaskReorderRequested recibido');
+    LoggingService.debug('   TaskId: ${event.taskId}');
+    LoggingService.debug('   NewStatus: ${event.newStatus.name}');
+    LoggingService.debug('   NewPosition: ${event.newPosition}');
+
     try {
       // Obtener la tarea actual
       final currentTask = await _tasksService.getTask(event.taskId);
       if (currentTask != null) {
+        LoggingService.debug('   ✅ Tarea encontrada: ${currentTask.title}');
+
         // Actualizar estado y posición
         final updatedTask = currentTask.copyWith(
           status: event.newStatus,
@@ -294,15 +302,19 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
         );
 
         await _tasksService.updateTask(event.taskId, updatedTask);
+        LoggingService.debug('   ✅ Tarea actualizada en la base de datos');
 
         // El reordenamiento se completó exitosamente
         emit(const TaskOperationSuccess('taskReorderedSuccess'));
         // Recargar la lista
         add(TasksLoadRequested(projectId: currentTask.projectId));
+        LoggingService.debug('   ✅ Recargando lista de tareas');
       } else {
+        LoggingService.warning('   ❌ Tarea no encontrada');
         emit(const TasksFailure('taskNotFound'));
       }
     } catch (e) {
+      LoggingService.error('   ❌ Error procesando reorder', e);
       emit(TasksFailure(e.toString()));
     }
   }
@@ -311,15 +323,30 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
     TaskPositionUpdateRequested event,
     Emitter<TasksState> emit,
   ) async {
+    LoggingService.debug('🎯 BLoC: TaskPositionUpdateRequested recibido');
+    LoggingService.debug('   TaskId: ${event.taskId}');
+    LoggingService.debug('   NewPosition: ${event.newPosition}');
+
     try {
       // Actualizar solo la posición Kanban
       await _tasksService.updateKanbanPosition(event.taskId, event.newPosition);
+      LoggingService.debug('   ✅ Posición actualizada en la base de datos');
 
       // La posición se actualizó exitosamente
       emit(const TaskOperationSuccess('taskPositionUpdatedSuccess'));
-      // Recargar la lista
-      add(const TasksLoadRequested());
+      // Recargar la lista - necesitamos obtener el projectId de la tarea
+      final task = await _tasksService.getTask(event.taskId);
+      if (task != null) {
+        add(TasksLoadRequested(projectId: task.projectId));
+        LoggingService.debug(
+          '   ✅ Recargando lista de tareas con projectId: ${task.projectId}',
+        );
+      } else {
+        add(const TasksLoadRequested());
+        LoggingService.debug('   ✅ Recargando lista de tareas (sin projectId)');
+      }
     } catch (e) {
+      LoggingService.error('   ❌ Error actualizando posición', e);
       emit(TasksFailure(e.toString()));
     }
   }

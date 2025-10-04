@@ -368,6 +368,7 @@ class TasksService {
         throw const TasksException('Usuario no autenticado');
       }
 
+      // Actualización simple de posición
       await _supabase
           .from('tasks')
           .update({
@@ -377,6 +378,56 @@ class TasksService {
           .eq('id', taskId);
     } catch (e) {
       throw TasksException('Error al actualizar posición Kanban: $e');
+    }
+  }
+
+  /// Recalcula las posiciones de las tareas en un estado específico
+  Future<void> _recalculatePositionsForStatus(
+    int projectId,
+    TaskStatus status,
+    int movedTaskId,
+    int newPosition,
+  ) async {
+    try {
+      // Obtener todas las tareas del mismo estado
+      final tasks = await _supabase
+          .from('tasks')
+          .select('id, kanban_position')
+          .eq('project_id', projectId)
+          .eq('status', status.name)
+          .order('kanban_position', ascending: true);
+
+      // Filtrar la tarea que se está moviendo
+      final otherTasks = tasks.where((t) => t['id'] != movedTaskId).toList();
+
+      // Crear nueva lista de posiciones
+      final newPositions = <Map<String, dynamic>>[];
+
+      // Insertar la tarea movida en la nueva posición
+      newPositions.add({'id': movedTaskId, 'position': newPosition});
+
+      // Reasignar posiciones a las demás tareas
+      int currentPosition = 1;
+      for (final task in otherTasks) {
+        if (currentPosition == newPosition) {
+          currentPosition++; // Saltar la posición ocupada
+        }
+        newPositions.add({'id': task['id'], 'position': currentPosition});
+        currentPosition++;
+      }
+
+      // Actualizar todas las posiciones en la base de datos
+      for (final item in newPositions) {
+        await _supabase
+            .from('tasks')
+            .update({
+              'kanban_position': item['position'],
+              'updated_at': DateTime.now().toIso8601String(),
+            })
+            .eq('id', item['id']);
+      }
+    } catch (e) {
+      throw TasksException('Error al recalcular posiciones: $e');
     }
   }
 
