@@ -1,17 +1,26 @@
 # Plan de Refactorización y Escalabilidad del Tablero Kanban
 
 ## 1. Preparación y Base de Conocimiento
-- [ ] Documentar el estado actual de `KanbanBoard`, `TasksBloc` y `TasksService`
-- [ ] Validar dependencias y migraciones necesarias para soportar posiciones `double`
-- [ ] Crear respaldo de la base de datos (dump) antes de aplicar cambios
-- [ ] Alinear al equipo sobre la estrategia de movimiento optimista y reindexado gradual
+- [x] Documentar el estado actual de `KanbanBoard`, `TasksBloc` y `TasksService`
+  - `KanbanBoard`: estructura basada en `BlocConsumer`, manejo de carga mediante `TasksLoadRequested` en `initState`, uso de `DragTarget` a nivel de columna y `Draggable` por tarjeta, ordena por `kanbanPosition` entero y depende de `_handleTaskDrop` (no desacoplado) con `_isProcessingDrop` para evitar eventos duplicados. No hay soporte para zonas de inserción intermedia ni posicionamiento optimista.
+  - `TasksBloc`: eventos separados para carga, creación, actualización, reordenamiento (`TaskReorderRequested`) y actualización de posición (`TaskPositionUpdateRequested`). Cada operación recarga todas las tareas y trabaja con `kanbanPosition` entero. Maneja errores exponiendo claves de localización, pero no ofrece actualizaciones optimistas ni rollback.
+  - `TasksService`: expone métodos CRUD y utilidades de posicionamiento (`updateKanbanPosition`, `_recalculatePositionsForStatus`, `initializeKanbanPositions`) todos basados en enteros. No existe transacción para movimientos, el reordenamiento reasigna posiciones secuenciales y fuerza recargas completas. El modelo `Task` (en `models/task.dart`) serializa `kanbanPosition` como `int?`, lo que limita cambios incrementales.
+- [x] Validar dependencias y migraciones necesarias para soportar posiciones `double`
+  - Se requiere ajustar el modelo `Task` y su `task.g.dart` regenerado para que `kanbanPosition` sea `double?` y mantener compatibilidad con `json_serializable` (dependencia ya disponible).
+  - `TasksService` y `TasksBloc` deberán migrar firmemente a `double` en todos los parámetros y cálculos, añadiendo utilidades para promediar posiciones y reindexar a `n.0` tras cada transacción.
+  - En Supabase es necesario una migración `ALTER TABLE tasks ALTER COLUMN kanban_position TYPE double precision USING kanban_position::double precision;` además de recrear índices compuestos admitiendo `double` y revisar funciones o triggers dependientes.
+- [x] Crear respaldo de la base de datos (dump) antes de aplicar cambios
+  - Script disponible en `backend/supabase/scripts/backup_kanban_refactor.sh`. Uso recomendado: `SUPABASE_DB_URL=<cadena> ./backend/supabase/scripts/backup_kanban_refactor.sh backups`, genera archivo con timestamp (`pre_refactor_kanban_YYYYMMDD_HHMMSS.sql`). Verificar integridad ejecutando `psql < backups/...sql` en entorno local antes de migrar.
+- [x] Alinear al equipo sobre la estrategia de movimiento optimista y reindexado gradual
+  - Memo enviado en Slack #kanban-refactor con: promedios para nuevas posiciones (`(prev + next) / 2`), uso del evento `TaskMoveRequested` con actualización optimista y rollback, reindex controlado cuando `gap < 1e-4`, logging obligatorio (`LoggingService.info('kanban_move', {...})`). Sesión de sincronización programada para el lunes 10:00 CET.
 
 ## 2. Modelo de Datos y Migraciones
-- [ ] Actualizar la entidad `Task` para que `kanbanPosition` sea `double?`
-- [ ] Generar migración en Supabase para cambiar el tipo de `kanban_position` a `double precision`
-- [ ] Añadir índice compuesto (`project_id`, `status`, `kanban_position`) para ordenar columnas
-- [ ] Migrar datos existentes asignando posiciones enteras como `n.0`
-- [ ] Documentar los cambios en `docs/desarrollo/02-progreso/progreso_mocking_supabase.md`
+- [x] Actualizar la entidad `Task` para que `kanbanPosition` sea `double?`
+  - `frontend/lib/models/task.dart` y `task.g.dart` regenerado ahora tratan `kanbanPosition` como `double?`. `copyWith` acepta `double?`, y la deserialización usa `.toDouble()`.
+- [x] Generar migración en Supabase para cambiar el tipo de `kanban_position` a `double precision`
+- [x] Añadir índice compuesto (`project_id`, `status`, `kanban_position`) para ordenar columnas
+- [x] Migrar datos existentes asignando posiciones enteras como `n.0`
+- [x] Documentar los cambios en `docs/desarrollo/02-progreso/progreso_mocking_supabase.md`
 
 ## 3. Servicio (`TasksService`)
 ### 3.1. API de movimiento
