@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../blocs/tasks_bloc.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/task.dart';
-import '../../blocs/tasks_bloc.dart';
+import '../../services/logging_service.dart';
 import '../../utils/task_localizations.dart';
 import '../forms/task_form.dart';
 
@@ -18,6 +19,9 @@ class KanbanBoard extends StatefulWidget {
 }
 
 class _KanbanBoardState extends State<KanbanBoard> {
+  // Variable para evitar eventos duplicados
+  bool _isProcessingDrop = false;
+
   @override
   void initState() {
     super.initState();
@@ -167,12 +171,11 @@ class _KanbanBoardState extends State<KanbanBoard> {
     return DragTarget<Task>(
       onAcceptWithDetails: (details) {
         final task = details.data;
-        if (task.status != status) {
-          _handleTaskDrop(task, status, columnTasks.length);
-        }
+        _handleTaskDrop(task, status, columnTasks.length);
       },
       onWillAcceptWithDetails: (details) {
-        return details.data.status != status;
+        // Permitir drop siempre, tanto para cambio de estado como reordenamiento
+        return true;
       },
       builder: (context, candidateData, rejectedData) {
         final isHighlighted = candidateData.isNotEmpty;
@@ -554,8 +557,22 @@ class _KanbanBoardState extends State<KanbanBoard> {
   }
 
   void _handleTaskDrop(Task task, TaskStatus newStatus, int newPosition) {
+    // Evitar eventos duplicados
+    if (_isProcessingDrop) {
+      LoggingService.debug('⚠️ Drop ya en proceso, ignorando...');
+      return;
+    }
+
+    _isProcessingDrop = true;
+
+    LoggingService.debug('🔄 Drag & Drop: ${task.title}');
+    LoggingService.debug('   Estado actual: ${task.status.name}');
+    LoggingService.debug('   Estado nuevo: ${newStatus.name}');
+    LoggingService.debug('   Posición nueva: $newPosition');
+
     // Si la tarea cambia de estado, usar el evento de reordenamiento
     if (task.status != newStatus) {
+      LoggingService.debug('   → Enviando TaskReorderRequested');
       context.read<TasksBloc>().add(
         TaskReorderRequested(
           taskId: task.id,
@@ -564,10 +581,16 @@ class _KanbanBoardState extends State<KanbanBoard> {
         ),
       );
     } else {
+      LoggingService.debug('   → Enviando TaskPositionUpdateRequested');
       // Si solo cambia la posición dentro de la misma columna
       context.read<TasksBloc>().add(
         TaskPositionUpdateRequested(taskId: task.id, newPosition: newPosition),
       );
     }
+
+    // Resetear el flag después de un breve delay
+    Future.delayed(const Duration(milliseconds: 500), () {
+      _isProcessingDrop = false;
+    });
   }
 }
