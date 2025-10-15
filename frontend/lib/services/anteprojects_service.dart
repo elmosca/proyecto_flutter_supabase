@@ -51,7 +51,7 @@ class AnteprojectsService {
 
       // ignore: avoid_print
       print('🔍 Debug - Creando anteproyecto: ${anteproject.title}');
-      
+
       // Obtener información del usuario actual desde la tabla users
       final userResponse = await _supabase
           .from('users')
@@ -62,14 +62,14 @@ class AnteprojectsService {
       final userId = userResponse['id'] as int;
       final userRole = userResponse['role'] as String;
       final tutorId = userResponse['tutor_id'] as int?;
-      
+
       // ignore: avoid_print
       print('🔍 Debug - Usuario: ID=$userId, Role=$userRole, TutorID=$tutorId');
-      
+
       final data = anteproject.toJson();
       // ignore: avoid_print
       print('🔍 Debug - Datos originales: $data');
-      
+
       // Remover campos que se generan automáticamente
       data.remove('id');
       data.remove('created_at');
@@ -106,19 +106,19 @@ class AnteprojectsService {
       // Si es un estudiante, crear la relación en anteproject_students
       if (userRole == 'student') {
         try {
-          await _supabase
-              .from('anteproject_students')
-              .insert({
-                'anteproject_id': anteprojectId,
-                'student_id': userId,
-                'is_lead_author': true,
-                'created_at': DateTime.now().toIso8601String(),
-              });
+          await _supabase.from('anteproject_students').insert({
+            'anteproject_id': anteprojectId,
+            'student_id': userId,
+            'is_lead_author': true,
+            'created_at': DateTime.now().toIso8601String(),
+          });
           // ignore: avoid_print
           print('✅ Debug - Relación estudiante-anteproyecto creada');
         } catch (e) {
           // ignore: avoid_print
-          print('⚠️ Debug - Error al crear relación estudiante-anteproyecto: $e');
+          print(
+            '⚠️ Debug - Error al crear relación estudiante-anteproyecto: $e',
+          );
           // No fallar si no se puede crear la relación
         }
       }
@@ -195,6 +195,19 @@ class AnteprojectsService {
         throw const AnteprojectsException('Usuario no autenticado');
       }
 
+      // Obtener información del anteproyecto antes de aprobarlo
+      final anteprojectResponse = await _supabase
+          .from('anteprojects')
+          .select('title, description, tutor_id')
+          .eq('id', id)
+          .single();
+
+      final anteprojectTitle = anteprojectResponse['title'] as String;
+      final anteprojectDescription =
+          anteprojectResponse['description'] as String?;
+      final tutorId = anteprojectResponse['tutor_id'] as int;
+
+      // Aprobar el anteproyecto
       await _supabase
           .from('anteprojects')
           .update({
@@ -204,6 +217,14 @@ class AnteprojectsService {
             'updated_at': DateTime.now().toIso8601String(),
           })
           .eq('id', id);
+
+      // Crear proyecto automáticamente basado en el anteproyecto aprobado
+      await _createProjectFromAnteproject(
+        anteprojectId: id,
+        title: anteprojectTitle,
+        description: anteprojectDescription ?? '',
+        tutorId: tutorId,
+      );
     } catch (e) {
       throw AnteprojectsException('Error al aprobar anteproyecto: $e');
     }
@@ -232,7 +253,9 @@ class AnteprojectsService {
   }
 
   /// Obtiene anteproyectos por estado
-  Future<List<Anteproject>> getAnteprojectsByStatus(AnteprojectStatus status) async {
+  Future<List<Anteproject>> getAnteprojectsByStatus(
+    AnteprojectStatus status,
+  ) async {
     try {
       final response = await _supabase
           .from('anteprojects')
@@ -242,7 +265,9 @@ class AnteprojectsService {
 
       return response.map<Anteproject>(Anteproject.fromJson).toList();
     } catch (e) {
-      throw AnteprojectsException('Error al obtener anteproyectos por estado: $e');
+      throw AnteprojectsException(
+        'Error al obtener anteproyectos por estado: $e',
+      );
     }
   }
 
@@ -271,7 +296,9 @@ class AnteprojectsService {
 
       return response.map<Anteproject>(Anteproject.fromJson).toList();
     } catch (e) {
-      throw AnteprojectsException('Error al obtener anteproyectos del tutor: $e');
+      throw AnteprojectsException(
+        'Error al obtener anteproyectos del tutor: $e',
+      );
     }
   }
 
@@ -314,7 +341,9 @@ class AnteprojectsService {
 
       return anteprojects;
     } catch (e) {
-      throw AnteprojectsException('Error al obtener anteproyectos del estudiante: $e');
+      throw AnteprojectsException(
+        'Error al obtener anteproyectos del estudiante: $e',
+      );
     }
   }
 
@@ -396,8 +425,10 @@ class AnteprojectsService {
           studentName: studentName,
           anteprojectTitle: anteprojectTitle,
           notificationType: 'submission',
-          message: '$studentName ha enviado el anteproyecto "$anteprojectTitle" para revisión.',
-          anteprojectUrl: 'https://app.cifpcarlos3.es/anteprojects/$anteprojectId',
+          message:
+              '$studentName ha enviado el anteproyecto "$anteprojectTitle" para revisión.',
+          anteprojectUrl:
+              'https://app.cifpcarlos3.es/anteprojects/$anteprojectId',
         );
       }
     } catch (e) {
@@ -426,7 +457,9 @@ class AnteprojectsService {
 
       // Solo estudiantes pueden eliminar anteproyectos
       if (userRole != 'student') {
-        throw const AnteprojectsException('Solo los estudiantes pueden eliminar anteproyectos');
+        throw const AnteprojectsException(
+          'Solo los estudiantes pueden eliminar anteproyectos',
+        );
       }
 
       // Verificar que el anteproyecto existe y está en estado draft
@@ -438,7 +471,9 @@ class AnteprojectsService {
 
       final status = anteprojectResponse['status'] as String;
       if (status != 'draft') {
-        throw const AnteprojectsException('Solo se pueden eliminar anteproyectos en estado borrador');
+        throw const AnteprojectsException(
+          'Solo se pueden eliminar anteproyectos en estado borrador',
+        );
       }
 
       // Verificar que el estudiante es el autor del anteproyecto
@@ -450,7 +485,9 @@ class AnteprojectsService {
             .eq('student_id', userId)
             .single();
       } catch (e) {
-        throw const AnteprojectsException('No tienes permisos para eliminar este anteproyecto');
+        throw const AnteprojectsException(
+          'No tienes permisos para eliminar este anteproyecto',
+        );
       }
 
       // Eliminar relaciones primero
@@ -466,10 +503,7 @@ class AnteprojectsService {
           .eq('anteproject_id', id);
 
       // Eliminar el anteproyecto
-      await _supabase
-          .from('anteprojects')
-          .delete()
-          .eq('id', id);
+      await _supabase.from('anteprojects').delete().eq('id', id);
 
       // ignore: avoid_print
       print('✅ Debug - Anteproyecto eliminado exitosamente: $id');
@@ -479,14 +513,75 @@ class AnteprojectsService {
       throw AnteprojectsException('Error al eliminar anteproyecto: $e');
     }
   }
+
+  /// Crea un proyecto automáticamente basado en un anteproyecto aprobado
+  Future<void> _createProjectFromAnteproject({
+    required int anteprojectId,
+    required String title,
+    required String description,
+    required int tutorId,
+  }) async {
+    try {
+      // Obtener el estudiante autor del anteproyecto
+      final studentResponse = await _supabase
+          .from('anteproject_students')
+          .select('student_id')
+          .eq('anteproject_id', anteprojectId)
+          .eq('is_lead_author', true)
+          .single();
+
+      final studentId = studentResponse['student_id'] as int;
+
+      // Crear el proyecto
+      final projectData = {
+        'title': title,
+        'description': description,
+        'tutor_id': tutorId,
+        'status': 'active',
+        'created_at': DateTime.now().toIso8601String(),
+        'updated_at': DateTime.now().toIso8601String(),
+      };
+
+      final projectResponse = await _supabase
+          .from('projects')
+          .insert(projectData)
+          .select()
+          .single();
+
+      final projectId = projectResponse['id'] as int;
+
+      // Crear la relación estudiante-proyecto
+      await _supabase.from('project_students').insert({
+        'project_id': projectId,
+        'student_id': studentId,
+        'is_lead_student': true,
+        'created_at': DateTime.now().toIso8601String(),
+      });
+
+      // Crear la relación anteproyecto-proyecto para trazabilidad
+      await _supabase.from('anteproject_projects').insert({
+        'anteproject_id': anteprojectId,
+        'project_id': projectId,
+        'created_at': DateTime.now().toIso8601String(),
+      });
+
+      debugPrint(
+        '✅ Proyecto creado automáticamente: $projectId para anteproyecto: $anteprojectId',
+      );
+    } catch (e) {
+      debugPrint('❌ Error al crear proyecto desde anteproyecto: $e');
+      // No fallar la aprobación si no se puede crear el proyecto
+      // El tutor puede crear el proyecto manualmente después
+    }
+  }
 }
 
 /// Excepción personalizada para errores de anteproyectos
 class AnteprojectsException implements Exception {
   final String message;
-  
+
   const AnteprojectsException(this.message);
-  
+
   @override
   String toString() => 'AnteprojectsException: $message';
 }

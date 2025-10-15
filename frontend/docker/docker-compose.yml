@@ -1,6 +1,9 @@
 # docker/docker-compose.yml
 # Docker Compose para aplicación Flutter Web
 # Build local + Servidor estático
+# Puerto: 8082
+
+version: '3.8'
 
 services:
   # Servidor web para archivos estáticos
@@ -14,24 +17,32 @@ services:
     volumes:
       # Montar archivos build desde el directorio local
       - ../build/web:/usr/share/nginx/html:ro
+      # Logs de nginx
+      - nginx-logs:/var/log/nginx
     environment:
       - NODE_ENV=production
+      - FLUTTER_WEB_PORT=8082
     networks:
       - tfg-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend-web.rule=Host(`localhost`)"
+      - "traefik.http.routers.frontend-web.entrypoints=web"
+      - "traefik.http.services.frontend-web.loadbalancer.server.port=80"
 
 networks:
   tfg-network:
     driver: bridge
     name: tfg-network
 
-# Volúmenes para persistencia (si es necesario)
+# Volúmenes para persistencia
 volumes:
   nginx-logs:
     driver: local

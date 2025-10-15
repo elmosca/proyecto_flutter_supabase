@@ -248,6 +248,48 @@ abstract class AppLocalizations {
   /// **'Tarea no encontrada'**
   String get taskNotFound;
 
+  /// Título de la sección con credenciales de prueba
+  ///
+  /// In es, this message translates to:
+  /// **'Credenciales de prueba'**
+  String get testCredentialsTitle;
+
+  /// Etiqueta para las credenciales de administrador
+  ///
+  /// In es, this message translates to:
+  /// **'👨‍💼 Administrador'**
+  String get testCredentialsAdmin;
+
+  /// Etiqueta para las credenciales de tutor
+  ///
+  /// In es, this message translates to:
+  /// **'👨‍🏫 Tutor'**
+  String get testCredentialsTutor;
+
+  /// Etiqueta para las credenciales de estudiante
+  ///
+  /// In es, this message translates to:
+  /// **'👨‍🎓 Estudiante'**
+  String get testCredentialsStudent;
+
+  /// Etiqueta para las credenciales de evaluador
+  ///
+  /// In es, this message translates to:
+  /// **'👨‍⚖️ Evaluador'**
+  String get testCredentialsReviewer;
+
+  /// Texto para la acción de copiar
+  ///
+  /// In es, this message translates to:
+  /// **'Copiar'**
+  String get copy;
+
+  /// Mensaje mostrado cuando se copia un valor
+  ///
+  /// In es, this message translates to:
+  /// **'Copiado al portapapeles: {value}'**
+  String copiedToClipboard(String value);
+
   /// Botón de eliminar
   ///
   /// In es, this message translates to:
@@ -727,6 +769,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Próximamente'**
   String get comingSoon;
+
+  /// Mensaje cuando no hay proyectos disponibles para crear tareas
+  ///
+  /// In es, this message translates to:
+  /// **'No hay proyectos disponibles para crear tareas. Asegúrate de que tu anteproyecto esté aprobado.'**
+  String get noProjectsAvailableForTasks;
+
+  /// Mensaje cuando no se ha seleccionado un proyecto para la tarea
+  ///
+  /// In es, this message translates to:
+  /// **'Debe seleccionar un proyecto para crear la tarea'**
+  String get mustSelectProjectForTask;
+
+  /// Título de la sección de proyectos del estudiante
+  ///
+  /// In es, this message translates to:
+  /// **'Mis Proyectos'**
+  String get myProjects;
+
+  /// Mensaje cuando el estudiante no tiene proyectos asignados
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes proyectos asignados. Contacta con tu tutor.'**
+  String get noProjectsAssigned;
 
   /// Título para acceso a Supabase Studio
   ///
@@ -2551,6 +2617,60 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Error al imprimir: {error}'**
   String errorPrinting(String error);
+
+  /// Título del diálogo para elegir proyecto para trabajar con tareas
+  ///
+  /// In es, this message translates to:
+  /// **'Selecciona el proyecto'**
+  String get selectProjectForTasks;
+
+  /// Título de la pantalla de detalles del proyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Detalles del Proyecto'**
+  String get projectDetails;
+
+  /// Sección de comentarios históricos del anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Comentarios del Anteproyecto (Histórico)'**
+  String get anteprojectHistoryComments;
+
+  /// Sección de comentarios actuales del proyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Comentarios del Proyecto'**
+  String get projectComments;
+
+  /// Pestaña de archivos adjuntos
+  ///
+  /// In es, this message translates to:
+  /// **'Archivos Adjuntos'**
+  String get attachedFiles;
+
+  /// Pestaña del tablero Kanban
+  ///
+  /// In es, this message translates to:
+  /// **'Tablero Kanban'**
+  String get kanbanBoard;
+
+  /// Mensaje cuando se intenta ver el Kanban sin proyecto
+  ///
+  /// In es, this message translates to:
+  /// **'El tablero Kanban solo está disponible para proyectos aprobados'**
+  String get kanbanOnlyForProjects;
+
+  /// Error cuando no existe el anteproyecto del proyecto
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontró el anteproyecto asociado al proyecto'**
+  String get anteprojectNotFound;
+
+  /// Pestaña de lista de tareas
+  ///
+  /// In es, this message translates to:
+  /// **'Lista de Tareas'**
+  String get tasksList;
 }
 
 class _AppLocalizationsDelegate

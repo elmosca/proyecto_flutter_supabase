@@ -1,7 +1,18 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class NotificationsService {
-  final SupabaseClient _supabase = Supabase.instance.client;
+  final SupabaseClient _supabase;
+
+  NotificationsService._(this._supabase);
+
+  static NotificationsService? maybeCreate() {
+    try {
+      final client = Supabase.instance.client;
+      return NotificationsService._(client);
+    } catch (_) {
+      return null;
+    }
+  }
 
   /// Obtener notificaciones no leídas del usuario actual
   Future<List<Map<String, dynamic>>> getUnreadNotifications() async {
@@ -67,9 +78,7 @@ class NotificationsService {
     try {
       await _supabase
           .from('notifications')
-          .update({
-            'read_at': DateTime.now().toIso8601String(),
-          })
+          .update({'read_at': DateTime.now().toIso8601String()})
           .eq('id', notificationId);
     } catch (e) {
       throw Exception('Error al marcar notificación como leída: $e');
@@ -95,23 +104,20 @@ class NotificationsService {
 
       await _supabase
           .from('notifications')
-          .update({
-            'read_at': DateTime.now().toIso8601String(),
-          })
+          .update({'read_at': DateTime.now().toIso8601String()})
           .eq('user_id', userId)
           .isFilter('read_at', null);
     } catch (e) {
-      throw Exception('Error al marcar todas las notificaciones como leídas: $e');
+      throw Exception(
+        'Error al marcar todas las notificaciones como leídas: $e',
+      );
     }
   }
 
   /// Eliminar notificación
   Future<void> deleteNotification(int notificationId) async {
     try {
-      await _supabase
-          .from('notifications')
-          .delete()
-          .eq('id', notificationId);
+      await _supabase.from('notifications').delete().eq('id', notificationId);
     } catch (e) {
       throw Exception('Error al eliminar notificación: $e');
     }

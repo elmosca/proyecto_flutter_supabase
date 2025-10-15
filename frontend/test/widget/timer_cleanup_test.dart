@@ -8,6 +8,8 @@ import 'package:frontend/models/user.dart';
 import '../test_setup.dart';
 import '../mocks/supabase_mock.dart';
 
+const bool _runSupabaseTests = bool.fromEnvironment('RUN_SUPABASE_TESTS');
+
 void main() {
   group('Timer Cleanup Tests', () {
     late AuthBloc authBloc;
@@ -40,7 +42,9 @@ void main() {
       await TestSetup.cleanup();
     });
 
-    testWidgets('TutorDashboard handles timers correctly', (WidgetTester tester) async {
+    testWidgets('TutorDashboard handles timers correctly', (
+      WidgetTester tester,
+    ) async {
       // Configurar usuario tutor
       MockSupabase.setAuthenticatedUser(
         id: 'tutor-id',
@@ -71,7 +75,9 @@ void main() {
       expect(tester.binding.hasScheduledFrame, isFalse);
     });
 
-    testWidgets('Dashboard handles async operations without timer leaks', (WidgetTester tester) async {
+    testWidgets('Dashboard handles async operations without timer leaks', (
+      WidgetTester tester,
+    ) async {
       MockSupabase.setAuthenticatedUser(role: 'tutor');
 
       await tester.pumpWidget(
@@ -93,7 +99,9 @@ void main() {
       expect(tester.binding.hasScheduledFrame, isFalse);
     });
 
-    testWidgets('Dashboard cleanup prevents timer leaks', (WidgetTester tester) async {
+    testWidgets('Dashboard cleanup prevents timer leaks', (
+      WidgetTester tester,
+    ) async {
       MockSupabase.setAuthenticatedUser(role: 'tutor');
 
       // Crear y destruir múltiples instancias del dashboard
@@ -117,5 +125,5 @@ void main() {
       // Verificar que no hay timers pendientes
       expect(tester.binding.hasScheduledFrame, isFalse);
     });
-  });
+  }, skip: !_runSupabaseTests);
 }

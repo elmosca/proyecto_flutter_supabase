@@ -3,10 +3,19 @@ import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import '../models/user.dart';
 import '../models/anteproject.dart';
 
-class AdminStatsService {
-  final supabase.SupabaseClient _supabase = supabase.Supabase.instance.client;
+abstract class AdminStatsRepository {
+  Future<AdminStats> getSystemStats();
+  Future<List<User>> getRecentUsers();
+}
+
+class AdminStatsService implements AdminStatsRepository {
+  final supabase.SupabaseClient _supabase;
+
+  AdminStatsService({supabase.SupabaseClient? client})
+    : _supabase = client ?? supabase.Supabase.instance.client;
 
   /// Obtiene estadísticas generales del sistema
+  @override
   Future<AdminStats> getSystemStats() async {
     try {
       print('🔍 AdminStatsService - Iniciando obtención de estadísticas...');
@@ -15,30 +24,15 @@ class AdminStatsService {
       );
 
       // Obtener estadísticas en paralelo
-      final futures = await Future.wait([
-        _getTotalUsers(),
-        _getTotalStudents(),
-        _getTotalTutors(),
-        _getTotalAnteprojects(),
-        _getActiveAnteprojects(),
-        _getApprovedAnteprojects(),
-        _getPendingAnteprojects(),
-      ]);
-
-      final stats = AdminStats(
-        totalUsers: futures[0],
-        totalStudents: futures[1],
-        totalTutors: futures[2],
-        totalAnteprojects: futures[3],
-        activeAnteprojects: futures[4],
-        approvedAnteprojects: futures[5],
-        pendingAnteprojects: futures[6],
+      return AdminStats(
+        totalUsers: await _getTotalUsers(),
+        totalStudents: await _getTotalStudents(),
+        totalTutors: await _getTotalTutors(),
+        totalAnteprojects: await _getTotalAnteprojects(),
+        activeAnteprojects: await _getActiveAnteprojects(),
+        approvedAnteprojects: await _getApprovedAnteprojects(),
+        pendingAnteprojects: await _getPendingAnteprojects(),
       );
-
-      print(
-        '🔍 AdminStatsService - Estadísticas obtenidas: ${stats.totalUsers} usuarios, ${stats.totalTutors} tutores, ${stats.totalAnteprojects} anteproyectos',
-      );
-      return stats;
     } catch (e) {
       print('❌ AdminStatsService - Error general: $e');
       throw AdminStatsException('Error al obtener estadísticas: $e');
@@ -148,6 +142,7 @@ class AdminStatsService {
   }
 
   /// Obtiene usuarios recientes (últimos 10)
+  @override
   Future<List<User>> getRecentUsers() async {
     try {
       final response = await _supabase

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import '../../services/notifications_service.dart';
 
 class NotificationsBell extends StatefulWidget {
@@ -11,26 +12,27 @@ class NotificationsBell extends StatefulWidget {
 }
 
 class _NotificationsBellState extends State<NotificationsBell> {
-  final NotificationsService _notificationsService = NotificationsService();
+  NotificationsService? _notificationsService;
   int _unreadCount = 0;
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadUnreadCount();
+    _initializeService();
   }
 
-  Future<void> _loadUnreadCount() async {
+  Future<void> _initializeService() async {
     try {
-      final count = await _notificationsService.getUnreadCount();
-      if (mounted) {
-        setState(() {
-          _unreadCount = count;
-          _isLoading = false;
-        });
+      _notificationsService = NotificationsService.maybeCreate();
+      if (_notificationsService != null) {
+        await _loadUnreadCount();
       }
     } catch (e) {
+      if (kDebugMode) {
+        debugPrint('Notifications disabled: $e');
+      }
+    } finally {
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -39,8 +41,29 @@ class _NotificationsBellState extends State<NotificationsBell> {
     }
   }
 
+  Future<void> _loadUnreadCount() async {
+    if (_notificationsService == null) return;
+
+    try {
+      final count = await _notificationsService!.getUnreadCount();
+      if (mounted) {
+        setState(() {
+          _unreadCount = count;
+        });
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('Error al cargar notificaciones: $e');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_notificationsService == null) {
+      return const SizedBox.shrink();
+    }
+
     return Stack(
       children: [
         IconButton(
@@ -64,10 +87,7 @@ class _NotificationsBellState extends State<NotificationsBell> {
                 color: Colors.red,
                 borderRadius: BorderRadius.circular(10),
               ),
-              constraints: const BoxConstraints(
-                minWidth: 16,
-                minHeight: 16,
-              ),
+              constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
               child: Text(
                 _unreadCount > 99 ? '99+' : _unreadCount.toString(),
                 style: const TextStyle(

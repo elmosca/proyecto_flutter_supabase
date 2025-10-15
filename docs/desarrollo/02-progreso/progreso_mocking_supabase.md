@@ -175,3 +175,5 @@ class SupabaseMock {
 - Datos normalizados a formato `n.0` con actualización masiva: `UPDATE public.tasks SET kanban_position = floor(COALESCE(kanban_position, 0))::double precision`.
 - Los modelos Flutter (`Task`) y servicios ajustados para trabajar con `double?` tras regenerar JSON (`flutter pub run build_runner build --delete-conflicting-outputs`).
 - Migración pendiente de aplicar en Supabase (`supabase db push` requiere `supabase link` en la máquina local antes de ejecutarse).
+- Servicio `TasksService` actualizado para operar con posiciones `double`: nuevo método `moveTask` que calcula promedios, reindexa columnas cuando el gap es pequeño y utiliza `_positionGapThreshold = 1e-4` para decidir reindexaciones.
+- `TasksBloc` introduce `TaskMoveRequested` con actualización optimista y rollback ante fallos, apoyándose en `TasksService.moveTask`.

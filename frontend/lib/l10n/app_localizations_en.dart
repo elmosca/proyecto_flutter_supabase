@@ -84,6 +84,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get taskNotFound => 'Task not found';
 
   @override
+  String get testCredentialsTitle => 'Test credentials';
+
+  @override
+  String get testCredentialsAdmin => '👨‍💼 Admin';
+
+  @override
+  String get testCredentialsTutor => '👨‍🏫 Tutor';
+
+  @override
+  String get testCredentialsStudent => '👨‍🎓 Student';
+
+  @override
+  String get testCredentialsReviewer => '👨‍⚖️ Reviewer';
+
+  @override
+  String get copy => 'Copy';
+
+  @override
+  String copiedToClipboard(String value) {
+    return 'Copied to clipboard: $value';
+  }
+
+  @override
   String get delete => 'Delete';
 
   @override
@@ -280,7 +303,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get myAnteprojects => 'My Anteprojects';
 
   @override
-  String get viewAll => 'View all';
+  String get viewAll => 'View All';
 
   @override
   String get pendingAnteprojects => 'Pending Anteprojects';
@@ -335,6 +358,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get comingSoon => 'Coming Soon';
+
+  @override
+  String get noProjectsAvailableForTasks =>
+      'No projects available for creating tasks. Make sure your anteproject is approved.';
+
+  @override
+  String get mustSelectProjectForTask =>
+      'You must select a project to create the task';
+
+  @override
+  String get myProjects => 'My Projects';
+
+  @override
+  String get noProjectsAssigned =>
+      'You have no projects assigned. Contact your tutor.';
 
   @override
   String get supabaseStudio => 'Supabase Studio';
@@ -579,7 +617,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String taskStatusChangedMessage(String taskTitle, String status) {
-    return 'Task \"$taskTitle\" changed to status: $status';
+    return 'Task \\';
   }
 
   @override
@@ -587,7 +625,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String taskAssignedMessage(String taskTitle) {
-    return 'You have been assigned the task: \"$taskTitle\"';
+    return 'You have been assigned the task: \\';
   }
 
   @override
@@ -595,7 +633,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String newCommentMessage(String taskTitle, String commentPreview) {
-    return 'New comment on \"$taskTitle\": $commentPreview';
+    return 'New comment on \\';
   }
 
   @override
@@ -809,7 +847,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get useDashboardButtons => 'Use the dashboard buttons to add students';
 
   @override
-  String get editStudent => 'Edit Student';
+  String get editStudent => 'Edit';
 
   @override
   String get deleteStudent => 'Delete';
@@ -882,12 +920,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String noAnteprojectsFound(String query) {
-    return 'No anteproyectos found matching \"$query\"';
+    return 'No anteproyectos found matching \\';
   }
 
   @override
   String noAnteprojectsWithStatus(String status) {
-    return 'No anteproyectos with status \"$status\"';
+    return 'No anteproyectos with status \\';
   }
 
   @override
@@ -898,13 +936,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clearFilters => 'Clear filters';
 
   @override
-  String get year => 'Year:';
+  String get year => 'Year';
 
   @override
   String get created => 'Created:';
 
   @override
-  String get submitted => 'Submitted';
+  String get submitted => 'Submitted:';
 
   @override
   String get comments => 'Comments';
@@ -934,12 +972,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String errorApprovingAnteproject(String error) {
-    return 'Error approving anteproject: $error';
+    return 'Error approving anteproyecto: $error';
   }
 
   @override
   String errorRejectingAnteproject(String error) {
-    return 'Error rejecting anteproject: $error';
+    return 'Error rejecting anteproyecto: $error';
   }
 
   @override
@@ -949,7 +987,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get underReview => 'Under Review';
 
   @override
-  String get approved => 'APPROVED';
+  String get approved => 'Approved';
 
   @override
   String get rejected => 'Rejected';
@@ -981,17 +1019,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get completed => 'Completed';
 
   @override
-  String get anteprojectApprovedMessage =>
-      'Your anteproyecto has been approved. You can start development!';
+  String get anteprojectApprovedMessage => 'Anteproject approved successfully';
 
   @override
   String academicYearLabel(String year) {
-    return 'Year: $year';
+    return 'Academic Year';
   }
 
   @override
   String statusLabel(String status) {
-    return 'Status: $status';
+    return 'Status';
   }
 
   @override
@@ -1033,22 +1070,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nreLabel => 'NRE (Student Registration Number)';
 
   @override
-  String get phoneOptional => '• phone (optional)';
+  String get phoneOptional => 'Phone (Optional)';
 
   @override
-  String get biographyOptional => '• biography (optional)';
+  String get biographyOptional => 'Biography (Optional)';
 
   @override
   String get nameRequired => 'Name is required';
 
   @override
-  String get emailRequired => '• email (required)';
+  String get emailRequired => 'Email is required';
 
   @override
   String get emailInvalid => 'Invalid email';
 
   @override
-  String get nreRequired => '• nre (required)';
+  String get nreRequired => 'NRE is required';
 
   @override
   String get createStudent => 'Create Student';
@@ -1081,7 +1118,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String confirmDeleteAnteproject(String title) {
-    return 'Are you sure you want to delete the anteproject \"$title\"?\n\nThis action cannot be undone.';
+    return 'Are you sure you want to delete the anteproject \\';
   }
 
   @override
@@ -1205,12 +1242,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String commentsTitle(String title) {
-    return 'Comments - $title';
+    return 'Comments';
   }
 
   @override
   String copied(String text) {
-    return 'Copied: $text';
+    return 'Copied';
   }
 
   @override
@@ -1333,12 +1370,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String estimatedHours(int hours) {
-    return '${hours}h';
+    return 'Estimated Hours';
   }
 
   @override
   String confirmDeleteTask(String title) {
-    return 'Are you sure you want to delete the task \"$title\"?';
+    return 'Are you sure you want to delete the task \\';
   }
 
   @override
@@ -1364,4 +1401,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String errorPrinting(String error) {
     return 'Error printing: $error';
   }
+
+  @override
+  String get selectProjectForTasks => 'Select project';
+
+  @override
+  String get projectDetails => 'Project Details';
+
+  @override
+  String get anteprojectHistoryComments => 'Anteproject Comments (Historical)';
+
+  @override
+  String get projectComments => 'Project Comments';
+
+  @override
+  String get attachedFiles => 'Attached Files';
+
+  @override
+  String get kanbanBoard => 'Kanban Board';
+
+  @override
+  String get kanbanOnlyForProjects =>
+      'The Kanban board is only available for approved projects';
+
+  @override
+  String get anteprojectNotFound =>
+      'The anteproject associated with the project was not found';
+
+  @override
+  String get tasksList => 'Tasks List';
 }

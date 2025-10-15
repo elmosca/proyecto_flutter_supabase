@@ -7,10 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/user.dart';
 import '../../models/anteproject.dart';
-import '../../blocs/auth_bloc.dart';
+import '../../models/project.dart';
 import '../../blocs/anteprojects_bloc.dart';
 import '../../blocs/tasks_bloc.dart';
-import '../../services/anteprojects_service.dart';
 import '../../services/tasks_service.dart';
 import '../../services/projects_service.dart';
 import '../../services/theme_service.dart';
@@ -22,6 +21,8 @@ import '../lists/tasks_list.dart';
 import '../kanban/kanban_board.dart';
 import '../anteprojects/anteproject_detail_screen.dart';
 import '../forms/task_form.dart';
+import '../selection/context_selection_dialog.dart';
+import 'components/dashboard_quick_actions.dart';
 import '../../widgets/common/language_selector.dart';
 import '../../widgets/notifications/notifications_bell.dart';
 import '../notifications/notifications_screen.dart';
@@ -38,11 +39,12 @@ class StudentDashboard extends StatefulWidget {
 class _StudentDashboardState extends State<StudentDashboard> {
   bool _isLoading = true;
   Timer? _loadingTimer;
-  
+
   // Datos del dashboard
   List<Anteproject> _anteprojects = [];
-  List<dynamic> _tasks = [];
+  List<Map<String, dynamic>> _tasks = [];
   int _completedTasks = 0;
+  Project? _userProject;
 
   @override
   void initState() {
@@ -59,22 +61,29 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
   Future<void> _loadData() async {
     try {
-      // Cargar anteproyectos del estudiante
-      final anteprojectsService = AnteprojectsService();
+      final anteprojectsService = context
+          .read<AnteprojectsBloc>()
+          .anteprojectsService;
+      final tasksService = context.read<TasksBloc>().tasksService;
+      final projectsService = ProjectsService();
+
       final anteprojects = await anteprojectsService.getStudentAnteprojects();
-      
-      // Cargar tareas del estudiante
-      final tasksService = TasksService();
       final tasks = await tasksService.getStudentTasks();
-      
+      final userProject = await projectsService.getUserProject();
+
+      debugPrint('🔍 Proyecto del estudiante cargado: ${userProject?.title}');
+
       // Contar tareas completadas
-      final completedTasks = tasks.where((task) => task['status'] == 'completed').length;
-      
+      final completedTasks = tasks
+          .where((task) => task['status'] == 'completed')
+          .length;
+
       if (mounted) {
         setState(() {
           _anteprojects = anteprojects;
           _tasks = tasks;
           _completedTasks = completedTasks;
+          _userProject = userProject;
           _isLoading = false;
         });
       }
@@ -94,12 +103,9 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            Text(RoleThemes.getEmojiForRole(widget.user.role)),
-            const SizedBox(width: 8),
-            Text(l10n.dashboardStudent),
-          ],
+        title: Text(
+          '${RoleThemes.getEmojiForRole(widget.user.role)} ${l10n.dashboardStudent}',
+          overflow: TextOverflow.ellipsis,
         ),
         backgroundColor: ThemeService.instance.currentPrimaryColor,
         foregroundColor: Colors.white,
@@ -133,32 +139,32 @@ class _StudentDashboardState extends State<StudentDashboard> {
     );
   }
 
-  Widget _buildDashboardContent() => SingleChildScrollView(
-    padding: const EdgeInsets.all(16),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Información del usuario
-        _buildUserInfo(),
-        const SizedBox(height: 24),
+  Widget _buildDashboardContent() => LayoutBuilder(
+    builder: (context, constraints) {
+      final isCompact = constraints.maxWidth < 600;
 
-        // Resumen de estadísticas
-        _buildStatistics(),
-        const SizedBox(height: 24),
-
-        // Anteproyectos
-        _buildAnteprojectsSection(),
-        const SizedBox(height: 24),
-
-        // Tareas pendientes
-        _buildTasksSection(),
-        const SizedBox(height: 24),
-
-      ],
-    ),
+      return SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildUserInfo(isCompact: isCompact),
+            const SizedBox(height: 24),
+            _buildStatistics(isCompact: isCompact),
+            const SizedBox(height: 24),
+            _buildAnteprojectsSection(isCompact: isCompact),
+            const SizedBox(height: 24),
+            _buildProjectsSection(isCompact: isCompact),
+            const SizedBox(height: 24),
+            _buildTasksSection(isCompact: isCompact),
+            const SizedBox(height: 24),
+          ],
+        ),
+      );
+    },
   );
 
-  Widget _buildUserInfo() {
+  Widget _buildUserInfo({required bool isCompact}) {
     final l10n = AppLocalizations.of(context)!;
     return Card(
       child: Container(
@@ -168,47 +174,53 @@ class _StudentDashboardState extends State<StudentDashboard> {
         ),
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundColor: Colors.white.withValues(alpha: 0.2),
-                child: Text(
-                  RoleThemes.getEmojiForRole(widget.user.role),
-                  style: const TextStyle(fontSize: 24),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.user.fullName,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.white.withValues(alpha: 0.2),
+                    child: Text(
+                      RoleThemes.getEmojiForRole(widget.user.role),
+                      style: const TextStyle(fontSize: 24),
                     ),
-                    Text(
-                      widget.user.email,
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
-                      ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.user.fullName,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          widget.user.email,
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          '${l10n.role}: ${l10n.studentRole}',
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      '${l10n.role}: ${l10n.studentRole}',
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    RoleBadge(role: widget.user.role),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -217,40 +229,57 @@ class _StudentDashboardState extends State<StudentDashboard> {
     );
   }
 
-  Widget _buildStatistics() {
+  Widget _buildStatistics({required bool isCompact}) {
     final l10n = AppLocalizations.of(context)!;
+
+    final stats = [
+      _buildStatCard(
+        l10n.anteprojects,
+        _anteprojects.length.toString(),
+        Icons.description,
+        Colors.blue,
+        onTap: _viewAllAnteprojects,
+      ),
+      _buildStatCard(
+        l10n.pendingTasks,
+        _tasks.length.toString(),
+        Icons.pending,
+        Colors.orange,
+        onTap: () => _promptContextSelection(kanban: false),
+      ),
+      _buildStatCard(
+        l10n.completed,
+        _completedTasks.toString(),
+        Icons.check_circle,
+        Colors.green,
+        onTap: () => _promptContextSelection(kanban: true),
+      ),
+    ];
+
+    if (isCompact) {
+      return Column(
+        children: [
+          Row(
+            children: [
+              Expanded(child: stats[0]),
+              const SizedBox(width: 8),
+              Expanded(child: stats[1]),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(children: [Expanded(child: stats[2])]),
+        ],
+      );
+    }
+
     return Row(
-    children: [
-      Expanded(
-        child: _buildStatCard(
-          l10n.anteprojects,
-          _anteprojects.length.toString(),
-          Icons.description,
-          Colors.blue,
-          onTap: _viewAllAnteprojects,
-        ),
-      ),
-      const SizedBox(width: 8),
-      Expanded(
-        child: _buildStatCard(
-          l10n.pendingTasks,
-          _tasks.length.toString(),
-          Icons.pending,
-          Colors.orange,
-          onTap: _viewAllTasks,
-        ),
-      ),
-      const SizedBox(width: 8),
-      Expanded(
-        child: _buildStatCard(
-          l10n.completed,
-          _completedTasks.toString(),
-          Icons.check_circle,
-          Colors.green,
-          onTap: _viewKanbanBoard,
-        ),
-      ),
-    ],
+      children: [
+        Expanded(child: stats[0]),
+        const SizedBox(width: 8),
+        Expanded(child: stats[1]),
+        const SizedBox(width: 8),
+        Expanded(child: stats[2]),
+      ],
     );
   }
 
@@ -273,7 +302,10 @@ class _StudentDashboardState extends State<StudentDashboard> {
               const SizedBox(height: 8),
               Text(
                 value,
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Text(
                 title,
@@ -287,28 +319,53 @@ class _StudentDashboardState extends State<StudentDashboard> {
     );
   }
 
-  Widget _buildAnteprojectsSection() {
+  Widget _buildAnteprojectsSection({required bool isCompact}) {
     final l10n = AppLocalizations.of(context)!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Text(
+        if (isCompact)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
                 l10n.myAnteprojects,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
                 overflow: TextOverflow.ellipsis,
               ),
-            ),
-            TextButton(
-              onPressed: _viewAllAnteprojects,
-              child: Text(l10n.viewAll),
-            ),
-          ],
-        ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton(
+                  onPressed: _viewAllAnteprojects,
+                  child: Text(l10n.viewAll),
+                ),
+              ),
+            ],
+          )
+        else
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.myAnteprojects,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              TextButton(
+                onPressed: _viewAllAnteprojects,
+                child: Text(l10n.viewAll),
+              ),
+            ],
+          ),
         const SizedBox(height: 8),
         if (_anteprojects.isEmpty)
           Card(
@@ -324,6 +381,127 @@ class _StudentDashboardState extends State<StudentDashboard> {
         else
           ...(_anteprojects.take(3).map(_buildAnteprojectPreview)),
       ],
+    );
+  }
+
+  Widget _buildProjectsSection({required bool isCompact}) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (isCompact)
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.myProjects,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          )
+        else
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.myProjects,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        const SizedBox(height: 8),
+        if (_userProject == null)
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                l10n.noProjectsAssigned,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.grey),
+              ),
+            ),
+          )
+        else
+          _buildProjectPreview(_userProject!),
+      ],
+    );
+  }
+
+  Widget _buildProjectPreview(Project project) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: Colors.blue, width: 2),
+      ),
+      child: InkWell(
+        onTap: () => _viewProjectDetails(project),
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade100,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(Icons.work, color: Colors.blue, size: 24),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      project.title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      project.description,
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontSize: 14,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(Icons.flag, size: 16, color: Colors.grey.shade500),
+                        const SizedBox(width: 4),
+                        Text(
+                          _getProjectStatusText(project.status.name),
+                          style: TextStyle(
+                            color: Colors.grey.shade500,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.arrow_forward_ios, size: 16),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -401,19 +579,12 @@ class _StudentDashboardState extends State<StudentDashboard> {
                 const SizedBox(height: 12),
                 Text(
                   l10n.anteprojectApprovedMessage,
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
                 ),
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Icon(
-                      Icons.schedule,
-                      size: 16,
-                      color: Colors.grey.shade500,
-                    ),
+                    Icon(Icons.schedule, size: 16, color: Colors.grey.shade500),
                     const SizedBox(width: 4),
                     Text(
                       l10n.academicYearLabel(anteproject.academicYear),
@@ -503,43 +674,57 @@ class _StudentDashboardState extends State<StudentDashboard> {
     }
   }
 
-  Widget _buildTasksSection() {
+  Widget _buildTasksSection({required bool isCompact}) {
     final l10n = AppLocalizations.of(context)!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Text(
+        if (isCompact)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
                 l10n.pendingTasks,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
                 overflow: TextOverflow.ellipsis,
               ),
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextButton(
-                  onPressed: _viewKanbanBoard,
-                  child: Text(l10n.kanbanBoardTitle),
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: DashboardQuickActions(
+                  onActionSelected: _handleQuickAction,
                 ),
-                TextButton(
-                  onPressed: _viewAllTasks,
-                  child: Text(l10n.viewAllTasks),
+              ),
+            ],
+          )
+        else
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.pendingTasks,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+              DashboardQuickActions(onActionSelected: _handleQuickAction),
+            ],
+          ),
         const SizedBox(height: 8),
         if (_tasks.isEmpty)
           Card(
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
                     l10n.noPendingTasks,
@@ -547,20 +732,19 @@ class _StudentDashboardState extends State<StudentDashboard> {
                     style: const TextStyle(color: Colors.grey),
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton.icon(
-                        onPressed: _createTask,
-                        icon: const Icon(Icons.add),
-                        label: Text(l10n.createTask),
-                      ),
-                      OutlinedButton.icon(
-                        onPressed: _viewKanbanBoard,
-                        icon: const Icon(Icons.dashboard),
-                        label: Text(l10n.kanbanBoardTitle),
-                      ),
-                    ],
+                  ElevatedButton.icon(
+                    onPressed: () => _promptContextSelection(
+                      kanban: false,
+                      createTask: true,
+                    ),
+                    icon: const Icon(Icons.add),
+                    label: Text(l10n.createTask),
+                  ),
+                  const SizedBox(height: 8),
+                  OutlinedButton.icon(
+                    onPressed: () => _promptContextSelection(kanban: true),
+                    icon: const Icon(Icons.dashboard),
+                    label: Text(l10n.kanbanBoardTitle),
                   ),
                 ],
               ),
@@ -577,10 +761,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
-        leading: Icon(
-          Icons.task,
-          color: _getTaskStatusColor(task['status']),
-        ),
+        leading: Icon(Icons.task, color: _getTaskStatusColor(task['status'])),
         title: Text(
           task['title'] ?? 'Sin título',
           style: const TextStyle(fontWeight: FontWeight.w500),
@@ -599,7 +780,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
           ),
           backgroundColor: _getTaskStatusColor(task['status']),
         ),
-        onTap: _viewAllTasks,
+        onTap: () => _promptContextSelection(kanban: false),
       ),
     );
   }
@@ -631,8 +812,6 @@ class _StudentDashboardState extends State<StudentDashboard> {
     }
   }
 
-
-
   Future<void> _logout() async {
     try {
       // Usar el router para logout
@@ -645,159 +824,197 @@ class _StudentDashboardState extends State<StudentDashboard> {
   }
 
   void _createAnteproject() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (BuildContext context) => BlocProvider<AnteprojectsBloc>(
-          create: (_) => AnteprojectsBloc(
-            anteprojectsService: AnteprojectsService(),
+    final antecedentService = context
+        .read<AnteprojectsBloc>()
+        .anteprojectsService;
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (BuildContext context) => BlocProvider<AnteprojectsBloc>(
+              create: (_) =>
+                  AnteprojectsBloc(anteprojectsService: antecedentService),
+              child: const AnteprojectForm(),
+            ),
           ),
-          child: const AnteprojectForm(),
-        ),
-      ),
-    ).then((_) => _loadData()); // Recargar datos al volver
+        )
+        .then((_) => _loadData());
   }
 
   void _viewAllAnteprojects() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (BuildContext context) => BlocProvider<AnteprojectsBloc>(
-          create: (_) => AnteprojectsBloc(
-            anteprojectsService: AnteprojectsService(),
+    final service = context.read<AnteprojectsBloc>().anteprojectsService;
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (BuildContext context) => BlocProvider<AnteprojectsBloc>(
+              create: (_) => AnteprojectsBloc(anteprojectsService: service),
+              child: const AnteprojectsList(),
+            ),
           ),
-          child: const AnteprojectsList(),
-        ),
-      ),
-    ).then((_) => _loadData()); // Recargar datos al volver
+        )
+        .then((_) => _loadData());
   }
 
   void _viewAnteprojectDetails(Anteproject anteproject) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => AnteprojectDetailScreen(anteproject: anteproject),
-      ),
-    ).then((_) => _loadData()); // Recargar datos al volver
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (context) =>
+                AnteprojectDetailScreen(anteproject: anteproject),
+          ),
+        )
+        .then((_) => _loadData()); // Recargar datos al volver
   }
 
-  void _viewAllTasks() {
-    // Obtener projectId del usuario autenticado
-    final authState = context.read<AuthBloc>().state;
-    final projectId = authState is AuthAuthenticated ? authState.user.id : 1;
-    
-    Navigator.of(context).push(
+  Future<void> _handleQuickAction(DashboardAction action) async {
+    switch (action) {
+      case DashboardAction.viewTasks:
+        await _promptContextSelection(kanban: false);
+        break;
+      case DashboardAction.openKanban:
+        await _promptContextSelection(kanban: true);
+        break;
+      case DashboardAction.createTask:
+        await _promptContextSelection(kanban: false, createTask: true);
+        break;
+    }
+  }
+
+  Future<void> _promptContextSelection({
+    required bool kanban,
+    bool createTask = false,
+  }) async {
+    try {
+      debugPrint(
+        '🔍 Iniciando _promptContextSelection - kanban: $kanban, createTask: $createTask',
+      );
+
+      final projectsService = ProjectsService();
+      final selection = await showProjectContextDialog(
+        context,
+        projectsService: projectsService,
+      );
+
+      debugPrint('🔍 Selección obtenida: ${selection?.projectId}');
+
+      if (!mounted || selection == null) {
+        debugPrint('❌ No hay selección o contexto no montado');
+        return;
+      }
+
+      if (createTask) {
+        debugPrint(
+          '🔍 Navegando a TaskForm con projectId: ${selection.projectId}',
+        );
+        await _navigateToTaskForm(projectId: selection.projectId);
+        return;
+      }
+
+      if (kanban) {
+        debugPrint(
+          '🔍 Navegando a Kanban con projectId: ${selection.projectId}',
+        );
+        await _navigateToKanban(projectId: selection.projectId);
+      } else {
+        debugPrint(
+          '🔍 Navegando a TaskList con projectId: ${selection.projectId}',
+        );
+        await _navigateToTaskList(projectId: selection.projectId);
+      }
+    } catch (e) {
+      debugPrint('❌ Error en _promptContextSelection: $e');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.errorGettingProject(e.toString()),
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _navigateToTaskList({required int? projectId}) async {
+    await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (BuildContext context) => BlocProvider<TasksBloc>(
-          create: (_) => TasksBloc(
-            tasksService: TasksService(),
-          ),
+          create: (_) => TasksBloc(tasksService: TasksService()),
           child: TasksList(projectId: projectId),
         ),
       ),
     );
   }
 
-  void _viewKanbanBoard() async {
-    try {
-      // Obtener projectId del usuario usando el servicio de proyectos
-      final projectsService = ProjectsService();
-      final projectId = await projectsService.getUserProjectId();
-      
-      int? anteprojectId;
-      
-      if (projectId == null) {
-        // Si no hay proyecto, buscar anteproyectos del estudiante
-        if (_anteprojects.isNotEmpty) {
-          // Usar el primer anteproyecto (o se podría mostrar un selector)
-          anteprojectId = _anteprojects.first.id;
-        } else {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.noProjectAssigned),
-                backgroundColor: Colors.orange,
-              ),
-            );
-          }
-          return;
-        }
-      }
-      
-      if (mounted) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (BuildContext context) => BlocProvider<TasksBloc>(
-              create: (_) => TasksBloc(
-                tasksService: TasksService(),
-              ),
-              child: KanbanBoard(
-                projectId: projectId,
-                anteprojectId: anteprojectId,
-              ),
-            ),
-          ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.errorGettingProject(e.toString())),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+  Future<void> _navigateToKanban({required int? projectId}) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) => BlocProvider<TasksBloc>(
+          create: (_) => TasksBloc(tasksService: TasksService()),
+          child: KanbanBoard(projectId: projectId),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _navigateToTaskForm({required int? projectId}) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) => BlocProvider<TasksBloc>(
+          create: (_) => TasksBloc(tasksService: TasksService()),
+          child: TaskForm(projectId: projectId),
+        ),
+      ),
+    );
+  }
+
+  String _getProjectStatusText(String status) {
+    switch (status) {
+      case 'draft':
+        return 'Borrador';
+      case 'planning':
+        return 'Planificación';
+      case 'development':
+        return 'Desarrollo';
+      case 'review':
+        return 'Revisión';
+      case 'completed':
+        return 'Completado';
+      default:
+        return status;
     }
   }
 
-  void _createTask() async {
+  Future<void> _viewProjectDetails(Project project) async {
     try {
-      // Obtener projectId del usuario usando el servicio de proyectos
       final projectsService = ProjectsService();
-      final projectId = await projectsService.getUserProjectId();
-      
-      int? anteprojectId;
-      
-      if (projectId == null) {
-        // Si no hay proyecto, buscar anteproyectos del estudiante
-        if (_anteprojects.isNotEmpty) {
-          // Usar el primer anteproyecto (o se podría mostrar un selector)
-          anteprojectId = _anteprojects.first.id;
-        } else {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.noProjectAssigned),
-                backgroundColor: Colors.orange,
-              ),
-            );
-          }
-          return;
+      final anteproject = await projectsService.getAnteprojectFromProject(
+        project.id,
+      );
+
+      if (anteproject == null) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.anteprojectNotFound),
+              backgroundColor: Colors.red,
+            ),
+          );
         }
+        return;
       }
-      
+
       if (mounted) {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (BuildContext context) => BlocProvider<TasksBloc>(
-              create: (_) => TasksBloc(
-                tasksService: TasksService(),
-              ),
-              child: TaskForm(
-                projectId: projectId,
-                anteprojectId: anteprojectId,
-              ),
+            builder: (context) => AnteprojectDetailScreen(
+              anteproject: anteproject,
+              project: project, // Pasar el proyecto para habilitar pestañas
             ),
           ),
         );
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.errorGettingProject(e.toString())),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      debugPrint('Error al navegar a detalles del proyecto: $e');
     }
   }
 }

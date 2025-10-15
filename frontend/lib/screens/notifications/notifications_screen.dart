@@ -9,24 +9,36 @@ class NotificationsScreen extends StatefulWidget {
 }
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
-  final NotificationsService _notificationsService = NotificationsService();
+  NotificationsService? _notificationsService;
   List<Map<String, dynamic>> _notifications = [];
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadNotifications();
+    _initializeService();
+  }
+
+  Future<void> _initializeService() async {
+    _notificationsService = NotificationsService.maybeCreate();
+    if (_notificationsService == null) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+      return;
+    }
+    await _loadNotifications();
   }
 
   Future<void> _loadNotifications() async {
+    if (_notificationsService == null) return;
     try {
       setState(() {
         _isLoading = true;
       });
-
-      final notifications = await _notificationsService.getAllNotifications();
-      
+      final notifications = await _notificationsService!.getAllNotifications();
       if (mounted) {
         setState(() {
           _notifications = notifications;
@@ -38,8 +50,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         setState(() {
           _isLoading = false;
         });
-        final scaffoldMessenger = ScaffoldMessenger.of(context);
-        scaffoldMessenger.showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error al cargar notificaciones: $e'),
             backgroundColor: Colors.red,
@@ -50,13 +61,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   }
 
   Future<void> _markAsRead(int notificationId) async {
+    if (_notificationsService == null) return;
     try {
-      await _notificationsService.markAsRead(notificationId);
-      _loadNotifications(); // Recargar lista
+      await _notificationsService!.markAsRead(notificationId);
+      _loadNotifications();
     } catch (e) {
       if (mounted) {
-        final scaffoldMessenger = ScaffoldMessenger.of(context);
-        scaffoldMessenger.showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error al marcar como leída: $e'),
             backgroundColor: Colors.red,
@@ -67,12 +78,12 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   }
 
   Future<void> _markAllAsRead() async {
+    if (_notificationsService == null) return;
     try {
-      await _notificationsService.markAllAsRead();
-      _loadNotifications(); // Recargar lista
+      await _notificationsService!.markAllAsRead();
+      _loadNotifications();
       if (mounted) {
-        final scaffoldMessenger = ScaffoldMessenger.of(context);
-        scaffoldMessenger.showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Todas las notificaciones marcadas como leídas'),
             backgroundColor: Colors.green,
@@ -81,8 +92,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       }
     } catch (e) {
       if (mounted) {
-        final scaffoldMessenger = ScaffoldMessenger.of(context);
-        scaffoldMessenger.showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error al marcar todas como leídas: $e'),
             backgroundColor: Colors.red,
@@ -93,13 +103,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   }
 
   Future<void> _deleteNotification(int notificationId) async {
+    if (_notificationsService == null) return;
     try {
-      await _notificationsService.deleteNotification(notificationId);
-      _loadNotifications(); // Recargar lista
+      await _notificationsService!.deleteNotification(notificationId);
+      _loadNotifications();
     } catch (e) {
       if (mounted) {
-        final scaffoldMessenger = ScaffoldMessenger.of(context);
-        scaffoldMessenger.showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error al eliminar notificación: $e'),
             backgroundColor: Colors.red,
@@ -165,15 +175,15 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _notifications.isEmpty
-              ? _buildEmptyState()
-              : ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: _notifications.length,
-                  itemBuilder: (context, index) {
-                    final notification = _notifications[index];
-                    return _buildNotificationCard(notification);
-                  },
-                ),
+          ? _buildEmptyState()
+          : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: _notifications.length,
+              itemBuilder: (context, index) {
+                final notification = _notifications[index];
+                return _buildNotificationCard(notification);
+              },
+            ),
     );
   }
 
@@ -182,25 +192,16 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.notifications_none,
-            size: 64,
-            color: Colors.grey.shade400,
-          ),
+          Icon(Icons.notifications_none, size: 64, color: Colors.grey.shade400),
           const SizedBox(height: 16),
           Text(
             'No tienes notificaciones',
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.grey.shade600,
-            ),
+            style: TextStyle(fontSize: 18, color: Colors.grey.shade600),
           ),
           const SizedBox(height: 8),
           Text(
             'Te notificaremos cuando haya novedades',
-            style: TextStyle(
-              color: Colors.grey.shade500,
-            ),
+            style: TextStyle(color: Colors.grey.shade500),
           ),
         ],
       ),
@@ -250,7 +251,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     Text(
                       title,
                       style: TextStyle(
-                        fontWeight: isRead ? FontWeight.normal : FontWeight.bold,
+                        fontWeight: isRead
+                            ? FontWeight.normal
+                            : FontWeight.bold,
                         fontSize: 14,
                       ),
                     ),
@@ -291,7 +294,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   const SizedBox(height: 8),
                   IconButton(
                     icon: const Icon(Icons.delete_outline, size: 18),
-                    onPressed: () => _deleteNotification(notification['id'] as int),
+                    onPressed: () =>
+                        _deleteNotification(notification['id'] as int),
                     tooltip: 'Eliminar',
                   ),
                 ],

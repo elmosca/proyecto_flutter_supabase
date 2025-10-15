@@ -62,6 +62,7 @@ class Task {
   Task copyWith({
     int? id,
     int? projectId,
+    int? anteprojectId,
     int? milestoneId,
     String? title,
     String? description,
@@ -81,6 +82,7 @@ class Task {
     return Task(
       id: id ?? this.id,
       projectId: projectId ?? this.projectId,
+      anteprojectId: anteprojectId ?? this.anteprojectId,
       milestoneId: milestoneId ?? this.milestoneId,
       title: title ?? this.title,
       description: description ?? this.description,
@@ -142,11 +144,36 @@ extension TaskStatusExtension on TaskStatus {
   bool get isInProgress => this == TaskStatus.inProgress;
   bool get isPending => this == TaskStatus.pending;
   bool get isUnderReview => this == TaskStatus.underReview;
+
+  /// Convierte el enum a su valor de base de datos (snake_case)
+  String get dbValue {
+    switch (this) {
+      case TaskStatus.pending:
+        return 'pending';
+      case TaskStatus.inProgress:
+        return 'in_progress';
+      case TaskStatus.underReview:
+        return 'under_review';
+      case TaskStatus.completed:
+        return 'completed';
+    }
+  }
 }
 
 extension TaskComplexityExtension on TaskComplexity {
   // El método displayName ahora requiere AppLocalizations
   // Se usará directamente en los widgets
+
+  String get dbValue {
+    switch (this) {
+      case TaskComplexity.simple:
+        return 'simple';
+      case TaskComplexity.medium:
+        return 'medium';
+      case TaskComplexity.complex:
+        return 'complex';
+    }
+  }
 
   int get estimatedHours {
     switch (this) {

@@ -85,6 +85,29 @@ class AppLocalizationsEs extends AppLocalizations {
   String get taskNotFound => 'Tarea no encontrada';
 
   @override
+  String get testCredentialsTitle => 'Credenciales de prueba';
+
+  @override
+  String get testCredentialsAdmin => '👨‍💼 Administrador';
+
+  @override
+  String get testCredentialsTutor => '👨‍🏫 Tutor';
+
+  @override
+  String get testCredentialsStudent => '👨‍🎓 Estudiante';
+
+  @override
+  String get testCredentialsReviewer => '👨‍⚖️ Evaluador';
+
+  @override
+  String get copy => 'Copiar';
+
+  @override
+  String copiedToClipboard(String value) {
+    return 'Copiado al portapapeles: $value';
+  }
+
+  @override
   String get delete => 'Eliminar';
 
   @override
@@ -342,6 +365,21 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get comingSoon => 'Próximamente';
+
+  @override
+  String get noProjectsAvailableForTasks =>
+      'No hay proyectos disponibles para crear tareas. Asegúrate de que tu anteproyecto esté aprobado.';
+
+  @override
+  String get mustSelectProjectForTask =>
+      'Debe seleccionar un proyecto para crear la tarea';
+
+  @override
+  String get myProjects => 'Mis Proyectos';
+
+  @override
+  String get noProjectsAssigned =>
+      'No tienes proyectos asignados. Contacta con tu tutor.';
 
   @override
   String get supabaseStudio => 'Supabase Studio';
@@ -1378,4 +1416,34 @@ class AppLocalizationsEs extends AppLocalizations {
   String errorPrinting(String error) {
     return 'Error al imprimir: $error';
   }
+
+  @override
+  String get selectProjectForTasks => 'Selecciona el proyecto';
+
+  @override
+  String get projectDetails => 'Detalles del Proyecto';
+
+  @override
+  String get anteprojectHistoryComments =>
+      'Comentarios del Anteproyecto (Histórico)';
+
+  @override
+  String get projectComments => 'Comentarios del Proyecto';
+
+  @override
+  String get attachedFiles => 'Archivos Adjuntos';
+
+  @override
+  String get kanbanBoard => 'Tablero Kanban';
+
+  @override
+  String get kanbanOnlyForProjects =>
+      'El tablero Kanban solo está disponible para proyectos aprobados';
+
+  @override
+  String get anteprojectNotFound =>
+      'No se encontró el anteproyecto asociado al proyecto';
+
+  @override
+  String get tasksList => 'Lista de Tareas';
 }

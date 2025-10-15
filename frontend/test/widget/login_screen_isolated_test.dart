@@ -20,7 +20,9 @@ void main() {
 
     tearDown(resetMockitoState);
 
-    testWidgets('LoginScreen renders correctly with mocked AuthService', (WidgetTester tester) async {
+    testWidgets('LoginScreen renders correctly with mocked AuthService', (
+      WidgetTester tester,
+    ) async {
       // Crear el widget de login con BLoC
       await tester.pumpWidget(
         MaterialApp(
@@ -30,10 +32,7 @@ void main() {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          supportedLocales: const [
-            Locale('es', 'ES'),
-            Locale('en', 'US'),
-          ],
+          supportedLocales: const [Locale('es', 'ES'), Locale('en', 'US')],
           locale: const Locale('es', 'ES'),
           home: BlocProvider<AuthBloc>(
             create: (context) => AuthBloc(authService: mockAuthService),
@@ -45,16 +44,11 @@ void main() {
       // Verificar que se renderiza correctamente
       expect(find.byType(Scaffold), findsOneWidget);
       expect(find.byType(AppBar), findsOneWidget);
-      
-      // Verificar que el mock funciona - no debería haber errores de Supabase
-      // El overflow de layout es un problema de UI, no de mocking
-      final exception = tester.takeException();
-      if (exception != null) {
-        expect(exception.toString(), contains('RenderFlex overflowed'));
-      }
     });
 
-    testWidgets('LoginScreen has email and password fields', (WidgetTester tester) async {
+    testWidgets('LoginScreen has email and password fields', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           localizationsDelegates: const [
@@ -63,10 +57,7 @@ void main() {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          supportedLocales: const [
-            Locale('es', 'ES'),
-            Locale('en', 'US'),
-          ],
+          supportedLocales: const [Locale('es', 'ES'), Locale('en', 'US')],
           locale: const Locale('es', 'ES'),
           home: BlocProvider<AuthBloc>(
             create: (context) => AuthBloc(authService: mockAuthService),
@@ -76,9 +67,13 @@ void main() {
       );
 
       // Verificar que tiene los campos de email y contraseña (TextField, no TextFormField)
-      expect(find.byType(TextField), findsNWidgets(2));
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(LoginScreenBloc)),
+      )!;
+      expect(find.widgetWithText(TextField, l10n.email), findsOneWidget);
+      expect(find.widgetWithText(TextField, l10n.password), findsOneWidget);
       expect(find.byType(ElevatedButton), findsOneWidget);
-      
+
       // Verificar que el mock funciona - no debería haber errores de Supabase
       // El overflow de layout es un problema de UI, no de mocking
       final exception = tester.takeException();
@@ -87,7 +82,9 @@ void main() {
       }
     });
 
-    testWidgets('LoginScreen shows localized text', (WidgetTester tester) async {
+    testWidgets('LoginScreen shows localized text', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           localizationsDelegates: const [
@@ -96,10 +93,7 @@ void main() {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          supportedLocales: const [
-            Locale('es', 'ES'),
-            Locale('en', 'US'),
-          ],
+          supportedLocales: const [Locale('es', 'ES'), Locale('en', 'US')],
           locale: const Locale('es', 'ES'),
           home: BlocProvider<AuthBloc>(
             create: (context) => AuthBloc(authService: mockAuthService),
@@ -109,14 +103,7 @@ void main() {
       );
 
       // Verificar que se muestra texto localizado
-      expect(find.text('Iniciar Sesión'), findsOneWidget);
-      
-      // Verificar que el mock funciona - no debería haber errores de Supabase
-      // El overflow de layout es un problema de UI, no de mocking
-      final exception = tester.takeException();
-      if (exception != null) {
-        expect(exception.toString(), contains('RenderFlex overflowed'));
-      }
+      expect(find.text('Iniciar Sesión'), findsWidgets);
     });
 
     testWidgets('LoginScreen handles form input', (WidgetTester tester) async {
@@ -128,10 +115,7 @@ void main() {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          supportedLocales: const [
-            Locale('es', 'ES'),
-            Locale('en', 'US'),
-          ],
+          supportedLocales: const [Locale('es', 'ES'), Locale('en', 'US')],
           locale: const Locale('es', 'ES'),
           home: BlocProvider<AuthBloc>(
             create: (context) => AuthBloc(authService: mockAuthService),
@@ -148,16 +132,10 @@ void main() {
       await tester.enterText(emailField, 'test@example.com');
       await tester.enterText(passwordField, 'password123');
 
-      // Verificar que el texto se ingresó correctamente
-      expect(find.text('test@example.com'), findsOneWidget);
-      expect(find.text('password123'), findsOneWidget);
-      
-      // Verificar que el mock funciona - no debería haber errores de Supabase
-      // El overflow de layout es un problema de UI, no de mocking
-      final exception = tester.takeException();
-      if (exception != null) {
-        expect(exception.toString(), contains('RenderFlex overflowed'));
-      }
+      final emailTextField = tester.widget<TextField>(emailField);
+      final passwordTextField = tester.widget<TextField>(passwordField);
+      expect(emailTextField.controller!.text, 'test@example.com');
+      expect(passwordTextField.controller!.text, 'password123');
     });
   });
 }

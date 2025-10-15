@@ -3,7 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
 class FilesService {
   final supabase.SupabaseClient _supabase = supabase.Supabase.instance.client;
-  static const String _bucketName = 'task-files';
+  static const String _bucketName = 'project-files';
 
   /// Sube un archivo a Supabase Storage
   Future<FileUploadResult> uploadFile({
@@ -18,9 +18,19 @@ class FilesService {
         throw const FilesException('Usuario no autenticado');
       }
 
+      // Obtener el ID del usuario desde la tabla users
+      final userResponse = await _supabase
+          .from('users')
+          .select('id')
+          .eq('email', user.email!)
+          .single();
+
+      final userId = userResponse['id'] as int;
+
       // Generar un nombre único para el archivo
       final timestamp = DateTime.now().millisecondsSinceEpoch;
-      final uniqueFileName = '${user.id}/$attachableType/$attachableId/${timestamp}_$fileName';
+      final uniqueFileName =
+          '$userId/$attachableType/$attachableId/${timestamp}_$fileName';
 
       // Subir archivo a Supabase Storage
       final uploadResponse = await _supabase.storage
@@ -43,7 +53,7 @@ class FilesService {
         'file_path': publicUrl,
         'file_size': fileBytes.length,
         'mime_type': _getMimeType(fileName),
-        'uploaded_by': user.id,
+        'uploaded_by': userId,
         'attachable_type': attachableType,
         'attachable_id': attachableId,
       };
@@ -99,6 +109,15 @@ class FilesService {
         throw const FilesException('Usuario no autenticado');
       }
 
+      // Obtener el ID del usuario desde la tabla users
+      final userResponse = await _supabase
+          .from('users')
+          .select('id')
+          .eq('email', user.email!)
+          .single();
+
+      final userId = userResponse['id'] as int;
+
       // Obtener información del archivo
       final fileResponse = await _supabase
           .from('files')
@@ -107,20 +126,19 @@ class FilesService {
           .single();
 
       // Verificar que el usuario puede eliminar el archivo
-      if (fileResponse['uploaded_by'] != user.id) {
-        throw const FilesException('No tienes permisos para eliminar este archivo');
+      if (fileResponse['uploaded_by'] != userId) {
+        throw const FilesException(
+          'No tienes permisos para eliminar este archivo',
+        );
       }
 
       // Eliminar de Storage
-      await _supabase.storage
-          .from(_bucketName)
-          .remove([fileResponse['filename']]);
+      await _supabase.storage.from(_bucketName).remove([
+        fileResponse['filename'],
+      ]);
 
       // Eliminar de la base de datos
-      await _supabase
-          .from('files')
-          .delete()
-          .eq('id', fileId);
+      await _supabase.from('files').delete().eq('id', fileId);
     } catch (e) {
       throw FilesException('Error al eliminar archivo: $e');
     }
@@ -131,7 +149,7 @@ class FilesService {
     try {
       // Extraer el nombre del archivo del path completo
       final fileName = filePath.split('/').last;
-      
+
       final response = await _supabase.storage
           .from(_bucketName)
           .download(fileName);
@@ -145,7 +163,7 @@ class FilesService {
   /// Obtiene el tipo MIME basado en la extensión del archivo
   String _getMimeType(String fileName) {
     final extension = fileName.split('.').last.toLowerCase();
-    
+
     switch (extension) {
       case 'pdf':
         return 'application/pdf';
@@ -174,11 +192,18 @@ class FilesService {
   /// Valida si el archivo es de un tipo permitido
   bool isValidFileType(String fileName) {
     final allowedExtensions = [
-      'pdf', 'doc', 'docx', 'txt', 
-      'jpg', 'jpeg', 'png', 'gif',
-      'zip', 'rar'
+      'pdf',
+      'doc',
+      'docx',
+      'txt',
+      'jpg',
+      'jpeg',
+      'png',
+      'gif',
+      'zip',
+      'rar',
     ];
-    
+
     final extension = fileName.split('.').last.toLowerCase();
     return allowedExtensions.contains(extension);
   }
@@ -194,7 +219,7 @@ class FilesService {
 class FilesException implements Exception {
   final String message;
   const FilesException(this.message);
-  
+
   @override
   String toString() => message;
 }
@@ -250,10 +275,11 @@ class FileAttachment {
   }
 
   String get uploaderName => uploader?['full_name'] ?? 'Desconocido';
-  
+
   String get formattedSize {
     if (fileSize < 1024) return '$fileSize B';
-    if (fileSize < 1024 * 1024) return '${(fileSize / 1024).toStringAsFixed(1)} KB';
+    if (fileSize < 1024 * 1024)
+      return '${(fileSize / 1024).toStringAsFixed(1)} KB';
     return '${(fileSize / (1024 * 1024)).toStringAsFixed(1)} MB';
   }
 }
