@@ -1,186 +1,184 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mockito/mockito.dart';
 
 import 'package:frontend/screens/dashboard/admin_dashboard.dart';
-import 'package:frontend/blocs/auth_bloc.dart';
-import 'package:frontend/blocs/anteprojects_bloc.dart';
-import 'package:frontend/blocs/tasks_bloc.dart';
+import 'package:frontend/services/admin_stats_service.dart';
 import 'package:frontend/models/user.dart';
 import 'widget_test_utils.dart';
-import 'widget_test_utils.mocks.dart';
+
+class FakeAdminStatsService implements AdminStatsRepository {
+  final AdminStats stats;
+  final List<User> users;
+  final Duration? delay;
+  final bool throwError;
+
+  const FakeAdminStatsService({
+    required this.stats,
+    required this.users,
+    this.delay,
+    this.throwError = false,
+  });
+
+  Future<T> _maybeDelay<T>(T Function() producer) async {
+    if (throwError) {
+      throw Exception('Error de estadísticas simulada');
+    }
+    if (delay != null) {
+      await Future.delayed(delay!);
+    }
+    return producer();
+  }
+
+  @override
+  Future<AdminStats> getSystemStats() => _maybeDelay(() => stats);
+
+  @override
+  Future<List<User>> getRecentUsers() => _maybeDelay(() => users);
+}
 
 void main() {
+  const defaultStats = AdminStats(
+    totalUsers: 10,
+    totalStudents: 5,
+    totalTutors: 3,
+    totalAnteprojects: 4,
+    activeAnteprojects: 2,
+    approvedAnteprojects: 1,
+    pendingAnteprojects: 1,
+  );
+
+  FakeAdminStatsService createService({
+    AdminStats stats = defaultStats,
+    List<User>? users,
+    Duration? delay,
+    bool throwError = false,
+  }) {
+    return FakeAdminStatsService(
+      stats: stats,
+      users: users ?? [WidgetTestUtils.createTestUser(email: 'admin@test.com')],
+      delay: delay,
+      throwError: throwError,
+    );
+  }
+
+  Widget createTestWidget(FakeAdminStatsService service) {
+    return WidgetTestUtils.createTestApp(
+      child: AdminDashboard(
+        user: WidgetTestUtils.createTestUser(role: UserRole.admin),
+        statsService: service,
+      ),
+    );
+  }
+
   group('AdminDashboard Widget Tests', () {
-    late MockAuthService mockAuthService;
-    late MockAnteprojectsService mockAnteprojectsService;
-    late MockTasksService mockTasksService;
-    late AuthBloc authBloc;
-    late AnteprojectsBloc anteprojectsBloc;
-    late TasksBloc tasksBloc;
-
-    setUp(() {
-      mockAuthService = MockAuthService();
-      mockAnteprojectsService = MockAnteprojectsService();
-      mockTasksService = MockTasksService();
-      
-      authBloc = AuthBloc(authService: mockAuthService);
-      anteprojectsBloc = AnteprojectsBloc(anteprojectsService: mockAnteprojectsService);
-      tasksBloc = TasksBloc(tasksService: mockTasksService);
-      
-      // Configurar mocks básicos
-      WidgetTestUtils.setupBasicMocks(
-        mockAuthService: mockAuthService,
-        mockAnteprojectsService: mockAnteprojectsService,
-        mockTasksService: mockTasksService,
-      );
-    });
-
-    tearDown(() {
-      authBloc.close();
-      anteprojectsBloc.close();
-      tasksBloc.close();
-    });
-
-    Widget createTestWidget() {
-      return WidgetTestUtils.createTestApp(
-        child: AdminDashboard(user: WidgetTestUtils.createTestUser(role: UserRole.admin)),
-        blocProviders: [
-          BlocProvider<AuthBloc>.value(value: authBloc),
-          BlocProvider<AnteprojectsBloc>.value(value: anteprojectsBloc),
-          BlocProvider<TasksBloc>.value(value: tasksBloc),
-        ],
-      );
-    }
-
-    testWidgets('AdminDashboard shows correct title and structure',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(createTestWidget());
+    testWidgets('AdminDashboard shows correct title and structure', (
+      tester,
+    ) async {
+      await tester.pumpWidget(createTestWidget(createService()));
       await WidgetTestUtils.waitForAnimation(tester);
 
-      // Verificar estructura básica
       expect(find.byType(Scaffold), findsOneWidget);
       expect(find.byType(AppBar), findsOneWidget);
-      
-      // Verificar título
       expect(find.textContaining('Dashboard'), findsOneWidget);
     });
 
-    testWidgets('AdminDashboard shows admin-specific information',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(createTestWidget());
+    testWidgets('AdminDashboard shows admin-specific information', (
+      tester,
+    ) async {
+      await tester.pumpWidget(createTestWidget(createService()));
       await WidgetTestUtils.waitForAnimation(tester);
 
-      // Verificar que se muestra información específica del administrador
       expect(find.byType(Card), findsWidgets);
+      expect(find.textContaining('admin@test.com'), findsOneWidget);
     });
 
-    testWidgets('AdminDashboard shows system overview section',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(createTestWidget());
+    testWidgets('AdminDashboard shows system overview section', (tester) async {
+      await tester.pumpWidget(createTestWidget(createService()));
       await WidgetTestUtils.waitForAnimation(tester);
 
-      // Verificar que se muestra la vista general del sistema
+      expect(find.textContaining('Usuarios'), findsWidgets);
+    });
+
+    testWidgets('AdminDashboard shows user management options', (tester) async {
+      await tester.pumpWidget(createTestWidget(createService()));
+      await WidgetTestUtils.waitForAnimation(tester);
+
+      expect(find.byType(TextButton), findsWidgets);
+      expect(find.byIcon(Icons.logout), findsOneWidget);
+    });
+
+    testWidgets('AdminDashboard shows system statistics', (tester) async {
+      await tester.pumpWidget(createTestWidget(createService()));
+      await WidgetTestUtils.waitForAnimation(tester);
+
+      expect(find.text('10'), findsWidgets);
+      expect(find.text('2'), findsWidgets);
+    });
+
+    testWidgets('AdminDashboard handles empty state gracefully', (
+      tester,
+    ) async {
+      const emptyStats = AdminStats(
+        totalUsers: 0,
+        totalStudents: 0,
+        totalTutors: 0,
+        totalAnteprojects: 0,
+        activeAnteprojects: 0,
+        approvedAnteprojects: 0,
+        pendingAnteprojects: 0,
+      );
+      await tester.pumpWidget(
+        createTestWidget(createService(stats: emptyStats, users: const [])),
+      );
+      await WidgetTestUtils.waitForAnimation(tester);
+
       expect(find.byType(Scaffold), findsOneWidget);
     });
 
-    testWidgets('AdminDashboard shows user management options',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(createTestWidget());
-      await WidgetTestUtils.waitForAnimation(tester);
-
-      // Verificar que hay opciones de gestión de usuarios
-      expect(find.byType(ElevatedButton), findsWidgets);
-    });
-
-    testWidgets('AdminDashboard shows system statistics',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(createTestWidget());
-      await WidgetTestUtils.waitForAnimation(tester);
-
-      // Verificar que se muestran estadísticas del sistema
-      expect(find.byType(Scaffold), findsOneWidget);
-    });
-
-    testWidgets('AdminDashboard handles empty state gracefully',
-        (WidgetTester tester) async {
-      // Configurar mocks para estado vacío
-      when(mockAnteprojectsService.getAnteprojects()).thenAnswer((_) async => []);
-      when(mockTasksService.getTasks()).thenAnswer((_) async => []);
-
-      await tester.pumpWidget(createTestWidget());
-      await WidgetTestUtils.waitForAnimation(tester);
-
-      // Verificar que se maneja el estado vacío
-      expect(find.byType(Scaffold), findsOneWidget);
-    });
-
-    testWidgets('AdminDashboard shows loading state',
-        (WidgetTester tester) async {
-      // Configurar mocks para estado de carga
-      when(mockAnteprojectsService.getAnteprojects()).thenAnswer(
-        (_) async {
-          await Future.delayed(const Duration(seconds: 1));
-          return [WidgetTestUtils.createTestAnteproject()];
-        },
+    testWidgets('AdminDashboard shows loading state', (tester) async {
+      await tester.pumpWidget(
+        createTestWidget(
+          createService(delay: const Duration(milliseconds: 100)),
+        ),
       );
 
-      await tester.pumpWidget(createTestWidget());
-      
-      // Verificar estado de carga inicial
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      await tester.pump(const Duration(milliseconds: 200));
     });
 
-    testWidgets('AdminDashboard shows error state',
-        (WidgetTester tester) async {
-      // Configurar mocks para estado de error
-      when(mockAnteprojectsService.getAnteprojects()).thenThrow(
-        Exception('Error de conexión'),
+    testWidgets('AdminDashboard shows error state', (tester) async {
+      await tester.pumpWidget(
+        createTestWidget(createService(throwError: true)),
       );
-
-      await tester.pumpWidget(createTestWidget());
       await WidgetTestUtils.waitForAnimation(tester);
 
-      // Verificar que se maneja el error
       expect(find.byType(Scaffold), findsOneWidget);
     });
 
-    testWidgets('AdminDashboard navigation works correctly',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(createTestWidget());
+    testWidgets('AdminDashboard navigation works correctly', (tester) async {
+      await tester.pumpWidget(createTestWidget(createService()));
       await WidgetTestUtils.waitForAnimation(tester);
 
-      // Verificar que los botones de navegación están presentes
-      final navigationButtons = find.byType(ElevatedButton);
-      expect(navigationButtons, findsWidgets);
-
-      // Simular tap en botón de navegación
-      if (navigationButtons.evaluate().isNotEmpty) {
-        await WidgetTestUtils.tapWidget(tester, navigationButtons.first);
-        await WidgetTestUtils.waitForAnimation(tester);
-      }
+      expect(find.byType(FloatingActionButton), findsOneWidget);
+      expect(find.byIcon(Icons.admin_panel_settings), findsOneWidget);
     });
 
-    testWidgets('AdminDashboard shows correct user role information',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(createTestWidget());
+    testWidgets('AdminDashboard shows correct user role information', (
+      tester,
+    ) async {
+      await tester.pumpWidget(createTestWidget(createService()));
       await WidgetTestUtils.waitForAnimation(tester);
 
-      // Verificar que se muestra información del rol del administrador
-      expect(find.byType(Scaffold), findsOneWidget);
+      expect(find.text('Rol: Administrador'), findsOneWidget);
     });
 
-    testWidgets('AdminDashboard responsive design works',
-        (WidgetTester tester) async {
-      // Probar en diferentes tamaños de pantalla
-      await tester.binding.setSurfaceSize(const Size(400, 800));
-      await tester.pumpWidget(createTestWidget());
+    testWidgets('AdminDashboard responsive design works', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(800, 900));
+      await tester.pumpWidget(createTestWidget(createService()));
       await WidgetTestUtils.waitForAnimation(tester);
 
       expect(find.byType(Scaffold), findsOneWidget);
 
-      // Restaurar tamaño original
       await tester.binding.setSurfaceSize(null);
     });
   });

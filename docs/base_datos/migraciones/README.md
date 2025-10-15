@@ -56,9 +56,9 @@ Las migraciones están organizadas cronológicamente y definen:
 
 ### **Funcionalidades Adicionales**
 - `20240914000001_add_objectives_column.sql` - Campo de objetivos
-- `20241004T120000_update_tasks_kanban_position.sql` - Posición Kanban
 - `20241215000001_create_schedule_tables.sql` - Tablas de horarios
 - `20250127000001_create_profiles_table.sql` - Perfiles de usuario
+- `update_tasks_kanban_position` (aplicada via MCP el 04/10/2025) - Conversión de `kanban_position` a `double precision`, recreación del índice compuesto y normalización a `n.0`.
 
 ## 🔒 Seguridad
 

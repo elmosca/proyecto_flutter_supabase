@@ -15,7 +15,6 @@ import 'widget_test_utils.mocks.dart';
 
 // Generar mocks
 @GenerateMocks([AuthService, AnteprojectsService, TasksService])
-
 /// Utilidades comunes para tests de widgets
 class WidgetTestUtils {
   /// Crear MaterialApp con BlocProvider para testing
@@ -23,14 +22,15 @@ class WidgetTestUtils {
     required Widget child,
     List<BlocProvider> blocProviders = const [],
   }) {
+    final content = blocProviders.isEmpty
+        ? child
+        : MultiBlocProvider(providers: blocProviders, child: child);
+
     return MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       locale: const Locale('es', 'ES'),
-      home: MultiBlocProvider(
-        providers: blocProviders,
-        child: child,
-      ),
+      home: content,
     );
   }
 
@@ -39,19 +39,20 @@ class WidgetTestUtils {
     required Widget child,
     List<BlocProvider> blocProviders = const [],
   }) {
+    final content = blocProviders.isEmpty
+        ? child
+        : MultiBlocProvider(providers: blocProviders, child: child);
+
     return MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       locale: const Locale('es', 'ES'),
       routes: {
-        '/': (context) => child,
+        '/': (context) => content,
         '/login': (context) => const Scaffold(body: Text('Login')),
         '/dashboard': (context) => const Scaffold(body: Text('Dashboard')),
       },
-      home: MultiBlocProvider(
-        providers: blocProviders,
-        child: child,
-      ),
+      home: content,
     );
   }
 
@@ -105,18 +106,18 @@ class WidgetTestUtils {
   /// Crear tarea de prueba
   static Task createTestTask({
     int id = 1,
-    String title = 'Test Task',
-    String description = 'Test Description',
-    int projectId = 1,
+    int? projectId,
+    int? anteprojectId,
     TaskStatus status = TaskStatus.pending,
-    TaskComplexity complexity = TaskComplexity.medium,
+    TaskComplexity complexity = TaskComplexity.simple,
   }) {
-    final now = DateTime.now();
+    final now = DateTime(2024, 1, 1);
     return Task(
       id: id,
       projectId: projectId,
-      title: title,
-      description: description,
+      anteprojectId: projectId == null ? anteprojectId : null,
+      title: 'Test Task',
+      description: 'Test Description',
       status: status,
       complexity: complexity,
       kanbanPosition: 0,
@@ -134,19 +135,29 @@ class WidgetTestUtils {
   }) {
     // Mock AuthService
     when(mockAuthService.isAuthenticated).thenReturn(true);
-    when(mockAuthService.authStateChanges).thenAnswer(
-      (_) => const Stream.empty(),
-    );
+    when(
+      mockAuthService.authStateChanges,
+    ).thenAnswer((_) => const Stream.empty());
 
     // Mock AnteprojectsService
-    when(mockAnteprojectsService.getAnteprojects()).thenAnswer(
-      (_) async => [createTestAnteproject()],
-    );
+    when(
+      mockAnteprojectsService.getAnteprojects(),
+    ).thenAnswer((_) async => [createTestAnteproject()]);
+    when(
+      mockAnteprojectsService.getStudentAnteprojects(),
+    ).thenAnswer((_) async => [createTestAnteproject()]);
 
     // Mock TasksService
-    when(mockTasksService.getTasks()).thenAnswer(
-      (_) async => [createTestTask()],
-    );
+    when(
+      mockTasksService.getTasks(),
+    ).thenAnswer((_) async => [createTestTask()]);
+    when(
+      mockTasksService.getStudentTasks(),
+    ).thenAnswer((_) async => [createTestTask().toJson()]);
+    when(
+      mockTasksService.getProjectTasksForUser(1),
+    ).thenAnswer((_) async => [createTestTask(projectId: 1)]);
+    // Los anteproyectos ya no tienen tareas - solo proyectos
   }
 
   /// Esperar a que se complete la animación
@@ -160,13 +171,19 @@ class WidgetTestUtils {
   /// Simular tap en un widget
   static Future<void> tapWidget(WidgetTester tester, Finder finder) async {
     await tester.tap(finder);
-    await tester.pump(); // Usar pump() en lugar de pumpAndSettle() para evitar problemas de renderizado
+    await tester
+        .pump(); // Usar pump() en lugar de pumpAndSettle() para evitar problemas de renderizado
   }
 
   /// Simular entrada de texto
-  static Future<void> enterText(WidgetTester tester, Finder finder, String text) async {
+  static Future<void> enterText(
+    WidgetTester tester,
+    Finder finder,
+    String text,
+  ) async {
     await tester.enterText(finder, text);
-    await tester.pump(); // Usar pump() en lugar de pumpAndSettle() para evitar problemas de renderizado
+    await tester
+        .pump(); // Usar pump() en lugar de pumpAndSettle() para evitar problemas de renderizado
   }
 
   /// Verificar que un widget está presente

@@ -1,11 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'l10n/app_localizations.dart';
 import 'services/language_service.dart';
@@ -18,55 +15,8 @@ import 'config/app_config.dart';
 import 'router/app_router.dart';
 import 'widgets/error_boundary.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Inicializar SharedPreferences para Flutter Web
-  if (kIsWeb) {
-    try {
-      // Pre-inicializar SharedPreferences para evitar errores
-      await SharedPreferences.getInstance();
-    } catch (e) {
-      debugPrint('SharedPreferences initialization warning: $e');
-    }
-  }
-
-  // Pequeño delay para asegurar que SharedPreferences esté listo
-  await Future.delayed(const Duration(milliseconds: 100));
-
-  // Debug de plataforma (solo en desarrollo)
-  if (kDebugMode) {
-    if (kIsWeb) {
-      debugPrint('🌐 Ejecutando en Web');
-    } else if (Platform.isWindows) {
-      debugPrint('🖥️ Ejecutando en Windows');
-    } else if (Platform.isAndroid) {
-      debugPrint('📱 Ejecutando en Android');
-    } else if (Platform.isIOS) {
-      debugPrint('🍎 Ejecutando en iOS');
-    } else if (Platform.isMacOS) {
-      debugPrint('🍎 Ejecutando en macOS');
-    } else if (Platform.isLinux) {
-      debugPrint('🐧 Ejecutando en Linux');
-    }
-  }
-
-  // Inicializar Supabase
-  try {
-    await Supabase.initialize(
-      url: AppConfig.supabaseUrl,
-      anonKey: AppConfig.supabaseAnonKey,
-    );
-
-    if (kDebugMode) {
-      debugPrint('✅ Supabase inicializado correctamente');
-    }
-  } catch (e) {
-    if (kDebugMode) {
-      debugPrint('❌ Error inicializando Supabase: $e');
-    }
-  }
-
   runApp(const MyApp());
 }
 
@@ -84,8 +34,25 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    // Inicializar el servicio de idioma
-    _languageService.initialize();
+    _initApp();
+  }
+
+  Future<void> _initApp() async {
+    await _languageService.initialize();
+
+    try {
+      await Supabase.initialize(
+        url: AppConfig.supabaseUrl,
+        anonKey: AppConfig.supabaseAnonKey,
+      );
+      if (kDebugMode) {
+        debugPrint('✅ Supabase inicializado correctamente');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('❌ Error inicializando Supabase: $e');
+      }
+    }
   }
 
   @override

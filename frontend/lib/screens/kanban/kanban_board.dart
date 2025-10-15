@@ -5,32 +5,36 @@ import '../../blocs/tasks_bloc.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/task.dart';
 import '../../services/logging_service.dart';
-import '../../utils/task_localizations.dart';
 import '../forms/task_form.dart';
 
 class KanbanBoard extends StatefulWidget {
   final int? projectId;
-  final int? anteprojectId;
+  final bool isEmbedded;
 
-  const KanbanBoard({super.key, this.projectId, this.anteprojectId});
+  const KanbanBoard({
+    super.key,
+    required this.projectId,
+    this.isEmbedded = false,
+  });
 
   @override
   State<KanbanBoard> createState() => _KanbanBoardState();
 }
 
 class _KanbanBoardState extends State<KanbanBoard> {
-  // Variable para evitar eventos duplicados
-  bool _isProcessingDrop = false;
+  // Tarea siendo arrastrada actualmente
+  Task? _draggingTask;
+
+  // Índice donde se insertaría la tarea (para placeholder)
+  int? _dropTargetIndex;
+  TaskStatus? _dropTargetStatus;
 
   @override
   void initState() {
     super.initState();
     // Cargar tareas al inicializar
     context.read<TasksBloc>().add(
-      TasksLoadRequested(
-        projectId: widget.projectId,
-        anteprojectId: widget.anteprojectId,
-      ),
+      TasksLoadRequested(projectId: widget.projectId),
     );
   }
 
@@ -38,120 +42,91 @@ class _KanbanBoardState extends State<KanbanBoard> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.kanbanBoardTitle),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () => context.read<TasksBloc>().add(
-              TasksLoadRequested(projectId: widget.projectId),
+    final body = BlocConsumer<TasksBloc, TasksState>(
+      listener: (context, state) {
+        if (state is TasksFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.messageKey),
+              backgroundColor: Colors.red,
             ),
-            tooltip: l10n.tasksListRefresh,
-          ),
-        ],
-      ),
-      body: BlocConsumer<TasksBloc, TasksState>(
-        listener: (context, state) {
-          if (state is TasksFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.messageKey),
-                backgroundColor: Colors.red,
-              ),
-            );
-          } else if (state is TaskOperationSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(l10n.taskUpdatedSuccess),
-                backgroundColor: Colors.green,
-              ),
-            );
-          }
-        },
-        builder: (context, state) {
-          if (state is TasksLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+          );
+        } else if (state is TaskOperationSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.taskUpdatedSuccess),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      },
+      builder: (context, state) {
+        if (state is TasksLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-          if (state is TasksFailure) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
-                  const SizedBox(height: 16),
-                  Text(
-                    state.messageKey,
-                    style: const TextStyle(fontSize: 16),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => context.read<TasksBloc>().add(
-                      TasksLoadRequested(projectId: widget.projectId),
-                    ),
-                    child: Text(l10n.retry),
-                  ),
-                ],
-              ),
-            );
-          }
-
-          if (state is TasksLoaded) {
-            final tasks = state.tasks;
-
-            if (tasks.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.inbox_outlined,
-                      size: 64,
-                      color: Colors.grey[400],
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      l10n.tasksListEmpty,
-                      style: const TextStyle(fontSize: 16),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton.icon(
-                      onPressed: _createTask,
-                      icon: const Icon(Icons.add),
-                      label: Text(l10n.taskCreateButton),
-                    ),
-                  ],
-                ),
-              );
-            }
-
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        if (state is TasksFailure) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(child: _buildColumn(TaskStatus.pending, tasks, l10n)),
-                Expanded(
-                  child: _buildColumn(TaskStatus.inProgress, tasks, l10n),
+                Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
+                const SizedBox(height: 16),
+                Text(
+                  state.messageKey,
+                  style: TextStyle(color: Colors.red[700]),
                 ),
-                Expanded(
-                  child: _buildColumn(TaskStatus.underReview, tasks, l10n),
-                ),
-                Expanded(
-                  child: _buildColumn(TaskStatus.completed, tasks, l10n),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => context.read<TasksBloc>().add(
+                    TasksLoadRequested(projectId: widget.projectId),
+                  ),
+                  child: Text(l10n.tasksListRefresh),
                 ),
               ],
-            );
-          }
+            ),
+          );
+        }
 
-          return const Center(child: CircularProgressIndicator());
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _createTask,
-        child: const Icon(Icons.add),
-      ),
+        if (state is TasksLoaded) {
+          return _buildKanbanBoard(state.tasks, l10n);
+        }
+
+        return Center(child: Text(l10n.tasksListEmpty));
+      },
+    );
+
+    if (widget.isEmbedded) {
+      return body;
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(l10n.kanbanBoardTitle),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: () => context.read<TasksBloc>().add(
+                TasksLoadRequested(projectId: widget.projectId),
+              ),
+              tooltip: l10n.tasksListRefresh,
+            ),
+          ],
+        ),
+        body: body,
+        floatingActionButton: FloatingActionButton(
+          onPressed: _createTask,
+          child: const Icon(Icons.add),
+        ),
+      );
+    }
+  }
+
+  Widget _buildKanbanBoard(List<Task> allTasks, AppLocalizations l10n) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: TaskStatus.values.map((status) {
+        return Expanded(child: _buildColumn(status, allTasks, l10n));
+      }).toList(),
     );
   }
 
@@ -254,7 +229,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
                           )
                         : null,
                   ),
-                  child: _buildTaskList(columnTasks, l10n),
+                  child: _buildTaskList(columnTasks, status, l10n),
                 ),
               ),
             ],
@@ -264,39 +239,111 @@ class _KanbanBoardState extends State<KanbanBoard> {
     );
   }
 
-  Widget _buildTaskList(List<Task> tasks, AppLocalizations l10n) {
+  Widget _buildTaskList(
+    List<Task> tasks,
+    TaskStatus columnStatus,
+    AppLocalizations l10n,
+  ) {
     if (tasks.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Text(
-            l10n.tasksListEmpty,
-            style: TextStyle(color: Colors.grey[600]),
-            textAlign: TextAlign.center,
-          ),
-        ),
+      // Zona de drop para columnas vacías
+      return DragTarget<Task>(
+        onWillAcceptWithDetails: (details) {
+          if (_draggingTask == null) return false;
+          setState(() {
+            _dropTargetIndex = 0;
+            _dropTargetStatus = columnStatus;
+          });
+          return true;
+        },
+        onLeave: (_) {
+          setState(() {
+            _dropTargetIndex = null;
+            _dropTargetStatus = null;
+          });
+        },
+        onAcceptWithDetails: (details) {
+          setState(() {
+            _dropTargetIndex = null;
+            _dropTargetStatus = null;
+          });
+        },
+        builder: (context, candidateData, rejectedData) {
+          final showPlaceholder = candidateData.isNotEmpty;
+
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: showPlaceholder
+                  ? _buildInsertionPlaceholder()
+                  : Text(
+                      l10n.tasksListEmpty,
+                      style: TextStyle(color: Colors.grey[600]),
+                      textAlign: TextAlign.center,
+                    ),
+            ),
+          );
+        },
       );
     }
 
-    return ListView.separated(
+    return ListView.builder(
       padding: const EdgeInsets.all(8),
-      itemCount: tasks.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 8),
+      itemCount: tasks.length * 2 + 1, // Espacios + tarjetas + espacio final
       itemBuilder: (context, index) {
-        final task = tasks[index];
-        return _buildTaskCard(task, l10n, key: ValueKey(task.id));
+        // Índices impares son tarjetas, pares son zonas de drop
+        if (index.isEven) {
+          // Zona de drop
+          final dropIndex = index ~/ 2;
+          return _buildDropZone(columnStatus, dropIndex, tasks);
+        } else {
+          // Tarjeta
+          final taskIndex = index ~/ 2;
+          final task = tasks[taskIndex];
+
+          // No mostrar la tarjeta que se está arrastrando
+          if (_draggingTask?.id == task.id) {
+            return _buildDraggingPlaceholder();
+          }
+
+          return _buildTaskCard(task, l10n, taskIndex, key: ValueKey(task.id));
+        }
       },
     );
   }
 
-  Widget _buildTaskCard(Task task, AppLocalizations l10n, {Key? key}) {
+  Widget _buildTaskCard(
+    Task task,
+    AppLocalizations l10n,
+    int taskIndex, {
+    Key? key,
+  }) {
     return Draggable<Task>(
       key: key,
       data: task,
+      onDragStarted: () {
+        setState(() {
+          _draggingTask = task;
+        });
+      },
+      onDragEnd: (_) {
+        setState(() {
+          _draggingTask = null;
+          _dropTargetIndex = null;
+          _dropTargetStatus = null;
+        });
+      },
+      onDraggableCanceled: (_, __) {
+        setState(() {
+          _draggingTask = null;
+          _dropTargetIndex = null;
+          _dropTargetStatus = null;
+        });
+      },
       feedback: _buildDragFeedback(task),
-      childWhenDragging: _buildDragPlaceholder(l10n),
+      childWhenDragging: const SizedBox.shrink(),
       child: Card(
         margin: const EdgeInsets.only(bottom: 8),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: InkWell(
           onTap: () => _editTask(task),
           child: Padding(
@@ -306,6 +353,15 @@ class _KanbanBoardState extends State<KanbanBoard> {
               children: [
                 Row(
                   children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: _getColumnColor(task.status),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         task.title,
@@ -350,8 +406,8 @@ class _KanbanBoardState extends State<KanbanBoard> {
                           '${task.estimatedHours}h',
                           style: TextStyle(
                             fontSize: 10,
-                            color: Colors.blue[800],
-                            fontWeight: FontWeight.w500,
+                            color: Colors.blue[900],
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
@@ -375,6 +431,92 @@ class _KanbanBoardState extends State<KanbanBoard> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  /// Construye una zona de drop entre tarjetas
+  Widget _buildDropZone(
+    TaskStatus status,
+    int dropIndex,
+    List<Task> columnTasks,
+  ) {
+    final isTargeted =
+        _dropTargetStatus == status && _dropTargetIndex == dropIndex;
+
+    return DragTarget<Task>(
+      onWillAcceptWithDetails: (details) {
+        if (_draggingTask == null) {
+          return false;
+        }
+
+        setState(() {
+          _dropTargetIndex = dropIndex;
+          _dropTargetStatus = status;
+        });
+        return true;
+      },
+      onLeave: (_) {
+        if (_dropTargetIndex == dropIndex && _dropTargetStatus == status) {
+          setState(() {
+            _dropTargetIndex = null;
+            _dropTargetStatus = null;
+          });
+        }
+      },
+      onAcceptWithDetails: (details) {
+        final task = details.data;
+        _handleTaskDrop(task, status, dropIndex);
+
+        setState(() {
+          _dropTargetIndex = null;
+          _dropTargetStatus = null;
+        });
+      },
+      builder: (context, candidateData, rejectedData) {
+        if (isTargeted || candidateData.isNotEmpty) {
+          return _buildInsertionPlaceholder();
+        }
+        return const SizedBox(height: 4);
+      },
+    );
+  }
+
+  /// Placeholder visual cuando se arrastra una tarea
+  Widget _buildInsertionPlaceholder() {
+    return Container(
+      height: 4,
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.blue[400],
+        borderRadius: BorderRadius.circular(2),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blue.withValues(alpha: 0.3),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Placeholder para la tarea que se está arrastrando
+  Widget _buildDraggingPlaceholder() {
+    return Container(
+      height: 80,
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: Colors.grey[300]!,
+          width: 2,
+          style: BorderStyle.solid,
+        ),
+      ),
+      child: Center(
+        child: Icon(Icons.drag_indicator, color: Colors.grey[400], size: 32),
       ),
     );
   }
@@ -421,6 +563,11 @@ class _KanbanBoardState extends State<KanbanBoard> {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
+                    Icon(
+                      Icons.drag_indicator,
+                      color: Colors.grey[400],
+                      size: 16,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 4),
@@ -438,54 +585,24 @@ class _KanbanBoardState extends State<KanbanBoard> {
     );
   }
 
-  Widget _buildDragPlaceholder(AppLocalizations l10n) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: Container(
-        height: 100,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: Colors.grey[100],
-          border: Border.all(
-            color: Colors.grey[300]!,
-            width: 2,
-            style: BorderStyle.solid,
-          ),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.drag_indicator, color: Colors.grey[400], size: 24),
-              const SizedBox(height: 8),
-              Text(
-                l10n.movingTask,
-                style: TextStyle(
-                  color: Colors.grey[400],
-                  fontStyle: FontStyle.italic,
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildComplexityChip(
     TaskComplexity complexity,
     AppLocalizations l10n,
   ) {
+    String complexityText;
     Color color;
+
     switch (complexity) {
       case TaskComplexity.simple:
+        complexityText = l10n.taskComplexitySimple;
         color = Colors.green;
         break;
       case TaskComplexity.medium:
+        complexityText = l10n.taskComplexityMedium;
         color = Colors.orange;
         break;
       case TaskComplexity.complex:
+        complexityText = l10n.taskComplexityComplex;
         color = Colors.red;
         break;
     }
@@ -493,16 +610,15 @@ class _KanbanBoardState extends State<KanbanBoard> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Text(
-        TaskLocalizations.getTaskComplexityDisplayName(complexity, l10n),
+        complexityText,
         style: TextStyle(
           fontSize: 10,
           color: color,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );
@@ -524,73 +640,58 @@ class _KanbanBoardState extends State<KanbanBoard> {
   Color _getColumnColor(TaskStatus status) {
     switch (status) {
       case TaskStatus.pending:
-        return Colors.grey[600]!;
+        return Colors.grey;
       case TaskStatus.inProgress:
-        return Colors.blue[600]!;
+        return Colors.blue;
       case TaskStatus.underReview:
-        return Colors.orange[600]!;
+        return Colors.orange;
       case TaskStatus.completed:
-        return Colors.green[600]!;
+        return Colors.green;
     }
   }
 
-  void _createTask() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => BlocProvider.value(
-          value: context.read<TasksBloc>(),
-          child: TaskForm(projectId: widget.projectId),
-        ),
+  void _handleTaskDrop(Task task, TaskStatus newStatus, int targetIndex) {
+    LoggingService.debug('🔄 Drag & Drop: ${task.title}');
+    LoggingService.debug('   Estado actual: ${task.status.name}');
+    LoggingService.debug('   Estado nuevo: ${newStatus.name}');
+    LoggingService.debug('   Índice destino: $targetIndex');
+
+    context.read<TasksBloc>().add(
+      TaskReorderRequested(
+        taskId: task.id,
+        newStatus: newStatus,
+        newPosition: targetIndex.toDouble(),
       ),
     );
+
+    setState(() {
+      _draggingTask = null;
+      _dropTargetIndex = null;
+      _dropTargetStatus = null;
+    });
   }
 
-  void _editTask(Task task) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => BlocProvider.value(
-          value: context.read<TasksBloc>(),
+  Future<void> _editTask(Task task) async {
+    await showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 600),
           child: TaskForm(projectId: widget.projectId, task: task),
         ),
       ),
     );
   }
 
-  void _handleTaskDrop(Task task, TaskStatus newStatus, int newPosition) {
-    // Evitar eventos duplicados
-    if (_isProcessingDrop) {
-      LoggingService.debug('⚠️ Drop ya en proceso, ignorando...');
-      return;
-    }
-
-    _isProcessingDrop = true;
-
-    LoggingService.debug('🔄 Drag & Drop: ${task.title}');
-    LoggingService.debug('   Estado actual: ${task.status.name}');
-    LoggingService.debug('   Estado nuevo: ${newStatus.name}');
-    LoggingService.debug('   Posición nueva: $newPosition');
-
-    // Si la tarea cambia de estado, usar el evento de reordenamiento
-    if (task.status != newStatus) {
-      LoggingService.debug('   → Enviando TaskReorderRequested');
-      context.read<TasksBloc>().add(
-        TaskReorderRequested(
-          taskId: task.id,
-          newStatus: newStatus,
-          newPosition: newPosition,
+  Future<void> _createTask() async {
+    await showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 600),
+          child: TaskForm(projectId: widget.projectId),
         ),
-      );
-    } else {
-      LoggingService.debug('   → Enviando TaskPositionUpdateRequested');
-      // Si solo cambia la posición dentro de la misma columna
-      context.read<TasksBloc>().add(
-        TaskPositionUpdateRequested(taskId: task.id, newPosition: newPosition),
-      );
-    }
-
-    // Resetear el flag después de un breve delay
-    Future.delayed(const Duration(milliseconds: 500), () {
-      _isProcessingDrop = false;
-    });
+      ),
+    );
   }
 }

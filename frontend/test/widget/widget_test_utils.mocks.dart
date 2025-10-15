@@ -402,13 +402,17 @@ class MockTasksService extends _i1.Mock implements _i7.TasksService {
           as _i4.Future<_i2.Task>);
 
   @override
-  _i4.Future<void> updateTaskStatus(int? id, _i2.TaskStatus? status) =>
+  _i4.Future<_i2.Task> updateTaskStatus(int? id, _i2.TaskStatus? status) =>
       (super.noSuchMethod(
             Invocation.method(#updateTaskStatus, [id, status]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i4.Future<_i2.Task>.value(
+              _FakeTask_1(
+                this,
+                Invocation.method(#updateTaskStatus, [id, status]),
+              ),
+            ),
           )
-          as _i4.Future<void>);
+          as _i4.Future<_i2.Task>);
 
   @override
   _i4.Future<void> assignUserToTask(int? taskId, int? userId) =>
@@ -462,31 +466,59 @@ class MockTasksService extends _i1.Mock implements _i7.TasksService {
           as _i4.Future<List<_i2.Comment>>);
 
   @override
-  _i4.Future<void> updateKanbanPosition(int? taskId, int? newPosition) =>
+  _i4.Future<void> updateKanbanPosition(
+    int? taskId,
+    double? newPosition, {
+    required int? projectId,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#updateKanbanPosition, [taskId, newPosition]),
+            Invocation.method(
+              #updateKanbanPosition,
+              [taskId, newPosition],
+              {#projectId: projectId},
+            ),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
           as _i4.Future<void>);
 
   @override
-  _i4.Future<void> updateMultipleKanbanPositions(
-    Map<int, int>? positionUpdates,
-  ) =>
+  _i4.Future<_i2.Task> moveTask({
+    required int? taskId,
+    required _i2.TaskStatus? fromStatus,
+    required _i2.TaskStatus? toStatus,
+    required int? targetIndex,
+    required int? projectId,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#updateMultipleKanbanPositions, [
-              positionUpdates,
-            ]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            Invocation.method(#moveTask, [], {
+              #taskId: taskId,
+              #fromStatus: fromStatus,
+              #toStatus: toStatus,
+              #targetIndex: targetIndex,
+              #projectId: projectId,
+            }),
+            returnValue: _i4.Future<_i2.Task>.value(
+              _FakeTask_1(
+                this,
+                Invocation.method(#moveTask, [], {
+                  #taskId: taskId,
+                  #fromStatus: fromStatus,
+                  #toStatus: toStatus,
+                  #targetIndex: targetIndex,
+                  #projectId: projectId,
+                }),
+              ),
+            ),
           )
-          as _i4.Future<void>);
+          as _i4.Future<_i2.Task>);
 
   @override
-  _i4.Future<void> recalculateKanbanPositions(int? projectId) =>
+  _i4.Future<void> recalculateKanbanPositions({required int? projectId}) =>
       (super.noSuchMethod(
-            Invocation.method(#recalculateKanbanPositions, [projectId]),
+            Invocation.method(#recalculateKanbanPositions, [], {
+              #projectId: projectId,
+            }),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
@@ -532,9 +564,11 @@ class MockTasksService extends _i1.Mock implements _i7.TasksService {
           as _i4.Future<void>);
 
   @override
-  _i4.Future<void> initializeKanbanPositions(int? projectId) =>
+  _i4.Future<void> initializeKanbanPositions({required int? projectId}) =>
       (super.noSuchMethod(
-            Invocation.method(#initializeKanbanPositions, [projectId]),
+            Invocation.method(#initializeKanbanPositions, [], {
+              #projectId: projectId,
+            }),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),
           )

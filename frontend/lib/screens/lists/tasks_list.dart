@@ -9,12 +9,9 @@ import '../forms/task_form.dart';
 import '../details/task_detail_screen.dart';
 
 class TasksList extends StatefulWidget {
-  final int projectId;
+  final int? projectId;
 
-  const TasksList({
-    super.key,
-    required this.projectId,
-  });
+  const TasksList({super.key, required this.projectId});
 
   @override
   State<TasksList> createState() => _TasksListState();
@@ -25,7 +22,9 @@ class _TasksListState extends State<TasksList> {
   void initState() {
     super.initState();
     // Cargar tareas al inicializar
-    context.read<TasksBloc>().add(TasksLoadRequested(projectId: widget.projectId));
+    context.read<TasksBloc>().add(
+      TasksLoadRequested(projectId: widget.projectId),
+    );
   }
 
   @override
@@ -38,7 +37,9 @@ class _TasksListState extends State<TasksList> {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: () => context.read<TasksBloc>().add(TasksLoadRequested(projectId: widget.projectId)),
+            onPressed: () => context.read<TasksBloc>().add(
+              TasksLoadRequested(projectId: widget.projectId),
+            ),
             tooltip: l10n.tasksListRefresh,
           ),
         ],
@@ -52,11 +53,7 @@ class _TasksListState extends State<TasksList> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 64,
-                    color: Colors.red[300],
-                  ),
+                  Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
                   const SizedBox(height: 16),
                   Text(
                     state.messageKey,
@@ -65,7 +62,9 @@ class _TasksListState extends State<TasksList> {
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: () => context.read<TasksBloc>().add(TasksLoadRequested(projectId: widget.projectId)),
+                    onPressed: () => context.read<TasksBloc>().add(
+                      TasksLoadRequested(projectId: widget.projectId),
+                    ),
                     child: Text(l10n.retry),
                   ),
                 ],
@@ -73,17 +72,13 @@ class _TasksListState extends State<TasksList> {
             );
           } else if (state is TasksLoaded) {
             final tasks = state.tasks;
-            
+
             if (tasks.isEmpty) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.task_alt,
-                      size: 64,
-                      color: Colors.grey[400],
-                    ),
+                    Icon(Icons.task_alt, size: 64, color: Colors.grey[400]),
                     const SizedBox(height: 16),
                     Text(
                       l10n.tasksListEmpty,
@@ -103,7 +98,9 @@ class _TasksListState extends State<TasksList> {
 
             return RefreshIndicator(
               onRefresh: () async {
-                context.read<TasksBloc>().add(TasksLoadRequested(projectId: widget.projectId));
+                context.read<TasksBloc>().add(
+                  TasksLoadRequested(projectId: widget.projectId),
+                );
               },
               child: ListView.builder(
                 padding: const EdgeInsets.all(16),
@@ -134,7 +131,9 @@ class _TasksListState extends State<TasksList> {
           task.title,
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            decoration: task.status.isCompleted ? TextDecoration.lineThrough : null,
+            decoration: task.status.isCompleted
+                ? TextDecoration.lineThrough
+                : null,
           ),
         ),
         subtitle: Column(
@@ -165,10 +164,7 @@ class _TasksListState extends State<TasksList> {
                   const SizedBox(width: 4),
                   Text(
                     'Vence: ${task.dueDate!.day}/${task.dueDate!.month}/${task.dueDate!.year}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                   ),
                 ],
               ),
@@ -241,7 +237,10 @@ class _TasksListState extends State<TasksList> {
     );
   }
 
-  Widget _buildComplexityChip(TaskComplexity complexity, AppLocalizations l10n) {
+  Widget _buildComplexityChip(
+    TaskComplexity complexity,
+    AppLocalizations l10n,
+  ) {
     Color backgroundColor;
     Color textColor = Colors.white;
 
@@ -297,9 +296,7 @@ class _TasksListState extends State<TasksList> {
 
   void _viewTaskDetails(Task task) {
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => TaskDetailScreen(task: task),
-      ),
+      MaterialPageRoute(builder: (context) => TaskDetailScreen(task: task)),
     );
   }
 
@@ -316,12 +313,14 @@ class _TasksListState extends State<TasksList> {
 
   void _showDeleteConfirmation(Task task) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(l10n.delete),
-        content: Text('¿Estás seguro de que quieres eliminar la tarea "${task.title}"?'),
+        content: Text(
+          '¿Estás seguro de que quieres eliminar la tarea "${task.title}"?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),

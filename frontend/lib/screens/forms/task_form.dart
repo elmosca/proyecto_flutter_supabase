@@ -3,21 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../models/task.dart';
+import '../../models/project.dart';
 import '../../blocs/tasks_bloc.dart';
+import '../../services/projects_service.dart';
 import '../../utils/task_localizations.dart';
 import '../../utils/validators.dart';
 
 class TaskForm extends StatefulWidget {
   final int? projectId;
-  final int? anteprojectId;
   final Task? task; // Si es null, es creación; si no, es edición
 
-  const TaskForm({
-    super.key,
-    this.projectId,
-    this.anteprojectId,
-    this.task,
-  });
+  const TaskForm({super.key, this.projectId, this.task});
 
   @override
   State<TaskForm> createState() => _TaskFormState();
@@ -34,13 +30,64 @@ class _TaskFormState extends State<TaskForm> {
   TaskComplexity _selectedComplexity = TaskComplexity.medium;
   DateTime? _selectedDueDate;
 
+  // Nuevos campos para selección de proyecto
+  List<Project> _projects = [];
+  Project? _selectedProject;
+  bool _isLoadingProjects = true;
+
   bool get _isEditing => widget.task != null;
 
   @override
   void initState() {
     super.initState();
+    debugPrint('🔍 TaskForm inicializado con projectId: ${widget.projectId}');
+    _loadProjects();
     if (_isEditing) {
       _initializeFormWithTask();
+    }
+  }
+
+  Future<void> _loadProjects() async {
+    try {
+      debugPrint('🔍 Iniciando carga de proyectos...');
+      final projectsService = ProjectsService();
+      _projects = await projectsService.getProjects();
+      debugPrint('🔍 Proyectos obtenidos: ${_projects.length}');
+
+      for (final project in _projects) {
+        debugPrint(
+          '🔍 Proyecto: ${project.id} - ${project.title} - ${project.status}',
+        );
+      }
+
+      // Si hay un projectId específico, seleccionarlo
+      if (widget.projectId != null) {
+        try {
+          _selectedProject = _projects.firstWhere(
+            (p) => p.id == widget.projectId,
+          );
+        } catch (e) {
+          debugPrint(
+            '⚠️ Proyecto específico no encontrado, usando el primero disponible',
+          );
+          _selectedProject = _projects.isNotEmpty ? _projects.first : null;
+        }
+      } else if (_projects.isNotEmpty) {
+        _selectedProject = _projects.first;
+      }
+
+      setState(() {
+        _isLoadingProjects = false;
+      });
+
+      debugPrint(
+        '🔍 Proyectos cargados: ${_projects.length}, Seleccionado: ${_selectedProject?.id}',
+      );
+    } catch (e) {
+      debugPrint('❌ Error cargando proyectos: $e');
+      setState(() {
+        _isLoadingProjects = false;
+      });
     }
   }
 
@@ -66,6 +113,7 @@ class _TaskFormState extends State<TaskForm> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('🔍 TaskForm build() ejecutándose');
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -84,7 +132,11 @@ class _TaskFormState extends State<TaskForm> {
           if (state is TaskOperationSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(_isEditing ? l10n.taskUpdatedSuccess : l10n.taskCreatedSuccess),
+                content: Text(
+                  _isEditing
+                      ? l10n.taskUpdatedSuccess
+                      : l10n.taskCreatedSuccess,
+                ),
                 backgroundColor: Colors.green,
               ),
             );
@@ -105,6 +157,8 @@ class _TaskFormState extends State<TaskForm> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                _buildProjectSelector(l10n),
+                const SizedBox(height: 16),
                 _buildTitleField(l10n),
                 const SizedBox(height: 16),
                 _buildDescriptionField(l10n),
@@ -147,7 +201,8 @@ class _TaskFormState extends State<TaskForm> {
         border: const OutlineInputBorder(),
       ),
       maxLines: 3,
-      validator: (value) => Validators.required(value, l10n.taskDescriptionRequired),
+      validator: (value) =>
+          Validators.required(value, l10n.taskDescriptionRequired),
     );
   }
 
@@ -184,7 +239,9 @@ class _TaskFormState extends State<TaskForm> {
       items: TaskComplexity.values.map((complexity) {
         return DropdownMenuItem(
           value: complexity,
-          child: Text(TaskLocalizations.getTaskComplexityDisplayName(complexity, l10n)),
+          child: Text(
+            TaskLocalizations.getTaskComplexityDisplayName(complexity, l10n),
+          ),
         );
       }).toList(),
       onChanged: (value) {
@@ -249,6 +306,81 @@ class _TaskFormState extends State<TaskForm> {
     );
   }
 
+  Widget _buildProjectSelector(AppLocalizations l10n) {
+    debugPrint(
+      '🔍 _buildProjectSelector ejecutándose - _isLoadingProjects: $_isLoadingProjects, _projects.length: ${_projects.length}',
+    );
+
+    if (_isLoadingProjects) {
+      return const ListTile(
+        title: Text('Cargando proyectos...'),
+        trailing: CircularProgressIndicator(),
+      );
+    }
+
+    if (_projects.isEmpty) {
+      return const ListTile(
+        title: Text('No hay proyectos disponibles'),
+        subtitle: Text('Contacta con tu tutor para asignarte a un proyecto'),
+        leading: Icon(Icons.warning, color: Colors.orange),
+      );
+    }
+
+    return DropdownButtonFormField<Project>(
+      value: _selectedProject,
+      decoration: const InputDecoration(
+        labelText: 'Seleccionar Proyecto',
+        border: OutlineInputBorder(),
+        prefixIcon: Icon(Icons.folder),
+      ),
+      items: _projects.map((project) {
+        return DropdownMenuItem<Project>(
+          value: project,
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 280, maxHeight: 60),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: Text(
+                    project.title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  project.status.displayName,
+                  style: TextStyle(color: Colors.grey[600], fontSize: 11),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
+      onChanged: (Project? newValue) {
+        setState(() {
+          _selectedProject = newValue;
+        });
+        debugPrint(
+          '🔍 Proyecto seleccionado: ${_selectedProject?.id} - ${_selectedProject?.title}',
+        );
+      },
+      validator: (value) {
+        if (value == null) {
+          return 'Debe seleccionar un proyecto';
+        }
+        return null;
+      },
+    );
+  }
+
   Widget _buildActionButtons(AppLocalizations l10n) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -263,7 +395,9 @@ class _TaskFormState extends State<TaskForm> {
         Expanded(
           child: ElevatedButton(
             onPressed: _saveTask,
-            child: Text(_isEditing ? l10n.taskUpdateButton : l10n.taskCreateButton),
+            child: Text(
+              _isEditing ? l10n.taskUpdateButton : l10n.taskCreateButton,
+            ),
           ),
         ),
       ],
@@ -291,6 +425,23 @@ class _TaskFormState extends State<TaskForm> {
       return;
     }
 
+    // Validar que se haya seleccionado un proyecto
+    if (_selectedProject == null) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            _projects.isEmpty
+                ? l10n.noProjectsAvailableForTasks
+                : l10n.mustSelectProjectForTask,
+          ),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 5),
+        ),
+      );
+      return;
+    }
+
     final tags = _tagsController.text
         .split(',')
         .map((tag) => tag.trim())
@@ -301,12 +452,15 @@ class _TaskFormState extends State<TaskForm> {
         ? int.tryParse(_estimatedHoursController.text)
         : null;
 
+    debugPrint('🔍 Guardando tarea con projectId: ${_selectedProject!.id}');
+
     if (_isEditing) {
       final updatedTask = widget.task!.copyWith(
         title: _titleController.text,
         description: _descriptionController.text,
         status: _selectedStatus,
         complexity: _selectedComplexity,
+        projectId: _selectedProject!.id, // Usar el proyecto seleccionado
         dueDate: _selectedDueDate,
         estimatedHours: estimatedHours,
         tags: tags,
@@ -317,8 +471,7 @@ class _TaskFormState extends State<TaskForm> {
     } else {
       final newTask = Task(
         id: 0, // Se asignará en el backend
-        projectId: widget.projectId,
-        anteprojectId: widget.anteprojectId,
+        projectId: _selectedProject!.id, // Usar el proyecto seleccionado
         title: _titleController.text,
         description: _descriptionController.text,
         status: _selectedStatus,

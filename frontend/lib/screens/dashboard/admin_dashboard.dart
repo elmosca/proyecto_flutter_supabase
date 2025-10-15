@@ -13,8 +13,13 @@ import '../../router/app_router.dart';
 
 class AdminDashboard extends StatefulWidget {
   final User user;
+  final AdminStatsRepository statsService;
 
-  const AdminDashboard({super.key, required this.user});
+  AdminDashboard({
+    super.key,
+    required this.user,
+    AdminStatsRepository? statsService,
+  }) : statsService = statsService ?? AdminStatsService();
 
   @override
   State<AdminDashboard> createState() => _AdminDashboardState();
@@ -22,9 +27,6 @@ class AdminDashboard extends StatefulWidget {
 
 class _AdminDashboardState extends State<AdminDashboard> {
   bool _isLoading = true;
-
-  // Servicios
-  final AdminStatsService _statsService = AdminStatsService();
 
   // Datos del dashboard
   AdminStats? _stats;
@@ -44,8 +46,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
       // Cargar datos en paralelo
       final futures = await Future.wait([
-        _statsService.getSystemStats(),
-        _statsService.getRecentUsers(),
+        widget.statsService.getSystemStats(),
+        widget.statsService.getRecentUsers(),
       ]);
 
       if (mounted) {

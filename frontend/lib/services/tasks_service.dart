@@ -1,3 +1,5 @@
+// cspell:ignore reindex recalcula recalcular
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import '../models/models.dart';
 import '../utils/notification_localizations.dart';
@@ -5,6 +7,7 @@ import 'logging_service.dart';
 
 class TasksService {
   final supabase.SupabaseClient _supabase = supabase.Supabase.instance.client;
+  static const double _positionGapThreshold = 0.0001;
 
   /// Obtiene todas las tareas del usuario actual
   Future<List<Task>> getTasks() async {
@@ -97,7 +100,7 @@ class TasksService {
   Future<List<Task>> getTasksByProject(int projectId) async {
     try {
       // Inicializar posiciones Kanban si es necesario
-      await initializeKanbanPositions(projectId);
+      await initializeKanbanPositions(projectId: projectId);
 
       final response = await _supabase
           .from('tasks')
@@ -159,6 +162,8 @@ class TasksService {
     }
   }
 
+  // Los anteproyectos ya no tienen tareas - solo proyectos
+
   /// Obtiene una tarea específica por ID
   Future<Task?> getTask(int id) async {
     try {
@@ -194,7 +199,18 @@ class TasksService {
       data.remove('completed_at');
 
       // Obtener la siguiente posición Kanban
-      final maxPosition = await _getMaxKanbanPosition(task.projectId ?? 0);
+      if (task.projectId == null) {
+        throw const TasksException('missingTaskContext');
+      }
+
+      final projectExists = await _verifyProjectExists(task.projectId!);
+      if (!projectExists) {
+        throw const TasksException('invalidProjectRelation');
+      }
+
+      final maxPosition = await _getMaxKanbanPosition(
+        projectId: task.projectId,
+      );
       data['kanban_position'] = maxPosition + 1;
 
       final response = await _supabase
@@ -203,7 +219,19 @@ class TasksService {
           .select()
           .single();
 
-      return Task.fromJson(response);
+      final createdTask = Task.fromJson(response);
+
+      // Asignar automáticamente la tarea al usuario que la crea
+      try {
+        await _assignTaskToUser(createdTask.id, user.email!);
+        debugPrint('✅ Tarea ${createdTask.id} asignada exitosamente');
+      } catch (e) {
+        debugPrint('❌ Error asignando tarea ${createdTask.id}: $e');
+        debugPrint('❌ Stack trace: ${StackTrace.current}');
+        // No fallar la creación si no se puede asignar
+      }
+
+      return createdTask;
     } catch (e) {
       throw TasksException('Error al crear tarea: $e');
     }
@@ -223,9 +251,21 @@ class TasksService {
       data.remove('created_at');
       data['updated_at'] = DateTime.now().toIso8601String();
 
+      // Asegurar que al menos uno de project_id o anteproject_id esté presente
+      // para cumplir con la restricción de la base de datos
+      if (data['project_id'] == null && data['anteproject_id'] == null) {
+        // Si ambos son null, mantener los valores originales de la base de datos
+        final originalTask = await getTask(id);
+        if (originalTask != null) {
+          data['project_id'] = originalTask.projectId;
+        }
+      }
+
       // Si kanbanPosition es null, asignar una posición por defecto
       if (data['kanban_position'] == null) {
-        final maxPosition = await _getMaxKanbanPosition(task.projectId ?? 0);
+        final maxPosition = await _getMaxKanbanPosition(
+          projectId: task.projectId,
+        );
         data['kanban_position'] = maxPosition + 1;
       }
 
@@ -243,27 +283,35 @@ class TasksService {
   }
 
   /// Cambia el estado de una tarea
-  Future<void> updateTaskStatus(int id, TaskStatus status) async {
+  Future<Task> updateTaskStatus(int id, TaskStatus status) async {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
         throw const TasksException('Usuario no autenticado');
       }
 
-      final updateData = {
-        'status': status.name,
+      final updateData = <String, dynamic>{
+        'status': status.dbValue,
         'updated_at': DateTime.now().toIso8601String(),
       };
 
       // Si se completa, añadir fecha de completado
       if (status == TaskStatus.completed) {
         updateData['completed_at'] = DateTime.now().toIso8601String();
+      } else {
+        updateData['completed_at'] = null;
       }
 
-      await _supabase.from('tasks').update(updateData).eq('id', id);
+      final response = await _supabase
+          .from('tasks')
+          .update(updateData)
+          .eq('id', id)
+          .select()
+          .single();
 
       // Crear notificación de cambio de estado
       await _createStatusChangeNotification(id, status);
+      return Task.fromJson(response);
     } catch (e) {
       throw TasksException('Error al actualizar estado de tarea: $e');
     }
@@ -291,7 +339,7 @@ class TasksService {
     }
   }
 
-  /// Desasigna un usuario de una tarea
+  /// Quita un usuario asignado de una tarea
   Future<void> unassignUserFromTask(int taskId, int userId) async {
     try {
       final user = _supabase.auth.currentUser;
@@ -305,7 +353,7 @@ class TasksService {
           .eq('task_id', taskId)
           .eq('user_id', userId);
     } catch (e) {
-      throw TasksException('Error al desasignar usuario de tarea: $e');
+      throw TasksException('Error al quitar usuario de tarea: $e');
     }
   }
 
@@ -360,15 +408,18 @@ class TasksService {
     }
   }
 
-  /// Actualiza la posición Kanban de una tarea
-  Future<void> updateKanbanPosition(int taskId, int newPosition) async {
+  /// Actualiza directamente la posición Kanban de una tarea
+  Future<void> updateKanbanPosition(
+    int taskId,
+    double newPosition, {
+    required int? projectId,
+  }) async {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
         throw const TasksException('Usuario no autenticado');
       }
 
-      // Actualización simple de posición
       await _supabase
           .from('tasks')
           .update({
@@ -376,130 +427,248 @@ class TasksService {
             'updated_at': DateTime.now().toIso8601String(),
           })
           .eq('id', taskId);
-    } catch (e) {
-      throw TasksException('Error al actualizar posición Kanban: $e');
+
+      if (projectId != null) {
+        await _reindexColumn(
+          projectId: projectId,
+          status: await _getTaskStatus(taskId),
+        );
+      }
+    } catch (error) {
+      LoggingService.error(
+        'Error al actualizar posición Kanban de la tarea $taskId',
+        error,
+        'TasksService.updateKanbanPosition',
+      );
+      throw TasksException('Error al actualizar posición Kanban: $error');
     }
   }
 
-  /// Recalcula las posiciones de las tareas en un estado específico
-  Future<void> _recalculatePositionsForStatus(
-    int projectId,
-    TaskStatus status,
-    int movedTaskId,
-    int newPosition,
-  ) async {
+  Future<TaskStatus> _getTaskStatus(int taskId) async {
+    final response = await _supabase
+        .from('tasks')
+        .select('status')
+        .eq('id', taskId)
+        .single();
+
+    return TaskStatus.values.firstWhere(
+      (status) => status.dbValue == response['status'],
+      orElse: () => TaskStatus.pending,
+    );
+  }
+
+  Future<Task> moveTask({
+    required int taskId,
+    required TaskStatus fromStatus,
+    required TaskStatus toStatus,
+    required int targetIndex,
+    required int? projectId,
+  }) async {
+    final user = _supabase.auth.currentUser;
+    if (user == null) {
+      throw const TasksException('Usuario no autenticado');
+    }
+
     try {
-      // Obtener todas las tareas del mismo estado
-      final tasks = await _supabase
+      final currentTask = await getTask(taskId);
+      if (currentTask == null) {
+        throw const TasksException('taskNotFound');
+      }
+
+      final effectiveProjectId = projectId ?? currentTask.projectId;
+
+      if (fromStatus != toStatus) {
+        await _removeTaskFromColumn(
+          projectId: effectiveProjectId,
+          status: fromStatus,
+          taskId: taskId,
+        );
+      }
+
+      final positionResult = await _computeTargetPosition(
+        projectId: effectiveProjectId,
+        toStatus: toStatus,
+        excludeTaskId: taskId,
+        targetIndex: targetIndex,
+      );
+      if (positionResult.reindexed) {
+        LoggingService.info(
+          'Reindex ejecutado para ${toStatus.name} (projectId: $effectiveProjectId)',
+          'TasksService.moveTask',
+        );
+      }
+
+      final updatePayload = {
+        'status': toStatus.dbValue,
+        'kanban_position': positionResult.position,
+        'updated_at': DateTime.now().toIso8601String(),
+        if (toStatus == TaskStatus.completed)
+          'completed_at': DateTime.now().toIso8601String(),
+        if (fromStatus == TaskStatus.completed &&
+            toStatus != TaskStatus.completed)
+          'completed_at': null,
+      };
+
+      final updatedTask = await _supabase
           .from('tasks')
-          .select('id, kanban_position')
-          .eq('project_id', projectId)
-          .eq('status', status.name)
-          .order('kanban_position', ascending: true);
+          .update(updatePayload)
+          .eq('id', taskId)
+          .select()
+          .single();
 
-      // Filtrar la tarea que se está moviendo
-      final otherTasks = tasks.where((t) => t['id'] != movedTaskId).toList();
+      LoggingService.info(
+        'Tarea $taskId movida de ${fromStatus.name} a ${toStatus.name} en posición ${positionResult.position}',
+        'TasksService.moveTask',
+      );
 
-      // Crear nueva lista de posiciones
-      final newPositions = <Map<String, dynamic>>[];
-
-      // Insertar la tarea movida en la nueva posición
-      newPositions.add({'id': movedTaskId, 'position': newPosition});
-
-      // Reasignar posiciones a las demás tareas
-      int currentPosition = 1;
-      for (final task in otherTasks) {
-        if (currentPosition == newPosition) {
-          currentPosition++; // Saltar la posición ocupada
-        }
-        newPositions.add({'id': task['id'], 'position': currentPosition});
-        currentPosition++;
-      }
-
-      // Actualizar todas las posiciones en la base de datos
-      for (final item in newPositions) {
-        await _supabase
-            .from('tasks')
-            .update({
-              'kanban_position': item['position'],
-              'updated_at': DateTime.now().toIso8601String(),
-            })
-            .eq('id', item['id']);
-      }
-    } catch (e) {
-      throw TasksException('Error al recalcular posiciones: $e');
+      return Task.fromJson(updatedTask);
+    } catch (error, stackTrace) {
+      LoggingService.error(
+        'Error moviendo la tarea $taskId',
+        error,
+        'TasksService.moveTask',
+      );
+      LoggingService.debug('$stackTrace', 'TasksService.moveTask');
+      throw TasksException('Error al mover la tarea: $error');
     }
   }
 
-  /// Actualiza múltiples posiciones Kanban de una vez
-  Future<void> updateMultipleKanbanPositions(
-    Map<int, int> positionUpdates,
-  ) async {
-    try {
-      final user = _supabase.auth.currentUser;
-      if (user == null) {
-        throw const TasksException('Usuario no autenticado');
-      }
+  Future<_MovePositionResult> _computeTargetPosition({
+    required int? projectId,
+    required TaskStatus toStatus,
+    required int excludeTaskId,
+    required int targetIndex,
+  }) async {
+    var query = _supabase
+        .from('tasks')
+        .select('id, kanban_position')
+        .eq('status', toStatus.dbValue);
 
-      // Actualizar cada tarea individualmente
-      for (final entry in positionUpdates.entries) {
-        await _supabase
-            .from('tasks')
-            .update({
-              'kanban_position': entry.value,
-              'updated_at': DateTime.now().toIso8601String(),
-            })
-            .eq('id', entry.key);
+    if (projectId != null) {
+      query = query.eq('project_id', projectId);
+    } else {
+      query = query.isFilter('project_id', null);
+    }
+
+    final List<Map<String, dynamic>> rows = await query;
+
+    final List<Map<String, dynamic>> tasks =
+        rows
+            .where((row) => row['id'] != excludeTaskId)
+            .map<Map<String, dynamic>>((row) => row)
+            .toList()
+          ..sort(
+            (a, b) => (a['kanban_position'] as num).compareTo(
+              b['kanban_position'] as num,
+            ),
+          );
+
+    if (tasks.isEmpty) {
+      return const _MovePositionResult(position: 1.0, reindexed: false);
+    }
+
+    if (targetIndex <= 0) {
+      final double firstPosition = (tasks.first['kanban_position'] as num)
+          .toDouble();
+      final double newPosition = firstPosition / 2;
+      if (firstPosition - newPosition > _positionGapThreshold) {
+        return _MovePositionResult(position: newPosition, reindexed: false);
       }
-    } catch (e) {
-      throw TasksException('Error al actualizar posiciones Kanban: $e');
+      await _reindexColumn(projectId: projectId, status: toStatus);
+      return const _MovePositionResult(position: 1.0, reindexed: true);
+    }
+
+    if (targetIndex >= tasks.length) {
+      final double lastPosition = (tasks.last['kanban_position'] as num)
+          .toDouble();
+      final double newPosition = lastPosition + 1;
+      if (newPosition - lastPosition > _positionGapThreshold) {
+        return _MovePositionResult(position: newPosition, reindexed: false);
+      }
+      await _reindexColumn(projectId: projectId, status: toStatus);
+      return const _MovePositionResult(position: 1.0, reindexed: true);
+    }
+
+    final double previousPosition =
+        (tasks[targetIndex - 1]['kanban_position'] as num).toDouble();
+    final double nextPosition = (tasks[targetIndex]['kanban_position'] as num)
+        .toDouble();
+    final double gap = nextPosition - previousPosition;
+
+    if (gap > _positionGapThreshold) {
+      return _MovePositionResult(
+        position: (previousPosition + nextPosition) / 2,
+        reindexed: false,
+      );
+    }
+
+    await _reindexColumn(projectId: projectId, status: toStatus);
+    return _MovePositionResult(position: previousPosition + 1, reindexed: true);
+  }
+
+  Future<void> _removeTaskFromColumn({
+    required int? projectId,
+    required TaskStatus status,
+    required int taskId,
+  }) async {
+    var query = _supabase
+        .from('tasks')
+        .select('id')
+        .eq('status', status.dbValue);
+
+    if (projectId != null) {
+      query = query.eq('project_id', projectId);
+    } else {
+      query = query.isFilter('project_id', null);
+    }
+
+    final tasks = await query.order('kanban_position');
+
+    if (tasks.any((row) => row['id'] == taskId)) {
+      await _reindexColumn(projectId: projectId, status: status);
+    }
+  }
+
+  Future<void> _reindexColumn({
+    required int? projectId,
+    required TaskStatus status,
+  }) async {
+    var query = _supabase
+        .from('tasks')
+        .select('id')
+        .eq('status', status.dbValue);
+
+    if (projectId != null) {
+      query = query.eq('project_id', projectId);
+    } else {
+      query = query.isFilter('project_id', null);
+    }
+
+    final tasks = await query.order('kanban_position');
+
+    double position = 1;
+    for (final task in tasks) {
+      await _supabase
+          .from('tasks')
+          .update({
+            'kanban_position': position,
+            'updated_at': DateTime.now().toIso8601String(),
+          })
+          .eq('id', task['id']);
+      position += 1;
     }
   }
 
   /// Recalcula las posiciones Kanban para evitar conflictos
-  Future<void> recalculateKanbanPositions(int? projectId) async {
+  Future<void> recalculateKanbanPositions({required int? projectId}) async {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
         throw const TasksException('Usuario no autenticado');
       }
 
-      // Obtener todas las tareas del proyecto ordenadas por estado y posición actual
-      final response = projectId != null
-          ? await _supabase
-                .from('tasks')
-                .select('id, status, kanban_position')
-                .eq('project_id', projectId)
-                .order('status')
-                .order('kanban_position')
-          : await _supabase
-                .from('tasks')
-                .select('id, status, kanban_position')
-                .order('status')
-                .order('kanban_position');
-
-      // Agrupar por estado y recalcular posiciones
-      final Map<String, List<Map<String, dynamic>>> tasksByStatus = {};
-      for (final task in response) {
-        final status = task['status'] as String;
-        tasksByStatus.putIfAbsent(status, () => []).add(task);
-      }
-
-      // Actualizar posiciones secuencialmente por estado
-      for (final statusTasks in tasksByStatus.values) {
-        for (int i = 0; i < statusTasks.length; i++) {
-          final taskId = statusTasks[i]['id'] as int;
-          final newPosition =
-              (i + 1) * 100; // Espaciar posiciones para futuras inserciones
-
-          await _supabase
-              .from('tasks')
-              .update({
-                'kanban_position': newPosition,
-                'updated_at': DateTime.now().toIso8601String(),
-              })
-              .eq('id', taskId);
-        }
+      for (final status in TaskStatus.values) {
+        await _reindexColumn(projectId: projectId, status: status);
       }
     } catch (e) {
       throw TasksException('Error al recalcular posiciones Kanban: $e');
@@ -512,7 +681,7 @@ class TasksService {
       final response = await _supabase
           .from('tasks')
           .select('*')
-          .eq('status', status.name)
+          .eq('status', status.dbValue)
           .order('kanban_position', ascending: true);
 
       return response.map<Task>(Task.fromJson).toList();
@@ -527,7 +696,7 @@ class TasksService {
       final response = await _supabase
           .from('tasks')
           .select('*')
-          .eq('complexity', complexity.name)
+          .eq('complexity', complexity.dbValue)
           .order('created_at', ascending: false);
 
       return response.map<Task>(Task.fromJson).toList();
@@ -557,6 +726,54 @@ class TasksService {
     }
   }
 
+  /// Asigna una tarea a un usuario
+  Future<void> _assignTaskToUser(int taskId, String userEmail) async {
+    try {
+      debugPrint(
+        '🔍 Iniciando asignación de tarea $taskId al usuario $userEmail',
+      );
+
+      // Obtener el ID del usuario desde la tabla users
+      final userResponse = await _supabase
+          .from('users')
+          .select('id, email')
+          .eq('email', userEmail)
+          .single();
+
+      final userId = userResponse['id'] as int;
+      final userEmailFromDB = userResponse['email'] as String;
+      debugPrint(
+        '🔍 Usuario encontrado con ID: $userId, email: $userEmailFromDB',
+      );
+
+      // Verificar si ya existe la asignación
+      final existingAssignment = await _supabase
+          .from('task_assignees')
+          .select('id')
+          .eq('task_id', taskId)
+          .eq('user_id', userId)
+          .maybeSingle();
+
+      if (existingAssignment != null) {
+        debugPrint('⚠️ La tarea $taskId ya está asignada al usuario $userId');
+        return;
+      }
+
+      // Crear la asignación en task_assignees
+      await _supabase.from('task_assignees').insert({
+        'task_id': taskId,
+        'user_id': userId,
+        'assigned_at': DateTime.now().toIso8601String(),
+      });
+
+      debugPrint('✅ Tarea $taskId asignada al usuario $userId');
+    } catch (e) {
+      debugPrint('❌ Error asignando tarea al usuario: $e');
+      debugPrint('❌ Stack trace: ${StackTrace.current}');
+      // No fallar la creación de la tarea si no se puede asignar
+    }
+  }
+
   /// Elimina una tarea
   Future<void> deleteTask(int id) async {
     try {
@@ -580,32 +797,48 @@ class TasksService {
   // Métodos privados de ayuda
 
   /// Obtiene la máxima posición Kanban para un proyecto
-  Future<int> _getMaxKanbanPosition(int projectId) async {
+  Future<double> _getMaxKanbanPosition({required int? projectId}) async {
     try {
-      final response = await _supabase
-          .from('tasks')
-          .select('kanban_position')
-          .eq('project_id', projectId)
+      var query = _supabase.from('tasks').select('kanban_position');
+
+      if (projectId != null) {
+        query = query.eq('project_id', projectId);
+      } else {
+        query = query.isFilter('project_id', null);
+      }
+
+      final response = await query
           .not('kanban_position', 'is', null)
           .order('kanban_position', ascending: false)
           .limit(1)
-          .single();
+          .maybeSingle();
 
-      return (response['kanban_position'] as int?) ?? 0;
+      if (response == null) {
+        return 0;
+      }
+
+      return (response['kanban_position'] as num).toDouble();
     } catch (e) {
       return 0;
     }
   }
 
   /// Inicializa las posiciones Kanban para tareas que no las tienen
-  Future<void> initializeKanbanPositions(int projectId) async {
+  Future<void> initializeKanbanPositions({required int? projectId}) async {
     try {
       // Obtener tareas sin posición Kanban
-      final tasksWithoutPosition = await _supabase
+      var query = _supabase
           .from('tasks')
           .select('id, status')
-          .eq('project_id', projectId)
           .isFilter('kanban_position', null);
+
+      if (projectId != null) {
+        query = query.eq('project_id', projectId);
+      } else {
+        query = query.isFilter('project_id', null);
+      }
+
+      final tasksWithoutPosition = await query;
 
       if (tasksWithoutPosition.isEmpty) return;
 
@@ -626,8 +859,8 @@ class TasksService {
 
         // Obtener la máxima posición actual para este estado
         final maxPosition = await _getMaxKanbanPositionForStatus(
-          projectId,
-          status,
+          projectId: projectId,
+          status: status,
         );
 
         // Actualizar cada tarea con una posición secuencial
@@ -647,22 +880,33 @@ class TasksService {
   }
 
   /// Obtiene la máxima posición Kanban para un estado específico
-  Future<int> _getMaxKanbanPositionForStatus(
-    int projectId,
-    TaskStatus status,
-  ) async {
+  Future<double> _getMaxKanbanPositionForStatus({
+    required int? projectId,
+    required TaskStatus status,
+  }) async {
     try {
-      final response = await _supabase
+      var query = _supabase
           .from('tasks')
           .select('kanban_position')
-          .eq('project_id', projectId)
-          .eq('status', status.name)
+          .eq('status', status.dbValue);
+
+      if (projectId != null) {
+        query = query.eq('project_id', projectId);
+      } else {
+        query = query.isFilter('project_id', null);
+      }
+
+      final response = await query
           .not('kanban_position', 'is', null)
           .order('kanban_position', ascending: false)
           .limit(1)
-          .single();
+          .maybeSingle();
 
-      return (response['kanban_position'] as int?) ?? 0;
+      if (response == null) {
+        return 0;
+      }
+
+      return (response['kanban_position'] as num).toDouble();
     } catch (e) {
       return 0;
     }
@@ -677,20 +921,33 @@ class TasksService {
       final task = await getTask(taskId);
       if (task == null) return;
 
-      final notificationData = {
-        'user_id': task.projectId, // Notificar al tutor del proyecto
-        'type': 'task_status_changed',
-        'title': NotificationLocalizations.getTaskStatusUpdatedTitle(),
-        'message': NotificationLocalizations.getTaskStatusChangedMessage(
-          task.title,
-          status.name,
-        ),
-        'action_url': '/tasks/$taskId',
-        'metadata': {'task_id': taskId, 'new_status': status.name},
-        'created_at': DateTime.now().toIso8601String(),
-      };
+      final assignees = await _supabase
+          .from('task_assignees')
+          .select('user_id')
+          .eq('task_id', taskId);
 
-      await _supabase.from('notifications').insert(notificationData);
+      if (assignees.isEmpty) {
+        return;
+      }
+
+      final List<Map<String, dynamic>> notifications = assignees.map((
+        assignee,
+      ) {
+        return {
+          'user_id': assignee['user_id'],
+          'type': 'task_status_changed',
+          'title': NotificationLocalizations.getTaskStatusUpdatedTitle(),
+          'message': NotificationLocalizations.getTaskStatusChangedMessage(
+            task.title,
+            status.dbValue,
+          ),
+          'action_url': '/tasks/$taskId',
+          'metadata': {'task_id': taskId, 'new_status': status.dbValue},
+          'created_at': DateTime.now().toIso8601String(),
+        };
+      }).toList();
+
+      await _supabase.from('notifications').insert(notifications);
     } catch (e) {
       // No fallar si la notificación falla
       LoggingService.error(
@@ -768,6 +1025,19 @@ class TasksService {
       );
     }
   }
+
+  Future<bool> _verifyProjectExists(int projectId) async {
+    final response = await _supabase
+        .from('projects')
+        .select('id')
+        .eq('id', projectId)
+        .limit(1)
+        .maybeSingle();
+
+    return response != null;
+  }
+
+  // Los anteproyectos ya no tienen tareas - solo proyectos
 }
 
 /// Excepción personalizada para errores de tareas
@@ -778,4 +1048,11 @@ class TasksException implements Exception {
 
   @override
   String toString() => 'TasksException: $message';
+}
+
+class _MovePositionResult {
+  final double position;
+  final bool reindexed;
+
+  const _MovePositionResult({required this.position, required this.reindexed});
 }

@@ -100,6 +100,39 @@
   "@taskNotFound": {
     "description": "Mensaje de error cuando no se encuentra la tarea"
   },
+  "testCredentialsTitle": "Credenciales de prueba",
+  "@testCredentialsTitle": {
+    "description": "Título de la sección con credenciales de prueba"
+  },
+  "testCredentialsAdmin": "👨‍💼 Administrador",
+  "@testCredentialsAdmin": {
+    "description": "Etiqueta para las credenciales de administrador"
+  },
+  "testCredentialsTutor": "👨‍🏫 Tutor",
+  "@testCredentialsTutor": {
+    "description": "Etiqueta para las credenciales de tutor"
+  },
+  "testCredentialsStudent": "👨‍🎓 Estudiante",
+  "@testCredentialsStudent": {
+    "description": "Etiqueta para las credenciales de estudiante"
+  },
+  "testCredentialsReviewer": "👨‍⚖️ Evaluador",
+  "@testCredentialsReviewer": {
+    "description": "Etiqueta para las credenciales de evaluador"
+  },
+  "copy": "Copiar",
+  "@copy": {
+    "description": "Texto para la acción de copiar"
+  },
+  "copiedToClipboard": "Copiado al portapapeles: {value}",
+  "@copiedToClipboard": {
+    "description": "Mensaje mostrado cuando se copia un valor",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "delete": "Eliminar",
   "@delete": {
     "description": "Botón de eliminar"
@@ -443,6 +476,22 @@
   "comingSoon": "Próximamente",
   "@comingSoon": {
     "description": "Mensaje para funcionalidades que estarán disponibles pronto"
+  },
+  "noProjectsAvailableForTasks": "No hay proyectos disponibles para crear tareas. Asegúrate de que tu anteproyecto esté aprobado.",
+  "@noProjectsAvailableForTasks": {
+    "description": "Mensaje cuando no hay proyectos disponibles para crear tareas"
+  },
+  "mustSelectProjectForTask": "Debe seleccionar un proyecto para crear la tarea",
+  "@mustSelectProjectForTask": {
+    "description": "Mensaje cuando no se ha seleccionado un proyecto para la tarea"
+  },
+  "myProjects": "Mis Proyectos",
+  "@myProjects": {
+    "description": "Título de la sección de proyectos del estudiante"
+  },
+  "noProjectsAssigned": "No tienes proyectos asignados. Contacta con tu tutor.",
+  "@noProjectsAssigned": {
+    "description": "Mensaje cuando el estudiante no tiene proyectos asignados"
   },
   "supabaseStudio": "Supabase Studio",
   "@supabaseStudio": {
@@ -1977,5 +2026,41 @@
         "description": "Mensaje de error"
       }
     }
+  },
+  "selectProjectForTasks": "Selecciona el proyecto",
+  "@selectProjectForTasks": {
+    "description": "Título del diálogo para elegir proyecto para trabajar con tareas"
+  },
+  "projectDetails": "Detalles del Proyecto",
+  "@projectDetails": {
+    "description": "Título de la pantalla de detalles del proyecto"
+  },
+  "anteprojectHistoryComments": "Comentarios del Anteproyecto (Histórico)",
+  "@anteprojectHistoryComments": {
+    "description": "Sección de comentarios históricos del anteproyecto"
+  },
+  "projectComments": "Comentarios del Proyecto",
+  "@projectComments": {
+    "description": "Sección de comentarios actuales del proyecto"
+  },
+  "attachedFiles": "Archivos Adjuntos",
+  "@attachedFiles": {
+    "description": "Pestaña de archivos adjuntos"
+  },
+  "kanbanBoard": "Tablero Kanban",
+  "@kanbanBoard": {
+    "description": "Pestaña del tablero Kanban"
+  },
+  "kanbanOnlyForProjects": "El tablero Kanban solo está disponible para proyectos aprobados",
+  "@kanbanOnlyForProjects": {
+    "description": "Mensaje cuando se intenta ver el Kanban sin proyecto"
+  },
+  "anteprojectNotFound": "No se encontró el anteproyecto asociado al proyecto",
+  "@anteprojectNotFound": {
+    "description": "Error cuando no existe el anteproyecto del proyecto"
+  },
+  "tasksList": "Lista de Tareas",
+  "@tasksList": {
+    "description": "Pestaña de lista de tareas"
   }
 }

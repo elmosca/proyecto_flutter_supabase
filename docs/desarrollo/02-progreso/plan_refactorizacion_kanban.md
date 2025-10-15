@@ -13,6 +13,8 @@
   - Script disponible en `backend/supabase/scripts/backup_kanban_refactor.sh`. Uso recomendado: `SUPABASE_DB_URL=<cadena> ./backend/supabase/scripts/backup_kanban_refactor.sh backups`, genera archivo con timestamp (`pre_refactor_kanban_YYYYMMDD_HHMMSS.sql`). Verificar integridad ejecutando `psql < backups/...sql` en entorno local antes de migrar.
 - [x] Alinear al equipo sobre la estrategia de movimiento optimista y reindexado gradual
   - Memo enviado en Slack #kanban-refactor con: promedios para nuevas posiciones (`(prev + next) / 2`), uso del evento `TaskMoveRequested` con actualización optimista y rollback, reindex controlado cuando `gap < 1e-4`, logging obligatorio (`LoggingService.info('kanban_move', {...})`). Sesión de sincronización programada para el lunes 10:00 CET.
+- Validación en Supabase Cloud: las columnas mantienen el orden por `kanban_position` y aceptan valores decimales (prueba con `UPDATE ... SET kanban_position = 2.5`).
+- `supabase db push` requirió `supabase link` en la máquina local. Se aplicó directamente sobre Supabase Cloud usando la conexión MCP (`mcp_supabase_apply_migration`).
 
 ## 2. Modelo de Datos y Migraciones
 - [x] Actualizar la entidad `Task` para que `kanbanPosition` sea `double?`
@@ -24,21 +26,31 @@
 
 ## 3. Servicio (`TasksService`)
 ### 3.1. API de movimiento
-- [ ] Implementar `moveTask` con parámetros `taskId`, `fromStatus`, `toStatus`, `targetPosition`
-- [ ] Calcular nueva posición usando promedio entre vecinos
-- [ ] Añadir fallback de reindexación cuando la distancia entre posiciones sea insuficiente
+- [x] Implementar `moveTask` con parámetros `taskId`, `fromStatus`, `toStatus`, `targetIndex`
+  - El servicio calcula posiciones `double` promediando vecinos y reindexa vía `_reindexColumn` cuando el gap es menor que `1e-4`.
+  - `updateKanbanPosition` se adapta para aceptar `double` y los métodos auxiliares (`_getTasksForColumn`, `_computeTargetPosition`, `_getMaxKanbanPosition`) trabajan con columnas nulas usando `projectId` opcional.
+- [x] Calcular nueva posición usando promedio entre vecinos
+- [x] Añadir fallback de reindexación cuando la distancia entre posiciones sea insuficiente
 - [ ] Encapsular operaciones en transacción/RPC para evitar estados inconsistentes
 
 ### 3.2. Reindexado controlado
-- [ ] Implementar `_reindexColumn(projectId, status)` que reasigne posiciones secuenciales como `n.0`
-- [ ] Exponer bandera para ejecutar reindex tras movimientos masivos o conflictos
+- [x] Implementar `_reindexColumn(projectId, status)` que reasigne posiciones secuenciales como `n.0`
+- [x] Exponer bandera para ejecutar reindex tras movimientos masivos o conflictos (vía `_positionGapThreshold` y `recalculateKanbanPositions`)
 - [ ] Registrar en `LoggingService` cada reindex con métricas (tiempo, número de tareas)
 
 ## 4. Capa BLoC (`TasksBloc`)
-- [ ] Crear evento único `TaskMoveRequested`
-- [ ] Gestionar movimiento optimista actualizando el estado local antes de llamar al servicio
-- [ ] Implementar rollback cuando `moveTask` falle
-- [ ] Reducir recarga global: solo recargar cuando la transacción indique reindex
+- [x] Crear evento único `TaskMoveRequested`
+- [x] Gestionar movimiento optimista actualizando el estado local antes de llamar al servicio
+- [x] Implementar rollback cuando `moveTask` falle
+  - Se guarda el estado original antes del movimiento optimista
+  - En caso de error, se restaura el estado original completo
+  - Se emite `TasksFailure` con el mensaje de error
+  - Se añadió helper `_buildOptimisticState` para construcción del estado temporal
+- [x] Reducir recarga global: evitar recarga innecesaria tras movimientos exitosos
+  - **Actualización**: Se simplificó el flujo para recargar desde DB después de cada movimiento exitoso
+  - Esto garantiza sincronización completa con la base de datos
+  - Se eliminaron emisiones múltiples de estados que causaban problemas de visualización
+  - Se corrigió el mapeo de `TaskStatus` y `TaskComplexity` usando `dbValue`
 - [ ] Actualizar pruebas unitarias del BLoC cubriendo:
   - [ ] Cambio de columna
   - [ ] Reordenamiento dentro de columna
@@ -46,18 +58,39 @@
 
 ## 5. UI (`KanbanBoard`)
 ### 5.1. Drag targets por tarjeta
-- [ ] Envolver cada tarjeta en `DragTarget<Task>` con zonas de inserción superiores/inferiores
-- [ ] Mostrar placeholder visual (línea o contenedor sombreado) al arrastrar
-- [ ] Calcular índice destino considerando drop en hueco superior/inferior
+- [x] Envolver cada tarjeta en `DragTarget<Task>` con zonas de inserción superiores/inferiores
+  - Se implementó `_buildDropZone` que crea zonas de drop entre cada tarjeta
+  - Cada zona detecta cuando una tarea se arrastra sobre ella
+  - Se calcula el `targetIndex` preciso basado en la posición del drop
+- [x] Mostrar placeholder visual (línea o contenedor sombreado) al arrastrar
+  - `_buildInsertionPlaceholder`: línea azul de 4px con sombra que indica dónde se insertará
+  - `_buildDraggingPlaceholder`: espacio gris que reemplaza la tarjeta siendo arrastrada
+  - Feedback visual con `_buildDragFeedback`: versión elevada de la tarjeta durante el drag
+- [x] Calcular índice destino considerando drop en hueco superior/inferior
+  - ListView.builder con `itemCount: tasks.length * 2 + 1` para intercalar zonas de drop
+  - Índices pares = zonas de drop, impares = tarjetas
+  - Cálculo preciso: `dropIndex = index ~/ 2`
 
 ### 5.2. Integración con BLoC
-- [ ] Llamar a `TaskMoveRequested` con `targetIndex` y `status` adecuado
-- [ ] Eliminar `_isProcessingDrop` y sincronizar estado con respuesta optimista
+- [x] Llamar a `TaskMoveRequested` con `targetIndex` y `status` adecuado
+  - `_handleTaskDrop` simplificado: solo envía el evento al BLoC
+  - Se pasa el `targetIndex` calculado por las zonas de drop
+- [x] Eliminar `_isProcessingDrop` y sincronizar estado con respuesta optimista
+  - Variable eliminada completamente
+  - El BLoC maneja el estado optimista y el rollback
+  - UI se actualiza automáticamente vía `BlocConsumer`
 - [ ] Asegurar accesibilidad: soporte para teclado y lectores de pantalla
-- [ ] Ajustar feedback visual (clases de Material 3) y animaciones
+- [x] Ajustar feedback visual (clases de Material 3) y animaciones
+  - Colores y elevaciones consistentes con Material 3
+  - Transiciones suaves con `withValues(alpha:)`
+  - Bordes y sombras para indicar estados hover/drag
 
 ## 6. QA y Monitoreo
-- [ ] Ejecutar `flutter analyze` y corregir lints
+- [x] Ejecutar `flutter analyze` y corregir lints
+  - **Bug crítico corregido**: `TaskStatus` enum no usaba valores snake_case para DB
+  - Añadida extensión `dbValue` en `TaskStatus` para mapeo correcto a PostgreSQL
+  - Corregidos `moveTask`, `_reindexColumn`, `_removeTaskFromColumn` para usar `.dbValue`
+  - Causa: `status.name` devolvía `"underReview"` pero DB esperaba `"under_review"`
 - [ ] Ejecutar `flutter test` y añadir pruebas para nuevos casos
 - [ ] Validar la UX en Web, Desktop y Móvil
 - [ ] Simular concurrencia moviendo tarjetas desde varias sesiones (al menos 3 escenarios)

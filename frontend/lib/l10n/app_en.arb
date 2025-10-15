@@ -1,2284 +1,484 @@
 {
   "@@locale": "en",
   "appTitle": "TFG Management System",
-  "@appTitle": {
-    "description": "Main application title"
-  },
+  "description": "Main application title",
   "login": "Login",
-  "@login": {
-    "description": "Login button or action"
-  },
   "email": "Email",
-  "@email": {
-    "description": "Email field label"
-  },
   "password": "Password",
-  "@password": {
-    "description": "Password field label"
-  },
   "dashboard": "Dashboard",
-  "@dashboard": {
-    "description": "Dashboard screen title"
-  },
   "projects": "Projects",
-  "@projects": {
-    "description": "Projects section"
-  },
   "tasks": "Tasks",
-  "@tasks": {
-    "description": "Tasks section"
-  },
   "profile": "Profile",
-  "@profile": {
-    "description": "User profile section"
-  },
   "logout": "Logout",
-  "@logout": {
-    "description": "Logout action"
-  },
   "welcome": "Welcome",
-  "@welcome": {
-    "description": "Welcome message"
-  },
   "loading": "Loading...",
-  "@loading": {
-    "description": "Loading indicator text"
-  },
   "error": "Error",
-  "@error": {
-    "description": "Error message"
-  },
   "success": "Success",
-  "@success": {
-    "description": "Success message"
-  },
   "cancel": "Cancel",
-  "@cancel": {
-    "description": "Cancel button"
-  },
   "save": "Save",
-  "@save": {
-    "description": "Save button"
-  },
   "edit": "Edit",
-  "@edit": {
-    "description": "Edit action"
-  },
   "delete": "Delete",
-  "@delete": {
-    "description": "Delete action"
-  },
   "create": "Create",
-  "@create": {
-    "description": "Create action"
-  },
   "search": "Search",
-  "@search": {
-    "description": "Search action"
-  },
   "confirm": "Confirm",
-  "@confirm": {
-    "description": "Confirm action"
-  },
   "yes": "Yes",
-  "@yes": {
-    "description": "Yes answer"
-  },
   "no": "No",
-  "@no": {
-    "description": "No answer"
-  },
   "ok": "OK",
-  "@ok": {
-    "description": "OK button"
-  },
   "close": "Close",
-  "@close": {
-    "description": "Close action"
-  },
   "retry": "Retry",
-  "@retry": {
-    "description": "Retry action"
-  },
   "title": "Title",
-  "@title": {
-    "description": "Title field"
-  },
-  "description": "Description",
-  "@description": {
-    "description": "Description field"
-  },
   "status": "Status",
-  "@status": {
-    "description": "Label for status"
-  },
   "complexity": "Complexity",
-  "@complexity": {
-    "description": "Complexity field"
-  },
   "dueDate": "Due Date",
-  "@dueDate": {
-    "description": "Due date field"
-  },
   "estimatedHours": "Estimated Hours",
-  "@estimatedHours": {
-    "description": "Estimated hours field"
-  },
   "tags": "Tags",
-  "@tags": {
-    "description": "Tags field"
-  },
   "academicYear": "Academic Year",
-  "@academicYear": {
-    "description": "Academic year field"
-  },
   "projectType": "Project Type",
-  "@projectType": {
-    "description": "Project type field"
-  },
   "pending": "Pending",
-  "@pending": {
-    "description": "Pending status"
-  },
   "inProgress": "In Progress",
-  "@inProgress": {
-    "description": "In progress status"
-  },
   "underReview": "Under Review",
-  "@underReview": {
-    "description": "Under review status"
-  },
   "completed": "Completed",
-  "@completed": {
-    "description": "Completed status"
-  },
   "simple": "Simple",
-  "@simple": {
-    "description": "Simple complexity"
-  },
   "medium": "Medium",
-  "@medium": {
-    "description": "Medium complexity"
-  },
   "complex": "Complex",
-  "@complex": {
-    "description": "Complex complexity"
-  },
   "createdSuccessfully": "created successfully",
-  "@createdSuccessfully": {
-    "description": "Success message for creation"
-  },
   "updatedSuccessfully": "updated successfully",
-  "@updatedSuccessfully": {
-    "description": "Success message for update"
-  },
   "deletedSuccessfully": "deleted successfully",
-  "@deletedSuccessfully": {
-    "description": "Success message for deletion"
-  },
   "addedSuccessfully": "added successfully",
-  "@addedSuccessfully": {
-    "description": "Success message for addition"
-  },
   "connectionError": "Connection error",
-  "@connectionError": {
-    "description": "Connection error message"
-  },
   "loginError": "Login error",
-  "@loginError": {
-    "description": "Login error message"
-  },
   "notFound": "not found",
-  "@notFound": {
-    "description": "Not found message"
-  },
   "noDataAvailable": "no data available",
-  "@noDataAvailable": {
-    "description": "No data available message"
-  },
   "invalidFormat": "invalid format",
-  "@invalidFormat": {
-    "description": "Invalid format message"
-  },
   "comments": "Comments",
-  "@comments": {
-    "description": "Button to view comments"
-  },
   "addComment": "Add comment",
-  "@addComment": {
-    "description": "Add comment action"
-  },
   "writeComment": "Write your comment",
-  "@writeComment": {
-    "description": "Write comment placeholder"
-  },
   "send": "Send",
-  "@send": {
-    "description": "Send action"
-  },
   "internalComment": "Internal comment",
-  "@internalComment": {
-    "description": "Internal comment type"
-  },
   "publicComment": "Public comment",
-  "@publicComment": {
-    "description": "Public comment type"
-  },
   "noComments": "No comments",
-  "@noComments": {
-    "description": "No comments message"
-  },
   "beFirstToComment": "Be the first to comment",
-  "@beFirstToComment": {
-    "description": "Be first to comment message"
-  },
   "author": "Author",
-  "@author": {
-    "description": "Author field"
-  },
   "date": "Date",
-  "@date": {
-    "description": "Date field"
-  },
   "content": "Content",
-  "@content": {
-    "description": "Content field"
-  },
   "uploadFile": "Upload File",
-  "@uploadFile": {
-    "description": "Upload file action"
-  },
   "uploading": "Uploading...",
-  "@uploading": {
-    "description": "Uploading indicator"
-  },
   "upload": "Upload",
-  "@upload": {
-    "description": "Upload action"
-  },
   "fileUploadedSuccessfully": "File uploaded successfully",
-  "@fileUploadedSuccessfully": {
-    "description": "File upload success message"
-  },
   "fileDeletedSuccessfully": "File deleted successfully",
-  "@fileDeletedSuccessfully": {
-    "description": "File deletion success message"
-  },
   "confirmDeleteFile": "Confirm Delete",
-  "@confirmDeleteFile": {
-    "description": "Confirm file deletion"
-  },
   "openFile": "Open File",
-  "@openFile": {
-    "description": "Open file action"
-  },
   "deleteFile": "Delete File",
-  "@deleteFile": {
-    "description": "Delete file action"
-  },
   "noFilesAttached": "No files attached",
-  "@noFilesAttached": {
-    "description": "No files attached message"
-  },
   "noFilesYet": "No files yet",
-  "@noFilesYet": {
-    "description": "No files yet message"
-  },
   "uploadedBy": "Uploaded by",
-  "@uploadedBy": {
-    "description": "Uploaded by field"
-  },
   "clickToSelectFile": "Click to select a file",
-  "@clickToSelectFile": {
-    "description": "Click to select file message"
-  },
   "allowedTypes": "Allowed types",
-  "@allowedTypes": {
-    "description": "Allowed file types"
-  },
   "maximumSize": "Maximum size",
-  "@maximumSize": {
-    "description": "Maximum file size"
-  },
   "attachedFiles": "Attached Files",
-  "@attachedFiles": {
-    "description": "Attached files section"
-  },
   "attachFile": "Attach File",
-  "@attachFile": {
-    "description": "Attach file action"
-  },
   "approvalWorkflow": "Approval Workflow",
-  "@approvalWorkflow": {
-    "description": "Approval workflow section"
-  },
   "pendingApprovals": "Pending Approvals",
-  "@pendingApprovals": {
-    "description": "Pending approvals section"
-  },
   "reviewedAnteprojects": "Reviewed Anteprojects",
-  "@reviewedAnteprojects": {
-    "description": "Reviewed anteproyectos section"
-  },
   "approveAnteproject": "Approve",
-  "@approveAnteproject": {
-    "description": "Button to approve anteproyecto"
-  },
   "rejectAnteproject": "Reject",
-  "@rejectAnteproject": {
-    "description": "Button to reject anteproyecto"
-  },
   "requestChanges": "Request Changes",
-  "@requestChanges": {
-    "description": "Request changes action"
-  },
   "approvalComments": "Approval Comments",
-  "@approvalComments": {
-    "description": "Approval comments section"
-  },
   "rejectionComments": "Rejection Comments",
-  "@rejectionComments": {
-    "description": "Rejection comments section"
-  },
   "changesRequested": "Changes Requested",
-  "@changesRequested": {
-    "description": "Changes requested section"
-  },
   "confirmApproval": "Confirm Approval",
-  "@confirmApproval": {
-    "description": "Confirm approval action"
-  },
   "confirmRejection": "Confirm Rejection",
-  "@confirmRejection": {
-    "description": "Confirm rejection action"
-  },
   "confirmChangesRequest": "Confirm Changes Request",
-  "@confirmChangesRequest": {
-    "description": "Confirm changes request action"
-  },
   "anteprojectApprovedSuccessfully": "Anteproject approved successfully",
-  "@anteprojectApprovedSuccessfully": {
-    "description": "Anteproject approval success message"
-  },
   "anteprojectRejectedSuccessfully": "Anteproject rejected successfully",
-  "@anteprojectRejectedSuccessfully": {
-    "description": "Anteproject rejection success message"
-  },
   "changesRequestedSuccessfully": "Changes requested successfully",
-  "@changesRequestedSuccessfully": {
-    "description": "Changes requested success message"
-  },
   "errorProcessingApproval": "Error processing approval",
-  "@errorProcessingApproval": {
-    "description": "Error processing approval message"
-  },
   "noAnteprojectsToReview": "No anteproyectos to review",
-  "@noAnteprojectsToReview": {
-    "description": "No anteproyectos to review message"
-  },
   "noReviewedAnteprojects": "No reviewed anteproyectos",
-  "@noReviewedAnteprojects": {
-    "description": "No reviewed anteproyectos message"
-  },
   "submittedOn": "Submitted on",
-  "@submittedOn": {
-    "description": "Submitted on field"
-  },
   "reviewedOn": "Reviewed on",
-  "@reviewedOn": {
-    "description": "Reviewed on field"
-  },
   "tutorComments": "Tutor Comments",
-  "@tutorComments": {
-    "description": "Tutor comments section"
-  },
   "processing": "Processing...",
-  "@processing": {
-    "description": "Processing indicator"
-  },
   "commentsRequired": "Comments are required",
-  "@commentsRequired": {
-    "description": "Comments required message"
-  },
   "approve": "Approve",
-  "@approve": {
-    "description": "Approve action"
-  },
   "reject": "Reject",
-  "@reject": {
-    "description": "Reject action"
-  },
   "refresh": "Refresh",
-  "@refresh": {
-    "description": "Refresh action"
-  },
   "taskDetails": "Task Details",
-  "@taskDetails": {
-    "description": "Task details section"
-  },
   "details": "Details",
-  "@details": {
-    "description": "Details section"
-  },
   "viewDetails": "View details",
-  "@viewDetails": {
-    "description": "Action to view details of an item"
-  },
   "createdOn": "Created on",
-  "@createdOn": {
-    "description": "Created on field"
-  },
   "updatedOn": "Updated on",
-  "@updatedOn": {
-    "description": "Updated on field"
-  },
   "completedOn": "Completed on",
-  "@completedOn": {
-    "description": "Completed on field"
-  },
   "actualHours": "Actual hours",
-  "@actualHours": {
-    "description": "Actual hours field"
-  },
   "kanbanBoard": "Kanban Board",
-  "@kanbanBoard": {
-    "description": "Kanban board section"
-  },
   "pendingColumn": "Pending Column",
-  "@pendingColumn": {
-    "description": "Pending column"
-  },
   "inProgressColumn": "In Progress Column",
-  "@inProgressColumn": {
-    "description": "In progress column"
-  },
   "underReviewColumn": "Under Review Column",
-  "@underReviewColumn": {
-    "description": "Under review column"
-  },
   "completedColumn": "Completed Column",
-  "@completedColumn": {
-    "description": "Completed column"
-  },
   "thisFieldRequired": "This field is required",
-  "@thisFieldRequired": {
-    "description": "Field required validation message"
-  },
   "thisFieldTooShort": "This field is too short",
-  "@thisFieldTooShort": {
-    "description": "Field too short validation message"
-  },
   "thisFieldTooLong": "This field is too long",
-  "@thisFieldTooLong": {
-    "description": "Field too long validation message"
-  },
   "emailFormatInvalid": "The email format is not valid",
-  "@emailFormatInvalid": {
-    "description": "Email format validation message"
-  },
   "urlFormatInvalid": "The URL format is not valid",
-  "@urlFormatInvalid": {
-    "description": "URL format validation message"
-  },
   "valueMustBeValidNumber": "The value must be a valid number",
-  "@valueMustBeValidNumber": {
-    "description": "Number validation message"
-  },
   "jsonFormatInvalid": "The JSON format is not valid",
-  "@jsonFormatInvalid": {
-    "description": "JSON format validation message"
-  },
   "networkError": "Network error",
-  "@networkError": {
-    "description": "Network error message"
-  },
   "serverError": "Server error",
-  "@serverError": {
-    "description": "Server error message"
-  },
   "unknownError": "Unknown error",
-  "@unknownError": {
-    "description": "Unknown error message"
-  },
   "unknownUser": "Unknown User",
-  "@unknownUser": {
-    "description": "Unknown user message"
-  },
   "justNow": "Just now",
-  "@justNow": {
-    "description": "Just now time indicator"
-  },
   "language": "Language",
-  "@language": {
-    "description": "Language setting"
-  },
   "spanish": "Spanish",
-  "@spanish": {
-    "description": "Spanish language"
-  },
   "english": "English",
-  "@english": {
-    "description": "English language"
-  },
   "student": "Student",
-  "@student": {
-    "description": "Student role"
-  },
   "tutor": "Tutor",
-  "@tutor": {
-    "description": "Tutor role"
-  },
   "admin": "Administrator",
-  "@admin": {
-    "description": "Administrator role"
-  },
   "taskCreatedSuccess": "Task created successfully",
-  "@taskCreatedSuccess": {
-    "description": "Success message when creating task"
-  },
   "taskUpdatedSuccess": "Task updated successfully",
-  "@taskUpdatedSuccess": {
-    "description": "Success message when updating task"
-  },
   "taskStatusUpdatedSuccess": "Task status updated",
-  "@taskStatusUpdatedSuccess": {
-    "description": "Success message when updating task status"
-  },
   "taskDeletedSuccess": "Task deleted successfully",
-  "@taskDeletedSuccess": {
-    "description": "Success message when deleting task"
-  },
   "taskNotFound": "Task not found",
-  "@taskNotFound": {
-    "description": "Task not found message"
-  },
+  "testCredentialsTitle": "Test credentials",
+  "testCredentialsAdmin": "👨‍💼 Admin",
+  "testCredentialsTutor": "👨‍🏫 Tutor",
+  "testCredentialsStudent": "👨‍🎓 Student",
+  "testCredentialsReviewer": "👨‍⚖️ Reviewer",
+  "copiedToClipboard": "Copied to clipboard: {value}",
+  "copy": "Copy",
   "noData": "No data available",
-  "@noData": {
-    "description": "No data available message"
-  },
   "anteprojectFormTitle": "Create Anteproject",
-  "@anteprojectFormTitle": {
-    "description": "Create anteproyecto form title"
-  },
   "anteprojectEditFormTitle": "Edit Anteproject",
-  "@anteprojectEditFormTitle": {
-    "description": "Edit anteproyecto form title"
-  },
   "anteprojectTitle": "Anteproject",
-  "@anteprojectTitle": {
-    "description": "Anteproject title in dialog"
-  },
   "anteprojectType": "Project Type",
-  "@anteprojectType": {
-    "description": "Anteproject type field"
-  },
   "anteprojectDescription": "Description",
-  "@anteprojectDescription": {
-    "description": "Anteproject description field"
-  },
   "anteprojectAcademicYear": "Academic Year (e.g., 2024-2025)",
-  "@anteprojectAcademicYear": {
-    "description": "Anteproject academic year field"
-  },
   "anteprojectExpectedResults": "Expected Results (JSON)",
-  "@anteprojectExpectedResults": {
-    "description": "Anteproject expected results field"
-  },
   "anteprojectTimeline": "Timeline (JSON)",
-  "@anteprojectTimeline": {
-    "description": "Anteproject timeline field"
-  },
   "anteprojectTutorId": "Tutor ID",
-  "@anteprojectTutorId": {
-    "description": "Anteproject tutor ID field"
-  },
   "anteprojectCreateButton": "Create anteproyecto",
-  "@anteprojectCreateButton": {
-    "description": "Create anteproyecto button"
-  },
   "anteprojectUpdateButton": "Update anteproyecto",
-  "@anteprojectUpdateButton": {
-    "description": "Update anteproyecto button"
-  },
   "anteprojectDeleteButton": "Delete",
-  "@anteprojectDeleteButton": {
-    "description": "Delete anteproyecto button"
-  },
   "anteprojectDeleteTitle": "Delete Anteproject",
-  "@anteprojectDeleteTitle": {
-    "description": "Delete anteproyecto dialog title"
-  },
   "anteprojectDeleteMessage": "Are you sure you want to delete this anteproyecto? This action cannot be undone.",
-  "@anteprojectDeleteMessage": {
-    "description": "Delete anteproyecto confirmation message"
-  },
   "anteprojectCreatedSuccess": "Anteproject created successfully",
-  "@anteprojectCreatedSuccess": {
-    "description": "Anteproject creation success message"
-  },
   "anteprojectUpdatedSuccess": "Anteproject updated successfully",
-  "@anteprojectUpdatedSuccess": {
-    "description": "Anteproject update success message"
-  },
   "anteprojectInvalidTutorId": "Invalid Tutor ID",
-  "@anteprojectInvalidTutorId": {
-    "description": "Invalid tutor ID error message"
-  },
   "anteprojectTitleRequired": "Title is required",
-  "@anteprojectTitleRequired": {
-    "description": "Title required validation message"
-  },
   "anteprojectDescriptionRequired": "Description is required",
-  "@anteprojectDescriptionRequired": {
-    "description": "Description required validation message"
-  },
   "anteprojectAcademicYearRequired": "Academic year is required",
-  "@anteprojectAcademicYearRequired": {
-    "description": "Academic year required validation message"
-  },
   "anteprojectTutorIdRequired": "Tutor ID is required",
-  "@anteprojectTutorIdRequired": {
-    "description": "Tutor ID required validation message"
-  },
   "anteprojectTutorIdNumeric": "Tutor ID must be numeric",
-  "@anteprojectTutorIdNumeric": {
-    "description": "Tutor ID numeric validation message"
-  },
   "anteprojectsListTitle": "My Anteprojects",
-  "@anteprojectsListTitle": {
-    "description": "Anteprojects list title"
-  },
   "anteprojectsListRefresh": "Refresh list",
-  "@anteprojectsListRefresh": {
-    "description": "Refresh anteproyectos list button"
-  },
   "anteprojectsListError": "Error loading anteproyectos",
-  "@anteprojectsListError": {
-    "description": "Error loading anteproyectos message"
-  },
   "anteprojectsListRetry": "Retry",
-  "@anteprojectsListRetry": {
-    "description": "Retry loading anteproyectos button"
-  },
   "anteprojectsListEmpty": "You have no anteproyectos",
-  "@anteprojectsListEmpty": {
-    "description": "Empty anteproyectos list message"
-  },
   "anteprojectsListEmptySubtitle": "Create your first anteproyecto to get started",
-  "@anteprojectsListEmptySubtitle": {
-    "description": "Empty anteproyectos list subtitle"
-  },
   "anteprojectsListUnknownState": "Unknown state",
-  "@anteprojectsListUnknownState": {
-    "description": "Unknown anteproyecto state message"
-  },
   "anteprojectsListEdit": "Edit",
-  "@anteprojectsListEdit": {
-    "description": "Edit anteproyecto button"
-  },
   "anteprojectDeleteTooltip": "Delete anteproyecto",
-  "@anteprojectDeleteTooltip": {
-    "description": "Delete anteproyecto tooltip"
-  },
   "anteprojectStatusLabel": "Status: {status}",
-  "@anteprojectStatusLabel": {
-    "description": "Anteproject status label with parameter",
-    "placeholders": {
-      "status": {
-        "type": "String"
-      }
-    }
-  },
+  "type": "String",
   "anteprojectExpectedResultsHint": "Example milestone1 Description",
-  "@anteprojectExpectedResultsHint": {
-    "description": "Expected results field hint"
-  },
   "anteprojectTimelineHint": "Example phase1 Description",
-  "@anteprojectTimelineHint": {
-    "description": "Timeline field hint"
-  },
   "commentsTitle": "Comments",
-  "@commentsTitle": {
-    "description": "Comments section title"
-  },
   "commentsAddComment": "Add comment",
-  "@commentsAddComment": {
-    "description": "Add comment button"
-  },
   "commentsWriteComment": "Write your comment...",
-  "@commentsWriteComment": {
-    "description": "Write comment placeholder"
-  },
   "commentsSend": "Send",
-  "@commentsSend": {
-    "description": "Send comment button"
-  },
   "commentsCancel": "Cancel",
-  "@commentsCancel": {
-    "description": "Cancel comment button"
-  },
   "commentsInternal": "Internal comment",
-  "@commentsInternal": {
-    "description": "Internal comment type"
-  },
   "commentsPublic": "Public comment",
-  "@commentsPublic": {
-    "description": "Public comment type"
-  },
   "commentsNoComments": "No comments",
-  "@commentsNoComments": {
-    "description": "No comments message"
-  },
   "commentsAddFirst": "Be the first to comment",
-  "@commentsAddFirst": {
-    "description": "Be first to comment message"
-  },
   "commentsError": "Error loading comments",
-  "@commentsError": {
-    "description": "Error loading comments message"
-  },
   "commentsErrorAdd": "Error adding comment",
-  "@commentsErrorAdd": {
-    "description": "Error adding comment message"
-  },
   "commentsSuccess": "Comment added successfully",
-  "@commentsSuccess": {
-    "description": "Comment added success message"
-  },
   "commentsDelete": "Delete comment",
-  "@commentsDelete": {
-    "description": "Delete comment button"
-  },
   "commentsDeleteConfirm": "Are you sure you want to delete this comment?",
-  "@commentsDeleteConfirm": {
-    "description": "Delete comment confirmation message"
-  },
   "commentsEdit": "Edit comment",
-  "@commentsEdit": {
-    "description": "Edit comment button"
-  },
   "commentsSave": "Save changes",
-  "@commentsSave": {
-    "description": "Save comment changes button"
-  },
   "commentsAuthor": "Author",
-  "@commentsAuthor": {
-    "description": "Comment author field"
-  },
   "commentsDate": "Date",
-  "@commentsDate": {
-    "description": "Comment date field"
-  },
   "commentsContent": "Content",
-  "@commentsContent": {
-    "description": "Comment content field"
-  },
   "commentsContentRequired": "Comment content is required",
-  "@commentsContentRequired": {
-    "description": "Comment content required validation"
-  },
   "commentsContentMinLength": "Comment must be at least 3 characters",
-  "@commentsContentMinLength": {
-    "description": "Comment minimum length validation"
-  },
   "commentsContentMaxLength": "Comment cannot exceed 1000 characters",
-  "@commentsContentMaxLength": {
-    "description": "Comment maximum length validation"
-  },
   "formValidationError": "Please correct the errors in the form",
-  "@formValidationError": {
-    "description": "Form validation error message"
-  },
   "networkErrorMessage": "Could not connect to server. Check your internet connection.",
-  "@networkErrorMessage": {
-    "description": "Network error detailed message"
-  },
   "serverErrorMessage": "Server could not process the request. Try again later.",
-  "@serverErrorMessage": {
-    "description": "Server error detailed message"
-  },
   "unknownErrorMessage": "An unexpected error occurred. Please try again.",
-  "@unknownErrorMessage": {
-    "description": "Unknown error detailed message"
-  },
   "fieldTooShort": "This field is too short",
-  "@fieldTooShort": {
-    "description": "Field too short validation message"
-  },
   "fieldTooLong": "This field is too long",
-  "@fieldTooLong": {
-    "description": "Field too long validation message"
-  },
   "invalidEmail": "Email format is not valid",
-  "@invalidEmail": {
-    "description": "Invalid email format message"
-  },
   "invalidUrl": "URL does not have a valid format",
-  "@invalidUrl": {
-    "description": "Invalid URL format message"
-  },
   "invalidNumber": "Value must be a valid number",
-  "@invalidNumber": {
-    "description": "Invalid number validation message"
-  },
   "invalidJson": "JSON format is not valid",
-  "@invalidJson": {
-    "description": "Invalid JSON format message"
-  },
   "taskFormTitle": "Task Form",
-  "@taskFormTitle": {
-    "description": "Task form title"
-  },
   "taskEditFormTitle": "Edit Task",
-  "@taskEditFormTitle": {
-    "description": "Edit task form title"
-  },
   "taskTitle": "Title",
-  "@taskTitle": {
-    "description": "Task title field"
-  },
   "taskDescription": "Description",
-  "@taskDescription": {
-    "description": "Task description field"
-  },
   "taskStatus": "Status",
-  "@taskStatus": {
-    "description": "Task status field"
-  },
   "taskComplexity": "Complexity",
-  "@taskComplexity": {
-    "description": "Task complexity field"
-  },
   "taskDueDate": "Due Date",
-  "@taskDueDate": {
-    "description": "Task due date field"
-  },
   "taskEstimatedHours": "Estimated Hours",
-  "@taskEstimatedHours": {
-    "description": "Task estimated hours field"
-  },
   "taskTags": "Tags",
-  "@taskTags": {
-    "description": "Task tags field"
-  },
   "taskCreateButton": "Create Task",
-  "@taskCreateButton": {
-    "description": "Create task button"
-  },
   "taskUpdateButton": "Update Task",
-  "@taskUpdateButton": {
-    "description": "Update task button"
-  },
   "taskTitleRequired": "Title is required",
-  "@taskTitleRequired": {
-    "description": "Task title required validation"
-  },
   "taskDescriptionRequired": "Description is required",
-  "@taskDescriptionRequired": {
-    "description": "Task description required validation"
-  },
   "taskStatusPending": "Pending",
-  "@taskStatusPending": {
-    "description": "Task pending status"
-  },
   "taskStatusInProgress": "In Progress",
-  "@taskStatusInProgress": {
-    "description": "Task in progress status"
-  },
   "taskStatusUnderReview": "Under Review",
-  "@taskStatusUnderReview": {
-    "description": "Task under review status"
-  },
   "taskStatusCompleted": "Completed",
-  "@taskStatusCompleted": {
-    "description": "Task completed status"
-  },
   "taskComplexitySimple": "Simple",
-  "@taskComplexitySimple": {
-    "description": "Task simple complexity"
-  },
   "taskComplexityMedium": "Medium",
-  "@taskComplexityMedium": {
-    "description": "Task medium complexity"
-  },
   "taskComplexityComplex": "Complex",
-  "@taskComplexityComplex": {
-    "description": "Task complex complexity"
-  },
   "dashboardStudent": "Student Dashboard",
-  "@dashboardStudent": {
-    "description": "Student dashboard title"
-  },
   "myAnteprojects": "My Anteprojects",
-  "@myAnteprojects": {
-    "description": "My anteproyectos section"
-  },
   "viewAll": "View All",
-  "@viewAll": {
-    "description": "View all button"
-  },
   "pendingAnteprojects": "Pending Anteprojects",
-  "@pendingAnteprojects": {
-    "description": "Section title for pending anteproyectos"
-  },
   "assignedStudents": "Assigned Students",
-  "@assignedStudents": {
-    "description": "Section title for assigned students"
-  },
   "noAnteprojects": "No Anteprojects",
-  "@noAnteprojects": {
-    "description": "No anteproyectos message"
-  },
   "pendingTasks": "Pending Tasks",
-  "@pendingTasks": {
-    "description": "Pending tasks section"
-  },
   "viewAllTasks": "View All Tasks",
-  "@viewAllTasks": {
-    "description": "View all tasks button"
-  },
   "noPendingTasks": "No Pending Tasks",
-  "@noPendingTasks": {
-    "description": "No pending tasks message"
-  },
   "systemInfo": "System Information",
-  "@systemInfo": {
-    "description": "System information section"
-  },
   "backendLabel": "Backend",
-  "@backendLabel": {
-    "description": "Backend label"
-  },
   "platformLabel": "Platform",
-  "@platformLabel": {
-    "description": "Platform label"
-  },
   "versionLabel": "Version",
-  "@versionLabel": {
-    "description": "Version label"
-  },
   "emailLabel": "Email",
-  "@emailLabel": {
-    "description": "Email label"
-  },
   "connectedToServer": "Connected to server",
-  "@connectedToServer": {
-    "description": "Connected to server message"
-  },
   "dashboardAdminUsersManagement": "Users Management",
-  "@dashboardAdminUsersManagement": {
-    "description": "Admin users management section"
-  },
   "dashboardTutor": "Tutor Dashboard",
-  "@dashboardTutor": {
-    "description": "Tutor dashboard title"
-  },
   "dashboardAdmin": "Admin Dashboard",
-  "@dashboardAdmin": {
-    "description": "Admin dashboard title"
-  },
   "comingSoon": "Coming Soon",
-  "@comingSoon": {
-    "description": "Message for features that will be available soon"
-  },
   "supabaseStudio": "Supabase Studio",
-  "@supabaseStudio": {
-    "description": "Title for Supabase Studio access"
-  },
   "openSupabaseStudio": "Open Supabase Studio",
-  "@openSupabaseStudio": {
-    "description": "Button to open Supabase Studio"
-  },
   "supabaseStudioDescription": "Direct access to database administration panel",
-  "@supabaseStudioDescription": {
-    "description": "Description of Supabase Studio access"
-  },
   "openInbucket": "Open Inbucket",
-  "@openInbucket": {
-    "description": "Button to open Inbucket (email management)"
-  },
   "totalUsers": "Total Users",
-  "@totalUsers": {
-    "description": "Title for total users statistic"
-  },
   "activeProjects": "Active Projects",
-  "@activeProjects": {
-    "description": "Title for active projects statistic"
-  },
   "tutors": "Tutors",
-  "@tutors": {
-    "description": "Title for tutors statistic"
-  },
   "noUsers": "No users",
-  "@noUsers": {
-    "description": "Message when there are no users"
-  },
   "systemStatus": "System Status",
-  "@systemStatus": {
-    "description": "Title for system status"
-  },
-  "close": "Close",
-  "@close": {
-    "description": "Button to close dialogs"
-  },
   "dashboardTutorMyAnteprojects": "My Anteprojects",
-  "@dashboardTutorMyAnteprojects": {
-    "description": "Tutor my anteproyectos section"
-  },
   "serverInfo": "Server Information",
-  "@serverInfo": {
-    "description": "Server information section"
-  },
   "serverUrl": "Server URL",
-  "@serverUrl": {
-    "description": "Server URL label"
-  },
   "version": "Version",
-  "@version": {
-    "description": "Version label"
-  },
   "testCredentials": "Test Credentials",
-  "@testCredentials": {
-    "description": "Test credentials section"
-  },
   "studentEmail": "Student Email",
-  "@studentEmail": {
-    "description": "Student email label"
-  },
   "tutorEmail": "Tutor Email",
-  "@tutorEmail": {
-    "description": "Tutor email label"
-  },
   "adminEmail": "Admin Email",
-  "@adminEmail": {
-    "description": "Admin email label"
-  },
   "testPassword": "Test Password",
-  "@testPassword": {
-    "description": "Test password label"
-  },
   "studio": "Studio",
-  "@studio": {
-    "description": "Studio label"
-  },
   "loginSuccessTitle": "Login Successful",
-  "@loginSuccessTitle": {
-    "description": "Login success title"
-  },
   "copyToClipboard": "Copy to Clipboard",
-  "@copyToClipboard": {
-    "description": "Copy to clipboard button"
-  },
   "copied": "Copied",
-  "@copied": {
-    "description": "Copied message"
-  },
   "validationError": "Validation Error",
-  "@validationError": {
-    "description": "Validation error message"
-  },
   "tasksListTitle": "Tasks List",
-  "@tasksListTitle": {
-    "description": "Tasks list title"
-  },
   "tasksListEmpty": "No tasks available",
-  "@tasksListEmpty": {
-    "description": "Empty tasks list message"
-  },
   "tasksListRefresh": "Refresh Tasks",
-  "@tasksListRefresh": {
-    "description": "Refresh tasks button"
-  },
   "kanbanBoardTitle": "Kanban Board",
-  "@kanbanBoardTitle": {
-    "description": "Kanban board title"
-  },
   "kanbanColumnPending": "Pending",
-  "@kanbanColumnPending": {
-    "description": "Kanban pending column"
-  },
   "kanbanColumnInProgress": "In Progress",
-  "@kanbanColumnInProgress": {
-    "description": "Kanban in progress column"
-  },
   "kanbanColumnUnderReview": "Under Review",
-  "@kanbanColumnUnderReview": {
-    "description": "Kanban under review column"
-  },
   "kanbanColumnCompleted": "Completed",
-  "@kanbanColumnCompleted": {
-    "description": "Kanban completed column"
-  },
   "taskReorderedSuccess": "Task reordered successfully",
-  "@taskReorderedSuccess": {
-    "description": "Success message when reordering task in Kanban"
-  },
   "taskPositionUpdatedSuccess": "Task position updated",
-  "@taskPositionUpdatedSuccess": {
-    "description": "Success message when updating task position"
-  },
   "movingTask": "Moving...",
-  "@movingTask": {
-    "description": "Text shown while moving a task"
-  },
   "taskStatusUpdatedNotification": "Task status updated",
-  "@taskStatusUpdatedNotification": {
-    "description": "Notification title when task status is updated"
-  },
-  "taskStatusChangedMessage": "Task \"{taskTitle}\" changed to status: {status}",
-  "@taskStatusChangedMessage": {
-    "description": "Notification message when task status changes",
-    "placeholders": {
-      "taskTitle": {
-        "type": "String",
-        "description": "Task title"
-      },
-      "status": {
-        "type": "String", 
-        "description": "New task status"
-      }
-    }
-  },
+  "taskStatusChangedMessage": "Task \\",
   "taskAssignedNotification": "Task assigned",
-  "@taskAssignedNotification": {
-    "description": "Notification title when a task is assigned"
-  },
-  "taskAssignedMessage": "You have been assigned the task: \"{taskTitle}\"",
-  "@taskAssignedMessage": {
-    "description": "Notification message when a task is assigned",
-    "placeholders": {
-      "taskTitle": {
-        "type": "String",
-        "description": "Assigned task title"
-      }
-    }
-  },
+  "taskAssignedMessage": "You have been assigned the task: \\",
   "newCommentNotification": "New comment on task",
-  "@newCommentNotification": {
-    "description": "Notification title when a comment is added to a task"
-  },
-  "newCommentMessage": "New comment on \"{taskTitle}\": {commentPreview}",
-  "@newCommentMessage": {
-    "description": "Notification message when a comment is added",
-    "placeholders": {
-      "taskTitle": {
-        "type": "String",
-        "description": "Task title"
-      },
-      "commentPreview": {
-        "type": "String",
-        "description": "Comment preview"
-      }
-    }
-  },
+  "newCommentMessage": "New comment on \\",
   "selectDate": "Select Date",
-  "@selectDate": {
-    "description": "Select date button"
-  },
   "createTask": "Create Task",
-  "@createTask": {
-    "description": "Create task button"
-  },
   "approvalCommentsHint": "Comments about the approval...",
-  "@approvalCommentsHint": {
-    "description": "Placeholder for approval comments"
-  },
   "rejectionCommentsHint": "Reason for rejection...",
-  "@rejectionCommentsHint": {
-    "description": "Placeholder for rejection comments"
-  },
   "changesComments": "Changes Comments",
-  "@changesComments": {
-    "description": "Changes comments section"
-  },
   "changesCommentsHint": "Enter changes comments",
-  "@changesCommentsHint": {
-    "description": "Changes comments hint"
-  },
   "confirmChanges": "Confirm Changes",
-  "@confirmChanges": {
-    "description": "Confirm changes button"
-  },
   "approvalConfirmMessage": "Are you sure you want to approve this anteproyecto?",
-  "@approvalConfirmMessage": {
-    "description": "Approval confirmation message"
-  },
   "rejectionConfirmMessage": "Are you sure you want to reject this anteproyecto?",
-  "@rejectionConfirmMessage": {
-    "description": "Rejection confirmation message"
-  },
   "changesConfirmMessage": "Are you sure you want to request changes for this anteproyecto?",
-  "@changesConfirmMessage": {
-    "description": "Changes confirmation message"
-  },
   "approvalSuccess": "Anteproject approved successfully",
-  "@approvalSuccess": {
-    "description": "Approval success message"
-  },
   "rejectionSuccess": "Anteproject rejected successfully",
-  "@rejectionSuccess": {
-    "description": "Rejection success message"
-  },
   "changesSuccess": "Changes requested successfully",
-  "@changesSuccess": {
-    "description": "Changes success message"
-  },
   "approvalError": "Error processing approval",
-  "@approvalError": {
-    "description": "Approval error message"
-  },
   "anteprojectStatus": "Anteproject Status",
-  "@anteprojectStatus": {
-    "description": "Anteproject status label"
-  },
   "noDataDescription": "No data available",
-  "@noDataDescription": {
-    "description": "No data description"
-  },
   "confirmDeleteFileMessage": "Are you sure you want to delete this file?",
-  "@confirmDeleteFileMessage": {
-    "description": "Confirm delete file message"
-  },
   "allowedFileTypes": "Allowed file types",
-  "@allowedFileTypes": {
-    "description": "Allowed file types label"
-  },
   "maxFileSize": "Maximum file size",
-  "@maxFileSize": {
-    "description": "Maximum file size label"
-  },
   "filesAttached": "Files Attached",
-  "@filesAttached": {
-    "description": "Files attached section"
-  },
   "fieldRequired": "This field is required",
-  "@fieldRequired": {
-    "description": "Field required validation message"
-  },
   "operationInProgress": "Operation in progress",
-  "@operationInProgress": {
-    "description": "Operation in progress message"
-  },
   "operationCompleted": "Operation completed",
-  "@operationCompleted": {
-    "description": "Operation completed message"
-  },
   "operationFailed": "Operation failed",
-  "@operationFailed": {
-    "description": "Operation failed message"
-  },
   "tutorRole": "Tutor",
-  "@tutorRole": {
-    "description": "Tutor role"
-  },
   "reviewed": "Reviewed",
-  "@reviewed": {
-    "description": "Section title for reviewed items"
-  },
   "addStudents": "Add Students",
-  "@addStudents": {
-    "description": "Button to add students"
-  },
   "studentsAssignedInfo": "You have {count} student{plural} assigned for {year}",
-  "@studentsAssignedInfo": {
-    "description": "Information about assigned students",
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "description": "Number of students"
-      },
-      "plural": {
-        "type": "String",
-        "description": "Plural suffix (s or empty)"
-      },
-      "year": {
-        "type": "String",
-        "description": "Academic year"
-      }
-    }
-  },
   "myStudents": "My Students",
-  "@myStudents": {
-    "description": "Title of tutor's student list screen"
-  },
   "searchStudents": "Search students...",
-  "@searchStudents": {
-    "description": "Placeholder for searching students"
-  },
   "noStudentsAssigned": "You have no students assigned",
-  "@noStudentsAssigned": {
-    "description": "Message when no students are assigned"
-  },
   "noStudentsFound": "No students found",
-  "@noStudentsFound": {
-    "description": "Message when no students are found in search"
-  },
   "useDashboardButtons": "Use the dashboard buttons to add students",
-  "@useDashboardButtons": {
-    "description": "Instruction to add students from dashboard"
-  },
   "editStudent": "Edit",
-  "@editStudent": {
-    "description": "Action to edit student"
-  },
   "deleteStudent": "Delete",
-  "@deleteStudent": {
-    "description": "Action to delete student"
-  },
   "nre": "NRE",
-  "@nre": {
-    "description": "Label for student NRE"
-  },
   "phone": "Phone",
-  "@phone": {
-    "description": "Label for phone"
-  },
   "specialty": "Specialty",
-  "@specialty": {
-    "description": "Label for specialty"
-  },
   "biography": "Biography",
-  "@biography": {
-    "description": "Label for biography"
-  },
   "creationDate": "Creation date",
-  "@creationDate": {
-    "description": "Label for creation date"
-  },
   "studentDeletedSuccess": "Student deleted successfully",
-  "@studentDeletedSuccess": {
-    "description": "Success message when deleting student"
-  },
   "errorDeletingStudent": "Error deleting student: {error}",
-  "@errorDeletingStudent": {
-    "description": "Error message when deleting student",
-    "placeholders": {
-      "error": {
-        "type": "String",
-        "description": "Error message"
-      }
-    }
-  },
   "confirmDeletion": "Confirm deletion",
-  "@confirmDeletion": {
-    "description": "Title of deletion confirmation dialog"
-  },
   "confirmDeleteStudent": "Are you sure you want to delete {name}?",
-  "@confirmDeleteStudent": {
-    "description": "Confirmation message to delete student",
-    "placeholders": {
-      "name": {
-        "type": "String",
-        "description": "Student name"
-      }
-    }
-  },
   "anteprojectsReview": "Anteprojects Review",
-  "@anteprojectsReview": {
-    "description": "Title of anteproyectos review screen"
-  },
   "pendingAnteprojectsTitle": "Pending Anteprojects",
-  "@pendingAnteprojectsTitle": {
-    "description": "Title for pending anteproyectos"
-  },
   "reviewedAnteprojectsTitle": "Reviewed Anteprojects",
-  "@reviewedAnteprojectsTitle": {
-    "description": "Title for reviewed anteproyectos"
-  },
   "submittedAnteprojects": "Submitted Anteprojects",
-  "@submittedAnteprojects": {
-    "description": "Title for submitted anteproyectos"
-  },
   "underReviewAnteprojects": "Under Review Anteprojects",
-  "@underReviewAnteprojects": {
-    "description": "Title for under review anteproyectos"
-  },
   "approvedAnteprojects": "Approved Anteprojects",
-  "@approvedAnteprojects": {
-    "description": "Title for approved anteproyectos"
-  },
   "rejectedAnteprojects": "Rejected Anteprojects",
-  "@rejectedAnteprojects": {
-    "description": "Title for rejected anteproyectos"
-  },
   "all": "All",
-  "@all": {
-    "description": "Filter to show all items"
-  },
   "searchAnteprojects": "Search anteproyectos...",
-  "@searchAnteprojects": {
-    "description": "Placeholder for searching anteproyectos"
-  },
   "filterByStatus": "Filter by status:",
-  "@filterByStatus": {
-    "description": "Label for status filter"
-  },
   "errorLoadingAnteprojects": "Error loading anteproyectos: {error}",
-  "@errorLoadingAnteprojects": {
-    "description": "Error message when loading anteproyectos",
-    "placeholders": {
-      "error": {
-        "type": "String",
-        "description": "Error message"
-      }
-    }
-  },
-  "noAnteprojectsFound": "No anteproyectos found matching \"{query}\"",
-  "@noAnteprojectsFound": {
-    "description": "Message when no anteproyectos are found in search",
-    "placeholders": {
-      "query": {
-        "type": "String",
-        "description": "Search term"
-      }
-    }
-  },
-  "noAnteprojectsWithStatus": "No anteproyectos with status \"{status}\"",
-  "@noAnteprojectsWithStatus": {
-    "description": "Message when no anteproyectos have a specific status",
-    "placeholders": {
-      "status": {
-        "type": "String",
-        "description": "Anteproject status"
-      }
-    }
-  },
+  "noAnteprojectsFound": "No anteproyectos found matching \\",
+  "noAnteprojectsWithStatus": "No anteproyectos with status \\",
   "noAssignedAnteprojects": "You have no anteproyectos assigned for review",
-  "@noAssignedAnteprojects": {
-    "description": "Message when no anteproyectos are assigned"
-  },
   "clearFilters": "Clear filters",
-  "@clearFilters": {
-    "description": "Button to clear filters"
-  },
-  "year": "Year:",
-  "@year": {
-    "description": "Label for academic year"
-  },
   "created": "Created:",
-  "@created": {
-    "description": "Label for creation date"
-  },
   "submitted": "Submitted:",
-  "@submitted": {
-    "description": "Label for submission date"
-  },
   "approveAnteprojectTitle": "Approve Anteproject",
-  "@approveAnteprojectTitle": {
-    "description": "Title of approval dialog"
-  },
   "rejectAnteprojectTitle": "Reject Anteproject",
-  "@rejectAnteprojectTitle": {
-    "description": "Title of rejection dialog"
-  },
   "confirmApproveAnteproject": "Are you sure you want to approve this anteproyecto?",
-  "@confirmApproveAnteproject": {
-    "description": "Confirmation message to approve anteproyecto"
-  },
   "confirmRejectAnteproject": "Are you sure you want to reject this anteproyecto?",
-  "@confirmRejectAnteproject": {
-    "description": "Confirmation message to reject anteproyecto"
-  },
   "approvalCommentsOptional": "Comments (optional)",
-  "@approvalCommentsOptional": {
-    "description": "Label for optional approval comments"
-  },
   "anteprojectApprovedSuccess": "Anteproject approved successfully",
-  "@anteprojectApprovedSuccess": {
-    "description": "Success message when approving anteproyecto"
-  },
   "anteprojectRejectedSuccess": "Anteproject rejected",
-  "@anteprojectRejectedSuccess": {
-    "description": "Success message when rejecting anteproyecto"
-  },
   "errorApprovingAnteproject": "Error approving anteproyecto: {error}",
-  "@errorApprovingAnteproject": {
-    "description": "Error message when approving anteproyecto",
-    "placeholders": {
-      "error": {
-        "type": "String",
-        "description": "Error message"
-      }
-    }
-  },
   "errorRejectingAnteproject": "Error rejecting anteproyecto: {error}",
-  "@errorRejectingAnteproject": {
-    "description": "Error message when rejecting anteproyecto",
-    "placeholders": {
-      "error": {
-        "type": "String",
-        "description": "Error message"
-      }
-    }
-  },
   "approved": "Approved",
-  "@approved": {
-    "description": "Approved status"
-  },
   "rejected": "Rejected",
-  "@rejected": {
-    "description": "Rejected status"
-  },
-    "anteprojectTitleLabel": "Anteproject Title",
-    "@anteprojectTitleLabel": {
-      "description": "Label for anteproyecto title field"
-    },
-    "logoutTooltip": "Logout",
-    "@logoutTooltip": {
-      "description": "Tooltip for logout button"
-    },
-    "createAnteprojectTooltip": "Create anteproyecto",
-    "@createAnteprojectTooltip": {
-      "description": "Tooltip for create anteproyecto button"
-    },
-    "userId": "ID: {id}",
-    "@userId": {
-      "description": "Label for user ID",
-      "placeholders": {
-        "id": {
-          "type": "String",
-          "description": "User ID"
-        }
-      }
-    },
-    "studentRole": "Student",
-    "@studentRole": {
-      "description": "Student role"
-    },
-    "anteprojects": "Anteprojects",
-    "@anteprojects": {
-      "description": "Anteprojects section title"
-    },
-    "pendingTasks": "Pending Tasks",
-    "@pendingTasks": {
-      "description": "Pending tasks section title"
-    },
-    "completed": "Completed",
-    "@completed": {
-      "description": "Completed section title"
-    },
-    "approved": "APPROVED",
-    "@approved": {
-      "description": "Approved status in uppercase"
-    },
-    "anteprojectApprovedMessage": "Your anteproyecto has been approved. You can start development!",
-    "@anteprojectApprovedMessage": {
-      "description": "Message when anteproyecto is approved"
-    },
-    "academicYearLabel": "Year: {year}",
-    "@academicYearLabel": {
-      "description": "Label for academic year",
-      "placeholders": {
-        "year": {
-          "type": "String",
-          "description": "Academic year"
-        }
-      }
-    },
-    "statusLabel": "Status: {status}",
-    "@statusLabel": {
-      "description": "Label for status",
-      "placeholders": {
-        "status": {
-          "type": "String",
-          "description": "Element status"
-        }
-      }
-    },
-    "draft": "Draft",
-    "@draft": {
-      "description": "Draft status"
-    },
-    "submitted": "Submitted",
-    "@submitted": {
-      "description": "Submitted status"
-    },
-    "underReview": "Under Review",
-    "@underReview": {
-      "description": "Under review status"
-    },
-    "approvedStatus": "Approved",
-    "@approvedStatus": {
-      "description": "Approved status"
-    },
-    "rejectedStatus": "Rejected",
-    "@rejectedStatus": {
-      "description": "Rejected status"
-    },
-    "unknown": "Unknown",
-    "@unknown": {
-      "description": "Unknown status"
-    },
-    "pending": "Pending",
-    "@pending": {
-      "description": "Pending status"
-    },
-    "inProgress": "In Progress",
-    "@inProgress": {
-      "description": "In progress status"
-    },
-    "completedStatus": "Completed",
-    "@completedStatus": {
-      "description": "Completed status"
-    },
-    "unknownStatus": "Unknown",
-    "@unknownStatus": {
-      "description": "Unknown status"
-    },
-    "studentCreatedSuccess": "Student created successfully",
-    "@studentCreatedSuccess": {
-      "description": "Success message when creating student"
-    },
-    "errorCreatingStudent": "Error creating student: {error}",
-    "@errorCreatingStudent": {
-      "description": "Error message when creating student",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "addStudent": "Add Student",
-    "@addStudent": {
-      "description": "Add student form title"
-    },
-    "fullName": "Full Name",
-    "@fullName": {
-      "description": "Label for full name"
-    },
-    "email": "Email",
-    "@email": {
-      "description": "Label for email"
-    },
-    "nreLabel": "NRE (Student Registration Number)",
-    "@nreLabel": {
-      "description": "Label for NRE"
-    },
-    "phoneOptional": "Phone (Optional)",
-    "@phoneOptional": {
-      "description": "Label for optional phone"
-    },
-    "specialty": "Specialty",
-    "@specialty": {
-      "description": "Label for specialty"
-    },
-    "academicYear": "Academic Year",
-    "@academicYear": {
-      "description": "Label for academic year"
-    },
-    "biographyOptional": "Biography (Optional)",
-    "@biographyOptional": {
-      "description": "Label for optional biography"
-    },
-    "nameRequired": "Name is required",
-    "@nameRequired": {
-      "description": "Validation message for required name"
-    },
-    "emailRequired": "Email is required",
-    "@emailRequired": {
-      "description": "Validation message for required email"
-    },
-    "emailInvalid": "Invalid email",
-    "@emailInvalid": {
-      "description": "Validation message for invalid email"
-    },
-    "nreRequired": "NRE is required",
-    "@nreRequired": {
-      "description": "Validation message for required NRE"
-    },
-    "createStudent": "Create Student",
-    "@createStudent": {
-      "description": "Button to create student"
-    },
-    "studentUpdatedSuccess": "Student updated successfully",
-    "@studentUpdatedSuccess": {
-      "description": "Success message when updating student"
-    },
-    "errorUpdatingStudent": "Error updating student: {error}",
-    "@errorUpdatingStudent": {
-      "description": "Error message when updating student",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "editStudent": "Edit Student",
-    "@editStudent": {
-      "description": "Edit student form title"
-    },
-    "updateStudent": "Update Student",
-    "@updateStudent": {
-      "description": "Button to update student"
-    },
-    "status": "Status",
-    "@status": {
-      "description": "Label for status"
-    },
-    "role": "Role",
-    "@role": {
-      "description": "Label for role"
-    },
-    "noProjectAssigned": "You don't have a project or anteproject assigned. Contact your tutor.",
-    "@noProjectAssigned": {
-      "description": "Message when no project is assigned"
-    },
-    "errorGettingProject": "Error getting project: {error}",
-    "@errorGettingProject": {
-      "description": "Error message when getting project",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "deleteAnteproject": "Delete Anteproject",
-    "@deleteAnteproject": {
-      "description": "Delete anteproject dialog title"
-    },
-    "confirmDeleteAnteproject": "Are you sure you want to delete the anteproject \"{title}\"?\n\nThis action cannot be undone.",
-    "@confirmDeleteAnteproject": {
-      "description": "Confirmation message for deleting anteproject",
-      "placeholders": {
-        "title": {
-          "type": "String",
-          "description": "Anteproject title"
-        }
-      }
-    },
-    "anteprojectDeletedSuccess": "Anteproject deleted successfully",
-    "@anteprojectDeletedSuccess": {
-      "description": "Success message when deleting anteproject"
-    },
-    "errorDeletingAnteproject": "Error deleting anteproject: {error}",
-    "@errorDeletingAnteproject": {
-      "description": "Error message when deleting anteproject",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "templateLoadedSuccess": "✅ Template loaded successfully. 4 example milestones have been added.",
-    "@templateLoadedSuccess": {
-      "description": "Success message when loading template"
-    },
-    "errorGeneratingPDF": "Error generating PDF: {error}",
-    "@errorGeneratingPDF": {
-      "description": "Error message when generating PDF",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "downloadExampleTitle": "Download Anteproject Example",
-    "@downloadExampleTitle": {
-      "description": "Download example dialog title"
-    },
-    "downloadExampleMessage": "How would you like to download the anteproject example?",
-    "@downloadExampleMessage": {
-      "description": "Download example dialog message"
-    },
-    "print": "Print",
-    "@print": {
-      "description": "Print button"
-    },
-    "save": "Save",
-    "@save": {
-      "description": "Save button"
-    },
-    "errorPrinting": "Error printing: {error}",
-    "@errorPrinting": {
-      "description": "Error message when printing",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "pdfSavedAt": "PDF saved at: {path}",
-    "@pdfSavedAt": {
-      "description": "Success message when saving PDF",
-      "placeholders": {
-        "path": {
-          "type": "String",
-          "description": "File path"
-        }
-      }
-    },
-    "errorSaving": "Error saving: {error}",
-    "@errorSaving": {
-      "description": "Error message when saving",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "downloadExamplePDF": "Download Example PDF",
-    "@downloadExamplePDF": {
-      "description": "Download example PDF button"
-    },
-    "loadTemplate": "Load Template",
-    "@loadTemplate": {
-      "description": "Load template button"
-    },
-    "errorLoadingSchedule": "Error loading schedule: {error}",
-    "@errorLoadingSchedule": {
-      "description": "Error message when loading schedule",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "mustConfigureReviewDate": "You must configure at least one review date",
-    "@mustConfigureReviewDate": {
-      "description": "Validation message for review date"
-    },
-    "scheduleSavedSuccess": "Schedule saved successfully",
-    "@scheduleSavedSuccess": {
-      "description": "Success message when saving schedule"
-    },
-    "errorSavingSchedule": "Error saving schedule: {error}",
-    "@errorSavingSchedule": {
-      "description": "Error message when saving schedule",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "scheduleManagement": "Schedule Management",
-    "@scheduleManagement": {
-      "description": "Schedule management title"
-    },
-    "regenerateDatesBasedOnMilestones": "Regenerate Dates Based on Milestones",
-    "@regenerateDatesBasedOnMilestones": {
-      "description": "Regenerate dates button"
-    },
-    "anteprojectDetails": "Anteproject Details",
-    "@anteprojectDetails": {
-      "description": "Anteproject details title"
-    },
-    "editAnteproject": "Edit Anteproject",
-    "@editAnteproject": {
-      "description": "Edit anteproject button"
-    },
-    "viewAll": "View all",
-    "@viewAll": {
-      "description": "View all link"
-    },
-    "anteprojectApprovedSuccess": "Anteproject approved successfully",
-    "@anteprojectApprovedSuccess": {
-      "description": "Success message when approving anteproject"
-    },
-    "errorApprovingAnteproject": "Error approving anteproject: {error}",
-    "@errorApprovingAnteproject": {
-      "description": "Error message when approving anteproject",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "anteprojectRejected": "Anteproject rejected",
-    "@anteprojectRejected": {
-      "description": "Anteproject rejected message"
-    },
-    "errorRejectingAnteproject": "Error rejecting anteproject: {error}",
-    "@errorRejectingAnteproject": {
-      "description": "Error message when rejecting anteproject",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "sendForApproval": "Send for Approval",
-    "@sendForApproval": {
-      "description": "Send for approval button"
-    },
-    "sendForApprovalTitle": "Send for Approval",
-    "@sendForApprovalTitle": {
-      "description": "Send for approval dialog title"
-    },
-    "sendForApprovalMessage": "Are you sure you want to send this anteproject for approval? Once sent, you won't be able to edit it until it's reviewed.",
-    "@sendForApprovalMessage": {
-      "description": "Confirmation message for sending"
-    },
-    "send": "Send",
-    "@send": {
-      "description": "Send button"
-    },
-    "anteprojectSentForApproval": "Anteproject sent for approval successfully",
-    "@anteprojectSentForApproval": {
-      "description": "Success message when sending for approval"
-    },
-    "errorSendingAnteproject": "Error sending anteproject: {error}",
-    "@errorSendingAnteproject": {
-      "description": "Error message when sending anteproject",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "anteprojectTitle": "Anteproject: {title}",
-    "@anteprojectTitle": {
-      "description": "Anteproject title",
-      "placeholders": {
-        "title": {
-          "type": "String",
-          "description": "Anteproject title",
-          "example": "New App Development"
-        }
-      }
-    },
-    "errorLoadingComments": "Error loading comments: {error}",
-    "@errorLoadingComments": {
-      "description": "Error message when loading comments",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "pleaseWriteComment": "Please write a comment",
-    "@pleaseWriteComment": {
-      "description": "Validation message for comment"
-    },
-    "commentAddedSuccess": "Comment added successfully",
-    "@commentAddedSuccess": {
-      "description": "Success message when adding comment"
-    },
-    "errorAddingComment": "Error adding comment: {error}",
-    "@errorAddingComment": {
-      "description": "Error message when adding comment",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "commentsTitle": "Comments - {title}",
-    "@commentsTitle": {
-      "description": "Comments title",
-      "placeholders": {
-        "title": {
-          "type": "String",
-          "description": "Anteproject title",
-          "example": "Smart IoT Platform"
-        }
-      }
-    },
-    "copied": "Copied: {text}",
-    "@copied": {
-      "description": "Copied message",
-      "placeholders": {
-        "text": {
-          "type": "String",
-          "description": "Copied text",
-          "example": "admin@test.com"
-        }
-      }
-    },
-    "addStudents": "Add Students",
-    "@addStudents": {
-      "description": "Add students title"
-    },
-    "addIndividually": "Add Individually",
-    "@addIndividually": {
-      "description": "Add individually button"
-    },
-    "importFromCSV": "Import from CSV",
-    "@importFromCSV": {
-      "description": "Import from CSV button"
-    },
-    "errorLoadingNotifications": "Error loading notifications: {error}",
-    "@errorLoadingNotifications": {
-      "description": "Error message when loading notifications",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "errorMarkingAsRead": "Error marking as read: {error}",
-    "@errorMarkingAsRead": {
-      "description": "Error message when marking as read",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "allNotificationsMarkedAsRead": "All notifications marked as read",
-    "@allNotificationsMarkedAsRead": {
-      "description": "Success message when marking all as read"
-    },
-    "errorMarkingAllAsRead": "Error marking all as read: {error}",
-    "@errorMarkingAllAsRead": {
-      "description": "Error message when marking all as read",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "errorDeletingNotification": "Error deleting notification: {error}",
-    "@errorDeletingNotification": {
-      "description": "Error message when deleting notification",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "notifications": "Notifications",
-    "@notifications": {
-      "description": "Notifications title"
-    },
-    "errorLoadingStudents": "Error loading students: {error}",
-    "@errorLoadingStudents": {
-      "description": "Error message when loading students",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "dashboardTitle": "Dashboard - {name}",
-    "@dashboardTitle": {
-      "description": "Dashboard title",
-      "placeholders": {
-        "name": {
-          "type": "String",
-          "description": "User name"
-        }
-      }
-    },
-    "allYears": "All years",
-    "@allYears": {
-      "description": "All years option"
-    },
-    "errorSelectingFile": "Error selecting file: {error}",
-    "@errorSelectingFile": {
-      "description": "Error message when selecting file",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "noValidDataToImport": "No valid data to import",
-    "@noValidDataToImport": {
-      "description": "Message when no valid data"
-    },
-    "importCompleted": "Import completed: {success} successful, {error} errors",
-    "@importCompleted": {
-      "description": "Import completed message",
-      "placeholders": {
-        "success": {
-          "type": "int",
-          "description": "Number of successes"
-        },
-        "error": {
-          "type": "int",
-          "description": "Number of errors"
-        }
-      }
-    },
-    "errorDuringImport": "Error during import: {error}",
-    "@errorDuringImport": {
-      "description": "Error message during import",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "importStudentsCSV": "Import Students CSV",
-    "@importStudentsCSV": {
-      "description": "Import students CSV title"
-    },
-    "fullNameRequired": "• full_name (required)",
-    "@fullNameRequired": {
-      "description": "Required field full_name"
-    },
-    "emailRequired": "• email (required)",
-    "@emailRequired": {
-      "description": "Required field email"
-    },
-    "nreRequired": "• nre (required)",
-    "@nreRequired": {
-      "description": "Required field nre"
-    },
-    "phoneOptional": "• phone (optional)",
-    "@phoneOptional": {
-      "description": "Optional field phone"
-    },
-    "biographyOptional": "• biography (optional)",
-    "@biographyOptional": {
-      "description": "Optional field biography"
-    },
-    "specialtyOptional": "• specialty (optional)",
-    "@specialtyOptional": {
-      "description": "Optional field specialty"
-    },
-    "academicYearOptional": "• academic_year (optional)",
-    "@academicYearOptional": {
-      "description": "Optional field academic_year"
-    },
-    "selectCSVFile": "Select CSV File",
-    "@selectCSVFile": {
-      "description": "Select CSV file button"
-    },
-    "importStudents": "Import {count} Students",
-    "@importStudents": {
-      "description": "Import students button",
-      "placeholders": {
-        "count": {
-          "type": "int",
-          "description": "Number of students"
-        }
-      }
-    },
-    "importing": "Importing...",
-    "@importing": {
-      "description": "Import in progress message"
-    },
-    "studentsImportedSuccess": "Students imported successfully",
-    "@studentsImportedSuccess": {
-      "description": "Success message when importing students"
-    },
-    "creating": "Creating...",
-    "@creating": {
-      "description": "Creation in progress message"
-    },
-    "createTutor": "Create Tutor",
-    "@createTutor": {
-      "description": "Create tutor button"
-    },
-    "tutorCreatedSuccess": "Tutor created successfully",
-    "@tutorCreatedSuccess": {
-      "description": "Success message when creating tutor"
-    },
-    "errorUploadingFile": "Error uploading file: {error}",
-    "@errorUploadingFile": {
-      "description": "Error message when uploading file",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "errorLoadingFiles": "Error loading files: {error}",
-    "@errorLoadingFiles": {
-      "description": "Error message when loading files",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "errorDeletingFile": "Error deleting file: {error}",
-    "@errorDeletingFile": {
-      "description": "Error message when deleting file",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "errorOpeningFile": "Error opening file: {error}",
-    "@errorOpeningFile": {
-      "description": "Error message when opening file",
-      "placeholders": {
-        "error": {
-          "type": "String",
-          "description": "Error message"
-        }
-      }
-    },
-    "estimatedHours": "{hours}h",
-    "@estimatedHours": {
-      "description": "Estimated hours",
-      "placeholders": {
-        "hours": {
-          "type": "int",
-          "description": "Number of hours",
-          "example": "12"
-        }
-      }
-    },
-    "confirmDeleteTask": "Are you sure you want to delete the task \"{title}\"?",
-    "@confirmDeleteTask": {
-      "description": "Confirmation message for deleting task",
-      "placeholders": {
-        "title": {
-          "type": "String",
-          "description": "Task title"
-        }
-      }
-    },
-    "mustLoginToViewComments": "You must login to view comments",
-    "anteprojectApprovedSuccess": "Anteproject approved successfully",
-    "errorApprovingAnteproject": "Error approving anteproject: {error}",
-    "anteprojectRejected": "Anteproject rejected",
-    "errorRejectingAnteproject": "Error rejecting anteproject: {error}",
-    "send": "Send",
-    "errorSendingAnteproject": "Error sending anteproject: {error}",
-    "anteprojectTitle": "Anteproject",
-    "errorLoadingSchedule": "Error loading schedule: {error}",
-    "scheduleSavedSuccess": "Schedule saved successfully",
-    "errorSavingSchedule": "Error saving schedule: {error}",
-    "@mustLoginToViewComments": {
-      "description": "Message to login"
-    },
-    "permissionRequired": "Permissions Required",
-    "@permissionRequired": {
-      "description": "Permission dialog title"
-    },
-    "permissionRequiredMessage": "This application needs access to storage to select files. Please grant the necessary permissions.",
-    "@permissionRequiredMessage": {
-      "description": "Explanatory message about why permissions are needed"
-    },
-    "openSettings": "Open Settings",
-    "@openSettings": {
-      "description": "Button to open app settings"
-    },
-    "tryAgain": "Try Again",
-    "@tryAgain": {
-      "description": "Button to try requesting permissions again"
-    },
-    "fileSavedSuccessfully": "File saved successfully",
-    "@fileSavedSuccessfully": {
-      "description": "Success message when saving file"
-    }
+  "anteprojectTitleLabel": "Anteproject Title",
+  "logoutTooltip": "Logout",
+  "createAnteprojectTooltip": "Create anteproyecto",
+  "userId": "ID: {id}",
+  "studentRole": "Student",
+  "anteprojects": "Anteprojects",
+  "approvedStatus": "Approved",
+  "rejectedStatus": "Rejected",
+  "unknown": "Unknown",
+  "completedStatus": "Completed",
+  "unknownStatus": "Unknown",
+  "studentCreatedSuccess": "Student created successfully",
+  "errorCreatingStudent": "Error creating student: {error}",
+  "addStudent": "Add Student",
+  "fullName": "Full Name",
+  "nreLabel": "NRE (Student Registration Number)",
+  "phoneOptional": "Phone (Optional)",
+  "biographyOptional": "Biography (Optional)",
+  "nameRequired": "Name is required",
+  "emailRequired": "Email is required",
+  "emailInvalid": "Invalid email",
+  "nreRequired": "NRE is required",
+  "createStudent": "Create Student",
+  "studentUpdatedSuccess": "Student updated successfully",
+  "errorUpdatingStudent": "Error updating student: {error}",
+  "updateStudent": "Update Student",
+  "role": "Role",
+  "noProjectAssigned": "You don't have a project or anteproject assigned. Contact your tutor.",
+  "errorGettingProject": "Error getting project: {error}",
+  "deleteAnteproject": "Delete Anteproject",
+  "confirmDeleteAnteproject": "Are you sure you want to delete the anteproject \\",
+  "anteprojectDeletedSuccess": "Anteproject deleted successfully",
+  "errorDeletingAnteproject": "Error deleting anteproject: {error}",
+  "templateLoadedSuccess": "✅ Template loaded successfully. 4 example milestones have been added.",
+  "errorGeneratingPDF": "Error generating PDF: {error}",
+  "downloadExampleTitle": "Download Anteproject Example",
+  "downloadExampleMessage": "How would you like to download the anteproject example?",
+  "print": "Print",
+  "errorPrinting": "Error printing: {error}",
+  "pdfSavedAt": "PDF saved at: {path}",
+  "errorSaving": "Error saving: {error}",
+  "downloadExamplePDF": "Download Example PDF",
+  "loadTemplate": "Load Template",
+  "errorLoadingSchedule": "Error loading schedule: {error}",
+  "mustConfigureReviewDate": "You must configure at least one review date",
+  "scheduleSavedSuccess": "Schedule saved successfully",
+  "errorSavingSchedule": "Error saving schedule: {error}",
+  "scheduleManagement": "Schedule Management",
+  "regenerateDatesBasedOnMilestones": "Regenerate Dates Based on Milestones",
+  "anteprojectDetails": "Anteproject Details",
+  "editAnteproject": "Edit Anteproject",
+  "anteprojectRejected": "Anteproject rejected",
+  "sendForApproval": "Send for Approval",
+  "sendForApprovalTitle": "Send for Approval",
+  "sendForApprovalMessage": "Are you sure you want to send this anteproject for approval? Once sent, you won't be able to edit it until it's reviewed.",
+  "anteprojectSentForApproval": "Anteproject sent for approval successfully",
+  "errorSendingAnteproject": "Error sending anteproject: {error}",
+  "example": "New App Development",
+  "errorLoadingComments": "Error loading comments: {error}",
+  "pleaseWriteComment": "Please write a comment",
+  "commentAddedSuccess": "Comment added successfully",
+  "errorAddingComment": "Error adding comment: {error}",
+  "addIndividually": "Add Individually",
+  "importFromCSV": "Import from CSV",
+  "errorLoadingNotifications": "Error loading notifications: {error}",
+  "errorMarkingAsRead": "Error marking as read: {error}",
+  "allNotificationsMarkedAsRead": "All notifications marked as read",
+  "errorMarkingAllAsRead": "Error marking all as read: {error}",
+  "errorDeletingNotification": "Error deleting notification: {error}",
+  "notifications": "Notifications",
+  "errorLoadingStudents": "Error loading students: {error}",
+  "dashboardTitle": "Dashboard - {name}",
+  "allYears": "All years",
+  "errorSelectingFile": "Error selecting file: {error}",
+  "noValidDataToImport": "No valid data to import",
+  "importCompleted": "Import completed: {success} successful, {error} errors",
+  "errorDuringImport": "Error during import: {error}",
+  "importStudentsCSV": "Import Students CSV",
+  "fullNameRequired": "• full_name (required)",
+  "specialtyOptional": "• specialty (optional)",
+  "academicYearOptional": "• academic_year (optional)",
+  "selectCSVFile": "Select CSV File",
+  "importStudents": "Import {count} Students",
+  "importing": "Importing...",
+  "studentsImportedSuccess": "Students imported successfully",
+  "creating": "Creating...",
+  "createTutor": "Create Tutor",
+  "tutorCreatedSuccess": "Tutor created successfully",
+  "errorUploadingFile": "Error uploading file: {error}",
+  "errorLoadingFiles": "Error loading files: {error}",
+  "errorDeletingFile": "Error deleting file: {error}",
+  "errorOpeningFile": "Error opening file: {error}",
+  "confirmDeleteTask": "Are you sure you want to delete the task \\",
+  "mustLoginToViewComments": "You must login to view comments",
+  "permissionRequired": "Permissions Required",
+  "permissionRequiredMessage": "This application needs access to storage to select files. Please grant the necessary permissions.",
+  "openSettings": "Open Settings",
+  "tryAgain": "Try Again",
+  "fileSavedSuccessfully": "File saved successfully",
+  "selectProjectForTasks": "Select project",
+  "year": "Year",
+  "anteprojectApprovedMessage": "Anteproject approved successfully",
+  "academicYearLabel": "Academic Year",
+  "statusLabel": "Status",
+  "draft": "Draft",
+  "noProjectsAvailableForTasks": "No projects available for creating tasks. Make sure your anteproject is approved.",
+  "mustSelectProjectForTask": "You must select a project to create the task",
+  "myProjects": "My Projects",
+  "noProjectsAssigned": "You have no projects assigned. Contact your tutor.",
+  "projectDetails": "Project Details",
+  "anteprojectHistoryComments": "Anteproject Comments (Historical)",
+  "projectComments": "Project Comments",
+  "attachedFiles": "Attached Files",
+  "kanbanBoard": "Kanban Board",
+  "kanbanOnlyForProjects": "The Kanban board is only available for approved projects",
+  "anteprojectNotFound": "The anteproject associated with the project was not found",
+  "tasksList": "Tasks List"
 }

@@ -9,12 +9,27 @@ void main() {
     test('AnteprojectStatus enum has correct values', () {
       // Verificar valores de AnteprojectStatus
       expect(AnteprojectStatus.values.length, equals(5));
-      expect(AnteprojectStatus.values.contains(AnteprojectStatus.draft), isTrue);
-      expect(AnteprojectStatus.values.contains(AnteprojectStatus.submitted), isTrue);
-      expect(AnteprojectStatus.values.contains(AnteprojectStatus.underReview), isTrue);
-      expect(AnteprojectStatus.values.contains(AnteprojectStatus.approved), isTrue);
-      expect(AnteprojectStatus.values.contains(AnteprojectStatus.rejected), isTrue);
-      
+      expect(
+        AnteprojectStatus.values.contains(AnteprojectStatus.draft),
+        isTrue,
+      );
+      expect(
+        AnteprojectStatus.values.contains(AnteprojectStatus.submitted),
+        isTrue,
+      );
+      expect(
+        AnteprojectStatus.values.contains(AnteprojectStatus.underReview),
+        isTrue,
+      );
+      expect(
+        AnteprojectStatus.values.contains(AnteprojectStatus.approved),
+        isTrue,
+      );
+      expect(
+        AnteprojectStatus.values.contains(AnteprojectStatus.rejected),
+        isTrue,
+      );
+
       debugPrint('✅ AnteprojectStatus enum tiene los valores correctos');
     });
 
@@ -25,7 +40,7 @@ void main() {
       expect(TaskStatus.values.contains(TaskStatus.inProgress), isTrue);
       expect(TaskStatus.values.contains(TaskStatus.underReview), isTrue);
       expect(TaskStatus.values.contains(TaskStatus.completed), isTrue);
-      
+
       debugPrint('✅ TaskStatus enum tiene los valores correctos');
     });
 
@@ -35,7 +50,7 @@ void main() {
       expect(TaskComplexity.values.contains(TaskComplexity.simple), isTrue);
       expect(TaskComplexity.values.contains(TaskComplexity.medium), isTrue);
       expect(TaskComplexity.values.contains(TaskComplexity.complex), isTrue);
-      
+
       debugPrint('✅ TaskComplexity enum tiene los valores correctos');
     });
 
@@ -45,14 +60,14 @@ void main() {
       expect(UserRole.values.contains(UserRole.student), isTrue);
       expect(UserRole.values.contains(UserRole.tutor), isTrue);
       expect(UserRole.values.contains(UserRole.admin), isTrue);
-      
+
       debugPrint('✅ UserRole enum tiene los valores correctos');
     });
 
     test('Model classes can be instantiated with required parameters', () {
       // Verificar que se pueden crear instancias de los modelos
       final now = DateTime.now();
-      
+
       // Crear Anteproject
       final anteproject = Anteproject(
         id: 1,
@@ -68,11 +83,11 @@ void main() {
         createdAt: now,
         updatedAt: now,
       );
-      
+
       expect(anteproject.id, equals(1));
       expect(anteproject.title, equals('Test Project'));
       expect(anteproject.status, equals(AnteprojectStatus.draft));
-      
+
       // Crear Task
       final task = Task(
         id: 1,
@@ -86,12 +101,12 @@ void main() {
         createdAt: now,
         updatedAt: now,
       );
-      
+
       expect(task.id, equals(1));
       expect(task.title, equals('Test Task'));
       expect(task.status, equals(TaskStatus.pending));
       expect(task.complexity, equals(TaskComplexity.simple));
-      
+
       // Crear User
       final user = User(
         id: 123,
@@ -102,11 +117,11 @@ void main() {
         createdAt: now,
         updatedAt: now,
       );
-      
-      expect(user.id, equals('123'));
+
+      expect(user.id, equals(123));
       expect(user.email, equals('test@example.com'));
       expect(user.role, equals(UserRole.student));
-      
+
       debugPrint('✅ Todos los modelos se pueden instanciar correctamente');
     });
 
@@ -117,11 +132,13 @@ void main() {
       expect(AnteprojectStatus.underReview.displayName, equals('En Revisión'));
       expect(AnteprojectStatus.approved.displayName, equals('Aprobado'));
       expect(AnteprojectStatus.rejected.displayName, equals('Rechazado'));
-      
+
       // TaskStatus y TaskComplexity ya no tienen displayName para forzar internacionalización
       // Los nombres de visualización se manejan a través de TaskLocalizationsHelper
-      
-      debugPrint('✅ AnteprojectStatus tiene nombres de visualización correctos');
+
+      debugPrint(
+        '✅ AnteprojectStatus tiene nombres de visualización correctos',
+      );
     });
 
     test('Model enums have correct utility methods', () {
@@ -130,18 +147,18 @@ void main() {
       expect(TaskStatus.inProgress.isInProgress, isTrue);
       expect(TaskStatus.completed.isCompleted, isTrue);
       expect(TaskStatus.underReview.isUnderReview, isTrue);
-      
+
       // Verificar métodos de utilidad de TaskComplexity
       expect(TaskComplexity.simple.estimatedHours, equals(2));
       expect(TaskComplexity.medium.estimatedHours, equals(8));
       expect(TaskComplexity.complex.estimatedHours, equals(24));
-      
+
       debugPrint('✅ Todos los enums tienen métodos de utilidad correctos');
     });
 
     test('Model classes support copyWith operations', () {
       final now = DateTime.now();
-      
+
       // Crear Anteproject base
       final originalAnteproject = Anteproject(
         id: 1,
@@ -157,17 +174,20 @@ void main() {
         createdAt: now,
         updatedAt: now,
       );
-      
+
       // Usar copyWith
       final updatedAnteproject = originalAnteproject.copyWith(
         title: 'Updated Title',
         status: AnteprojectStatus.submitted,
       );
-      
+
       expect(updatedAnteproject.title, equals('Updated Title'));
       expect(updatedAnteproject.status, equals(AnteprojectStatus.submitted));
-      expect(updatedAnteproject.description, equals('Original Description')); // No cambió
-      
+      expect(
+        updatedAnteproject.description,
+        equals('Original Description'),
+      ); // No cambió
+
       // Crear Task base
       final originalTask = Task(
         id: 1,
@@ -181,23 +201,28 @@ void main() {
         createdAt: now,
         updatedAt: now,
       );
-      
+
       // Usar copyWith
       final updatedTask = originalTask.copyWith(
         title: 'Updated Task',
         status: TaskStatus.inProgress,
       );
-      
+
       expect(updatedTask.title, equals('Updated Task'));
       expect(updatedTask.status, equals(TaskStatus.inProgress));
-      expect(updatedTask.description, equals('Original Task Description')); // No cambió
-      
-      debugPrint('✅ Todos los modelos soportan operaciones copyWith correctamente');
+      expect(
+        updatedTask.description,
+        equals('Original Task Description'),
+      ); // No cambió
+
+      debugPrint(
+        '✅ Todos los modelos soportan operaciones copyWith correctamente',
+      );
     });
 
     test('Model classes have proper equality and hashCode', () {
       final now = DateTime.now();
-      
+
       // Crear dos instancias idénticas
       final anteproject1 = Anteproject(
         id: 1,
@@ -213,7 +238,7 @@ void main() {
         createdAt: now,
         updatedAt: now,
       );
-      
+
       final anteproject2 = Anteproject(
         id: 1,
         title: 'Test Project',
@@ -228,11 +253,11 @@ void main() {
         createdAt: now,
         updatedAt: now,
       );
-      
+
       // Verificar igualdad
       expect(anteproject1, equals(anteproject2));
       expect(anteproject1.hashCode, equals(anteproject2.hashCode));
-      
+
       // Crear dos instancias idénticas de Task
       final task1 = Task(
         id: 1,
@@ -246,7 +271,7 @@ void main() {
         createdAt: now,
         updatedAt: now,
       );
-      
+
       final task2 = Task(
         id: 1,
         projectId: 1,
@@ -259,11 +284,11 @@ void main() {
         createdAt: now,
         updatedAt: now,
       );
-      
+
       // Verificar igualdad
       expect(task1, equals(task2));
       expect(task1.hashCode, equals(task2.hashCode));
-      
+
       debugPrint('✅ Todos los modelos tienen igualdad y hashCode correctos');
     });
   });
