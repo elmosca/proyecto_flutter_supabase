@@ -30,10 +30,8 @@ class _TaskFormState extends State<TaskForm> {
   TaskComplexity _selectedComplexity = TaskComplexity.medium;
   DateTime? _selectedDueDate;
 
-  // Nuevos campos para selección de proyecto
-  List<Project> _projects = [];
+  // El proyecto ya está seleccionado previamente
   Project? _selectedProject;
-  bool _isLoadingProjects = true;
 
   bool get _isEditing => widget.task != null;
 
@@ -41,53 +39,23 @@ class _TaskFormState extends State<TaskForm> {
   void initState() {
     super.initState();
     debugPrint('🔍 TaskForm inicializado con projectId: ${widget.projectId}');
-    _loadProjects();
+    _initializeProject();
     if (_isEditing) {
       _initializeFormWithTask();
     }
   }
 
-  Future<void> _loadProjects() async {
-    try {
-      debugPrint('🔍 Iniciando carga de proyectos...');
-      final projectsService = ProjectsService();
-      _projects = await projectsService.getProjects();
-      debugPrint('🔍 Proyectos obtenidos: ${_projects.length}');
-
-      for (final project in _projects) {
-        debugPrint(
-          '🔍 Proyecto: ${project.id} - ${project.title} - ${project.status}',
-        );
+  Future<void> _initializeProject() async {
+    if (widget.projectId != null) {
+      try {
+        debugPrint('🔍 Cargando proyecto específico: ${widget.projectId}');
+        final projectsService = ProjectsService();
+        _selectedProject = await projectsService.getProject(widget.projectId!);
+        debugPrint('🔍 Proyecto cargado: ${_selectedProject?.title}');
+      } catch (e) {
+        debugPrint('❌ Error cargando proyecto: $e');
+        _selectedProject = null;
       }
-
-      // Si hay un projectId específico, seleccionarlo
-      if (widget.projectId != null) {
-        try {
-          _selectedProject = _projects.firstWhere(
-            (p) => p.id == widget.projectId,
-          );
-        } catch (e) {
-          debugPrint(
-            '⚠️ Proyecto específico no encontrado, usando el primero disponible',
-          );
-          _selectedProject = _projects.isNotEmpty ? _projects.first : null;
-        }
-      } else if (_projects.isNotEmpty) {
-        _selectedProject = _projects.first;
-      }
-
-      setState(() {
-        _isLoadingProjects = false;
-      });
-
-      debugPrint(
-        '🔍 Proyectos cargados: ${_projects.length}, Seleccionado: ${_selectedProject?.id}',
-      );
-    } catch (e) {
-      debugPrint('❌ Error cargando proyectos: $e');
-      setState(() {
-        _isLoadingProjects = false;
-      });
     }
   }
 
@@ -157,8 +125,6 @@ class _TaskFormState extends State<TaskForm> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildProjectSelector(l10n),
-                const SizedBox(height: 16),
                 _buildTitleField(l10n),
                 const SizedBox(height: 16),
                 _buildDescriptionField(l10n),
@@ -306,81 +272,6 @@ class _TaskFormState extends State<TaskForm> {
     );
   }
 
-  Widget _buildProjectSelector(AppLocalizations l10n) {
-    debugPrint(
-      '🔍 _buildProjectSelector ejecutándose - _isLoadingProjects: $_isLoadingProjects, _projects.length: ${_projects.length}',
-    );
-
-    if (_isLoadingProjects) {
-      return const ListTile(
-        title: Text('Cargando proyectos...'),
-        trailing: CircularProgressIndicator(),
-      );
-    }
-
-    if (_projects.isEmpty) {
-      return const ListTile(
-        title: Text('No hay proyectos disponibles'),
-        subtitle: Text('Contacta con tu tutor para asignarte a un proyecto'),
-        leading: Icon(Icons.warning, color: Colors.orange),
-      );
-    }
-
-    return DropdownButtonFormField<Project>(
-      value: _selectedProject,
-      decoration: const InputDecoration(
-        labelText: 'Seleccionar Proyecto',
-        border: OutlineInputBorder(),
-        prefixIcon: Icon(Icons.folder),
-      ),
-      items: _projects.map((project) {
-        return DropdownMenuItem<Project>(
-          value: project,
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 280, maxHeight: 60),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Flexible(
-                  child: Text(
-                    project.title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  project.status.displayName,
-                  style: TextStyle(color: Colors.grey[600], fontSize: 11),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-        );
-      }).toList(),
-      onChanged: (Project? newValue) {
-        setState(() {
-          _selectedProject = newValue;
-        });
-        debugPrint(
-          '🔍 Proyecto seleccionado: ${_selectedProject?.id} - ${_selectedProject?.title}',
-        );
-      },
-      validator: (value) {
-        if (value == null) {
-          return 'Debe seleccionar un proyecto';
-        }
-        return null;
-      },
-    );
-  }
-
   Widget _buildActionButtons(AppLocalizations l10n) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -425,16 +316,12 @@ class _TaskFormState extends State<TaskForm> {
       return;
     }
 
-    // Validar que se haya seleccionado un proyecto
-    if (_selectedProject == null) {
+    // Validar que se haya proporcionado un projectId
+    if (widget.projectId == null) {
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            _projects.isEmpty
-                ? l10n.noProjectsAvailableForTasks
-                : l10n.mustSelectProjectForTask,
-          ),
+          content: Text(l10n.mustSelectProjectForTask),
           backgroundColor: Colors.red,
           duration: const Duration(seconds: 5),
         ),
@@ -452,7 +339,7 @@ class _TaskFormState extends State<TaskForm> {
         ? int.tryParse(_estimatedHoursController.text)
         : null;
 
-    debugPrint('🔍 Guardando tarea con projectId: ${_selectedProject!.id}');
+    debugPrint('🔍 Guardando tarea con projectId: ${widget.projectId}');
 
     if (_isEditing) {
       final updatedTask = widget.task!.copyWith(
@@ -460,7 +347,7 @@ class _TaskFormState extends State<TaskForm> {
         description: _descriptionController.text,
         status: _selectedStatus,
         complexity: _selectedComplexity,
-        projectId: _selectedProject!.id, // Usar el proyecto seleccionado
+        projectId: widget.projectId!, // Usar el projectId pasado como parámetro
         dueDate: _selectedDueDate,
         estimatedHours: estimatedHours,
         tags: tags,
@@ -471,7 +358,7 @@ class _TaskFormState extends State<TaskForm> {
     } else {
       final newTask = Task(
         id: 0, // Se asignará en el backend
-        projectId: _selectedProject!.id, // Usar el proyecto seleccionado
+        projectId: widget.projectId!, // Usar el projectId pasado como parámetro
         title: _titleController.text,
         description: _descriptionController.text,
         status: _selectedStatus,

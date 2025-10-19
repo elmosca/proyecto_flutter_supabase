@@ -142,7 +142,6 @@
   "testCredentialsAdmin": "👨‍💼 Admin",
   "testCredentialsTutor": "👨‍🏫 Tutor",
   "testCredentialsStudent": "👨‍🎓 Student",
-  "testCredentialsReviewer": "👨‍⚖️ Reviewer",
   "copiedToClipboard": "Copied to clipboard: {value}",
   "copy": "Copy",
   "noData": "No data available",

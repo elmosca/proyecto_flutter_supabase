@@ -272,12 +272,6 @@ abstract class AppLocalizations {
   /// **'👨‍🎓 Estudiante'**
   String get testCredentialsStudent;
 
-  /// Etiqueta para las credenciales de evaluador
-  ///
-  /// In es, this message translates to:
-  /// **'👨‍⚖️ Evaluador'**
-  String get testCredentialsReviewer;
-
   /// Texto para la acción de copiar
   ///
   /// In es, this message translates to:

@@ -14,29 +14,33 @@ import '../../utils/task_localizations.dart';
 class TaskDetailScreen extends StatefulWidget {
   final Task task;
 
-  const TaskDetailScreen({
-    super.key,
-    required this.task,
-  });
+  const TaskDetailScreen({super.key, required this.task});
 
   @override
   State<TaskDetailScreen> createState() => _TaskDetailScreenState();
 }
 
-class _TaskDetailScreenState extends State<TaskDetailScreen> with SingleTickerProviderStateMixin {
+class _TaskDetailScreenState extends State<TaskDetailScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late Task _currentTask;
+  bool _isEditingDescription = false;
+  late TextEditingController _descriptionController;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     _currentTask = widget.task;
+    _descriptionController = TextEditingController(
+      text: _currentTask.description,
+    );
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _descriptionController.dispose();
     super.dispose();
   }
 
@@ -68,7 +72,9 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> with SingleTickerPr
           controller: _tabController,
           indicatorColor: theme.colorScheme.onPrimary,
           labelColor: theme.colorScheme.onPrimary,
-          unselectedLabelColor: theme.colorScheme.onPrimary.withValues(alpha: 0.7),
+          unselectedLabelColor: theme.colorScheme.onPrimary.withValues(
+            alpha: 0.7,
+          ),
           tabs: [
             Tab(text: l10n.details),
             Tab(text: l10n.comments),
@@ -81,10 +87,10 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> with SingleTickerPr
         children: [
           // Tab de Detalles
           _buildDetailsTab(context),
-          
+
           // Tab de Comentarios
           _buildCommentsTab(context),
-          
+
           // Tab de Archivos
           _buildFilesTab(context),
         ],
@@ -129,9 +135,9 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> with SingleTickerPr
               ),
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Descripción
           Card(
             child: Padding(
@@ -139,24 +145,91 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> with SingleTickerPr
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Descripción',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Descripción',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      if (!_isEditingDescription)
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            setState(() {
+                              _isEditingDescription = true;
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.edit,
+                            size: 18,
+                            color: Colors.white,
+                          ),
+                          label: const Text(
+                            'Editar Descripción',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                   const SizedBox(height: 12),
-                  Text(
-                    _currentTask.description,
-                    style: theme.textTheme.bodyMedium,
-                  ),
+                  if (_isEditingDescription) ...[
+                    TextFormField(
+                      controller: _descriptionController,
+                      maxLines: 5,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Escribe la descripción de la tarea...',
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              _isEditingDescription = false;
+                              _descriptionController.text =
+                                  _currentTask.description;
+                            });
+                          },
+                          child: const Text('Cancelar'),
+                        ),
+                        const SizedBox(width: 8),
+                        ElevatedButton(
+                          onPressed: _saveDescription,
+                          child: const Text('Guardar'),
+                        ),
+                      ],
+                    ),
+                  ] else
+                    Text(
+                      _currentTask.description,
+                      style: theme.textTheme.bodyMedium,
+                    ),
                 ],
               ),
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Información adicional
           Card(
             child: Padding(
@@ -229,13 +302,13 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> with SingleTickerPr
 
   Widget _buildCommentsTab(BuildContext context) {
     final authState = context.read<AuthBloc>().state;
-    
+
     if (authState is! AuthAuthenticated) {
       return Center(
         child: Text(AppLocalizations.of(context)!.mustLoginToViewComments),
       );
     }
-    
+
     return BlocProvider<CommentsBloc>(
       create: (_) => CommentsBloc(
         commentsService: CommentsService(),
@@ -266,11 +339,11 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> with SingleTickerPr
   Widget _buildStatusChip(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    
+
     Color backgroundColor;
     Color textColor;
     IconData icon;
-    
+
     switch (_currentTask.status) {
       case TaskStatus.pending:
         backgroundColor = Colors.orange.shade100;
@@ -306,7 +379,10 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> with SingleTickerPr
           Icon(icon, size: 18, color: textColor),
           const SizedBox(width: 6),
           Text(
-            TaskLocalizations.getTaskStatusDisplayName(_currentTask.status, l10n),
+            TaskLocalizations.getTaskStatusDisplayName(
+              _currentTask.status,
+              l10n,
+            ),
             style: theme.textTheme.labelMedium?.copyWith(
               color: textColor,
               fontWeight: FontWeight.w600,
@@ -320,10 +396,10 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> with SingleTickerPr
   Widget _buildComplexityChip(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    
+
     Color backgroundColor;
     Color textColor;
-    
+
     switch (_currentTask.complexity) {
       case TaskComplexity.simple:
         backgroundColor = Colors.green.shade100;
@@ -346,7 +422,10 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> with SingleTickerPr
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
-        TaskLocalizations.getTaskComplexityDisplayName(_currentTask.complexity, l10n),
+        TaskLocalizations.getTaskComplexityDisplayName(
+          _currentTask.complexity,
+          l10n,
+        ),
         style: theme.textTheme.labelSmall?.copyWith(
           color: textColor,
           fontWeight: FontWeight.w600,
@@ -355,10 +434,14 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> with SingleTickerPr
     );
   }
 
-
-  Widget _buildInfoRow(BuildContext context, IconData icon, String label, String value) {
+  Widget _buildInfoRow(
+    BuildContext context,
+    IconData icon,
+    String label,
+    String value,
+  ) {
     final theme = Theme.of(context);
-    
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -375,14 +458,51 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> with SingleTickerPr
                 ),
               ),
               const SizedBox(height: 2),
-              Text(
-                value,
-                style: theme.textTheme.bodyMedium,
-              ),
+              Text(value, style: theme.textTheme.bodyMedium),
             ],
           ),
         ),
       ],
     );
+  }
+
+  void _saveDescription() async {
+    try {
+      // Crear una copia de la tarea con la nueva descripción
+      final updatedTask = _currentTask.copyWith(
+        description: _descriptionController.text,
+        updatedAt: DateTime.now(),
+      );
+
+      // Actualizar la tarea en el backend
+      final tasksService = TasksService();
+      await tasksService.updateTask(_currentTask.id, updatedTask);
+
+      // Actualizar el estado local
+      setState(() {
+        _currentTask = updatedTask;
+        _isEditingDescription = false;
+      });
+
+      // Mostrar mensaje de éxito
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Descripción actualizada correctamente'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      // Mostrar mensaje de error
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error al actualizar la descripción: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 }

@@ -116,10 +116,6 @@
   "@testCredentialsStudent": {
     "description": "Etiqueta para las credenciales de estudiante"
   },
-  "testCredentialsReviewer": "👨‍⚖️ Evaluador",
-  "@testCredentialsReviewer": {
-    "description": "Etiqueta para las credenciales de evaluador"
-  },
   "copy": "Copiar",
   "@copy": {
     "description": "Texto para la acción de copiar"
