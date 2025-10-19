@@ -97,9 +97,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get testCredentialsStudent => '👨‍🎓 Estudiante';
 
   @override
-  String get testCredentialsReviewer => '👨‍⚖️ Evaluador';
-
-  @override
   String get copy => 'Copiar';
 
   @override

@@ -17,6 +17,7 @@ import '../forms/task_form.dart';
 import '../details/task_detail_screen.dart';
 import '../../models/task.dart';
 import '../../blocs/tasks_bloc.dart';
+import '../../services/tasks_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AnteprojectDetailScreen extends StatefulWidget {
@@ -1395,8 +1396,13 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
       );
     }
 
-    // Solo el contenido de la lista sin AppBar ni FloatingActionButton
-    return _buildTasksListContent();
+    // Envolver con BlocProvider para TasksBloc
+    return BlocProvider<TasksBloc>(
+      create: (context) =>
+          TasksBloc(tasksService: TasksService())
+            ..add(TasksLoadRequested(projectId: widget.project!.id)),
+      child: _buildTasksListContent(),
+    );
   }
 
   Widget _buildTasksListContent() {
