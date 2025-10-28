@@ -999,6 +999,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logoutTooltip => 'Logout';
 
   @override
+  String get quickAccess => 'Quick Access';
+
+  @override
+  String get files => 'Files';
+
+  @override
+  String get recentActivity => 'Recent Activity';
+
+  @override
+  String get welcomeMessage => 'Welcome!';
+
+  @override
+  String get welcomeDescription => 'You have logged in successfully';
+
+  @override
+  String get getStarted => 'Get Started';
+
+  @override
+  String get getStartedDescription => 'Use the side menu to navigate';
+
+  @override
   String get createAnteprojectTooltip => 'Create anteproyecto';
 
   @override

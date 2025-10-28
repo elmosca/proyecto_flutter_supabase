@@ -1011,6 +1011,27 @@ class AppLocalizationsEs extends AppLocalizations {
   String get logoutTooltip => 'Cerrar sesión';
 
   @override
+  String get quickAccess => 'Acceso Rápido';
+
+  @override
+  String get files => 'Archivos';
+
+  @override
+  String get recentActivity => 'Actividad Reciente';
+
+  @override
+  String get welcomeMessage => '¡Bienvenido!';
+
+  @override
+  String get welcomeDescription => 'Has iniciado sesión correctamente';
+
+  @override
+  String get getStarted => 'Comenzar';
+
+  @override
+  String get getStartedDescription => 'Usa el menú lateral para navegar';
+
+  @override
   String get createAnteprojectTooltip => 'Crear anteproyecto';
 
   @override

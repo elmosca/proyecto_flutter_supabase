@@ -26,6 +26,59 @@ class AnteprojectsService {
     }
   }
 
+  /// Obtiene todos los anteproyectos con información del estudiante (para tutores)
+  Future<List<Map<String, dynamic>>> getAnteprojectsWithStudentInfo() async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        throw const AnteprojectsException('Usuario no autenticado');
+      }
+
+      debugPrint(
+        '🔍 AnteprojectsService: Obteniendo anteproyectos con info de estudiantes para tutor: ${user.email}',
+      );
+
+      // Primero obtener el ID del tutor desde la tabla users
+      final userResponse = await _supabase
+          .from('users')
+          .select('id')
+          .eq('email', user.email!)
+          .single();
+
+      final tutorId = userResponse['id'] as int;
+      debugPrint('🔍 AnteprojectsService: ID del tutor: $tutorId');
+
+      // Obtener anteproyectos de los estudiantes asignados a este tutor
+      final response = await _supabase
+          .from('anteprojects')
+          .select('''
+            *,
+            anteproject_students!inner(
+              student_id,
+              is_lead_author,
+              users!inner(
+                id,
+                full_name,
+                email,
+                nre,
+                tutor_id
+              )
+            )
+          ''')
+          .eq('anteproject_students.users.tutor_id', tutorId)
+          .order('created_at', ascending: false);
+
+      debugPrint(
+        '🔍 AnteprojectsService: Respuesta de anteproyectos: $response',
+      );
+
+      return List<Map<String, dynamic>>.from(response);
+    } catch (e) {
+      debugPrint('❌ AnteprojectsService: Error al obtener anteproyectos: $e');
+      throw AnteprojectsException('Error al obtener anteproyectos: $e');
+    }
+  }
+
   /// Obtiene un anteproyecto específico por ID
   Future<Anteproject?> getAnteproject(int id) async {
     try {

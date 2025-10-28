@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mockito/mockito.dart';
 
-import 'package:frontend/screens/dashboard/student_dashboard.dart';
+import 'package:frontend/screens/dashboard/student_dashboard_screen.dart';
 import 'package:frontend/blocs/auth_bloc.dart';
 import 'package:frontend/blocs/anteprojects_bloc.dart';
 import 'package:frontend/blocs/tasks_bloc.dart';
@@ -19,7 +19,7 @@ class _MockAnteprojectsService extends Mock implements AnteprojectsService {}
 class _MockTasksService extends Mock implements TasksService {}
 
 void main() {
-  group('StudentDashboard Widget Tests (Dashboard Principal)', () {
+  group('StudentDashboardScreen Widget Tests (Dashboard Principal)', () {
     late _MockAuthService mockAuthService;
     late _MockAnteprojectsService mockAnteprojectsService;
     late _MockTasksService mockTasksService;
@@ -66,7 +66,7 @@ void main() {
 
     Widget createTestWidget() {
       return WidgetTestUtils.createTestApp(
-        child: StudentDashboard(user: WidgetTestUtils.createTestUser()),
+        child: StudentDashboardScreen(user: WidgetTestUtils.createTestUser()),
         blocProviders: [
           BlocProvider<AuthBloc>.value(value: authBloc),
           BlocProvider<AnteprojectsBloc>.value(value: anteprojectsBloc),

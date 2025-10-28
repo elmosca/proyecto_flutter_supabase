@@ -9,7 +9,6 @@ import '../../config/app_config.dart';
 import '../../models/user.dart';
 import '../../blocs/approval_bloc.dart';
 import '../../services/theme_service.dart';
-import '../../themes/role_themes.dart';
 import '../../services/user_service.dart';
 import '../../services/anteprojects_service.dart';
 import '../../models/anteproject.dart';
@@ -17,8 +16,8 @@ import '../approval/approval_screen.dart';
 import '../anteprojects/anteprojects_review_screen.dart';
 import '../student/student_list_screen.dart';
 import '../../widgets/dialogs/add_students_dialog.dart';
-import '../../widgets/common/language_selector.dart';
-import '../../router/app_router.dart';
+import '../../widgets/navigation/app_top_bar.dart';
+import '../../widgets/navigation/app_side_drawer.dart';
 
 class TutorDashboard extends StatefulWidget {
   final User user;
@@ -151,25 +150,8 @@ class _TutorDashboardState extends State<TutorDashboard> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Text(RoleThemes.getEmojiForRole(widget.user.role)),
-            const SizedBox(width: 8),
-            Text(l10n.dashboardTutor),
-          ],
-        ),
-        backgroundColor: ThemeService.instance.currentPrimaryColor,
-        foregroundColor: Colors.white,
-        actions: [
-          const LanguageSelectorAppBar(),
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: _logout,
-            tooltip: l10n.logout,
-          ),
-        ],
-      ),
+      appBar: AppTopBar(user: widget.user, titleKey: 'dashboardTutor'),
+      drawer: AppSideDrawer(user: widget.user),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _buildDashboardContent(),
@@ -437,16 +419,7 @@ class _TutorDashboardState extends State<TutorDashboard> {
     ).then((_) => _loadData()); // Recargar datos al cerrar el diálogo
   }
 
-  Future<void> _logout() async {
-    try {
-      // Usar el router para logout
-      AppRouter.logout(context);
-    } catch (e) {
-      if (kDebugMode) {
-        debugPrint('Error al cerrar sesión: $e');
-      }
-    }
-  }
+  // Logout ahora gestionado por AppTopBar
 
   void _navigateToApprovalWorkflow() {
     Navigator.of(context).push(

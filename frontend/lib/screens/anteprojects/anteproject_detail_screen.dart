@@ -19,6 +19,7 @@ import '../../models/task.dart';
 import '../../blocs/tasks_bloc.dart';
 import '../../services/tasks_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../widgets/navigation/persistent_scaffold.dart';
 
 class AnteprojectDetailScreen extends StatefulWidget {
   final Anteproject anteproject;
@@ -44,7 +45,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
   final AnteprojectCommentsService _commentsService =
       AnteprojectCommentsService();
   late Anteproject _anteproject;
-  late TabController _tabController; // NUEVO
+  TabController? _tabController; // NUEVO
   bool _isLoading = false;
   Schedule? _schedule;
   User? _currentUser;
@@ -54,7 +55,9 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this); // NUEVO
+    if (widget.project != null) {
+      _tabController = TabController(length: 5, vsync: this); // NUEVO
+    }
     _anteproject = widget.anteproject;
     _loadSchedule();
     _loadCurrentUser();
@@ -63,7 +66,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
 
   @override
   void dispose() {
-    _tabController.dispose(); // NUEVO
+    _tabController?.dispose(); // NUEVO
     super.dispose();
   }
 
@@ -148,109 +151,85 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.project != null
-              ? AppLocalizations.of(context)!.projectDetails
-              : AppLocalizations.of(context)!.anteprojectDetails,
-        ),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        bottom: widget.project != null
-            ? TabBar(
-                controller: _tabController,
-                labelColor: Colors.white,
-                unselectedLabelColor: Colors.white70,
-                indicatorColor: Colors.white,
-                indicatorWeight: 3,
-                tabs: [
-                  Tab(text: AppLocalizations.of(context)!.details),
-                  Tab(text: AppLocalizations.of(context)!.comments),
-                  Tab(text: AppLocalizations.of(context)!.attachedFiles),
-                  Tab(text: AppLocalizations.of(context)!.kanbanBoard),
-                  Tab(text: AppLocalizations.of(context)!.tasksList),
-                ],
-              )
-            : null,
-        actions: widget.project == null
-            ? [
-                // Botón de comentarios (siempre visible)
-                IconButton(
-                  icon: const Icon(Icons.chat, color: Colors.blue),
-                  onPressed: _viewComments,
-                  tooltip: 'Ver comentarios',
-                ),
+    // Mientras cargamos el usuario, mostramos loading para poder montar la barra unificada
+    if (_currentUser == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
 
-                // Botón de cronograma (solo para aprobados y tutores)
-                if (_anteproject.status == AnteprojectStatus.approved &&
-                    _canEditSchedule()) ...[
-                  IconButton(
-                    icon: const Icon(Icons.schedule, color: Colors.blue),
-                    onPressed: _manageSchedule,
-                    tooltip: 'Gestionar Cronograma',
-                  ),
-                ],
+    final isProjectMode = widget.project != null;
+    final l10n = AppLocalizations.of(context)!;
 
-                // Botones de aprobación/rechazo (solo para tutores y anteproyectos enviados/en revisión)
-                if ((_anteproject.status == AnteprojectStatus.submitted ||
-                        _anteproject.status == AnteprojectStatus.underReview) &&
-                    _currentUser?.role == UserRole.tutor) ...[
-                  IconButton(
-                    icon: const Icon(Icons.cancel, color: Colors.red),
-                    onPressed: _isLoading ? null : _rejectAnteproject,
-                    tooltip: 'Rechazar',
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.check, color: Colors.green),
-                    onPressed: _isLoading ? null : _approveAnteproject,
-                    tooltip: 'Aprobar',
-                  ),
-                ],
-              ]
-            : null,
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : widget.project != null
-          ? TabBarView(
-              controller: _tabController,
-              children: [
-                _buildDetailsTab(),
-                _buildCommentsTab(),
-                _buildFilesTab(),
-                _buildKanbanTab(),
-                _buildTasksListTab(),
-              ],
-            )
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildHeaderCard(),
-                  const SizedBox(height: 16),
-
-                  // Botón de enviar para aprobación (solo para anteproyectos en borrador)
-                  if (_anteproject.status == AnteprojectStatus.draft) ...[
-                    _buildSubmitForApprovalCard(),
-                    const SizedBox(height: 16),
-                  ],
-
-                  _buildInfoCard(),
-                  const SizedBox(height: 16),
-                  _buildDescriptionCard(),
-                  const SizedBox(height: 16),
-                  _buildExpectedResultsCard(),
-                  const SizedBox(height: 16),
-                  _buildTimelineCard(),
-                  const SizedBox(height: 16),
-                  _buildCommentsSection(),
-                  const SizedBox(height: 16),
-                  _buildDatesCard(),
-                ],
-              ),
+    // Acciones específicas cuando NO es modo proyecto (acciones históricas del anteproyecto)
+    final List<Widget> topBarActions = !isProjectMode
+        ? [
+            IconButton(
+              icon: const Icon(Icons.chat, color: Colors.white),
+              tooltip: 'Ver comentarios',
+              onPressed: _viewComments,
             ),
+            if (_anteproject.status == AnteprojectStatus.approved &&
+                _canEditSchedule())
+              IconButton(
+                icon: const Icon(Icons.schedule, color: Colors.white),
+                tooltip: 'Gestionar Cronograma',
+                onPressed: _manageSchedule,
+              ),
+            if ((_anteproject.status == AnteprojectStatus.submitted ||
+                    _anteproject.status == AnteprojectStatus.underReview) &&
+                _currentUser?.role == UserRole.tutor) ...[
+              IconButton(
+                icon: const Icon(Icons.cancel, color: Colors.white),
+                tooltip: 'Rechazar',
+                onPressed: _isLoading ? null : _rejectAnteproject,
+              ),
+              IconButton(
+                icon: const Icon(Icons.check, color: Colors.white),
+                tooltip: 'Aprobar',
+                onPressed: _isLoading ? null : _approveAnteproject,
+              ),
+            ],
+          ]
+        : const [];
+
+    final PreferredSizeWidget? bottom = isProjectMode
+        ? TabBar(
+            controller: _tabController!,
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.white70,
+            indicatorColor: Colors.white,
+            indicatorWeight: 3,
+            tabs: [
+              Tab(text: l10n.details),
+              Tab(text: l10n.comments),
+              Tab(text: l10n.attachedFiles),
+              Tab(text: l10n.kanbanBoard),
+              Tab(text: l10n.tasksList),
+            ],
+          )
+        : null;
+
+    final Widget bodyContent = _isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : isProjectMode
+        ? TabBarView(
+            controller: _tabController!,
+            children: [
+              _buildDetailsTab(),
+              _buildCommentsTab(),
+              _buildFilesTab(),
+              _buildKanbanTab(),
+              _buildTasksListTab(),
+            ],
+          )
+        : _buildAnteprojectDetails();
+
+    return PersistentScaffold(
+      title: isProjectMode ? 'Proyecto' : 'Anteproyecto',
+      titleKey: isProjectMode ? 'projects' : 'anteprojects',
+      user: _currentUser!,
+      actions: topBarActions,
+      bottom: bottom,
+      body: bodyContent,
     );
   }
 
@@ -1243,6 +1222,10 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
 
   // NUEVOS MÉTODOS PARA PESTAÑAS
   Widget _buildDetailsTab() {
+    return _buildAnteprojectDetails();
+  }
+
+  Widget _buildAnteprojectDetails() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -1250,6 +1233,13 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
         children: [
           _buildHeaderCard(),
           const SizedBox(height: 16),
+
+          // Botón de enviar para aprobación (solo para anteproyectos en borrador)
+          if (_anteproject.status == AnteprojectStatus.draft) ...[
+            _buildSubmitForApprovalCard(),
+            const SizedBox(height: 16),
+          ],
+
           _buildInfoCard(),
           const SizedBox(height: 16),
           _buildDescriptionCard(),
@@ -1257,6 +1247,8 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
           _buildExpectedResultsCard(),
           const SizedBox(height: 16),
           _buildTimelineCard(),
+          const SizedBox(height: 16),
+          _buildCommentsSection(),
           const SizedBox(height: 16),
           _buildDatesCard(),
         ],
