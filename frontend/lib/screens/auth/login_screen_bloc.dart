@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import '../../blocs/auth_bloc.dart';
 import '../../l10n/app_localizations.dart';
 import '../../config/app_config.dart';
 import '../../models/user.dart' as app_user;
+import '../../router/app_router.dart';
 
 class LoginScreenBloc extends StatefulWidget {
   const LoginScreenBloc({super.key});
@@ -17,18 +16,22 @@ class LoginScreenBloc extends StatefulWidget {
 class _LoginScreenBlocState extends State<LoginScreenBloc> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final FocusNode _emailFocus = FocusNode();
+  final FocusNode _passwordFocus = FocusNode();
+  bool _obscurePassword = true;
   // ✅ _showServerInfo variable removed (no longer used)
 
   @override
   void initState() {
     super.initState();
-    // Email and password fields will be empty for user to complete
   }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _emailFocus.dispose();
+    _passwordFocus.dispose();
     super.dispose();
   }
 
@@ -36,7 +39,6 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    // Si las localizaciones no están disponibles, usar valores por defecto
     if (l10n == null) {
       return const Scaffold(
         body: Center(child: Text('Cargando aplicación...')),
@@ -45,16 +47,14 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.login), // ✅ Only "Login" in production
+        title: Text(l10n.login),
         backgroundColor: const Color(AppConfig.platformColor),
         foregroundColor: Colors.white,
         actions: [
-          // Language change button
           PopupMenuButton<String>(
             icon: const Icon(Icons.language),
             tooltip: l10n.language,
             onSelected: (String value) {
-              // Here we would implement language change
               if (AppConfig.debugMode) {
                 debugPrint('Change language to: $value');
               }
@@ -82,7 +82,6 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
               ),
             ],
           ),
-          // ✅ Server info button removed for production
         ],
       ),
       body: BlocListener<AuthBloc, AuthState>(
@@ -101,7 +100,6 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
                 backgroundColor: Colors.green,
               ),
             );
-            // Navigate to corresponding dashboard
             _navigateToDashboard(state.user);
           }
         },
@@ -114,7 +112,6 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Application information
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -139,30 +136,45 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
                   ),
                 ),
                 const SizedBox(height: 16),
-
-                // ✅ Server information section removed for production
                 const SizedBox(height: 32),
 
-                // Login form
+                // Email
                 TextField(
                   controller: _emailController,
+                  focusNode: _emailFocus,
                   decoration: InputDecoration(
                     labelText: l10n.email,
                     border: const OutlineInputBorder(),
                     prefixIcon: const Icon(Icons.email),
                   ),
                   keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  onSubmitted: (_) => _passwordFocus.requestFocus(),
                 ),
                 const SizedBox(height: 16),
 
+                // Password con toggle y Enter
                 TextField(
                   controller: _passwordController,
+                  focusNode: _passwordFocus,
                   decoration: InputDecoration(
                     labelText: l10n.password,
                     border: const OutlineInputBorder(),
                     prefixIcon: const Icon(Icons.lock),
+                    suffixIcon: IconButton(
+                      onPressed: () => setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      }),
+                      icon: Icon(
+                        _obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
+                    ),
                   ),
-                  obscureText: true,
+                  obscureText: _obscurePassword,
+                  textInputAction: TextInputAction.done,
+                  onSubmitted: (_) => _handleLogin(),
                 ),
                 const SizedBox(height: 24),
 
@@ -188,8 +200,6 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
                   },
                 ),
                 const SizedBox(height: 16),
-
-                // ✅ Development links removed for production
               ],
             ),
           ),
@@ -197,10 +207,6 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
       ),
     );
   }
-
-  // ✅ _buildServerInfoRow method removed (no longer used)
-
-  // ✅ _openUrl method removed (no longer used in production)
 
   void _handleLogin() {
     if (_emailController.text.isNotEmpty &&
@@ -216,19 +222,10 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
   }
 
   void _navigateToDashboard(app_user.User user) {
-    final role = user.role;
-
-    switch (role) {
-      case app_user.UserRole.student:
-        context.go('/dashboard/student', extra: user);
-        break;
-      case app_user.UserRole.tutor:
-        context.go('/dashboard/tutor', extra: user);
-        break;
-      case app_user.UserRole.admin:
-        context.go('/dashboard/admin', extra: user);
-        break;
-    }
+    debugPrint(
+      '🚀 Login: Navegando a dashboard para usuario: ${user.fullName}',
+    );
+    debugPrint('🚀 Login: Rol del usuario: ${user.role}');
+    AppRouter.goToDashboard(context, user);
   }
-
 }

@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mockito/mockito.dart';
 
-import 'package:frontend/screens/dashboard/student_dashboard.dart';
+import 'package:frontend/screens/dashboard/student_dashboard_screen.dart';
 import 'package:frontend/blocs/auth_bloc.dart';
 import 'package:frontend/blocs/anteprojects_bloc.dart';
 import 'package:frontend/blocs/tasks_bloc.dart';
@@ -13,7 +13,7 @@ import 'widget_test_utils.mocks.dart';
 import '../test_setup.dart';
 
 void main() {
-  group('StudentDashboard Widget Tests', () {
+  group('StudentDashboardScreen Widget Tests', () {
     late MockAuthService mockAuthService;
     late MockAnteprojectsService mockAnteprojectsService;
     late MockTasksService mockTasksService;
@@ -34,13 +34,15 @@ void main() {
       mockAuthService = MockAuthService();
       mockAnteprojectsService = MockAnteprojectsService();
       mockTasksService = MockTasksService();
-      
+
       authBloc = AuthBloc(authService: mockAuthService);
-      anteprojectsBloc = AnteprojectsBloc(anteprojectsService: mockAnteprojectsService);
+      anteprojectsBloc = AnteprojectsBloc(
+        anteprojectsService: mockAnteprojectsService,
+      );
       tasksBloc = TasksBloc(tasksService: mockTasksService);
-      
+
       testUser = WidgetTestUtils.createTestUser();
-      
+
       // Configurar mocks básicos
       WidgetTestUtils.setupBasicMocks(
         mockAuthService: mockAuthService,
@@ -58,7 +60,7 @@ void main() {
     Widget createTestWidget() {
       return TestSetup.createTestApp(
         child: WidgetTestUtils.createTestApp(
-          child: StudentDashboard(user: testUser),
+          child: StudentDashboardScreen(user: testUser),
           blocProviders: [
             BlocProvider<AuthBloc>.value(value: authBloc),
             BlocProvider<AnteprojectsBloc>.value(value: anteprojectsBloc),
@@ -69,8 +71,9 @@ void main() {
       );
     }
 
-    testWidgets('StudentDashboard shows correct title and structure',
-        (WidgetTester tester) async {
+    testWidgets('StudentDashboardScreen shows correct title and structure', (
+      WidgetTester tester,
+    ) async {
       TestSetup.setMobileSize(tester);
       await tester.pumpWidget(createTestWidget());
       await WidgetTestUtils.waitForAnimation(tester);
@@ -78,15 +81,16 @@ void main() {
       // Verificar estructura básica
       expect(find.byType(Scaffold), findsOneWidget);
       expect(find.byType(AppBar), findsOneWidget);
-      
+
       // Verificar título
       expect(find.textContaining('Dashboard'), findsOneWidget);
     });
 
-    testWidgets('StudentDashboard shows user information section',
-        (WidgetTester tester) async {
+    testWidgets('StudentDashboardScreen shows user information section', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createTestWidget());
-      
+
       // Esperar a que termine la carga (1 segundo + tiempo de animación)
       await tester.pump(const Duration(seconds: 1));
       await WidgetTestUtils.waitForAnimation(tester);
@@ -95,10 +99,11 @@ void main() {
       expect(find.byType(Card), findsWidgets);
     });
 
-    testWidgets('StudentDashboard shows navigation options',
-        (WidgetTester tester) async {
+    testWidgets('StudentDashboardScreen shows navigation options', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createTestWidget());
-      
+
       // Esperar a que termine la carga (1 segundo + tiempo de animación)
       await tester.pump(const Duration(seconds: 1));
       await WidgetTestUtils.waitForAnimation(tester);
@@ -107,8 +112,9 @@ void main() {
       expect(find.byType(TextButton), findsWidgets);
     });
 
-    testWidgets('StudentDashboard shows quick actions',
-        (WidgetTester tester) async {
+    testWidgets('StudentDashboardScreen shows quick actions', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createTestWidget());
       await WidgetTestUtils.waitForAnimation(tester);
 
@@ -116,10 +122,13 @@ void main() {
       expect(find.byType(IconButton), findsWidgets);
     });
 
-    testWidgets('StudentDashboard handles empty state gracefully',
-        (WidgetTester tester) async {
+    testWidgets('StudentDashboardScreen handles empty state gracefully', (
+      WidgetTester tester,
+    ) async {
       // Configurar mocks para estado vacío
-      when(mockAnteprojectsService.getAnteprojects()).thenAnswer((_) async => []);
+      when(
+        mockAnteprojectsService.getAnteprojects(),
+      ).thenAnswer((_) async => []);
       when(mockTasksService.getTasks()).thenAnswer((_) async => []);
 
       await tester.pumpWidget(createTestWidget());
@@ -129,31 +138,31 @@ void main() {
       expect(find.byType(Scaffold), findsOneWidget);
     });
 
-    testWidgets('StudentDashboard shows loading state',
-        (WidgetTester tester) async {
+    testWidgets('StudentDashboardScreen shows loading state', (
+      WidgetTester tester,
+    ) async {
       // Configurar mocks para estado de carga
-      when(mockAnteprojectsService.getAnteprojects()).thenAnswer(
-        (_) async {
-          await Future.delayed(const Duration(milliseconds: 100));
-          return [WidgetTestUtils.createTestAnteproject()];
-        },
-      );
+      when(mockAnteprojectsService.getAnteprojects()).thenAnswer((_) async {
+        await Future.delayed(const Duration(milliseconds: 100));
+        return [WidgetTestUtils.createTestAnteproject()];
+      });
 
       await tester.pumpWidget(createTestWidget());
-      
+
       // Verificar estado de carga inicial
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      
+
       // Esperar a que se complete la carga
       await tester.pumpAndSettle();
     });
 
-    testWidgets('StudentDashboard shows error state',
-        (WidgetTester tester) async {
+    testWidgets('StudentDashboardScreen shows error state', (
+      WidgetTester tester,
+    ) async {
       // Configurar mocks para estado de error
-      when(mockAnteprojectsService.getAnteprojects()).thenThrow(
-        Exception('Error de conexión'),
-      );
+      when(
+        mockAnteprojectsService.getAnteprojects(),
+      ).thenThrow(Exception('Error de conexión'));
 
       await tester.pumpWidget(createTestWidget());
       await WidgetTestUtils.waitForAnimation(tester);
@@ -162,11 +171,12 @@ void main() {
       expect(find.byType(Scaffold), findsOneWidget);
     });
 
-    testWidgets('StudentDashboard navigation works correctly',
-        (WidgetTester tester) async {
+    testWidgets('StudentDashboardScreen navigation works correctly', (
+      WidgetTester tester,
+    ) async {
       TestSetup.setMobileSize(tester);
       await tester.pumpWidget(createTestWidget());
-      
+
       // Esperar a que termine la carga (1 segundo + tiempo de animación)
       await tester.pump(const Duration(seconds: 1));
       await WidgetTestUtils.waitForAnimation(tester);
@@ -179,8 +189,9 @@ void main() {
       // El tap causaría navegación que requiere Supabase.instance
     });
 
-    testWidgets('StudentDashboard shows correct user role information',
-        (WidgetTester tester) async {
+    testWidgets('StudentDashboardScreen shows correct user role information', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createTestWidget());
       await WidgetTestUtils.waitForAnimation(tester);
 
@@ -188,10 +199,11 @@ void main() {
       expect(find.byType(Scaffold), findsOneWidget);
     });
 
-    testWidgets('StudentDashboard responsive design works',
-        (WidgetTester tester) async {
+    testWidgets('StudentDashboardScreen responsive design works', (
+      WidgetTester tester,
+    ) async {
       TestSetup.setMobileSize(tester);
-      
+
       await tester.pumpWidget(createTestWidget());
       await WidgetTestUtils.waitForAnimation(tester);
 

@@ -173,6 +173,79 @@ class ProjectsService {
       return null;
     }
   }
+
+  /// Obtiene todos los proyectos aprobados del estudiante actual
+  Future<List<Project>> getStudentProjects() async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        throw const ProjectsException('Usuario no autenticado');
+      }
+
+      // Obtener el ID del usuario desde la tabla users
+      final userResponse = await _supabase
+          .from('users')
+          .select('id')
+          .eq('email', user.email!)
+          .single();
+
+      final userId = userResponse['id'] as int;
+      debugPrint('🔍 Obteniendo proyectos para estudiante ID: $userId');
+
+      // Obtener todos los proyectos del estudiante
+      final response = await _supabase
+          .from('project_students')
+          .select('''
+            project_id,
+            projects!inner(*)
+          ''')
+          .eq('student_id', userId);
+
+      debugPrint('🔍 Respuesta de project_students: $response');
+
+      // Extraer y mapear los proyectos
+      final projects = <Project>[];
+      for (final item in response) {
+        if (item['projects'] != null) {
+          final projectData = item['projects'] as Map<String, dynamic>;
+
+          // Mapear campos de snake_case a camelCase
+          final mappedData = {
+            'id': projectData['id'],
+            'title': projectData['title'],
+            'description': projectData['description'],
+            'status': projectData['status'],
+            'startDate': projectData['start_date'],
+            'estimatedEndDate': projectData['estimated_end_date'],
+            'actualEndDate': projectData['actual_end_date'],
+            'tutorId': projectData['tutor_id'],
+            'anteprojectId': projectData['anteproject_id'],
+            'githubRepositoryUrl': projectData['github_repository_url'],
+            'githubMainBranch': projectData['github_main_branch'] ?? 'main',
+            'lastActivityAt': projectData['last_activity_at'],
+            'createdAt': projectData['created_at'],
+            'updatedAt': projectData['updated_at'],
+          };
+
+          try {
+            final project = Project.fromJson(mappedData);
+            projects.add(project);
+            debugPrint('✅ Proyecto agregado: ${project.title}');
+          } catch (e) {
+            debugPrint('❌ Error al mapear proyecto: $e');
+          }
+        }
+      }
+
+      debugPrint(
+        '✅ Se obtuvieron ${projects.length} proyectos para el estudiante',
+      );
+      return projects;
+    } catch (e) {
+      debugPrint('❌ Error al obtener proyectos del estudiante: $e');
+      throw ProjectsException('Error al obtener proyectos: $e');
+    }
+  }
 }
 
 class ProjectsException implements Exception {

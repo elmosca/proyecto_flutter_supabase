@@ -8,25 +8,70 @@ Este archivo contiene las credenciales de prueba para acceder a la aplicación d
 - **Email**: `admin@jualas.es`
 - **Contraseña**: `password123`
 - **Rol**: Administrador
+- **Nombre**: Jesucristo Garcia
 - **Permisos**: Acceso completo al sistema, gestión de usuarios, proyectos y tareas
 
 ### 🟢 **TUTOR**
 - **Email**: `jualas@jualas.es`
 - **Contraseña**: `password123`
 - **Rol**: Tutor
+- **Nombre**: Tutor Jualas
 - **Permisos**: Gestión de proyectos asignados, revisión de anteproyectos, asignación de tareas
 
-### 🔵 **ESTUDIANTE**
+### 🟢 **TUTOR TEST**
+- **Email**: `tutor.test@cifpcarlos3.es`
+- **Contraseña**: `password123`
+- **Rol**: Tutor
+- **Nombre**: Tutor Test
+- **Permisos**: Gestión de proyectos asignados, revisión de anteproyectos, asignación de tareas
+
+### 🔵 **ESTUDIANTE TEST**
 - **Email**: `student.test@alumno.cifpcarlos3.es`
 - **Contraseña**: `password123`
 - **Rol**: Estudiante
+- **Nombre**: Student Test
 - **Permisos**: Creación de anteproyectos, gestión de tareas asignadas, seguimiento de progreso
-
 
 ### 🔵 **ESTUDIANTE 3850437**
 - **Email**: `3850437@alu.murciaeduca.es`
 - **Contraseña**: `password123`
 - **Rol**: Estudiante
+- **Nombre**: Juan Antonio Francés Pérez
+- **Permisos**: Acceso a proyectos asignados, gestión de tareas
+
+### 🔵 **ESTUDIANTE MARÍA**
+- **Email**: `maria.garcia@alumno.cifpcarlos3.es`
+- **Contraseña**: `password123`
+- **Rol**: Estudiante
+- **Nombre**: María García López
+- **Permisos**: Acceso a proyectos asignados, gestión de tareas
+
+### 🔵 **ESTUDIANTE CARLOS**
+- **Email**: `carlos.rodriguez@alumno.cifpcarlos3.es`
+- **Contraseña**: `password123`
+- **Rol**: Estudiante
+- **Nombre**: Carlos Rodríguez Martín
+- **Permisos**: Acceso a proyectos asignados, gestión de tareas
+
+### 🔵 **ESTUDIANTE ANA**
+- **Email**: `ana.martinez@alumno.cifpcarlos3.es`
+- **Contraseña**: `password123`
+- **Rol**: Estudiante
+- **Nombre**: Ana Martínez Sánchez
+- **Permisos**: Acceso a proyectos asignados, gestión de tareas
+
+### 🔵 **ESTUDIANTE DAVID**
+- **Email**: `david.lopez@alumno.cifpcarlos3.es`
+- **Contraseña**: `password123`
+- **Rol**: Estudiante
+- **Nombre**: David López García
+- **Permisos**: Acceso a proyectos asignados, gestión de tareas
+
+### 🔵 **ESTUDIANTE MANOLO**
+- **Email**: `ecollejas@cifpcarlos3.es`
+- **Contraseña**: `password123`
+- **Rol**: Estudiante
+- **Nombre**: Manolo Garcia Collejas
 - **Permisos**: Acceso a proyectos asignados, gestión de tareas
 
 ## 📋 INFORMACIÓN ADICIONAL

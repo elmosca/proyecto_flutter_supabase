@@ -1367,10 +1367,38 @@
     "@anteprojectTitleLabel": {
       "description": "Etiqueta para el campo de título del anteproyecto"
     },
-    "logoutTooltip": "Cerrar sesión",
-    "@logoutTooltip": {
-      "description": "Tooltip para el botón de cerrar sesión"
-    },
+  "logoutTooltip": "Cerrar sesión",
+  "@logoutTooltip": {
+    "description": "Tooltip para el botón de cerrar sesión"
+  },
+  "quickAccess": "Acceso Rápido",
+  "@quickAccess": {
+    "description": "Sección de acceso rápido en dashboard"
+  },
+  "files": "Archivos",
+  "@files": {
+    "description": "Sección de archivos"
+  },
+  "recentActivity": "Actividad Reciente",
+  "@recentActivity": {
+    "description": "Sección de actividad reciente"
+  },
+  "welcomeMessage": "¡Bienvenido!",
+  "@welcomeMessage": {
+    "description": "Mensaje de bienvenida"
+  },
+  "welcomeDescription": "Has iniciado sesión correctamente",
+  "@welcomeDescription": {
+    "description": "Descripción del mensaje de bienvenida"
+  },
+  "getStarted": "Comenzar",
+  "@getStarted": {
+    "description": "Acción para comenzar a usar la aplicación"
+  },
+  "getStartedDescription": "Usa el menú lateral para navegar",
+  "@getStartedDescription": {
+    "description": "Descripción de cómo comenzar"
+  },
     "createAnteprojectTooltip": "Crear anteproyecto",
     "@createAnteprojectTooltip": {
       "description": "Tooltip para el botón de crear anteproyecto"

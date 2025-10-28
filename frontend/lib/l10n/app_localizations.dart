@@ -1970,6 +1970,48 @@ abstract class AppLocalizations {
   /// **'Cerrar sesión'**
   String get logoutTooltip;
 
+  /// Sección de acceso rápido en dashboard
+  ///
+  /// In es, this message translates to:
+  /// **'Acceso Rápido'**
+  String get quickAccess;
+
+  /// Sección de archivos
+  ///
+  /// In es, this message translates to:
+  /// **'Archivos'**
+  String get files;
+
+  /// Sección de actividad reciente
+  ///
+  /// In es, this message translates to:
+  /// **'Actividad Reciente'**
+  String get recentActivity;
+
+  /// Mensaje de bienvenida
+  ///
+  /// In es, this message translates to:
+  /// **'¡Bienvenido!'**
+  String get welcomeMessage;
+
+  /// Descripción del mensaje de bienvenida
+  ///
+  /// In es, this message translates to:
+  /// **'Has iniciado sesión correctamente'**
+  String get welcomeDescription;
+
+  /// Acción para comenzar a usar la aplicación
+  ///
+  /// In es, this message translates to:
+  /// **'Comenzar'**
+  String get getStarted;
+
+  /// Descripción de cómo comenzar
+  ///
+  /// In es, this message translates to:
+  /// **'Usa el menú lateral para navegar'**
+  String get getStartedDescription;
+
   /// Tooltip para el botón de crear anteproyecto
   ///
   /// In es, this message translates to:

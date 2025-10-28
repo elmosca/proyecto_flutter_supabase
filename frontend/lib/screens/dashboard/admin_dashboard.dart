@@ -7,9 +7,8 @@ import '../../config/app_config.dart';
 import '../../models/user.dart';
 import '../../services/theme_service.dart';
 import '../../services/admin_stats_service.dart';
-import '../../themes/role_themes.dart';
-import '../../widgets/common/language_selector.dart';
-import '../../router/app_router.dart';
+import '../../widgets/navigation/app_top_bar.dart';
+import '../../widgets/navigation/app_side_drawer.dart';
 
 class AdminDashboard extends StatefulWidget {
   final User user;
@@ -74,25 +73,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Text(RoleThemes.getEmojiForRole(widget.user.role)),
-            const SizedBox(width: 8),
-            Text(l10n.dashboardAdmin),
-          ],
-        ),
-        backgroundColor: ThemeService.instance.currentPrimaryColor,
-        foregroundColor: Colors.white,
-        actions: [
-          const LanguageSelectorAppBar(),
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: _logout,
-            tooltip: l10n.logout,
-          ),
-        ],
-      ),
+      appBar: AppTopBar(user: widget.user, titleKey: 'dashboardAdmin'),
+      drawer: AppSideDrawer(user: widget.user),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _buildDashboardContent(),
@@ -452,16 +434,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
     }
   }
 
-  Future<void> _logout() async {
-    try {
-      // Usar el router para logout
-      AppRouter.logout(context);
-    } catch (e) {
-      if (kDebugMode) {
-        debugPrint('Error al cerrar sesión: $e');
-      }
-    }
-  }
+  // Logout ahora gestionado por AppTopBar
 
   void _manageUsers() {
     _viewAllUsers();
