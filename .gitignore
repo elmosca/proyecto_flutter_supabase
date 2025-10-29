@@ -55,3 +55,13 @@ coverage/
 # Repositorios embebidos / submodulos
 mcp-resend/
 
+# CursorRules y MCP Server (mantener local, no subir a remoto)
+.cursor/
+.cursorrules
+mcp-server/
+mcp-config*.json
+frontend/.cursor/
+scripts/setup-mcp-*.ps1
+scripts/setup-mcp-*.sh
+docs/mcp-server/
+
