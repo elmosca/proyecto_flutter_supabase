@@ -33,7 +33,28 @@ class AppSideDrawer extends StatelessWidget {
                 leading: Icon(item.icon),
                 title: Text(item.label),
                 onTap: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(); // Cerrar el drawer
+
+                  // Cerrar cualquier pantalla de detalle abierta antes de navegar
+                  // Esto asegura que siempre volvamos a la pantalla base
+                  final navigator = Navigator.of(context, rootNavigator: false);
+
+                  // Si hay pantallas modales abiertas, cerrarlas primero
+                  if (navigator.canPop()) {
+                    // Cerrar todas las pantallas modales hasta llegar a la pantalla base
+                    // Esto cierra las pantallas de detalle abiertas con Navigator.push
+                    navigator.popUntil((route) => route.isFirst);
+
+                    // Pequeño delay para asegurar que las pantallas se cierren
+                    Future.delayed(const Duration(milliseconds: 100), () {
+                      if (context.mounted) {
+                        item.onTap(context, user);
+                      }
+                    });
+                    return;
+                  }
+
+                  // Si no hay pantallas modales, navegar directamente
                   item.onTap(context, user);
                 },
               ),
@@ -69,10 +90,22 @@ class AppSideDrawer extends StatelessWidget {
       ),
     ];
 
+    // Opción de ayuda que se agrega al final de cada menú
+    final helpItem = _DrawerItem(
+      icon: Icons.help_outline,
+      label: l10n.helpGuide,
+      onTap: (ctx, user) => ctx.go('/help', extra: user),
+    );
+
     switch (role) {
       case UserRole.student:
         return [
           ...common,
+          _DrawerItem(
+            icon: Icons.message,
+            label: l10n.messages,
+            onTap: (ctx, user) => ctx.go('/student/messages', extra: user),
+          ),
           _DrawerItem(
             icon: Icons.description,
             label: l10n.anteprojects,
@@ -93,39 +126,54 @@ class AppSideDrawer extends StatelessWidget {
             label: l10n.kanbanBoard,
             onTap: (ctx, user) => ctx.go('/kanban', extra: user),
           ),
+          helpItem, // Agregar guía de uso para estudiantes
         ];
       case UserRole.tutor:
         return [
-          ...common,
+          common[0], // Panel Principal
+          _DrawerItem(
+            icon: Icons.people,
+            label: l10n.myStudents,
+            onTap: (ctx, user) => ctx.go('/students', extra: user),
+          ),
+          common[1], // Notificaciones
+          _DrawerItem(
+            icon: Icons.message,
+            label: l10n.messages,
+            onTap: (ctx, user) => ctx.go('/tutor/messages', extra: user),
+          ),
           _DrawerItem(
             icon: Icons.assignment,
             label: l10n.anteprojects,
             onTap: (ctx, user) => ctx.go('/anteprojects', extra: user),
           ),
           _DrawerItem(
-            icon: Icons.people,
-            label: l10n.myStudents,
-            onTap: (ctx, user) => ctx.go('/students', extra: user),
-          ),
-          _DrawerItem(
             icon: Icons.gavel,
             label: l10n.approvalWorkflow,
             onTap: (ctx, user) => ctx.go('/approval-workflow', extra: user),
           ),
+          helpItem, // Agregar guía de uso para tutores
         ];
       case UserRole.admin:
         return [
-          ...common,
+          ...common, // incluye Dashboard y Notificaciones
           _DrawerItem(
             icon: Icons.people_alt,
             label: l10n.totalUsers,
             onTap: (ctx, user) => ctx.go('/admin/users'),
           ),
           _DrawerItem(
+            icon: Icons.gavel,
+            label: l10n.approvalWorkflow,
+            onTap: (ctx, user) =>
+                ctx.go('/admin/approval-workflow', extra: user),
+          ),
+          _DrawerItem(
             icon: Icons.settings,
-            label: 'Configuración',
+            label: l10n.settings,
             onTap: (ctx, user) => ctx.go('/admin/settings'),
           ),
+          helpItem, // Agregar guía de uso para administradores
         ];
     }
   }

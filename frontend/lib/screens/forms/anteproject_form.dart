@@ -61,7 +61,7 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
         setState(() {
           _currentUser = user;
           _isLoadingUser = false;
-          
+
           // Asignar automáticamente el año académico del tutor
           if (user?.academicYear != null) {
             _academicYearController.text = user!.academicYear!;
@@ -81,38 +81,44 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
     }
   }
 
-
   void _loadTemplate() {
     setState(() {
-      _titleController.text = 'Sistema de Seguimiento de Proyectos TFCGS - Ciclo DAM';
-      _descriptionController.text = 'El proyecto consiste en el desarrollo de una plataforma digital colaborativa para la planificación, seguimiento y evaluación de los Trabajos de Fin de Grado Ciclo Superior (TFGCS) en ciclos formativos de DAM. Utiliza un enfoque Kanban para la gestión de tareas, permitiendo la interacción entre administradores, tutores y alumnos.';
-      _objectivesController.text = '• Consolidar los conocimientos adquiridos durante el ciclo\n• Llevar a cabo el análisis de requisitos previo al desarrollo\n• Elegir herramientas modernas para una solución fullstack\n• Implementar el esquema relacional del proyecto\n• Codificar servicios backend en Java con Spring Boot\n• Codificar el frontend en Flutter\n• Diseñar interfaces adaptadas al rol\n• Documentar el proyecto con guía de instalación';
-      
+      _titleController.text =
+          'Sistema de Seguimiento de Proyectos TFCGS - Ciclo DAM';
+      _descriptionController.text =
+          'El proyecto consiste en el desarrollo de una plataforma digital colaborativa para la planificación, seguimiento y evaluación de los Trabajos de Fin de Grado Ciclo Superior (TFGCS) en ciclos formativos de DAM. Utiliza un enfoque Kanban para la gestión de tareas, permitiendo la interacción entre administradores, tutores y alumnos.';
+      _objectivesController.text =
+          '• Consolidar los conocimientos adquiridos durante el ciclo\n• Llevar a cabo el análisis de requisitos previo al desarrollo\n• Elegir herramientas modernas para una solución fullstack\n• Implementar el esquema relacional del proyecto\n• Codificar servicios backend en Java con Spring Boot\n• Codificar el frontend en Flutter\n• Diseñar interfaces adaptadas al rol\n• Documentar el proyecto con guía de instalación';
+
       // Cargar hitos de ejemplo
       _hitos = [
         const Hito(
           id: 'hito1',
           title: 'Análisis y Diseño + Infraestructura Base',
-          description: 'Análisis de requisitos y diseño funcional\nMontaje de infraestructura Dockerizada\nEsquema relacional inicial de PostgreSQL',
+          description:
+              'Análisis de requisitos y diseño funcional\nMontaje de infraestructura Dockerizada\nEsquema relacional inicial de PostgreSQL',
         ),
         const Hito(
           id: 'hito2',
           title: 'Sistema de Autenticación y Gestión de Usuarios',
-          description: 'Backend completo de autenticación\nControl de acceso por roles\nAPI Gateway configurado',
+          description:
+              'Backend completo de autenticación\nControl de acceso por roles\nAPI Gateway configurado',
         ),
         const Hito(
           id: 'hito3',
           title: 'Gestión de Proyectos y Tareas',
-          description: 'Backend de proyectos/tareas/anteproyectos\nPrimer prototipo funcional en Flutter\nVista Kanban básica',
+          description:
+              'Backend de proyectos/tareas/anteproyectos\nPrimer prototipo funcional en Flutter\nVista Kanban básica',
         ),
         const Hito(
           id: 'hito4',
           title: 'Funcionalidades Colaborativas y Finalización',
-          description: 'Comentarios, archivos y notificaciones\nDashboard personalizado\nDocumentación técnica y pruebas\nPreparación para defensa',
+          description:
+              'Comentarios, archivos y notificaciones\nDashboard personalizado\nDocumentación técnica y pruebas\nPreparación para defensa',
         ),
       ];
     });
-    
+
     // Mostrar mensaje de confirmación
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -129,33 +135,32 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => const Center(
-          child: CircularProgressIndicator(),
-        ),
+        builder: (context) => const Center(child: CircularProgressIndicator()),
       );
 
       // Generar PDF de ejemplo
       final pdfBytes = await PdfService.generateAnteprojectExamplePdf();
-      
+
       // Cerrar indicador de carga
       if (mounted) {
         Navigator.of(context).pop();
-        
+
         // Mostrar opciones de descarga
         _showDownloadOptions(pdfBytes);
       }
-      
     } catch (e) {
       // Cerrar indicador de carga si está abierto
       if (mounted && Navigator.of(context).canPop()) {
         Navigator.of(context).pop();
       }
-      
+
       // Mostrar error
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.errorGeneratingPDF(e.toString())),
+            content: Text(
+              AppLocalizations.of(context)!.errorGeneratingPDF(e.toString()),
+            ),
             backgroundColor: Colors.red,
           ),
         );
@@ -203,7 +208,9 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.errorPrinting(e.toString())),
+            content: Text(
+              AppLocalizations.of(context)!.errorPrinting(e.toString()),
+            ),
             backgroundColor: Colors.red,
           ),
         );
@@ -217,7 +224,7 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
         pdfBytes,
         'anteproyecto_ejemplo.pdf',
       );
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -230,7 +237,9 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.errorSaving(e.toString())),
+            content: Text(
+              AppLocalizations.of(context)!.errorSaving(e.toString()),
+            ),
             backgroundColor: Colors.red,
           ),
         );
@@ -279,7 +288,9 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
       _isSubmitting = true;
     });
 
-    context.read<AnteprojectsBloc>().add(AnteprojectCreateRequested(anteproject));
+    context.read<AnteprojectsBloc>().add(
+      AnteprojectCreateRequested(anteproject),
+    );
   }
 
   @override
@@ -305,10 +316,7 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
         }
 
         if (state is AnteprojectsFailure) {
-          ErrorSnackBar.show(
-            context,
-            error: state.message,
-          );
+          ErrorSnackBar.show(context, error: state.message);
         }
       },
       child: Builder(
@@ -321,205 +329,236 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
                 IconButton(
                   icon: const Icon(Icons.download),
                   onPressed: _downloadExamplePdf,
-                  tooltip: 'Descargar ejemplo PDF',
+                  tooltip: l10n.downloadExamplePdf,
                 ),
                 IconButton(
                   icon: const Icon(Icons.content_copy),
                   onPressed: _loadTemplate,
-                  tooltip: 'Cargar plantilla',
+                  tooltip: l10n.loadTemplate,
                 ),
               ],
             ),
-        body: _isLoadingUser
-            ? const Center(child: CircularProgressIndicator())
-            : SafeArea(
-                child: Form(
-                  key: _formKey,
-            child: ListView(
-              padding: const EdgeInsets.all(16),
-              children: <Widget>[
-                // Botones de ayuda
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Ayuda para completar el anteproyecto',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Usa estos botones para obtener ayuda:',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton.icon(
-                                onPressed: _downloadExamplePdf,
-                                icon: const Icon(Icons.picture_as_pdf),
-                                label: Text(AppLocalizations.of(context)!.downloadExamplePDF),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red[50],
-                                  foregroundColor: Colors.red[700],
-                                ),
+            body: _isLoadingUser
+                ? const Center(child: CircularProgressIndicator())
+                : SafeArea(
+                    child: Form(
+                      key: _formKey,
+                      child: ListView(
+                        padding: const EdgeInsets.all(16),
+                        children: <Widget>[
+                          // Botones de ayuda
+                          Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Ayuda para completar el anteproyecto',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Usa estos botones para obtener ayuda:',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium,
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: ElevatedButton.icon(
+                                          onPressed: _downloadExamplePdf,
+                                          icon: const Icon(
+                                            Icons.picture_as_pdf,
+                                          ),
+                                          label: Text(
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.downloadExamplePDF,
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.red[50],
+                                            foregroundColor: Colors.red[700],
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: ElevatedButton.icon(
+                                          onPressed: _loadTemplate,
+                                          icon: const Icon(Icons.content_copy),
+                                          label: Text(
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.loadTemplate,
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.blue[50],
+                                            foregroundColor: Colors.blue[700],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: ElevatedButton.icon(
-                                onPressed: _loadTemplate,
-                                icon: const Icon(Icons.content_copy),
-                                label: Text(AppLocalizations.of(context)!.loadTemplate),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue[50],
-                                  foregroundColor: Colors.blue[700],
+                          ),
+                          const SizedBox(height: 16),
+                          TextFormField(
+                            controller: _titleController,
+                            decoration: InputDecoration(
+                              labelText: AppLocalizations.of(
+                                context,
+                              )!.anteprojectTitleLabel,
+                              border: const OutlineInputBorder(),
+                            ),
+                            validator: (String? value) =>
+                                FormValidators.anteprojectTitle(value, context),
+                          ),
+                          const SizedBox(height: 16),
+                          DropdownButtonFormField<ProjectType>(
+                            value: _projectType,
+                            decoration: InputDecoration(
+                              labelText: l10n.anteprojectType,
+                              border: const OutlineInputBorder(),
+                            ),
+                            items: ProjectType.values
+                                .map(
+                                  (ProjectType type) =>
+                                      DropdownMenuItem<ProjectType>(
+                                        value: type,
+                                        child: Text(type.shortName),
+                                      ),
+                                )
+                                .toList(),
+                            onChanged: (ProjectType? value) =>
+                                setState(() => _projectType = value),
+                          ),
+                          const SizedBox(height: 16),
+                          TextFormField(
+                            controller: _descriptionController,
+                            minLines: 4,
+                            maxLines: 8,
+                            decoration: InputDecoration(
+                              labelText: l10n.anteprojectDescription,
+                              border: const OutlineInputBorder(),
+                            ),
+                            validator: (String? value) =>
+                                FormValidators.anteprojectDescription(
+                                  value,
+                                  context,
                                 ),
+                          ),
+                          const SizedBox(height: 16),
+                          TextFormField(
+                            controller: _objectivesController,
+                            minLines: 4,
+                            maxLines: 8,
+                            decoration: const InputDecoration(
+                              labelText: 'Objetivos',
+                              hintText:
+                                  'Lista los objetivos específicos del proyecto (uno por línea)',
+                              border: OutlineInputBorder(),
+                            ),
+                            validator: (String? value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return 'Los objetivos son obligatorios';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          // Campo de año académico (asignado automáticamente por el tutor)
+                          TextFormField(
+                            controller: _academicYearController,
+                            enabled: false, // No editable por el estudiante
+                            decoration: InputDecoration(
+                              labelText: l10n.anteprojectAcademicYear,
+                              border: const OutlineInputBorder(),
+                              filled: true,
+                              fillColor: Colors.grey.shade100,
+                              suffixIcon: const Icon(
+                                Icons.lock,
+                                color: Colors.grey,
+                              ),
+                              helperText: _currentUser?.academicYear != null
+                                  ? 'Asignado automáticamente por tu tutor (${_currentUser!.fullName})'
+                                  : 'Asignado automáticamente por tu tutor',
+                              helperStyle: TextStyle(
+                                color: Colors.grey.shade600,
+                                fontSize: 12,
                               ),
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _titleController,
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.anteprojectTitleLabel,
-                    border: const OutlineInputBorder(),
-                  ),
-                  validator: (String? value) => FormValidators.anteprojectTitle(value, context),
-                ),
-                const SizedBox(height: 16),
-                DropdownButtonFormField<ProjectType>(
-                  value: _projectType,
-                  decoration: InputDecoration(
-                    labelText: l10n.anteprojectType,
-                    border: const OutlineInputBorder(),
-                  ),
-                  items: ProjectType.values
-                      .map(
-                        (ProjectType type) => DropdownMenuItem<ProjectType>(
-                          value: type,
-                          child: Text(type.shortName),
-                        ),
-                      )
-                      .toList(),
-                  onChanged: (ProjectType? value) => setState(() => _projectType = value),
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _descriptionController,
-                  minLines: 4,
-                  maxLines: 8,
-                  decoration: InputDecoration(
-                    labelText: l10n.anteprojectDescription,
-                    border: const OutlineInputBorder(),
-                  ),
-                  validator: (String? value) => FormValidators.anteprojectDescription(value, context),
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _objectivesController,
-                  minLines: 4,
-                  maxLines: 8,
-                  decoration: const InputDecoration(
-                    labelText: 'Objetivos',
-                    hintText: 'Lista los objetivos específicos del proyecto (uno por línea)',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (String? value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Los objetivos son obligatorios';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                // Campo de año académico (asignado automáticamente por el tutor)
-                TextFormField(
-                  controller: _academicYearController,
-                  enabled: false, // No editable por el estudiante
-                  decoration: InputDecoration(
-                    labelText: l10n.anteprojectAcademicYear,
-                    border: const OutlineInputBorder(),
-                    filled: true,
-                    fillColor: Colors.grey.shade100,
-                    suffixIcon: const Icon(Icons.lock, color: Colors.grey),
-                    helperText: _currentUser?.academicYear != null 
-                        ? 'Asignado automáticamente por tu tutor (${_currentUser!.fullName})'
-                        : 'Asignado automáticamente por tu tutor',
-                    helperStyle: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 12,
-                    ),
-                  ),
-                  validator: (String? value) => FormValidators.academicYear(value, context),
-                ),
-                const SizedBox(height: 16),
-                // Widget de lista de hitos en lugar de JSON
-                HitosListWidget(
-                  key: ValueKey(_hitos.length.toString() + _hitos.map((h) => h.id).join()),
-                  initialHitos: _hitos,
-                  onHitosChanged: (hitos) {
-                    setState(() {
-                      _hitos = hitos;
-                    });
-                  },
-                ),
-                const SizedBox(height: 16),
-                // Información sobre temporalización
-                Card(
-                  color: Colors.blue.shade50,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        Icon(Icons.info_outline, color: Colors.blue.shade700),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            'La temporalización será establecida por tu tutor asignado usando una herramienta de calendario.',
-                            style: TextStyle(
-                              color: Colors.blue.shade700,
-                              fontWeight: FontWeight.w500,
+                            validator: (String? value) =>
+                                FormValidators.academicYear(value, context),
+                          ),
+                          const SizedBox(height: 16),
+                          // Widget de lista de hitos en lugar de JSON
+                          HitosListWidget(
+                            key: ValueKey(
+                              _hitos.length.toString() +
+                                  _hitos.map((h) => h.id).join(),
+                            ),
+                            initialHitos: _hitos,
+                            onHitosChanged: (hitos) {
+                              setState(() {
+                                _hitos = hitos;
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          // Información sobre temporalización
+                          Card(
+                            color: Colors.blue.shade50,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.info_outline,
+                                    color: Colors.blue.shade700,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Text(
+                                      l10n.timelineWillBeEstablishedByTutor,
+                                      style: TextStyle(
+                                        color: Colors.blue.shade700,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                          // Eliminado: Campo Tutor ID - Los tutores se asignan por el admin
+                          const SizedBox(height: 24),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 48,
+                            child: LoadingButton(
+                              text: l10n.anteprojectCreateButton,
+                              onPressed: _submit,
+                              isLoading: _isSubmitting,
+                              style: FilledButton.styleFrom(
+                                minimumSize: const Size(double.infinity, 48),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                // Eliminado: Campo Tutor ID - Los tutores se asignan por el admin
-                const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: LoadingButton(
-                    text: l10n.anteprojectCreateButton,
-                    onPressed: _submit,
-                    isLoading: _isSubmitting,
-                    style: FilledButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 48),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
+          );
         },
       ),
     );
   }
 }
-
-

@@ -9,6 +9,19 @@ class ScheduleService {
   /// Obtiene el cronograma de un anteproyecto
   Future<Schedule?> getScheduleByAnteproject(int anteprojectId) async {
     try {
+      // Primero verificar si existe un schedule sin la relación anidada
+      final scheduleCheck = await _supabase
+          .from('schedules')
+          .select('id')
+          .eq('anteproject_id', anteprojectId)
+          .maybeSingle();
+
+      // Si no existe schedule, retornar null inmediatamente
+      if (scheduleCheck == null) {
+        return null;
+      }
+
+      // Si existe, obtener el schedule completo con la relación
       final response = await _supabase
           .from('schedules')
           .select('''
@@ -20,12 +33,14 @@ class ScheduleService {
           .eq('anteproject_id', anteprojectId)
           .single();
 
-      // response ya es null si no se encuentra el registro
-
       // Convertir review_dates a objetos ReviewDate
-      final reviewDates = (response['review_dates'] as List)
-          .map((date) => ReviewDate.fromJson(date))
-          .toList();
+      // Manejar el caso cuando review_dates puede ser null o una lista vacía
+      List<ReviewDate> reviewDates = [];
+      if (response['review_dates'] != null && response['review_dates'] is List) {
+        reviewDates = (response['review_dates'] as List)
+            .map((date) => ReviewDate.fromJson(date))
+            .toList();
+      }
 
       return Schedule(
         id: response['id'],
@@ -38,7 +53,8 @@ class ScheduleService {
         updatedAt: DateTime.parse(response['updated_at']),
       );
     } catch (e) {
-      // Si no existe el cronograma, retornar null
+      // Si no existe el cronograma o hay cualquier error, retornar null
+      debugPrint('Error al obtener schedule: $e');
       return null;
     }
   }

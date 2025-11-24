@@ -1,160 +1,106 @@
-# ⚠️ DOCUMENTO OBSOLETO - Desarrollo Local con Supabase
+# Desarrollo con Supabase Cloud (Guía Genérica)
 
-> **IMPORTANTE**: Este documento está obsoleto desde el 4 de octubre de 2025.  
-> El proyecto ahora utiliza **Supabase Cloud** exclusivamente.  
-> Para recuperar la configuración local, usar la rama: `backup-supabase-local`
+> Esta guía describe el uso de Supabase Cloud en el proyecto, sin exponer datos reales. Sustituye cualquier valor sensible por variables de entorno y secretos gestionados fuera del repositorio.
 
 ---
 
-## 📋 Estado del Documento
+## Configuración de entorno (Frontend)
 
-- **Estado**: ⚠️ OBSOLETO
-- **Fecha de obsolescencia**: 4 de octubre de 2025
-- **Razón**: Migración a Supabase Cloud
-- **Alternativa**: Usar Supabase Cloud (https://app.supabase.com)
-- **Backup disponible**: Rama `backup-supabase-local`
+Define las variables mediante `--dart-define` o un gestor de configuración seguro.
+
+```bash
+# Ejemplo (no real):
+flutter run \
+  --dart-define=SUPABASE_URL=https://<TU-PROYECTO>.supabase.co \
+  --dart-define=SUPABASE_ANON_KEY=<TU_ANON_KEY>
+```
+
+Recomendaciones:
+- No commitear claves en el repositorio.
+- Separar entornos (desarrollo, staging, producción) con variables por entorno.
 
 ---
 
-## 🔄 Recuperación de Configuración Local (Si Necesario)
+## Conexión desde scripts y herramientas
 
-Si necesitas recuperar la configuración local de Supabase:
+Para tareas de administración (backups, restauración, psql), usa la URL de base de datos gestionada por Supabase Cloud con SSL.
 
 ```bash
-# Cambiar a la rama de backup
-git checkout backup-supabase-local
-
-# Ver archivos preservados
-ls backend/supabase/
-
-# Copiar archivos específicos si los necesitas
-git checkout backup-supabase-local -- backend/supabase/
+# Formato genérico (no real):
+export SUPABASE_DB_URL="postgres://<usuario>:<password>@<host>:<puerto>/<db>?sslmode=require"
 ```
+
+Obtén estos valores solo desde el panel de Supabase Cloud (Project Settings → Database). No los guardes en el repositorio.
 
 ---
 
-## 📚 Documentación Actual
+## Backups y Restauración (Cloud, genérico)
 
-Para la configuración actual del proyecto, consulta:
-- [README Principal](../README.md)
-- [Migraciones de Base de Datos](base_datos/migraciones/README.md)
-- [Configuración de Supabase Cloud](desarrollo/03-guias-tecnicas/supabase-cloud.md)
+- Planes gratuitos pueden no incluir backups automáticos; usa `pg_dump`/`pg_restore`.
+- Scripts de ejemplo (ajusta variables de entorno y rutas):
+
+```powershell
+# Backup (genérico)
+powershell -ExecutionPolicy Bypass -File .\scripts\backup_db.ps1 -OutputDir .\backups -Format custom -NoOwner
+
+# Restauración (genérico)
+powershell -ExecutionPolicy Bypass -File .\scripts\restore_db.ps1 -InputPath .\backups\supabase_YYYYMMDD_HHMMSS.dump -Clean -NoOwner
+```
+
+Buenas prácticas:
+- Usa `sslmode=require` siempre.
+- Almacena dumps fuera del repo y cifra si contienen datos sensibles.
 
 ---
 
-# ⚠️ Contenido Original (Obsoleto)
+## Autenticación y Seguridad
 
-## Configuración para Desarrollo Local (OBSOLETO)
+Checklist recomendado (genérico):
+- Activar y revisar RLS en todas las tablas de datos de usuario.
+- Definir Policies específicas por rol (admin, tutor, student).
+- Minimizar la superficie de `anon` y usar `service_role` solo en servidores seguros.
+- Rotar claves periódicamente y usar secretos gestionados (CI/CD / vault).
 
-### 1. Servidor MCP
+---
 
-El servidor MCP ha sido configurado para trabajar tanto en local como en producción.
+## Storage (Archivos)
 
-#### Archivos de configuración:
+- Crear buckets y permisos desde el panel (Storage → Buckets).
+- Acceso desde frontend mediante el SDK de Supabase con la URL del proyecto.
+- No utilizar access/secret keys S3 desde el cliente; usar endpoints gestionados por Supabase.
 
-- **`mcp-server/src/index.ts`**: Código fuente del servidor MCP
-- **`mcp-server/.env`**: Variables de entorno para el servidor MCP
-- **`mcp-config.json`**: Configuración de Cursor para conectar con el servidor MCP
+---
 
-#### Cambios realizados:
+## Edge Functions (Opcional)
 
-1. **URL de Supabase**: Cambiada de `http://192.168.1.9:54321` (producción) a `http://127.0.0.1:54321` (local)
-2. **Archivo .env**: Creado con configuración local
-3. **mcp-config.json**: Actualizado para apuntar a local
+- Desarrollar y desplegar funciones con la CLI de Supabase o CI/CD.
+- Gestionar secretos de funciones desde el panel (sin commitearlos).
+- Exponer solo endpoints necesarios y validar autenticación/roles en cada función.
 
-### 2. Frontend Flutter
+---
 
-#### Archivo de configuración:
+## Notificaciones y Email (Genérico)
 
-- **`frontend/lib/config/app_config.dart`**: Configuración de entornos
+- Integrar un proveedor (p. ej., Resend, SES, SendGrid) con claves como secretos.
+- Para pruebas, usar entornos sandbox del proveedor o cuentas de prueba, sin exponer claves.
 
-#### Cambios realizados:
+---
 
-1. **Entorno local**: Configurado para usar `http://127.0.0.1:54321`
-2. **Claves de Supabase**: Configuradas para el entorno local
+## Observabilidad
 
-### 3. Scripts de utilidad
+- Revisar logs en Supabase (Auth, DB, Storage, Functions) desde el panel.
+- Configurar alertas (si el plan lo permite) y métricas básicas en tu CI/CD.
 
-- **`scripts/create_users_local.js`**: Script para crear usuarios de prueba en Supabase local
+---
 
-## Cambio entre Local y Producción
+## Referencias
 
-### Para cambiar a LOCAL:
+- Panel de Supabase Cloud: `https://app.supabase.com` (inicia sesión y selecciona tu proyecto)
+- Documentación: `https://supabase.com/docs`
 
-1. **Servidor MCP**:
-   ```bash
-   # En mcp-server/.env
-   SUPABASE_URL=http://127.0.0.1:54321
-   ```
+---
 
-2. **Frontend**:
-   ```bash
-   # Ejecutar con variable de entorno
-   flutter run -d edge --dart-define=ENVIRONMENT=local
-   ```
+## Notas
 
-3. **Configuración de Cursor**:
-   ```json
-   // En mcp-config.json
-   "SUPABASE_URL": "http://127.0.0.1:54321"
-   ```
-
-### Para cambiar a PRODUCCIÓN:
-
-1. **Servidor MCP**:
-   ```bash
-   # En mcp-server/.env
-   SUPABASE_URL=http://192.168.1.9:54321
-   ```
-
-2. **Frontend**:
-   ```bash
-   # Ejecutar sin variable de entorno (usa producción por defecto)
-   flutter run -d edge
-   ```
-
-3. **Configuración de Cursor**:
-   ```json
-   // En mcp-config.json
-   "SUPABASE_URL": "http://192.168.1.9:54321"
-   ```
-
-## Comandos útiles
-
-### Iniciar servidor MCP:
-```bash
-cd mcp-server
-npm run build
-npm start
-```
-
-### Crear usuarios de prueba:
-```bash
-cd mcp-server
-node create_users_local.js
-```
-
-### Verificar estado de Supabase local:
-```bash
-curl http://127.0.0.1:54321/rest/v1/
-```
-
-## Problemas conocidos
-
-1. **Base de datos local vacía**: Las migraciones no se han aplicado automáticamente
-2. **Servidor MCP**: Requiere reiniciar Cursor después de cambios de configuración
-3. **Dependencias**: Los scripts de Node.js requieren estar en el directorio `mcp-server`
-
-## Solución de problemas
-
-### Error "Database error checking email":
-- **Causa**: Base de datos local sin tablas de autenticación
-- **Solución**: Ejecutar migraciones con `supabase db reset`
-
-### Error "Not connected" en MCP:
-- **Causa**: Servidor MCP no iniciado o configuración incorrecta
-- **Solución**: Verificar `mcp-config.json` y reiniciar Cursor
-
-### Error "Cannot find module":
-- **Causa**: Script ejecutado desde directorio incorrecto
-- **Solución**: Ejecutar desde `mcp-server/` donde están las dependencias
+- Este documento evita direcciones IP, puertos locales y credenciales reales.
+- Si necesitas la configuración local histórica, consúltala en una rama de backup fuera del flujo principal (no recomendada para el proyecto actual).

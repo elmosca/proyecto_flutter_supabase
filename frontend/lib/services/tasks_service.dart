@@ -2,19 +2,62 @@
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import '../models/models.dart';
+import '../utils/app_exception.dart';
+import '../utils/network_error_detector.dart';
+import 'supabase_interceptor.dart';
 import '../utils/notification_localizations.dart';
 import 'logging_service.dart';
 
+/// Servicio para gestión de tareas y sistema Kanban.
+///
+/// Proporciona operaciones CRUD y funcionalidades avanzadas para tareas:
+/// - Creación, edición y eliminación de tareas
+/// - Gestión de asignaciones a usuarios
+/// - Sistema Kanban con posicionamiento automático
+/// - Filtrado y búsqueda por estado, prioridad, fecha
+/// - Generación automática de tareas desde anteproyectos
+/// - Gestión de hitos y dependencias
+///
+/// ## Funcionalidades principales:
+/// - CRUD completo de tareas con validaciones
+/// - Sistema Kanban con drag & drop
+/// - Asignación de tareas a usuarios específicos
+/// - Filtrado por estado, prioridad, fecha de vencimiento
+/// - Generación automática desde anteproyectos aprobados
+/// - Gestión de hitos y dependencias entre tareas
+///
+/// ## Seguridad:
+/// - Requiere autenticación: Sí
+/// - Roles permitidos: Todos (con restricciones por RLS)
+/// - Políticas RLS aplicadas: Los usuarios solo ven tareas asignadas
+///
+/// ## Ejemplo de uso:
+/// ```dart
+/// final service = TasksService();
+/// final tasks = await service.getTasks();
+/// ```
+///
+/// Ver también: [Task], [TaskStatus], [TaskComplexity]
 class TasksService {
   final supabase.SupabaseClient _supabase = supabase.Supabase.instance.client;
   static const double _positionGapThreshold = 0.0001;
 
-  /// Obtiene todas las tareas del usuario actual
+  /// Obtiene todas las tareas asignadas al usuario actual.
+  ///
+  /// Retorna:
+  /// - Lista de [Task] asignadas al usuario, ordenadas por fecha de asignación
+  ///
+  /// Lanza:
+  /// - [AuthenticationException] si no hay usuario autenticado
+  /// - [DatabaseException] si falla la consulta
   Future<List<Task>> getTasks() async {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const TasksException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
       }
 
       // Obtener el ID del usuario desde la tabla users
@@ -45,17 +88,43 @@ class TasksService {
         return Task.fromJson(taskData);
       }).toList();
     } catch (e) {
-      throw TasksException('Error al obtener tareas: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error getting tasks: $e',
+        originalError: e,
+      );
     }
   }
 
-  /// Obtiene tareas del estudiante actual (usando ID de la tabla users)
-  /// Incluye tanto tareas de proyectos como de anteproyectos
+  /// Obtiene tareas del estudiante actual con información detallada.
+  ///
+  /// Incluye tanto tareas de proyectos como de anteproyectos con metadatos
+  /// adicionales para la visualización en el dashboard del estudiante.
+  ///
+  /// Retorna:
+  /// - Lista de mapas con tareas y metadatos asociados
+  ///
+  /// Lanza:
+  /// - [AuthenticationException] si no hay usuario autenticado
+  /// - [DatabaseException] si falla la consulta
   Future<List<Map<String, dynamic>>> getStudentTasks() async {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const TasksException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
       }
 
       // Obtener el ID del usuario desde la tabla users
@@ -92,7 +161,21 @@ class TasksService {
 
       return tasks;
     } catch (e) {
-      throw TasksException('Error al obtener tareas del estudiante: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error getting student tasks: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -115,7 +198,21 @@ class TasksService {
 
       return response.map<Task>(Task.fromJson).toList();
     } catch (e) {
-      throw TasksException('Error al obtener tareas del proyecto: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error getting project tasks: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -124,7 +221,10 @@ class TasksService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const TasksException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
       }
 
       // Obtener el ID del usuario desde la tabla users
@@ -179,7 +279,21 @@ class TasksService {
 
       return Task.fromJson(response);
     } catch (e) {
-      throw TasksException('Error al obtener tarea: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error getting task: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -188,7 +302,10 @@ class TasksService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const TasksException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
       }
 
       final data = task.toJson();
@@ -200,12 +317,18 @@ class TasksService {
 
       // Obtener la siguiente posición Kanban
       if (task.projectId == null) {
-        throw const TasksException('missingTaskContext');
+        throw ValidationException(
+          'missing_task_context',
+          technicalMessage: 'Task context is missing',
+        );
       }
 
       final projectExists = await _verifyProjectExists(task.projectId!);
       if (!projectExists) {
-        throw const TasksException('invalidProjectRelation');
+        throw ValidationException(
+          'invalid_project_relation',
+          technicalMessage: 'Invalid project relation',
+        );
       }
 
       final maxPosition = await _getMaxKanbanPosition(
@@ -233,7 +356,21 @@ class TasksService {
 
       return createdTask;
     } catch (e) {
-      throw TasksException('Error al crear tarea: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error creating task: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -242,7 +379,10 @@ class TasksService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const TasksException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
       }
 
       final data = task.toJson();
@@ -278,7 +418,21 @@ class TasksService {
 
       return Task.fromJson(response);
     } catch (e) {
-      throw TasksException('Error al actualizar tarea: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error updating task: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -287,7 +441,10 @@ class TasksService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const TasksException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
       }
 
       final updateData = <String, dynamic>{
@@ -313,7 +470,21 @@ class TasksService {
       await _createStatusChangeNotification(id, status);
       return Task.fromJson(response);
     } catch (e) {
-      throw TasksException('Error al actualizar estado de tarea: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error updating task status: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -322,7 +493,10 @@ class TasksService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const TasksException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
       }
 
       await _supabase.from('task_assignees').upsert({
@@ -335,7 +509,21 @@ class TasksService {
       // Crear notificación de asignación
       await _createAssignmentNotification(taskId, userId);
     } catch (e) {
-      throw TasksException('Error al asignar usuario a tarea: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error assigning user to task: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -344,7 +532,10 @@ class TasksService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const TasksException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
       }
 
       await _supabase
@@ -353,7 +544,21 @@ class TasksService {
           .eq('task_id', taskId)
           .eq('user_id', userId);
     } catch (e) {
-      throw TasksException('Error al quitar usuario de tarea: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error removing user from task: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -366,7 +571,10 @@ class TasksService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const TasksException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
       }
 
       final commentData = {
@@ -389,7 +597,21 @@ class TasksService {
 
       return Comment.fromJson(response);
     } catch (e) {
-      throw TasksException('Error al añadir comentario: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error adding comment: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -404,7 +626,21 @@ class TasksService {
 
       return response.map<Comment>(Comment.fromJson).toList();
     } catch (e) {
-      throw TasksException('Error al obtener comentarios: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error getting comments: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -417,7 +653,10 @@ class TasksService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const TasksException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
       }
 
       await _supabase
@@ -440,7 +679,21 @@ class TasksService {
         error,
         'TasksService.updateKanbanPosition',
       );
-      throw TasksException('Error al actualizar posición Kanban: $error');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(error)) {
+        throw SupabaseErrorInterceptor.handleError(error);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(error)) {
+        throw NetworkErrorDetector.detectNetworkError(error);
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error updating Kanban position: $error',
+        originalError: error,
+      );
     }
   }
 
@@ -466,13 +719,19 @@ class TasksService {
   }) async {
     final user = _supabase.auth.currentUser;
     if (user == null) {
-      throw const TasksException('Usuario no autenticado');
+      throw AuthenticationException(
+        'not_authenticated',
+        technicalMessage: 'User not authenticated',
+      );
     }
 
     try {
       final currentTask = await getTask(taskId);
       if (currentTask == null) {
-        throw const TasksException('taskNotFound');
+        throw ValidationException(
+          'resource_not_found',
+          technicalMessage: 'Task not found',
+        );
       }
 
       final effectiveProjectId = projectId ?? currentTask.projectId;
@@ -529,7 +788,21 @@ class TasksService {
         'TasksService.moveTask',
       );
       LoggingService.debug('$stackTrace', 'TasksService.moveTask');
-      throw TasksException('Error al mover la tarea: $error');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(error)) {
+        throw SupabaseErrorInterceptor.handleError(error);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(error)) {
+        throw NetworkErrorDetector.detectNetworkError(error);
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error moving task: $error',
+        originalError: error,
+      );
     }
   }
 
@@ -664,14 +937,31 @@ class TasksService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const TasksException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
       }
 
       for (final status in TaskStatus.values) {
         await _reindexColumn(projectId: projectId, status: status);
       }
     } catch (e) {
-      throw TasksException('Error al recalcular posiciones Kanban: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error recalculating Kanban positions: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -686,7 +976,21 @@ class TasksService {
 
       return response.map<Task>(Task.fromJson).toList();
     } catch (e) {
-      throw TasksException('Error al obtener tareas por estado: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error getting tasks by status: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -701,7 +1005,21 @@ class TasksService {
 
       return response.map<Task>(Task.fromJson).toList();
     } catch (e) {
-      throw TasksException('Error al obtener tareas por complejidad: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error getting tasks by complexity: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -779,18 +1097,38 @@ class TasksService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const TasksException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
       }
 
       // Verificar que la tarea no esté completada
       final task = await getTask(id);
       if (task?.status == TaskStatus.completed) {
-        throw const TasksException('No se puede eliminar una tarea completada');
+        throw BusinessLogicException(
+          'cannot_delete_completed_task',
+          technicalMessage: 'Cannot delete a completed task',
+        );
       }
 
       await _supabase.from('tasks').delete().eq('id', id);
     } catch (e) {
-      throw TasksException('Error al eliminar tarea: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error deleting task: $e',
+        originalError: e,
+      );
     }
   }
 

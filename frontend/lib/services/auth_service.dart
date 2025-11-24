@@ -5,7 +5,28 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../models/models.dart';
 import '../models/user.dart';
+import '../utils/app_exception.dart';
+import '../utils/network_error_detector.dart';
+import 'supabase_interceptor.dart';
+import 'email_notification_service.dart';
 
+/// Servicio para gestionar la autenticación con Supabase.
+///
+/// Este servicio encapsula todas las operaciones relacionadas con
+/// autenticación, sesión y perfil del usuario:
+/// - Inicio y cierre de sesión usando Supabase Auth
+/// - Suscripción a cambios del estado de autenticación
+/// - Lectura/actualización del perfil en la tabla `users`
+/// - Persistencia local y recuperación de la sesión
+///
+/// Seguridad:
+/// - Requiere inicializar correctamente `Supabase.instance` antes de su uso
+/// - Respeta las políticas RLS configuradas en la base de datos
+///
+/// Excepciones lanzadas habituales:
+/// - [ConfigurationException] si el cliente de Supabase no está inicializado
+/// - [AuthenticationException] en errores de autenticación/sesión
+/// - Excepciones derivadas por red a través de `NetworkErrorDetector`
 class AuthService {
   supabase.SupabaseClient get _supabase {
     try {
@@ -14,7 +35,11 @@ class AuthService {
       if (kDebugMode) {
         debugPrint('❌ Error accediendo a Supabase client: $e');
       }
-      throw AuthException('Supabase no está inicializado: $e');
+      throw ConfigurationException(
+        'configuration_missing',
+        technicalMessage: 'Supabase client not initialized: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -27,7 +52,19 @@ class AuthService {
   Stream<supabase.AuthState> get authStateChanges =>
       _supabase.auth.onAuthStateChange;
 
-  /// Inicia sesión con email y password usando Supabase Auth
+  /// Inicia sesión con email y password usando Supabase Auth.
+  ///
+  /// Parámetros:
+  /// - [email]: Correo electrónico del usuario
+  /// - [password]: Contraseña del usuario
+  ///
+  /// Retorna:
+  /// - Un mapa con la forma `{ success: true, user: {...} }` cuando es exitoso
+  ///
+  /// Lanza:
+  /// - [AuthenticationException] si las credenciales son inválidas o hay
+  ///   problemas al crear el perfil de usuario
+  /// - Errores interceptados de Supabase o de red
   Future<Map<String, dynamic>> signIn({
     required String email,
     required String password,
@@ -41,7 +78,10 @@ class AuthService {
       );
 
       if (authResponse.user == null) {
-        throw const AuthException('Credenciales inválidas');
+        throw AuthenticationException(
+          'invalid_credentials',
+          technicalMessage: 'Authentication failed: user is null',
+        );
       }
 
       print('✅ Login exitoso con Supabase Auth');
@@ -50,7 +90,11 @@ class AuthService {
       final userProfile = await getCurrentUserProfile();
 
       if (userProfile == null) {
-        throw const AuthException('No se pudo obtener el perfil del usuario');
+        throw AuthenticationException(
+          'profile_not_found',
+          technicalMessage:
+              'User profile not found after successful authentication',
+        );
       }
 
       // Crear respuesta en el formato esperado
@@ -68,11 +112,35 @@ class AuthService {
       };
     } catch (e) {
       print('❌ Error en login: $e');
-      throw AuthException('Error de autenticación: $e');
+
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      // Error genérico de autenticación
+      throw AuthenticationException(
+        'authentication_generic',
+        technicalMessage: 'Authentication error: $e',
+        originalError: e,
+      );
     }
   }
 
-  /// Verifica si hay una sesión activa de Supabase
+  /// Verifica si hay una sesión activa de Supabase y construye el perfil.
+  ///
+  /// Retorna:
+  /// - [User] completo desde la tabla `users` si existe
+  /// - `null` si no hay sesión
+  ///
+  /// Notas:
+  /// - Consulta la tabla `users` por email para obtener el ID entero y
+  ///   metadatos del perfil
   Future<User?> getCurrentUserFromSupabase() async {
     try {
       final user = _supabase.auth.currentUser;
@@ -97,13 +165,17 @@ class AuthService {
 
       // Crear objeto User desde el perfil de la base de datos
       final userId = response['id'] as int;
+      final String email = (response['email'] as String);
+      final String roleName = email.toLowerCase() == 'admin@jualas.es'
+          ? 'admin'
+          : (response['role'] as String);
 
       return User(
         id: userId,
-        email: response['email'] as String,
+        email: email,
         fullName: response['full_name'] as String,
         role: UserRole.values.firstWhere(
-          (role) => role.name == response['role'],
+          (role) => role.name == roleName,
           orElse: () => UserRole.student,
         ),
         status: UserStatus.values.firstWhere(
@@ -119,16 +191,35 @@ class AuthService {
     }
   }
 
-  /// Cierra la sesión actual
+  /// Cierra la sesión actual.
+  ///
+  /// Lanza:
+  /// - [AuthenticationException] si falla el cierre de sesión
   Future<void> signOut() async {
     try {
       await _supabase.auth.signOut();
     } catch (e) {
-      throw AuthException('Error al cerrar sesión: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw AuthenticationException(
+        'session_expired',
+        technicalMessage: 'Error during sign out: $e',
+        originalError: e,
+      );
     }
   }
 
-  /// Obtiene el perfil completo del usuario actual
+  /// Obtiene el perfil completo del usuario actual.
+  ///
+  /// Retorna el modelo [User] si puede mapear los datos de la tabla `users`.
   Future<User?> getCurrentUserProfile() async {
     try {
       final user = _supabase.auth.currentUser;
@@ -154,7 +245,10 @@ class AuthService {
           'full_name': userData['full_name'],
           'email': userData['email'],
           'nre': userData['nre'],
-          'role': userData['role'],
+          'role':
+              (userData['email'] as String).toLowerCase() == 'admin@jualas.es'
+              ? 'admin'
+              : userData['role'],
           'phone': userData['phone'],
           'biography': userData['biography'],
           'status': userData['status'],
@@ -192,7 +286,9 @@ class AuthService {
     }
   }
 
-  /// Convierte la respuesta de login_user a un objeto User
+  /// Convierte la respuesta de `signIn` a un objeto [User].
+  ///
+  /// Lanza [ValidationException] si el JSON no es válido.
   User? createUserFromLoginResponse(Map<String, dynamic> loginResponse) {
     try {
       print('🔍 Debug - Respuesta de login: $loginResponse');
@@ -228,19 +324,36 @@ class AuthService {
 
         print('🔍 Debug - Datos finales del usuario: $convertedData');
 
+        // Forzar rol admin para el correo admin@jualas.es
+        if ((convertedData['email'] as String).toLowerCase() ==
+            'admin@jualas.es') {
+          convertedData['role'] = 'admin';
+        }
+
         return User.fromJson(convertedData);
       }
       print('❌ Debug - Respuesta de login inválida o sin usuario');
       return null;
     } catch (e) {
       print('❌ Debug - Error al crear usuario: $e');
-      throw AuthException(
-        'Error al crear usuario desde respuesta de login: $e',
+      throw ValidationException(
+        'invalid_json',
+        technicalMessage: 'Error creating user from login response: $e',
+        originalError: e,
       );
     }
   }
 
-  /// Actualiza el perfil del usuario
+  /// Actualiza el perfil del usuario en la tabla `users`.
+  ///
+  /// Parámetros:
+  /// - [fullName]: Nombre completo requerido
+  /// - [phone]: Teléfono (opcional)
+  /// - [biography]: Biografía (opcional)
+  ///
+  /// Lanza:
+  /// - [AuthenticationException] si no hay usuario autenticado o falla la
+  ///   actualización
   Future<void> updateProfile({
     required String fullName,
     String? phone,
@@ -249,7 +362,11 @@ class AuthService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const AuthException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage:
+              'User not authenticated when trying to update profile',
+        );
       }
 
       await _supabase
@@ -262,20 +379,34 @@ class AuthService {
           })
           .eq('email', user.email!);
     } catch (e) {
-      throw AuthException('Error al actualizar perfil: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw AuthenticationException(
+        'profile_update_failed',
+        technicalMessage: 'Error updating user profile: $e',
+        originalError: e,
+      );
     }
   }
 
-  /// Verifica si el usuario está autenticado
+  /// Verifica si el usuario está autenticado.
   bool get isAuthenticated => currentUser != null;
 
-  /// Obtiene el ID del usuario actual
+  /// Obtiene el ID del usuario actual.
   String? get currentUserId => currentUser?.id;
 
-  /// Obtiene el email del usuario actual
+  /// Obtiene el email del usuario actual.
   String? get currentUserEmail => currentUser?.email;
 
-  /// Verifica si el usuario tiene un rol específico
+  /// Verifica si el usuario tiene un rol específico.
   Future<bool> hasRole(UserRole role) async {
     try {
       final profile = await getCurrentUserProfile();
@@ -285,18 +416,20 @@ class AuthService {
     }
   }
 
-  /// Verifica si el usuario es administrador
+  /// Verifica si el usuario es administrador.
   Future<bool> get isAdmin async => hasRole(UserRole.admin);
 
-  /// Verifica si el usuario es tutor
+  /// Verifica si el usuario es tutor.
   Future<bool> get isTutor async => hasRole(UserRole.tutor);
 
-  /// Verifica si el usuario es estudiante
+  /// Verifica si el usuario es estudiante.
   Future<bool> get isStudent async => hasRole(UserRole.student);
 
-  /// Parsea el rol del usuario basado en su email
+  /// Parsea el rol del usuario basado en su email.
   UserRole _parseUserRoleFromEmail(String email) {
-    if (email.contains('@alumno.cifpcarlos3.es')) {
+    if (email.toLowerCase() == 'admin@jualas.es') {
+      return UserRole.admin;
+    } else if (email.contains('@alumno.cifpcarlos3.es')) {
       return UserRole.student;
     } else if (email.contains('admin.test@cifpcarlos3.es') ||
         email.contains('admin@cifpcarlos3.es')) {
@@ -308,7 +441,7 @@ class AuthService {
     return UserRole.student; // Por defecto
   }
 
-  /// Guarda la sesión del usuario en SharedPreferences
+  /// Guarda la sesión del usuario en `SharedPreferences`.
   Future<void> saveUserSession(User user) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -328,7 +461,7 @@ class AuthService {
     }
   }
 
-  /// Recupera la sesión del usuario desde SharedPreferences
+  /// Recupera la sesión del usuario desde `SharedPreferences`.
   Future<User?> getSavedUserSession() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -364,7 +497,7 @@ class AuthService {
     }
   }
 
-  /// Elimina la sesión guardada
+  /// Elimina la sesión guardada.
   Future<void> clearSavedSession() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -372,6 +505,192 @@ class AuthService {
       print('✅ Sesión eliminada de SharedPreferences');
     } catch (e) {
       print('❌ Error eliminando sesión: $e');
+    }
+  }
+
+  /// Solicita un email para restablecer la contraseña.
+  ///
+  /// Parámetros:
+  /// - [email]: Correo electrónico del usuario
+  ///
+  /// Lanza:
+  /// - [AuthenticationException] si falla la solicitud
+  /// Solicita el restablecimiento de contraseña.
+  ///
+  /// Si el usuario es un estudiante con tutor asignado, se notifica al tutor.
+  /// Si no, se envía el email tradicional de Supabase.
+  ///
+  /// Retorna un mapa con:
+  /// - sentToTutor: true si se envió al tutor, false si se envió email directo
+  /// - tutorName: nombre del tutor (si aplica)
+  Future<Map<String, dynamic>> resetPasswordForEmail(String email) async {
+    try {
+      print('🔐 Solicitando reset de contraseña para: $email');
+
+      // Buscar al usuario por email
+      final userResponse = await _supabase
+          .from('users')
+          .select('id, full_name, email, role, tutor_id')
+          .eq('email', email)
+          .maybeSingle();
+
+      if (userResponse == null) {
+        throw AuthenticationException(
+          'user_not_found',
+          technicalMessage: 'No se encontró un usuario con ese email',
+        );
+      }
+
+      final userId = userResponse['id'] as int;
+      final userFullName = userResponse['full_name'] as String;
+      final userRole = userResponse['role'] as String;
+      final tutorId = userResponse['tutor_id'] as int?;
+
+      print(
+        '👤 Usuario encontrado: $userFullName (ID: $userId, Rol: $userRole)',
+      );
+
+      // Si es un estudiante con tutor asignado, notificar al tutor
+      if (userRole == 'student' && tutorId != null) {
+        print('👨‍🏫 Buscando tutor con ID: $tutorId');
+
+        // Obtener información del tutor
+        final tutorResponse = await _supabase
+            .from('users')
+            .select('id, full_name, email')
+            .eq('id', tutorId)
+            .single();
+
+        final tutorName = tutorResponse['full_name'] as String;
+        final tutorEmail = tutorResponse['email'] as String;
+
+        print('✅ Tutor encontrado: $tutorName ($tutorEmail)');
+
+        // Crear notificación interna para el tutor
+        await _supabase.from('notifications').insert({
+          'user_id': tutorId,
+          'type': 'password_reset_request',
+          'title': 'Solicitud de Restablecimiento de Contraseña',
+          'message':
+              'El estudiante $userFullName ($email) ha solicitado restablecer su contraseña. Por favor, accede a la gestión de estudiantes para generar una nueva contraseña temporal.',
+          'read_at': null, // null = no leída
+          'created_at': DateTime.now().toIso8601String(),
+        });
+
+        print('✅ Notificación interna creada para el tutor');
+
+        // Enviar email al tutor
+        try {
+          await EmailNotificationService.sendPasswordResetRequestToTutor(
+            tutorEmail: tutorEmail,
+            tutorName: tutorName,
+            studentEmail: email,
+            studentName: userFullName,
+          );
+          print('✅ Email enviado al tutor');
+        } catch (emailError) {
+          print('⚠️ Error enviando email al tutor: $emailError');
+          // No lanzar error, la notificación interna ya fue creada
+        }
+
+        print(
+          '✅ Solicitud enviada al tutor. El tutor recibirá una notificación y un email.',
+        );
+
+        return {
+          'sentToTutor': true,
+          'tutorName': tutorName,
+          'tutorEmail': tutorEmail,
+        };
+      } else {
+        // Si es un tutor o admin, o un estudiante sin tutor, usar el flujo tradicional
+        print(
+          '⚠️ Usuario sin tutor asignado o no es estudiante. Usando flujo tradicional de Supabase.',
+        );
+
+        // Determinar la URL de redirección según la plataforma
+        String redirectUrl;
+        if (kIsWeb) {
+          final baseUrl = Uri.base.origin;
+          redirectUrl = '$baseUrl/reset-password?type=reset';
+        } else {
+          // En desktop/mobile, usar deep link
+          redirectUrl = 'tfgapp://reset-password?type=reset';
+        }
+
+        print('🔗 Redirect URL: $redirectUrl');
+
+        await _supabase.auth.resetPasswordForEmail(
+          email,
+          redirectTo: redirectUrl,
+        );
+
+        print('✅ Email de reset de contraseña enviado');
+
+        return {'sentToTutor': false};
+      }
+    } catch (e) {
+      print('❌ Error solicitando reset de contraseña: $e');
+
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw AuthenticationException(
+        'password_reset_failed',
+        technicalMessage: 'Error requesting password reset: $e',
+        originalError: e,
+      );
+    }
+  }
+
+  /// Actualiza la contraseña del usuario después de recibir el link de reset.
+  ///
+  /// Parámetros:
+  /// - [newPassword]: Nueva contraseña
+  ///
+  /// Lanza:
+  /// - [AuthenticationException] si falla la actualización
+  Future<void> updatePassword(String newPassword) async {
+    try {
+      print('🔐 Actualizando contraseña');
+
+      final response = await _supabase.auth.updateUser(
+        supabase.UserAttributes(password: newPassword),
+      );
+
+      if (response.user == null) {
+        throw AuthenticationException(
+          'password_update_failed',
+          technicalMessage: 'Password update failed: user is null',
+        );
+      }
+
+      print('✅ Contraseña actualizada exitosamente');
+    } catch (e) {
+      print('❌ Error actualizando contraseña: $e');
+
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw AuthenticationException(
+        'password_update_failed',
+        technicalMessage: 'Error updating password: $e',
+        originalError: e,
+      );
     }
   }
 }

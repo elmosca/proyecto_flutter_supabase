@@ -2,6 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../models/task.dart';
 import '../services/tasks_service.dart';
+import '../utils/app_exception.dart';
+import '../utils/error_translator.dart';
 
 // cspell:ignore anteproject reordenamiento
 
@@ -159,7 +161,13 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
       _cachedTasks = List<Task>.from(tasks);
       emit(TasksLoaded(tasks));
     } catch (e) {
-      emit(TasksFailure(e.toString()));
+      // Manejar errores usando el nuevo sistema
+      if (e is AppException) {
+        final fallbackMessage = ErrorTranslator.getFallbackMessage(e);
+        emit(TasksFailure(fallbackMessage));
+      } else {
+        emit(TasksFailure('Error inesperado: ${e.toString()}'));
+      }
     }
   }
 
@@ -177,7 +185,13 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
       // Recargar la lista
       add(TasksLoadRequested(projectId: event.task.projectId));
     } catch (e) {
-      emit(TasksFailure(e.toString()));
+      // Manejar errores usando el nuevo sistema
+      if (e is AppException) {
+        final fallbackMessage = ErrorTranslator.getFallbackMessage(e);
+        emit(TasksFailure(fallbackMessage));
+      } else {
+        emit(TasksFailure('Error inesperado: ${e.toString()}'));
+      }
     }
   }
 
@@ -202,7 +216,13 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
           ),
         );
       } catch (error) {
-        emit(TasksFailure(error.toString()));
+        // Manejar errores usando el nuevo sistema
+        if (error is AppException) {
+          final fallbackMessage = ErrorTranslator.getFallbackMessage(error);
+          emit(TasksFailure(fallbackMessage));
+        } else {
+          emit(TasksFailure('Error inesperado: ${error.toString()}'));
+        }
       }
       return;
     }
@@ -255,7 +275,13 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
         ),
       );
     } catch (e) {
-      emit(TasksFailure(e.toString()));
+      // Manejar errores usando el nuevo sistema
+      if (e is AppException) {
+        final fallbackMessage = ErrorTranslator.getFallbackMessage(e);
+        emit(TasksFailure(fallbackMessage));
+      } else {
+        emit(TasksFailure('Error inesperado: ${e.toString()}'));
+      }
     }
   }
 
@@ -270,7 +296,13 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
       emit(const TaskOperationSuccess('taskDeletedSuccess'));
       add(TasksLoadRequested(projectId: _currentProjectId));
     } catch (e) {
-      emit(TasksFailure(e.toString()));
+      // Manejar errores usando el nuevo sistema
+      if (e is AppException) {
+        final fallbackMessage = ErrorTranslator.getFallbackMessage(e);
+        emit(TasksFailure(fallbackMessage));
+      } else {
+        emit(TasksFailure('Error inesperado: ${e.toString()}'));
+      }
     }
   }
 
@@ -294,11 +326,15 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
       return;
     }
 
+    final fromStatus = originalTasks[movingIndex].status;
+    final toStatus = event.newStatus;
+
+    // Actualización optimista: remover de columna original e insertar en nueva
     final optimisticTasks = _buildOptimisticState(
       tasks: originalTasks,
       taskId: event.taskId,
-      fromStatus: originalTasks[movingIndex].status,
-      toStatus: event.newStatus,
+      fromStatus: fromStatus,
+      toStatus: toStatus,
       targetIndex: event.newPosition,
     );
 
@@ -308,12 +344,13 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
     try {
       final resultTask = await tasksService.moveTask(
         taskId: event.taskId,
-        fromStatus: originalTasks[movingIndex].status,
-        toStatus: event.newStatus,
+        fromStatus: fromStatus,
+        toStatus: toStatus,
         targetIndex: event.newPosition.toInt(),
         projectId: originalTasks[movingIndex].projectId,
       );
 
+      // Actualizar el cache con la tarea devuelta del servidor
       _cachedTasks = _cachedTasks.map((task) {
         if (task.id == resultTask.id) {
           return resultTask;
@@ -321,14 +358,28 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
         return task;
       }).toList();
 
+      // Emitir el estado actualizado con la tarea del servidor
       emit(TasksLoaded(_cachedTasks));
       emit(const TaskOperationSuccess('taskReorderedSuccess'));
-      add(
-        TasksLoadRequested(
-          projectId: resultTask.projectId ?? _currentProjectId,
-        ),
+      
+      // Recargar desde el servidor para asegurar sincronización completa
+      // Usar un pequeño delay para evitar race conditions y asegurar que
+      // la actualización en la BD se haya propagado
+      Future.delayed(
+        const Duration(milliseconds: 200),
+        () {
+          if (!isClosed) {
+            add(
+              TasksLoadRequested(
+                projectId: resultTask.projectId ?? _currentProjectId,
+              ),
+            );
+          }
+        },
       );
     } catch (e) {
+      // Rollback al estado original en caso de error
+      _cachedTasks = List<Task>.from(originalTasks);
       emit(TasksLoaded(originalTasks));
       emit(TasksFailure(e.toString()));
     }
@@ -354,7 +405,13 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
       emit(const TaskOperationSuccess('taskPositionUpdatedSuccess'));
       add(TasksLoadRequested(projectId: task.projectId ?? _currentProjectId));
     } catch (e) {
-      emit(TasksFailure(e.toString()));
+      // Manejar errores usando el nuevo sistema
+      if (e is AppException) {
+        final fallbackMessage = ErrorTranslator.getFallbackMessage(e);
+        emit(TasksFailure(fallbackMessage));
+      } else {
+        emit(TasksFailure('Error inesperado: ${e.toString()}'));
+      }
     }
   }
 
@@ -365,6 +422,7 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
     required TaskStatus toStatus,
     required double targetIndex,
   }) {
+    // Crear una copia de las tareas y remover la tarea que se está moviendo
     final workingTasks = List<Task>.from(tasks);
     final movingIndex = workingTasks.indexWhere((task) => task.id == taskId);
 
@@ -372,13 +430,17 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
       return tasks;
     }
 
+    // Remover la tarea de su posición actual
     final movingTask = workingTasks.removeAt(movingIndex);
+    
+    // Actualizar la tarea con el nuevo estado y posición
     final updatedTask = movingTask.copyWith(
       status: toStatus,
       kanbanPosition: targetIndex,
       updatedAt: DateTime.now(),
     );
 
+    // Insertar la tarea en la nueva columna
     return _insertTaskIntoColumn(
       tasks: workingTasks,
       task: updatedTask,

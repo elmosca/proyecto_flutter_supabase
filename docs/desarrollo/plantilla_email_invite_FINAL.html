@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenido al Sistema TFG</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333333;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    .email-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+    }
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #ffffff;
+      padding: 30px 20px;
+      text-align: center;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+    }
+    .content {
+      padding: 30px 20px;
+      background-color: #ffffff;
+    }
+    .greeting {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #333333;
+    }
+    .message {
+      font-size: 16px;
+      color: #666666;
+      margin-bottom: 25px;
+    }
+    .info-box {
+      background-color: #e7f3ff;
+      border-left: 4px solid #2196F3;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 4px;
+      font-size: 14px;
+      color: #0c5460;
+    }
+    .info-box strong {
+      display: block;
+      margin-bottom: 8px;
+      color: #0c5460;
+    }
+    .info-box p {
+      margin: 5px 0;
+    }
+    .password-container {
+      background-color: #f8f9fa;
+      border: 2px dashed #667eea;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 25px 0;
+      text-align: center;
+    }
+    .password-label {
+      font-size: 14px;
+      color: #666666;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .password-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #667eea;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 2px;
+      word-break: break-all;
+    }
+    .tutor-info {
+      background-color: #f0f9ff;
+      border-left: 4px solid #0ea5e9;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    .tutor-info h3 {
+      margin: 0 0 10px 0;
+      color: #0c4a6e;
+      font-size: 16px;
+    }
+    .tutor-info p {
+      margin: 5px 0;
+      color: #075985;
+      font-size: 14px;
+    }
+    .warning-box {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 15px;
+      margin: 25px 0;
+      border-radius: 4px;
+    }
+    .warning-box strong {
+      color: #856404;
+      display: block;
+      margin-bottom: 10px;
+    }
+    .warning-box ul {
+      margin: 10px 0;
+      padding-left: 20px;
+      color: #856404;
+    }
+    .warning-box li {
+      margin-bottom: 8px;
+    }
+    .button-container {
+      text-align: center;
+      margin: 30px 0;
+    }
+    .button {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #ffffff;
+      padding: 14px 28px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 16px;
+      box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);
+    }
+    .footer {
+      background-color: #f8f9fa;
+      padding: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: #999999;
+      border-top: 1px solid #e9ecef;
+    }
+    .footer p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="header">
+      <h1>🎓 ¡Bienvenido al Sistema TFG!</h1>
+    </div>
+    
+    <div class="content">
+      <div class="greeting">
+        Hola <strong>{{ .Data.full_name }}</strong>,
+      </div>
+      
+      <div class="message">
+        Has sido añadido al <strong>Sistema de Gestión de Proyectos TFG</strong> del CIFP Carlos III por <strong>{{ .Data.created_by_name }}</strong> ({{ if eq .Data.created_by "tutor" }}Tutor{{ else }}Administrador{{ end }}).
+      </div>
+      
+      <div class="info-box">
+        <strong>📋 Información de tu cuenta:</strong>
+        <p><strong>Email:</strong> {{ .Email }}</p>
+        {{ if .Data.student_nre }}<p><strong>NRE:</strong> {{ .Data.student_nre }}</p>{{ end }}
+        {{ if .Data.student_phone }}<p><strong>Teléfono:</strong> {{ .Data.student_phone }}</p>{{ end }}
+        {{ if .Data.academic_year }}<p><strong>Año académico:</strong> {{ .Data.academic_year }}</p>{{ end }}
+        {{ if .Data.student_specialty }}<p><strong>Especialidad:</strong> {{ .Data.student_specialty }}</p>{{ end }}
+      </div>
+      
+      {{ if .Data.tutor_name }}
+      <div class="tutor-info">
+        <h3>👨‍🏫 Tu Tutor Asignado</h3>
+        <p><strong>Nombre:</strong> {{ .Data.tutor_name }}</p>
+        {{ if .Data.tutor_email }}<p><strong>Email:</strong> <a href="mailto:{{ .Data.tutor_email }}" style="color: #075985; text-decoration: none;">{{ .Data.tutor_email }}</a></p>{{ end }}
+        {{ if .Data.tutor_phone }}<p><strong>Teléfono:</strong> <a href="tel:{{ .Data.tutor_phone }}" style="color: #075985; text-decoration: none;">{{ .Data.tutor_phone }}</a></p>{{ end }}
+        <p style="margin-top: 10px; font-size: 13px; color: #075985;">
+          <strong>💬 Puedes contactar a tu tutor directamente por email o teléfono para cualquier consulta sobre tu proyecto TFG.</strong>
+        </p>
+      </div>
+      {{ end }}
+      
+      <div class="password-container">
+        <div class="password-label">Tu Contraseña</div>
+        <div class="password-value">{{ .Data.temporary_password }}</div>
+      </div>
+      
+      <div class="warning-box">
+        <strong>⚠️ Importante:</strong>
+        <ul>
+          <li>Esta es tu contraseña para acceder al sistema</li>
+          <li>Guárdala en un lugar seguro</li>
+          <li>Por seguridad, no compartas esta contraseña con nadie</li>
+        </ul>
+      </div>
+      
+      <div class="info-box" style="background-color: #d1fae5; border-left-color: #10b981;">
+        <strong>🔐 Cómo acceder al sistema:</strong>
+        <p><strong>1.</strong> Ve a la página de inicio de sesión: <a href="https://fct.jualas.es/login" style="color: #059669; font-weight: 600;">fct.jualas.es/login</a></p>
+        <p><strong>2.</strong> Inicia sesión con:</p>
+        <p style="margin-left: 20px;">• Email: <strong>{{ .Email }}</strong></p>
+        <p style="margin-left: 20px;">• Contraseña: <strong>{{ .Data.temporary_password }}</strong></p>
+      </div>
+      
+      <div class="button-container">
+        <a href="{{ .ConfirmationURL }}" class="button">Acceso Rápido (enlace directo)</a>
+      </div>
+      <p style="text-align: center; font-size: 12px; color: #999; margin-top: 10px;">
+        El enlace de acceso rápido expira en 1 hora. Si da error, usa el login manual arriba.
+      </p>
+      
+      <div class="info-box">
+        <strong>💡 Próximos pasos:</strong>
+        <p>1. Accede al sistema usando tu email y contraseña</p>
+        <p>2. Comienza a trabajar en tu Anteproyecto TFG</p>
+        {{ if .Data.tutor_name }}<p>3. Contacta a tu tutor {{ .Data.tutor_name }} si tienes alguna pregunta</p>{{ end }}
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p><strong>Sistema de Gestión de Proyectos TFG</strong></p>
+      <p>CIFP Carlos III</p>
+      <p>Este es un email automático, por favor no respondas.</p>
+      <p style="margin-top: 10px; font-size: 11px;">
+        Si tienes problemas para acceder, contacta a tu tutor o administrador.
+      </p>
+    </div>
+  </div>
+</body>
+</html>
+

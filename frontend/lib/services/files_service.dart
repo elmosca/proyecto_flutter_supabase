@@ -1,11 +1,60 @@
 import 'dart:typed_data';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
+import '../utils/app_exception.dart';
+import '../utils/network_error_detector.dart';
+import 'supabase_interceptor.dart';
 
+/// Servicio para gestión de archivos con Supabase Storage.
+///
+/// Proporciona operaciones de subida, descarga y gestión de archivos:
+/// - Subida de archivos a Supabase Storage con metadatos
+/// - Descarga de archivos desde URLs públicas
+/// - Gestión de metadatos en la tabla `files`
+/// - Validación de tipos de archivo y tamaños
+/// - Organización por usuario y entidad adjunta
+///
+/// ## Funcionalidades principales:
+/// - Subir archivos con metadatos completos
+/// - Descargar archivos desde URLs públicas
+/// - Obtener lista de archivos por entidad
+/// - Eliminar archivos y sus metadatos
+/// - Validación de tipos MIME y tamaños
+///
+/// ## Seguridad:
+/// - Requiere autenticación: Sí
+/// - Roles permitidos: Todos (con restricciones por RLS)
+/// - Políticas RLS aplicadas: Los usuarios solo ven archivos de sus entidades
+///
+/// ## Ejemplo de uso:
+/// ```dart
+/// final service = FilesService();
+/// final result = await service.uploadFile(
+///   fileName: 'documento.pdf',
+///   fileBytes: bytes,
+///   attachableType: 'anteproject',
+///   attachableId: 123
+/// );
+/// ```
+///
+/// Ver también: [FileUploadResult]
 class FilesService {
   final supabase.SupabaseClient _supabase = supabase.Supabase.instance.client;
   static const String _bucketName = 'project-files';
 
-  /// Sube un archivo a Supabase Storage
+  /// Sube un archivo a Supabase Storage con metadatos.
+  ///
+  /// Parámetros:
+  /// - [fileName]: Nombre original del archivo
+  /// - [fileBytes]: Contenido del archivo como bytes
+  /// - [attachableType]: Tipo de entidad (anteproject, project, task)
+  /// - [attachableId]: ID de la entidad a la que se adjunta
+  ///
+  /// Retorna:
+  /// - [FileUploadResult] con información del archivo subido
+  ///
+  /// Lanza:
+  /// - [AuthenticationException] si no hay usuario autenticado
+  /// - [FileException] si falla la subida
   Future<FileUploadResult> uploadFile({
     required String fileName,
     required Uint8List fileBytes,
@@ -15,7 +64,10 @@ class FilesService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const FilesException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
       }
 
       // Obtener el ID del usuario desde la tabla users
@@ -38,7 +90,10 @@ class FilesService {
           .uploadBinary(uniqueFileName, fileBytes);
 
       if (uploadResponse.isEmpty) {
-        throw const FilesException('Error al subir el archivo');
+        throw FileException(
+          'file_upload_failed',
+          technicalMessage: 'File upload failed',
+        );
       }
 
       // Obtener URL pública del archivo
@@ -71,11 +126,25 @@ class FilesService {
         fileSize: fileBytes.length,
       );
     } catch (e) {
-      throw FilesException('Error al subir archivo: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw FileException(
+        'file_upload_failed',
+        technicalMessage: 'Error uploading file: $e',
+        originalError: e,
+      );
     }
   }
 
-  /// Obtiene los archivos de una entidad (task, comment, anteproject)
+  /// Obtiene los archivos de una entidad (task, comment, anteproject, project)
   Future<List<FileAttachment>> getEntityFiles({
     required String attachableType,
     required int attachableId,
@@ -97,7 +166,21 @@ class FilesService {
 
       return response.map<FileAttachment>(FileAttachment.fromJson).toList();
     } catch (e) {
-      throw FilesException('Error al obtener archivos: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw FileException(
+        'file_download_failed',
+        technicalMessage: 'Error getting files: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -106,7 +189,10 @@ class FilesService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const FilesException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
       }
 
       // Obtener el ID del usuario desde la tabla users
@@ -140,15 +226,53 @@ class FilesService {
       // Eliminar de la base de datos
       await _supabase.from('files').delete().eq('id', fileId);
     } catch (e) {
-      throw FilesException('Error al eliminar archivo: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw FileException(
+        'file_delete_failed',
+        technicalMessage: 'Error deleting file: $e',
+        originalError: e,
+      );
     }
   }
 
   /// Descarga un archivo
+  /// 
+  /// [filePath] puede ser:
+  /// - URL pública completa (https://...)
+  /// - Path relativo en el bucket (userId/type/id/filename)
   Future<Uint8List> downloadFile(String filePath) async {
     try {
-      // Extraer el nombre del archivo del path completo
-      final fileName = filePath.split('/').last;
+      String fileName;
+      
+      // Si es una URL pública, extraer el path del bucket
+      if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
+        // Extraer el path después del bucket name en la URL
+        // Formato: https://xxx.supabase.co/storage/v1/object/public/project-files/path/to/file
+        final uri = Uri.parse(filePath);
+        final pathSegments = uri.pathSegments;
+        
+        // Buscar el índice del bucket name
+        final bucketIndex = pathSegments.indexOf(_bucketName);
+        if (bucketIndex != -1 && bucketIndex < pathSegments.length - 1) {
+          // Reconstruir el path desde después del bucket name
+          fileName = pathSegments.sublist(bucketIndex + 1).join('/');
+        } else {
+          // Fallback: usar el último segmento
+          fileName = pathSegments.last;
+        }
+      } else {
+        // Ya es un path relativo
+        fileName = filePath;
+      }
 
       final response = await _supabase.storage
           .from(_bucketName)
@@ -156,7 +280,21 @@ class FilesService {
 
       return response;
     } catch (e) {
-      throw FilesException('Error al descargar archivo: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw FileException(
+        'file_download_failed',
+        technicalMessage: 'Error downloading file: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -208,8 +346,8 @@ class FilesService {
     return allowedExtensions.contains(extension);
   }
 
-  /// Valida el tamaño del archivo (máximo 50MB por defecto)
-  bool isValidFileSize(int sizeInBytes, {int maxSizeMB = 50}) {
+  /// Valida el tamaño del archivo (máximo 10MB por defecto)
+  bool isValidFileSize(int sizeInBytes, {int maxSizeMB = 10}) {
     final maxSizeInBytes = maxSizeMB * 1024 * 1024;
     return sizeInBytes <= maxSizeInBytes;
   }
@@ -278,8 +416,9 @@ class FileAttachment {
 
   String get formattedSize {
     if (fileSize < 1024) return '$fileSize B';
-    if (fileSize < 1024 * 1024)
+    if (fileSize < 1024 * 1024) {
       return '${(fileSize / 1024).toStringAsFixed(1)} KB';
+    }
     return '${(fileSize / (1024 * 1024)).toStringAsFixed(1)} MB';
   }
 }

@@ -12,7 +12,7 @@ class PersistentScaffold extends StatelessWidget {
   final Widget body;
   final List<Widget>? actions;
   final PreferredSizeWidget? bottom;
-  final FloatingActionButton? floatingActionButton;
+  final Widget? floatingActionButton;
   final Color? backgroundColor;
 
   const PersistentScaffold({

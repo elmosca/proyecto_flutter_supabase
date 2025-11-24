@@ -1,50 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../blocs/auth_bloc.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/task.dart';
+import '../../models/user.dart';
 import '../../blocs/tasks_bloc.dart';
 import '../../utils/task_localizations.dart';
+import '../../widgets/navigation/app_bar_actions.dart';
 import '../forms/task_form.dart';
 import '../details/task_detail_screen.dart';
 
 class TasksList extends StatefulWidget {
   final int? projectId;
+  final bool isEmbedded;
 
-  const TasksList({super.key, required this.projectId});
+  const TasksList({
+    super.key,
+    required this.projectId,
+    this.isEmbedded = false,
+  });
 
   @override
   State<TasksList> createState() => _TasksListState();
 }
 
 class _TasksListState extends State<TasksList> {
+  User? _currentUser;
+
   @override
   void initState() {
     super.initState();
+    _loadCurrentUser();
     // Cargar tareas al inicializar
     context.read<TasksBloc>().add(
       TasksLoadRequested(projectId: widget.projectId),
     );
   }
 
+  Future<void> _loadCurrentUser() async {
+    final authState = context.read<AuthBloc>().state;
+    if (authState is AuthAuthenticated) {
+      setState(() {
+        _currentUser = authState.user;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.tasksListTitle),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () => context.read<TasksBloc>().add(
-              TasksLoadRequested(projectId: widget.projectId),
-            ),
-            tooltip: l10n.tasksListRefresh,
-          ),
-        ],
-      ),
-      body: BlocBuilder<TasksBloc, TasksState>(
+    final body = BlocBuilder<TasksBloc, TasksState>(
         builder: (context, state) {
           if (state is TasksLoading) {
             return const Center(child: CircularProgressIndicator());
@@ -115,12 +122,45 @@ class _TasksListState extends State<TasksList> {
 
           return const Center(child: CircularProgressIndicator());
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _createTask,
-        child: const Icon(Icons.add),
-      ),
-    );
+      );
+
+    if (widget.isEmbedded) {
+      return body;
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(l10n.tasksListTitle),
+          actions: _currentUser != null
+              ? AppBarActions.build(
+                  context,
+                  _currentUser!,
+                  additionalActions: [
+                    IconButton(
+                      icon: const Icon(Icons.refresh),
+                      onPressed: () => context.read<TasksBloc>().add(
+                        TasksLoadRequested(projectId: widget.projectId),
+                      ),
+                      tooltip: l10n.tasksListRefresh,
+                    ),
+                  ],
+                )
+              : [
+                  IconButton(
+                    icon: const Icon(Icons.refresh),
+                    onPressed: () => context.read<TasksBloc>().add(
+                      TasksLoadRequested(projectId: widget.projectId),
+                    ),
+                    tooltip: l10n.tasksListRefresh,
+                  ),
+                ],
+        ),
+        body: body,
+        floatingActionButton: FloatingActionButton(
+          onPressed: _createTask,
+          child: const Icon(Icons.add),
+        ),
+      );
+    }
   }
 
   Widget _buildTaskCard(Task task, AppLocalizations l10n) {

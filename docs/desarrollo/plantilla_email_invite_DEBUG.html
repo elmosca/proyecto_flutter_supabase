@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DEBUG - Invite User Template</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    .container {
+      background-color: white;
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .debug-section {
+      background-color: #f0f0f0;
+      padding: 10px;
+      margin: 10px 0;
+      border-left: 4px solid #007bff;
+    }
+    .variable {
+      font-family: monospace;
+      color: #d63384;
+      background-color: #fff3cd;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+    h2 {
+      color: #333;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🐛 DEBUG - Plantilla de Invitación</h1>
+    <p>Esta plantilla muestra todas las variables disponibles para debug.</p>
+
+    <h2>Variables Básicas</h2>
+    <div class="debug-section">
+      <p><strong>Email:</strong> <span class="variable">{{ .Email }}</span></p>
+      <p><strong>SiteURL:</strong> <span class="variable">{{ .SiteURL }}</span></p>
+      <p><strong>RedirectTo:</strong> <span class="variable">{{ .RedirectTo }}</span></p>
+    </div>
+
+    <h2>Variables de Data ({{ .Data }})</h2>
+    <div class="debug-section">
+      <p><strong>.Data.full_name:</strong> <span class="variable">{{ .Data.full_name }}</span></p>
+      <p><strong>.Data.role:</strong> <span class="variable">{{ .Data.role }}</span></p>
+      <p><strong>.Data.temporary_password:</strong> <span class="variable">{{ .Data.temporary_password }}</span></p>
+      <p><strong>.Data.tutor_name:</strong> <span class="variable">{{ .Data.tutor_name }}</span></p>
+      <p><strong>.Data.tutor_email:</strong> <span class="variable">{{ .Data.tutor_email }}</span></p>
+      <p><strong>.Data.tutor_phone:</strong> <span class="variable">{{ .Data.tutor_phone }}</span></p>
+      <p><strong>.Data.academic_year:</strong> <span class="variable">{{ .Data.academic_year }}</span></p>
+      <p><strong>.Data.student_phone:</strong> <span class="variable">{{ .Data.student_phone }}</span></p>
+      <p><strong>.Data.student_nre:</strong> <span class="variable">{{ .Data.student_nre }}</span></p>
+      <p><strong>.Data.student_specialty:</strong> <span class="variable">{{ .Data.student_specialty }}</span></p>
+      <p><strong>.Data.created_by:</strong> <span class="variable">{{ .Data.created_by }}</span></p>
+      <p><strong>.Data.created_by_name:</strong> <span class="variable">{{ .Data.created_by_name }}</span></p>
+    </div>
+
+    <h2>Enlace de Confirmación</h2>
+    <div class="debug-section">
+      <p><a href="{{ .ConfirmationURL }}" style="background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Acceder al Sistema</a></p>
+      <p style="font-size: 12px; color: #666; margin-top: 10px;">URL: {{ .ConfirmationURL }}</p>
+    </div>
+
+    <h2>📝 Instrucciones</h2>
+    <p>1. Guarda esta plantilla en <strong>Authentication → Email Templates → Invite user</strong></p>
+    <p>2. Crea un estudiante de prueba</p>
+    <p>3. Revisa el email recibido</p>
+    <p>4. Verifica qué variables muestran valores y cuáles están vacías</p>
+    <p>5. Ajusta la plantilla final según las variables que funcionen</p>
+
+    <hr style="margin: 30px 0;">
+
+    <p style="font-size: 12px; color: #999;">
+      <strong>Sistema de Gestión de Proyectos TFG - CIFP Carlos III</strong><br>
+      Este es un email de debug, por favor no respondas.
+    </p>
+  </div>
+</body>
+</html>
+

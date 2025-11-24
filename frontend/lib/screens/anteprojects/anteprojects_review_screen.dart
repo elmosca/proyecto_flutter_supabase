@@ -1,33 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../blocs/auth_bloc.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/anteproject.dart';
+import '../../models/user.dart';
 import '../../services/anteprojects_service.dart';
+import '../../widgets/navigation/app_bar_actions.dart';
 import 'anteproject_detail_screen.dart';
 import 'anteproject_comments_screen.dart';
 
 class AnteprojectsReviewScreen extends StatefulWidget {
   final String? initialFilter;
-  
-  const AnteprojectsReviewScreen({super.key, this.initialFilter});
+
+  /// Si es true, usa Scaffold propio (para Navigator.push desde dashboard)
+  /// Si es false, solo retorna el contenido (para usar con PersistentScaffold en router)
+  final bool useOwnScaffold;
+
+  const AnteprojectsReviewScreen({
+    super.key,
+    this.initialFilter,
+    this.useOwnScaffold = false,
+  });
 
   @override
-  State<AnteprojectsReviewScreen> createState() => _AnteprojectsReviewScreenState();
+  State<AnteprojectsReviewScreen> createState() =>
+      _AnteprojectsReviewScreenState();
 }
 
 class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
   final AnteprojectsService _anteprojectsService = AnteprojectsService();
-  List<Anteproject> _anteprojects = [];
-  List<Anteproject> _filteredAnteprojects = [];
+  List<Map<String, dynamic>> _anteprojects = [];
+  List<Map<String, dynamic>> _filteredAnteprojects = [];
   bool _isLoading = true;
   String _selectedStatus = 'all';
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
+  User? _currentUser;
 
   Map<String, String> _statusFilters = {};
 
   @override
   void initState() {
     super.initState();
+    _loadCurrentUser();
     if (widget.initialFilter != null) {
       _selectedStatus = widget.initialFilter!;
     }
@@ -47,6 +62,15 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
     };
   }
 
+  void _loadCurrentUser() {
+    final authState = context.read<AuthBloc>().state;
+    if (authState is AuthAuthenticated) {
+      setState(() {
+        _currentUser = authState.user;
+      });
+    }
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -54,13 +78,46 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
   }
 
   Future<void> _loadAnteprojects() async {
+    // Verificar que el widget sigue montado antes de continuar
+    if (!mounted) return;
+
     try {
+      // Verificar que el usuario esté autenticado antes de hacer las llamadas
+      final authState = context.read<AuthBloc>().state;
+      if (authState is! AuthAuthenticated) {
+        // Si el usuario se desconectó, no hacer nada
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+        return;
+      }
+
       setState(() {
         _isLoading = true;
       });
 
       final anteprojects = await _anteprojectsService.getTutorAnteprojects();
-      
+
+      // Verificar que el widget sigue montado después de la operación asíncrona
+      if (!mounted) return;
+
+      // Debug: verificar qué datos tenemos después de cargar
+      if (anteprojects.isNotEmpty) {
+        debugPrint(
+          '🔍 Load - Primer anteproyecto claves: ${anteprojects[0].keys.toList()}',
+        );
+        debugPrint(
+          '🔍 Load - Tiene anteproject_students: ${anteprojects[0].containsKey('anteproject_students')}',
+        );
+        if (anteprojects[0].containsKey('anteproject_students')) {
+          debugPrint(
+            '🔍 Load - anteproject_students valor: ${anteprojects[0]['anteproject_students']}',
+          );
+        }
+      }
+
       if (mounted) {
         setState(() {
           _anteprojects = anteprojects;
@@ -70,47 +127,161 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
         _filterAnteprojects();
       }
     } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.errorLoadingAnteprojects(e.toString())),
-            backgroundColor: Colors.red,
-          ),
-        );
+      // Si el widget ya no está montado (por ejemplo, el usuario se desconectó), no hacer nada
+      if (!mounted) return;
+
+      // Verificar si el error es de autenticación
+      final authState = context.read<AuthBloc>().state;
+      if (authState is! AuthAuthenticated) {
+        // Si el usuario se desconectó, no mostrar error, simplemente salir
+        return;
       }
+
+      // Para otros errores, mostrar mensaje
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(
+              context,
+            )!.errorLoadingAnteprojects(e.toString()),
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
   void _filterAnteprojects() {
     setState(() {
-      _filteredAnteprojects = _anteprojects.where((anteproject) {
-        // Filtro por estado
-        bool statusMatch;
-        if (_selectedStatus == 'all') {
-          statusMatch = true;
-        } else if (_selectedStatus == 'pending') {
-          // Pendientes: submitted o under_review
-          statusMatch = anteproject.status == AnteprojectStatus.submitted || 
-                       anteproject.status == AnteprojectStatus.underReview;
-        } else if (_selectedStatus == 'reviewed') {
-          // Revisados: approved o rejected
-          statusMatch = anteproject.status == AnteprojectStatus.approved || 
-                       anteproject.status == AnteprojectStatus.rejected;
+      // Función auxiliar para convertir objetos minificados de Supabase
+      Map<String, dynamic> safeConvertMap(dynamic data) {
+        if (data is Map<String, dynamic>) {
+          return Map<String, dynamic>.from(data);
+        } else if (data is Map) {
+          final result = <String, dynamic>{};
+          for (final key in data.keys) {
+            final value = data[key];
+            // Preservar objetos anidados como anteproject_students
+            if (value is List) {
+              result[key.toString()] = value.map((item) {
+                if (item is Map) {
+                  final itemResult = <String, dynamic>{};
+                  for (final itemKey in item.keys) {
+                    itemResult[itemKey.toString()] = item[itemKey];
+                  }
+                  return itemResult;
+                }
+                return item;
+              }).toList();
+            } else if (value is Map) {
+              final valueResult = <String, dynamic>{};
+              for (final valueKey in value.keys) {
+                valueResult[valueKey.toString()] = value[valueKey];
+              }
+              result[key.toString()] = valueResult;
+            } else {
+              result[key.toString()] = value;
+            }
+          }
+          return result;
         } else {
-          // Filtro específico por estado
-          statusMatch = anteproject.status.name == _selectedStatus;
+          return <String, dynamic>{};
         }
-        
-        // Filtro por búsqueda
-        final searchMatch = _searchQuery.isEmpty ||
-                          anteproject.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-                          anteproject.description.toLowerCase().contains(_searchQuery.toLowerCase());
-        
-        return statusMatch && searchMatch;
-      }).toList();
+      }
+
+      // Función auxiliar para obtener información del estudiante
+      Map<String, dynamic>? getStudentInfo(
+        Map<String, dynamic> anteprojectData,
+      ) {
+        final anteprojectStudents =
+            anteprojectData['anteproject_students'] as List<dynamic>?;
+
+        if (anteprojectStudents != null && anteprojectStudents.isNotEmpty) {
+          try {
+            final firstStudent = anteprojectStudents[0];
+            final firstStudentMap = safeConvertMap(firstStudent);
+
+            if (firstStudentMap.containsKey('users')) {
+              final usersData = firstStudentMap['users'];
+              if (usersData != null) {
+                return safeConvertMap(usersData);
+              }
+            }
+          } catch (e) {
+            debugPrint('⚠️ Error procesando información del estudiante: $e');
+          }
+        }
+        return null;
+      }
+
+      _filteredAnteprojects = _anteprojects
+          .where((anteprojectData) {
+            try {
+              // Crear una copia del mapa para parsear sin modificar el original
+              final anteprojectMapForParsing = safeConvertMap(anteprojectData);
+              final anteprojectMapCopy = Map<String, dynamic>.from(
+                anteprojectMapForParsing,
+              );
+              anteprojectMapCopy.remove('anteproject_students');
+
+              if (anteprojectMapCopy.isEmpty) {
+                return false;
+              }
+
+              final anteproject = Anteproject.fromJson(anteprojectMapCopy);
+
+              // Obtener información del estudiante para búsqueda
+              final studentInfo = getStudentInfo(anteprojectData);
+              final studentName = studentInfo?['full_name'] ?? '';
+              final studentEmail = studentInfo?['email'] ?? '';
+
+              // Filtro por estado
+              bool statusMatch;
+              if (_selectedStatus == 'all') {
+                statusMatch = true;
+              } else if (_selectedStatus == 'pending') {
+                statusMatch =
+                    anteproject.status == AnteprojectStatus.submitted ||
+                    anteproject.status == AnteprojectStatus.underReview;
+              } else if (_selectedStatus == 'reviewed') {
+                statusMatch =
+                    anteproject.status == AnteprojectStatus.approved ||
+                    anteproject.status == AnteprojectStatus.rejected;
+              } else {
+                statusMatch = anteproject.status.name == _selectedStatus;
+              }
+
+              // Filtro por búsqueda
+              final searchMatch =
+                  _searchQuery.isEmpty ||
+                  anteproject.title.toLowerCase().contains(
+                    _searchQuery.toLowerCase(),
+                  ) ||
+                  anteproject.description.toLowerCase().contains(
+                    _searchQuery.toLowerCase(),
+                  ) ||
+                  studentName.toLowerCase().contains(
+                    _searchQuery.toLowerCase(),
+                  ) ||
+                  studentEmail.toLowerCase().contains(
+                    _searchQuery.toLowerCase(),
+                  );
+
+              return statusMatch && searchMatch;
+            } catch (e) {
+              debugPrint('⚠️ Error filtrando anteproyecto: $e');
+              return false;
+            }
+          })
+          .map((anteprojectData) {
+            // Crear una copia completa y profunda del mapa original
+            // para preservar todas las relaciones incluyendo anteproject_students
+            return safeConvertMap(anteprojectData);
+          })
+          .toList();
     });
   }
 
@@ -185,90 +356,123 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
     final l10n = AppLocalizations.of(context)!;
     _initializeStatusFilters(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_getScreenTitle(context)),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadAnteprojects,
-            tooltip: l10n.refresh,
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          // Filtros y búsqueda
-          Container(
-            padding: const EdgeInsets.all(16),
-            color: Colors.grey.shade50,
-            child: Column(
-              children: [
-                // Barra de búsqueda
-                TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: l10n.searchAnteprojects,
-                    prefixIcon: const Icon(Icons.search),
-                    border: const OutlineInputBorder(),
-                    filled: true,
-                    fillColor: Colors.white,
-                    suffixIcon: _searchQuery.isNotEmpty
-                        ? IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: () {
-                              _searchController.clear();
-                              _onSearchChanged('');
-                            },
-                          )
-                        : null,
-                  ),
-                  onChanged: _onSearchChanged,
-                ),
-                const SizedBox(height: 12),
-                // Filtro por estado
-                Row(
-                  children: [
-                    Text(l10n.filterByStatus),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: DropdownButton<String>(
-                        value: _selectedStatus,
-                        isExpanded: true,
-                        items: _statusFilters.entries.map((entry) {
-                          return DropdownMenuItem<String>(
-                            value: entry.key,
-                            child: Text(entry.value),
-                          );
-                        }).toList(),
-                        onChanged: _onStatusFilterChanged,
-                      ),
+    // Si necesita Scaffold propio (acceso desde dashboard con Navigator.push)
+    if (widget.useOwnScaffold) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(_getScreenTitle(context)),
+          backgroundColor: Colors.blue,
+          foregroundColor: Colors.white,
+          actions: _currentUser != null
+              ? AppBarActions.build(
+                  context,
+                  _currentUser!,
+                  additionalActions: [
+                    IconButton(
+                      icon: const Icon(Icons.refresh),
+                      onPressed: _loadAnteprojects,
+                      tooltip: l10n.refresh,
                     ),
                   ],
-                ),
-              ],
-            ),
-          ),
+                )
+              : [
+                  IconButton(
+                    icon: const Icon(Icons.refresh),
+                    onPressed: _loadAnteprojects,
+                    tooltip: l10n.refresh,
+                  ),
+                ],
+        ),
+        body: _buildContent(context),
+      );
+    }
 
-          // Lista de anteproyectos
-          Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _filteredAnteprojects.isEmpty
-                    ? _buildEmptyState(context)
-                    : ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: _filteredAnteprojects.length,
-                        itemBuilder: (context, index) {
-                          final anteproject = _filteredAnteprojects[index];
-                          return _buildAnteprojectCard(anteproject);
-                        },
-                      ),
+    // Si usa PersistentScaffold (acceso desde router/drawer)
+    // Retornar solo el contenido sin Scaffold
+    return _buildContent(context);
+  }
+
+  /// Construye el contenido principal de la pantalla
+  Widget _buildContent(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Column(
+      children: [
+        // Filtros y búsqueda
+        Container(
+          padding: const EdgeInsets.all(16),
+          color: Colors.grey.shade50,
+          child: Column(
+            children: [
+              // Barra de búsqueda
+              TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: l10n.searchAnteprojects,
+                  prefixIcon: const Icon(Icons.search),
+                  border: const OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Colors.white,
+                  suffixIcon: _searchQuery.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: () {
+                            _searchController.clear();
+                            _onSearchChanged('');
+                          },
+                        )
+                      : null,
+                ),
+                onChanged: _onSearchChanged,
+              ),
+              const SizedBox(height: 12),
+              // Filtro por estado
+              Row(
+                children: [
+                  Text(l10n.filterByStatus),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: DropdownButton<String>(
+                      value: _selectedStatus,
+                      isExpanded: true,
+                      items: _statusFilters.entries.map((entry) {
+                        return DropdownMenuItem<String>(
+                          value: entry.key,
+                          child: Text(entry.value),
+                        );
+                      }).toList(),
+                      onChanged: _onStatusFilterChanged,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+
+        // Lista de anteproyectos
+        Expanded(
+          child: _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _filteredAnteprojects.isEmpty
+              ? _buildEmptyState(context)
+              : ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: _filteredAnteprojects.length,
+                  itemBuilder: (context, index) {
+                    final anteprojectData = _filteredAnteprojects[index];
+                    // Debug: verificar qué datos tenemos en el item filtrado
+                    debugPrint(
+                      '🔍 ListView - Item $index - Claves: ${anteprojectData.keys.toList()}',
+                    );
+                    debugPrint(
+                      '🔍 ListView - Item $index - Tiene anteproject_students: ${anteprojectData.containsKey('anteproject_students')}',
+                    );
+                    return _buildAnteprojectCard(anteprojectData);
+                  },
+                ),
+        ),
+      ],
     );
   }
 
@@ -278,7 +482,9 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
     if (_searchQuery.isNotEmpty) {
       message = l10n.noAnteprojectsFound(_searchQuery);
     } else if (_selectedStatus != 'all') {
-      message = l10n.noAnteprojectsWithStatus(_statusFilters[_selectedStatus] ?? '');
+      message = l10n.noAnteprojectsWithStatus(
+        _statusFilters[_selectedStatus] ?? '',
+      );
     } else {
       message = l10n.noAssignedAnteprojects;
     }
@@ -295,10 +501,7 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
           const SizedBox(height: 16),
           Text(
             message,
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.grey.shade600,
-            ),
+            style: TextStyle(fontSize: 18, color: Colors.grey.shade600),
             textAlign: TextAlign.center,
           ),
           if (_searchQuery.isNotEmpty || _selectedStatus != 'all') ...[
@@ -320,9 +523,101 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
     );
   }
 
-  Widget _buildAnteprojectCard(Anteproject anteproject) {
+  Widget _buildAnteprojectCard(Map<String, dynamic> anteprojectData) {
+    // Debug: verificar qué datos tenemos antes de parsear
+    debugPrint(
+      '🔍 Build Card - anteprojectData claves: ${anteprojectData.keys.toList()}',
+    );
+    debugPrint(
+      '🔍 Build Card - Tiene anteproject_students: ${anteprojectData.containsKey('anteproject_students')}',
+    );
+    if (anteprojectData.containsKey('anteproject_students')) {
+      debugPrint(
+        '🔍 Build Card - anteproject_students valor: ${anteprojectData['anteproject_students']}',
+      );
+    }
+
+    // Crear una copia del mapa para parsear Anteproject sin modificar el original
+    final anteprojectMapForParsing = Map<String, dynamic>.from(anteprojectData);
+    anteprojectMapForParsing.remove('anteproject_students');
+
+    final anteproject = Anteproject.fromJson(anteprojectMapForParsing);
     final statusColor = _getStatusColor(anteproject.status);
     final statusIcon = _getStatusIcon(anteproject.status);
+
+    // Obtener información del estudiante desde la tabla de relación (usar el original)
+    final anteprojectStudents =
+        anteprojectData['anteproject_students'] as List<dynamic>?;
+
+    // Debug: verificar qué datos tenemos
+    debugPrint('🔍 Review Screen - Anteproyecto ID: ${anteproject.id}');
+    debugPrint(
+      '🔍 Review Screen - anteproject_students tipo: ${anteprojectStudents.runtimeType}',
+    );
+    debugPrint(
+      '🔍 Review Screen - anteproject_students valor: $anteprojectStudents',
+    );
+
+    // Función auxiliar para convertir de forma segura objetos minificados de Supabase
+    Map<String, dynamic> safeConvert(dynamic data) {
+      if (data is Map<String, dynamic>) {
+        return data;
+      } else if (data is Map) {
+        final result = <String, dynamic>{};
+        for (final key in data.keys) {
+          result[key.toString()] = data[key];
+        }
+        return result;
+      } else {
+        return <String, dynamic>{};
+      }
+    }
+
+    // Convertir de forma segura a Map
+    Map<String, dynamic>? studentInfo;
+    if (anteprojectStudents != null && anteprojectStudents.isNotEmpty) {
+      try {
+        final firstStudent = anteprojectStudents[0];
+        debugPrint(
+          '🔍 Review Screen - Primer estudiante tipo: ${firstStudent.runtimeType}',
+        );
+        debugPrint('🔍 Review Screen - Primer estudiante valor: $firstStudent');
+
+        final firstStudentMap = safeConvert(firstStudent);
+        debugPrint(
+          '🔍 Review Screen - Estudiante convertido: $firstStudentMap',
+        );
+
+        if (firstStudentMap.containsKey('users')) {
+          final usersData = firstStudentMap['users'];
+          debugPrint('🔍 Review Screen - users tipo: ${usersData.runtimeType}');
+          debugPrint('🔍 Review Screen - users valor: $usersData');
+
+          if (usersData != null) {
+            studentInfo = safeConvert(usersData);
+            debugPrint('🔍 Review Screen - studentInfo final: $studentInfo');
+          }
+        } else {
+          debugPrint(
+            '⚠️ Review Screen - No se encontró campo "users" en estudiante',
+          );
+        }
+      } catch (e, stackTrace) {
+        debugPrint(
+          '⚠️ Error procesando información del estudiante en card: $e',
+        );
+        debugPrint('⚠️ Stack trace: $stackTrace');
+        studentInfo = null;
+      }
+    } else {
+      debugPrint(
+        '⚠️ Review Screen - No hay estudiantes asociados al anteproyecto ${anteproject.id}',
+      );
+    }
+
+    final studentName = studentInfo?['full_name'] ?? 'Estudiante desconocido';
+    final studentEmail = studentInfo?['email'] ?? '';
+    final studentNre = studentInfo?['nre'] ?? '';
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -347,7 +642,10 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: statusColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
@@ -371,15 +669,59 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
+
+              // Información del estudiante
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.blue.shade200),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.person, size: 16, color: Colors.blue.shade700),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            studentName,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.blue.shade700,
+                            ),
+                          ),
+                          if (studentEmail.isNotEmpty)
+                            Text(
+                              studentEmail,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.blue.shade600,
+                              ),
+                            ),
+                          if (studentNre.isNotEmpty)
+                            Text(
+                              'NRE: $studentNre',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.blue.shade600,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
 
               // Descripción
               Text(
                 anteproject.description,
-                style: TextStyle(
-                  color: Colors.grey.shade600,
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -388,24 +730,22 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
               // Información adicional
               Row(
                 children: [
-                  Icon(Icons.calendar_today, size: 16, color: Colors.grey.shade500),
+                  Icon(
+                    Icons.calendar_today,
+                    size: 16,
+                    color: Colors.grey.shade500,
+                  ),
                   const SizedBox(width: 4),
                   Text(
                     '${AppLocalizations.of(context)!.year} ${anteproject.academicYear}',
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 12,
-                    ),
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
                   ),
                   const SizedBox(width: 16),
                   Icon(Icons.category, size: 16, color: Colors.grey.shade500),
                   const SizedBox(width: 4),
                   Text(
                     anteproject.projectType.displayName,
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 12,
-                    ),
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
                   ),
                 ],
               ),
@@ -414,14 +754,15 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
               // Fechas
               Row(
                 children: [
-                  Icon(Icons.access_time, size: 16, color: Colors.grey.shade500),
+                  Icon(
+                    Icons.access_time,
+                    size: 16,
+                    color: Colors.grey.shade500,
+                  ),
                   const SizedBox(width: 4),
                   Text(
                     '${AppLocalizations.of(context)!.created} ${_formatDate(anteproject.createdAt)}',
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 12,
-                    ),
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
                   ),
                   if (anteproject.submittedAt != null) ...[
                     const SizedBox(width: 16),
@@ -447,23 +788,32 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
                   TextButton.icon(
                     onPressed: () => _viewComments(anteproject),
                     icon: const Icon(Icons.chat, color: Colors.blue),
-                    label: Text(AppLocalizations.of(context)!.comments, style: const TextStyle(color: Colors.blue)),
+                    label: Text(
+                      AppLocalizations.of(context)!.comments,
+                      style: const TextStyle(color: Colors.blue),
+                    ),
                   ),
                   const SizedBox(width: 8),
-                  
+
                   // Botones de aprobación/rechazo (solo para enviados/en revisión)
                   if (anteproject.status == AnteprojectStatus.submitted ||
                       anteproject.status == AnteprojectStatus.underReview) ...[
                     TextButton.icon(
                       onPressed: () => _rejectAnteproject(anteproject),
                       icon: const Icon(Icons.cancel, color: Colors.red),
-                      label: Text(AppLocalizations.of(context)!.rejectAnteproject, style: const TextStyle(color: Colors.red)),
+                      label: Text(
+                        AppLocalizations.of(context)!.rejectAnteproject,
+                        style: const TextStyle(color: Colors.red),
+                      ),
                     ),
                     const SizedBox(width: 8),
                     ElevatedButton.icon(
                       onPressed: () => _approveAnteproject(anteproject),
                       icon: const Icon(Icons.check, color: Colors.white),
-                      label: Text(AppLocalizations.of(context)!.approveAnteproject, style: const TextStyle(color: Colors.white)),
+                      label: Text(
+                        AppLocalizations.of(context)!.approveAnteproject,
+                        style: const TextStyle(color: Colors.white),
+                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
                       ),
@@ -483,17 +833,21 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
   }
 
   void _viewAnteprojectDetails(Anteproject anteproject) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => AnteprojectDetailScreen(anteproject: anteproject),
-      ),
-    ).then((_) => _loadAnteprojects()); // Recargar al volver
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (context) =>
+                AnteprojectDetailScreen(anteproject: anteproject),
+          ),
+        )
+        .then((_) => _loadAnteprojects()); // Recargar al volver
   }
 
   void _viewComments(Anteproject anteproject) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => AnteprojectCommentsScreen(anteproject: anteproject),
+        builder: (context) =>
+            AnteprojectCommentsScreen(anteproject: anteproject),
       ),
     );
   }
@@ -504,13 +858,17 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
       builder: (context) => _ApprovalDialog(
         anteproject: anteproject,
         isApproval: true,
-        onConfirm: (comments) async {
+        onConfirm: (comments, timeline) async {
           // Capturar el context antes de la operación async
           final scaffoldMessenger = ScaffoldMessenger.of(context);
           final l10n = AppLocalizations.of(context)!;
-          
+
           try {
-            await _anteprojectsService.approveAnteproject(anteproject.id, comments);
+            await _anteprojectsService.approveAnteproject(
+              anteproject.id,
+              comments,
+              timeline: timeline,
+            );
             if (mounted) {
               scaffoldMessenger.showSnackBar(
                 SnackBar(
@@ -541,13 +899,16 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
       builder: (context) => _ApprovalDialog(
         anteproject: anteproject,
         isApproval: false,
-        onConfirm: (comments) async {
+        onConfirm: (comments, timeline) async {
           // Capturar el context antes de la operación async
           final scaffoldMessenger = ScaffoldMessenger.of(context);
           final l10n = AppLocalizations.of(context)!;
-          
+
           try {
-            await _anteprojectsService.rejectAnteproject(anteproject.id, comments);
+            await _anteprojectsService.rejectAnteproject(
+              anteproject.id,
+              comments,
+            );
             if (mounted) {
               scaffoldMessenger.showSnackBar(
                 SnackBar(
@@ -576,7 +937,7 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
 class _ApprovalDialog extends StatefulWidget {
   final Anteproject anteproject;
   final bool isApproval;
-  final Function(String) onConfirm;
+  final Function(String, Map<String, dynamic>?) onConfirm;
 
   const _ApprovalDialog({
     required this.anteproject,
@@ -590,6 +951,7 @@ class _ApprovalDialog extends StatefulWidget {
 
 class _ApprovalDialogState extends State<_ApprovalDialog> {
   final TextEditingController _commentsController = TextEditingController();
+  final List<MapEntry<DateTime, String>> _timelineDates = [];
   bool _isLoading = false;
 
   @override
@@ -598,38 +960,164 @@ class _ApprovalDialogState extends State<_ApprovalDialog> {
     super.dispose();
   }
 
+  void _addTimelineDate() async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 730)),
+    );
+    if (date == null) return;
+
+    final descriptionController = TextEditingController();
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Descripción de la fecha'),
+        content: TextField(
+          controller: descriptionController,
+          decoration: const InputDecoration(
+            labelText: 'Descripción',
+            hintText: 'Ej: Inicio, Revisión final, Presentación...',
+            border: OutlineInputBorder(),
+          ),
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Añadir'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && descriptionController.text.trim().isNotEmpty) {
+      setState(() {
+        _timelineDates.add(MapEntry(date, descriptionController.text.trim()));
+        // Ordenar por fecha
+        _timelineDates.sort((a, b) => a.key.compareTo(b.key));
+      });
+    }
+  }
+
+  void _removeTimelineDate(int index) {
+    setState(() {
+      _timelineDates.removeAt(index);
+    });
+  }
+
+  Map<String, dynamic> _buildTimelineMap() {
+    if (_timelineDates.isEmpty) return {};
+
+    final timeline = <String, String>{};
+    for (final entry in _timelineDates) {
+      final dateStr =
+          '${entry.key.day.toString().padLeft(2, '0')}/'
+          '${entry.key.month.toString().padLeft(2, '0')}/'
+          '${entry.key.year}';
+      timeline[dateStr] = entry.value;
+    }
+    return {'fechas': timeline};
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return AlertDialog(
       title: Text(
-        widget.isApproval ? l10n.approveAnteprojectTitle : l10n.rejectAnteprojectTitle,
+        widget.isApproval
+            ? l10n.approveAnteprojectTitle
+            : l10n.rejectAnteprojectTitle,
       ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(l10n.anteprojectTitle(widget.anteproject.title)),
-          const SizedBox(height: 16),
-          Text(
-            widget.isApproval 
-                ? l10n.confirmApproveAnteproject
-                : l10n.confirmRejectAnteproject,
-          ),
-          const SizedBox(height: 16),
-          TextField(
-            controller: _commentsController,
-            decoration: InputDecoration(
-              labelText: l10n.approvalCommentsOptional,
-              hintText: widget.isApproval 
-                  ? l10n.approvalCommentsHint
-                  : l10n.rejectionCommentsHint,
-              border: const OutlineInputBorder(),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l10n.anteprojectTitle(widget.anteproject.title)),
+            const SizedBox(height: 16),
+            Text(
+              widget.isApproval
+                  ? l10n.confirmApproveAnteproject
+                  : l10n.confirmRejectAnteproject,
             ),
-            maxLines: 3,
-          ),
-        ],
+            const SizedBox(height: 16),
+            TextField(
+              controller: _commentsController,
+              decoration: InputDecoration(
+                labelText: l10n.approvalCommentsOptional,
+                hintText: widget.isApproval
+                    ? l10n.approvalCommentsHint
+                    : l10n.rejectionCommentsHint,
+                border: const OutlineInputBorder(),
+              ),
+              maxLines: 3,
+            ),
+            // Selector de temporalización (solo para aprobación)
+            if (widget.isApproval) ...[
+              const SizedBox(height: 24),
+              const Divider(),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Temporalización',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add_circle),
+                    color: Colors.blue,
+                    onPressed: _addTimelineDate,
+                    tooltip: 'Añadir fecha',
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              if (_timelineDates.isEmpty)
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: const Text(
+                    'Añade fechas importantes del proyecto usando el botón +',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                )
+              else
+                ...List.generate(_timelineDates.length, (index) {
+                  final entry = _timelineDates[index];
+                  final dateStr =
+                      '${entry.key.day.toString().padLeft(2, '0')}/'
+                      '${entry.key.month.toString().padLeft(2, '0')}/'
+                      '${entry.key.year}';
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    child: ListTile(
+                      leading: const Icon(Icons.calendar_today, size: 20),
+                      title: Text(
+                        '● $dateStr: ${entry.value}',
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete, size: 20),
+                        color: Colors.red,
+                        onPressed: () => _removeTimelineDate(index),
+                      ),
+                    ),
+                  );
+                }),
+            ],
+          ],
+        ),
       ),
       actions: [
         TextButton(
@@ -637,14 +1125,19 @@ class _ApprovalDialogState extends State<_ApprovalDialog> {
           child: Text(l10n.cancel),
         ),
         ElevatedButton(
-          onPressed: _isLoading ? null : () async {
-            setState(() {
-              _isLoading = true;
-            });
-            
-            widget.onConfirm(_commentsController.text.trim());
-            Navigator.of(context).pop();
-          },
+          onPressed: _isLoading
+              ? null
+              : () async {
+                  setState(() {
+                    _isLoading = true;
+                  });
+
+                  final timeline = widget.isApproval
+                      ? _buildTimelineMap()
+                      : null;
+                  widget.onConfirm(_commentsController.text.trim(), timeline);
+                  Navigator.of(context).pop();
+                },
           style: ElevatedButton.styleFrom(
             backgroundColor: widget.isApproval ? Colors.green : Colors.red,
             foregroundColor: Colors.white,
@@ -658,7 +1151,11 @@ class _ApprovalDialogState extends State<_ApprovalDialog> {
                     color: Colors.white,
                   ),
                 )
-              : Text(widget.isApproval ? l10n.approveAnteproject : l10n.rejectAnteproject),
+              : Text(
+                  widget.isApproval
+                      ? l10n.approveAnteproject
+                      : l10n.rejectAnteproject,
+                ),
         ),
       ],
     );

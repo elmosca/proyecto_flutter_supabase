@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../l10n/app_localizations.dart';
@@ -78,11 +79,25 @@ class _AdminDashboardState extends State<AdminDashboard> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _buildDashboardContent(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _manageUsers,
-        backgroundColor: ThemeService.instance.currentPrimaryColor,
-        tooltip: l10n.dashboardAdminUsersManagement,
-        child: const Icon(Icons.admin_panel_settings, color: Colors.white),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            onPressed: _navigateToApprovalWorkflow,
+            backgroundColor: ThemeService.instance.currentPrimaryColor,
+            tooltip: l10n.approvalWorkflow,
+            heroTag: 'approval',
+            child: const Icon(Icons.gavel, color: Colors.white),
+          ),
+          const SizedBox(height: 8),
+          FloatingActionButton(
+            onPressed: _manageUsers,
+            backgroundColor: ThemeService.instance.currentAccentColor,
+            tooltip: l10n.dashboardAdminUsersManagement,
+            heroTag: 'users',
+            child: const Icon(Icons.people_alt, color: Colors.white),
+          ),
+        ],
       ),
     );
   }
@@ -95,6 +110,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
         _buildUserInfo(),
         const SizedBox(height: 24),
         _buildStatistics(),
+        const SizedBox(height: 24),
+        _buildQuickAccessSection(),
         const SizedBox(height: 24),
         _buildSystemSection(),
         const SizedBox(height: 24),
@@ -215,6 +232,84 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 title,
                 style: const TextStyle(fontSize: 12, color: Colors.grey),
                 textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuickAccessSection() {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Accesos Rápidos',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: _buildQuickAccessCard(
+                title: l10n.dashboardAdminUsersManagement,
+                icon: Icons.people_alt,
+                color: Colors.blue,
+                onTap: _manageUsers,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: _buildQuickAccessCard(
+                title: l10n.approvalWorkflow,
+                icon: Icons.gavel,
+                color: Colors.orange,
+                onTap: _navigateToApprovalWorkflow,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: _buildQuickAccessCard(
+                title: 'Configuración',
+                icon: Icons.settings,
+                color: Colors.green,
+                onTap: _navigateToSettings,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildQuickAccessCard({
+    required String title,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return Card(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              Icon(icon, color: color, size: 40),
+              const SizedBox(height: 8),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
@@ -437,7 +532,15 @@ class _AdminDashboardState extends State<AdminDashboard> {
   // Logout ahora gestionado por AppTopBar
 
   void _manageUsers() {
-    _viewAllUsers();
+    context.go('/admin/users', extra: widget.user);
+  }
+
+  void _navigateToApprovalWorkflow() {
+    context.go('/admin/approval-workflow', extra: widget.user);
+  }
+
+  void _navigateToSettings() {
+    context.go('/admin/settings', extra: widget.user);
   }
 
   void _viewSystemStatus() {
@@ -470,35 +573,17 @@ class _AdminDashboardState extends State<AdminDashboard> {
   }
 
   void _viewAllUsers() {
-    // TODO: Implementar pantalla de gestión de usuarios
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Mostrando ${_recentUsers.length} usuarios recientes'),
-        duration: const Duration(seconds: 2),
-      ),
-    );
+    context.go('/admin/users', extra: widget.user);
   }
 
   void _viewAllAnteprojects() {
-    // TODO: Implementar pantalla de anteproyectos
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Mostrando ${_stats?.totalAnteprojects ?? 0} anteproyectos',
-        ),
-        duration: const Duration(seconds: 2),
-      ),
-    );
+    // Navegar a la pantalla de anteproyectos (filtrada para admin)
+    context.go('/anteprojects', extra: widget.user);
   }
 
   void _viewAllTutors() {
-    // TODO: Implementar pantalla de tutores
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Mostrando ${_stats?.totalTutors ?? 0} tutores'),
-        duration: const Duration(seconds: 2),
-      ),
-    );
+    // Los tutores se pueden ver desde la gestión de usuarios con filtro
+    context.go('/admin/users', extra: widget.user);
   }
 
   void _viewUserDetails(User user) {

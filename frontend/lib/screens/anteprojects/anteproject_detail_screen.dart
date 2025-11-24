@@ -20,6 +20,7 @@ import '../../blocs/tasks_bloc.dart';
 import '../../services/tasks_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../widgets/navigation/persistent_scaffold.dart';
+import '../../widgets/files/file_list_widget.dart';
 
 class AnteprojectDetailScreen extends StatefulWidget {
   final Anteproject anteproject;
@@ -95,8 +96,16 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
       );
 
       if (mounted) {
+        // Filtrar comentarios internos si el usuario es estudiante
+        List<AnteprojectComment> filteredComments = comments;
+        if (_currentUser?.role == UserRole.student) {
+          filteredComments = comments
+              .where((comment) => !comment.isInternal)
+              .toList();
+        }
+
         setState(() {
-          _comments = comments;
+          _comments = filteredComments;
           _isLoadingComments = false;
         });
       }
@@ -162,30 +171,51 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
     // Acciones específicas cuando NO es modo proyecto (acciones históricas del anteproyecto)
     final List<Widget> topBarActions = !isProjectMode
         ? [
-            IconButton(
-              icon: const Icon(Icons.chat, color: Colors.white),
-              tooltip: 'Ver comentarios',
-              onPressed: _viewComments,
+            // Botón para comentarios oficiales (solo tutor)
+            Builder(
+              builder: (context) {
+                final l10n = AppLocalizations.of(context)!;
+                return IconButton(
+                  icon: const Icon(Icons.chat, color: Colors.white),
+                  tooltip: l10n.viewComments,
+                  onPressed: _viewComments,
+                );
+              },
             ),
-            if (_anteproject.status == AnteprojectStatus.approved &&
-                _canEditSchedule())
-              IconButton(
-                icon: const Icon(Icons.schedule, color: Colors.white),
-                tooltip: 'Gestionar Cronograma',
-                onPressed: _manageSchedule,
+            // Permitir gestionar cronograma en todo el ciclo de vida del anteproyecto (solo tutores)
+            if (_canEditSchedule())
+              Builder(
+                builder: (context) {
+                  final l10n = AppLocalizations.of(context)!;
+                  return IconButton(
+                    icon: const Icon(Icons.schedule, color: Colors.white),
+                    tooltip: l10n.manageSchedule,
+                    onPressed: _manageSchedule,
+                  );
+                },
               ),
             if ((_anteproject.status == AnteprojectStatus.submitted ||
                     _anteproject.status == AnteprojectStatus.underReview) &&
                 _currentUser?.role == UserRole.tutor) ...[
-              IconButton(
-                icon: const Icon(Icons.cancel, color: Colors.white),
-                tooltip: 'Rechazar',
-                onPressed: _isLoading ? null : _rejectAnteproject,
+              Builder(
+                builder: (context) {
+                  final l10n = AppLocalizations.of(context)!;
+                  return IconButton(
+                    icon: const Icon(Icons.cancel, color: Colors.white),
+                    tooltip: l10n.reject,
+                    onPressed: _isLoading ? null : _rejectAnteproject,
+                  );
+                },
               ),
-              IconButton(
-                icon: const Icon(Icons.check, color: Colors.white),
-                tooltip: 'Aprobar',
-                onPressed: _isLoading ? null : _approveAnteproject,
+              Builder(
+                builder: (context) {
+                  final l10n = AppLocalizations.of(context)!;
+                  return IconButton(
+                    icon: const Icon(Icons.check, color: Colors.white),
+                    tooltip: l10n.approve,
+                    onPressed: _isLoading ? null : _approveAnteproject,
+                  );
+                },
               ),
             ],
           ]
@@ -310,6 +340,38 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
                   ),
                 ],
               ),
+              const SizedBox(height: 12),
+              // Botón de eliminar (solo para anteproyectos en borrador)
+              Row(
+                children: [
+                  Icon(Icons.delete, color: Colors.red[700], size: 20),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Eliminar',
+                    style: TextStyle(
+                      color: Colors.red[700],
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const Spacer(),
+                  ElevatedButton.icon(
+                    onPressed: _isLoading ? null : _deleteAnteproject,
+                    icon: const Icon(Icons.delete, size: 18),
+                    label: Text(
+                      AppLocalizations.of(context)!.anteprojectDeleteButton,
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red[700],
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ],
         ),
@@ -324,9 +386,9 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Información General',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Text(
+              AppLocalizations.of(context)!.generalInformation,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
             _buildInfoRow('Año Académico', _anteproject.academicYear),
@@ -350,9 +412,9 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Descripción',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Text(
+              AppLocalizations.of(context)!.sectionDescription,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
             Text(
@@ -372,9 +434,9 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Resultados Esperados',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Text(
+              AppLocalizations.of(context)!.sectionExpectedResults,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
             if (_anteproject.expectedResults.isNotEmpty)
@@ -477,13 +539,16 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: Text(
-                    'Cronograma',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    AppLocalizations.of(context)!.sectionTimeline,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 // Las tareas solo están disponibles para proyectos, no para anteproyectos
@@ -500,9 +565,9 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
             ],
 
             // Mostrar hitos del anteproyecto o timeline formateado
-            const Text(
-              'Hitos del Proyecto',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            Text(
+              AppLocalizations.of(context)!.projectMilestones,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
             _buildTimelineContent(),
@@ -516,9 +581,9 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Fechas de Revisión',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        Text(
+          AppLocalizations.of(context)!.reviewDates,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 8),
         ..._schedule!.reviewDates.map((reviewDate) {
@@ -566,23 +631,97 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
   }
 
   Widget _buildTimelineContent() {
+    // Verificar si el timeline contiene fechas de revisión (formato del cronograma)
+    final timelineEntries = _anteproject.timeline.entries.toList();
+    final hasRevisionDates =
+        timelineEntries.isNotEmpty &&
+        timelineEntries.any(
+          (entry) =>
+              entry.key.startsWith('revision_') &&
+              entry.value.toString().contains(':'),
+        );
+
+    // Si el timeline está vacío pero hay hitos en expectedResults, mostrarlos
+    if (_anteproject.timeline.isEmpty &&
+        _anteproject.expectedResults.isNotEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: _anteproject.expectedResults.entries.map((entry) {
+          // Verificar si el valor es un Map (estructura de hito) o String
+          String title;
+          String description;
+
+          if (entry.value is Map<String, dynamic>) {
+            final hitoData = entry.value as Map<String, dynamic>;
+            title = hitoData['title'] ?? entry.key;
+            description = hitoData['description'] ?? '';
+          } else if (entry.value is Map) {
+            // Manejar objetos minificados de Supabase
+            final hitoMap = <String, dynamic>{};
+            for (final key in (entry.value as Map).keys) {
+              hitoMap[key.toString()] = (entry.value as Map)[key];
+            }
+            title = hitoMap['title'] ?? entry.key;
+            description = hitoMap['description'] ?? '';
+          } else {
+            title = entry.key;
+            description = entry.value.toString();
+          }
+
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 8,
+                  height: 8,
+                  margin: const EdgeInsets.only(top: 6, right: 8),
+                  decoration: const BoxDecoration(
+                    color: Colors.green,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
+                      ),
+                      if (description.isNotEmpty)
+                        Text(
+                          description,
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 14,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
+      );
+    }
+
+    // Si el timeline está vacío y no hay hitos, mostrar mensaje
     if (_anteproject.timeline.isEmpty) {
+      final l10n = AppLocalizations.of(context)!;
       return Text(
-        'No se han definido hitos',
+        l10n.noMilestonesDefined,
         style: TextStyle(
           color: Colors.grey.shade500,
           fontStyle: FontStyle.italic,
         ),
       );
     }
-
-    // Verificar si el timeline contiene fechas de revisión (formato del cronograma)
-    final timelineEntries = _anteproject.timeline.entries.toList();
-    final hasRevisionDates = timelineEntries.any(
-      (entry) =>
-          entry.key.startsWith('revision_') &&
-          entry.value.toString().contains(':'),
-    );
 
     if (hasRevisionDates) {
       // Mostrar fechas de revisión formateadas
@@ -706,9 +845,12 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
               children: [
                 Icon(Icons.chat, color: Colors.blue.shade600),
                 const SizedBox(width: 8),
-                const Text(
-                  'Comentarios',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                Text(
+                  AppLocalizations.of(context)!.comments,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const Spacer(),
                 if (_comments.isNotEmpty)
@@ -777,12 +919,12 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
           ),
           const SizedBox(height: 8),
           Text(
-            'No hay comentarios aún',
+            AppLocalizations.of(context)!.noCommentsYet,
             style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
           ),
           const SizedBox(height: 4),
           Text(
-            'Los comentarios aparecerán aquí cuando el tutor los agregue',
+            AppLocalizations.of(context)!.commentsWillAppearHere,
             style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
             textAlign: TextAlign.center,
           ),
@@ -804,7 +946,9 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
             child: TextButton(
               onPressed: _viewComments,
               child: Text(
-                'Ver ${_comments.length - 3} comentarios más',
+                AppLocalizations.of(
+                  context,
+                )!.viewMoreComments(_comments.length - 3),
                 style: TextStyle(color: Colors.blue.shade600),
               ),
             ),
@@ -815,7 +959,8 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
   }
 
   Widget _buildCommentPreview(AnteprojectComment comment) {
-    final authorName = comment.author?.fullName ?? 'Usuario desconocido';
+    final l10n = AppLocalizations.of(context)!;
+    final authorName = comment.author?.fullName ?? l10n.unknownUser;
     final authorRole = comment.author?.role ?? UserRole.student;
     final isTutor = authorRole == UserRole.tutor;
 
@@ -857,7 +1002,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
                   border: Border.all(color: Colors.blue.shade200, width: 0.5),
                 ),
                 child: Text(
-                  comment.section.displayName,
+                  comment.section.getDisplayName(context),
                   style: TextStyle(
                     color: Colors.blue.shade600,
                     fontSize: 9,
@@ -891,20 +1036,29 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Fechas',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Text(
+              AppLocalizations.of(context)!.dates,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
-            _buildInfoRow('Creado', _formatDate(_anteproject.createdAt)),
             _buildInfoRow(
-              'Última actualización',
+              AppLocalizations.of(context)!.created,
+              _formatDate(_anteproject.createdAt),
+            ),
+            _buildInfoRow(
+              AppLocalizations.of(context)!.lastUpdate,
               _formatDate(_anteproject.updatedAt),
             ),
             if (_anteproject.submittedAt != null)
-              _buildInfoRow('Enviado', _formatDate(_anteproject.submittedAt!)),
+              _buildInfoRow(
+                AppLocalizations.of(context)!.submitted,
+                _formatDate(_anteproject.submittedAt!),
+              ),
             if (_anteproject.reviewedAt != null)
-              _buildInfoRow('Revisado', _formatDate(_anteproject.reviewedAt!)),
+              _buildInfoRow(
+                AppLocalizations.of(context)!.reviewed,
+                _formatDate(_anteproject.reviewedAt!),
+              ),
           ],
         ),
       ),
@@ -958,13 +1112,84 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
         });
   }
 
+  void _deleteAnteproject() {
+    final l10n = AppLocalizations.of(context)!;
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.anteprojectDeleteTitle),
+        content: const Text(
+          '¿Estás seguro de que quieres eliminar este anteproyecto? Esta acción no se puede deshacer.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              _performDeleteAnteproject();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: Text(l10n.anteprojectDeleteButton),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _performDeleteAnteproject() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await _anteprojectsService.deleteAnteproject(_anteproject.id);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context)!.anteprojectDeletedSuccess,
+            ),
+            backgroundColor: Colors.green,
+          ),
+        );
+        // Volver a la lista de anteproyectos
+        Navigator.of(context).pop();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(
+                context,
+              )!.errorDeletingAnteproject(e.toString()),
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
   void _approveAnteproject() {
     showDialog(
       context: context,
       builder: (context) => _ApprovalDialog(
         anteproject: _anteproject,
         isApproval: true,
-        onConfirm: (comments) async {
+        onConfirm: (comments, timeline) async {
           setState(() {
             _isLoading = true;
           });
@@ -978,6 +1203,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
             await _anteprojectsService.approveAnteproject(
               _anteproject.id,
               comments,
+              timeline: timeline,
             );
             if (mounted) {
               scaffoldMessenger.showSnackBar(
@@ -1017,7 +1243,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
       builder: (context) => _ApprovalDialog(
         anteproject: _anteproject,
         isApproval: false,
-        onConfirm: (comments) async {
+        onConfirm: (comments, timeline) async {
           setState(() {
             _isLoading = true;
           });
@@ -1326,6 +1552,10 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
   }
 
   Widget _buildFilesTab() {
+    // Si hay un proyecto asociado, usar 'project', sino usar 'anteproject'
+    final attachableType = widget.project != null ? 'project' : 'anteproject';
+    final attachableId = widget.project != null ? widget.project!.id : widget.anteproject.id;
+    
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -1336,8 +1566,11 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
-          // TODO: Integrar con FilesService cuando esté disponible
-          const Text('Función en desarrollo...'),
+          FileListWidget(
+            attachableType: attachableType,
+            attachableId: attachableId,
+            showUploadButton: true,
+          ),
         ],
       ),
     );
@@ -1679,7 +1912,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
 class _ApprovalDialog extends StatefulWidget {
   final Anteproject anteproject;
   final bool isApproval;
-  final Function(String) onConfirm;
+  final Function(String, Map<String, dynamic>?) onConfirm;
 
   const _ApprovalDialog({
     required this.anteproject,
@@ -1693,6 +1926,7 @@ class _ApprovalDialog extends StatefulWidget {
 
 class _ApprovalDialogState extends State<_ApprovalDialog> {
   final TextEditingController _commentsController = TextEditingController();
+  final List<MapEntry<DateTime, String>> _timelineDates = [];
   bool _isLoading = false;
 
   @override
@@ -1701,38 +1935,161 @@ class _ApprovalDialogState extends State<_ApprovalDialog> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(
-        widget.isApproval ? 'Aprobar Anteproyecto' : 'Rechazar Anteproyecto',
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '${AppLocalizations.of(context)!.anteprojectTitle}: ${widget.anteproject.title}',
+  void _addTimelineDate() async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 730)),
+    );
+    if (date == null) return;
+
+    final descriptionController = TextEditingController();
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Descripción de la fecha'),
+        content: TextField(
+          controller: descriptionController,
+          decoration: const InputDecoration(
+            labelText: 'Descripción',
+            hintText: 'Ej: Inicio, Revisión final, Presentación...',
+            border: OutlineInputBorder(),
           ),
-          const SizedBox(height: 16),
-          Text(
-            widget.isApproval
-                ? '¿Estás seguro de que quieres aprobar este anteproyecto?'
-                : '¿Estás seguro de que quieres rechazar este anteproyecto?',
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancelar'),
           ),
-          const SizedBox(height: 16),
-          TextField(
-            controller: _commentsController,
-            decoration: InputDecoration(
-              labelText: 'Comentarios (opcional)',
-              hintText: widget.isApproval
-                  ? 'Comentarios sobre la aprobación...'
-                  : 'Motivo del rechazo...',
-              border: const OutlineInputBorder(),
-            ),
-            maxLines: 3,
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Añadir'),
           ),
         ],
+      ),
+    );
+
+    if (confirmed == true && descriptionController.text.trim().isNotEmpty) {
+      setState(() {
+        _timelineDates.add(MapEntry(date, descriptionController.text.trim()));
+        // Ordenar por fecha
+        _timelineDates.sort((a, b) => a.key.compareTo(b.key));
+      });
+    }
+  }
+
+  void _removeTimelineDate(int index) {
+    setState(() {
+      _timelineDates.removeAt(index);
+    });
+  }
+
+  Map<String, dynamic> _buildTimelineMap() {
+    if (_timelineDates.isEmpty) return {};
+
+    final timeline = <String, String>{};
+    for (final entry in _timelineDates) {
+      final dateStr =
+          '${entry.key.day.toString().padLeft(2, '0')}/'
+          '${entry.key.month.toString().padLeft(2, '0')}/'
+          '${entry.key.year}';
+      timeline[dateStr] = entry.value;
+    }
+    return {'fechas': timeline};
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return AlertDialog(
+      title: Text(
+        widget.isApproval ? l10n.approveAnteproject : l10n.rejectAnteproject,
+      ),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('${l10n.anteprojectTitle}: ${widget.anteproject.title}'),
+            const SizedBox(height: 16),
+            Text(
+              widget.isApproval
+                  ? l10n.confirmApproveAnteproject
+                  : l10n.confirmRejectAnteproject,
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _commentsController,
+              decoration: InputDecoration(
+                labelText: 'Comentarios (opcional)',
+                hintText: widget.isApproval
+                    ? 'Comentarios sobre la aprobación...'
+                    : 'Motivo del rechazo...',
+                border: const OutlineInputBorder(),
+              ),
+              maxLines: 3,
+            ),
+            // Selector de temporalización (solo para aprobación)
+            if (widget.isApproval) ...[
+              const SizedBox(height: 24),
+              const Divider(),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Temporalización',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add_circle),
+                    color: Colors.blue,
+                    onPressed: _addTimelineDate,
+                    tooltip: 'Añadir fecha',
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              if (_timelineDates.isEmpty)
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: const Text(
+                    'Añade fechas importantes del proyecto usando el botón +',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                )
+              else
+                ...List.generate(_timelineDates.length, (index) {
+                  final entry = _timelineDates[index];
+                  final dateStr =
+                      '${entry.key.day.toString().padLeft(2, '0')}/'
+                      '${entry.key.month.toString().padLeft(2, '0')}/'
+                      '${entry.key.year}';
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    child: ListTile(
+                      leading: const Icon(Icons.calendar_today, size: 20),
+                      title: Text(
+                        '● $dateStr: ${entry.value}',
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete, size: 20),
+                        color: Colors.red,
+                        onPressed: () => _removeTimelineDate(index),
+                      ),
+                    ),
+                  );
+                }),
+            ],
+          ],
+        ),
       ),
       actions: [
         TextButton(
@@ -1747,7 +2104,10 @@ class _ApprovalDialogState extends State<_ApprovalDialog> {
                     _isLoading = true;
                   });
 
-                  widget.onConfirm(_commentsController.text.trim());
+                  final timeline = widget.isApproval
+                      ? _buildTimelineMap()
+                      : null;
+                  widget.onConfirm(_commentsController.text.trim(), timeline);
                   Navigator.of(context).pop();
                 },
           style: ElevatedButton.styleFrom(
@@ -1763,7 +2123,7 @@ class _ApprovalDialogState extends State<_ApprovalDialog> {
                     color: Colors.white,
                   ),
                 )
-              : Text(widget.isApproval ? 'Aprobar' : 'Rechazar'),
+              : Text(widget.isApproval ? l10n.approve : l10n.reject),
         ),
       ],
     );

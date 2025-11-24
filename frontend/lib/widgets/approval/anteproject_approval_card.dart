@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import '../../models/models.dart';
 import '../../l10n/app_localizations.dart';
@@ -6,19 +7,88 @@ import '../../screens/anteprojects/anteproject_detail_screen.dart';
 import 'approval_actions_widget.dart';
 
 class AnteprojectApprovalCard extends StatelessWidget {
-  final Anteproject anteproject;
+  final Map<String, dynamic> anteprojectData;
   final bool showActions;
 
   const AnteprojectApprovalCard({
     super.key,
-    required this.anteproject,
+    required this.anteprojectData,
     this.showActions = true,
   });
+
+  // Constructor legacy para compatibilidad (deprecated)
+  @Deprecated('Use AnteprojectApprovalCard.withData instead')
+  AnteprojectApprovalCard.fromAnteproject({
+    super.key,
+    required Anteproject anteproject,
+    this.showActions = true,
+  }) : anteprojectData = anteproject.toJson();
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final anteproject = Anteproject.fromJson(anteprojectData);
+
+    // Obtener información del estudiante desde la tabla de relación
+    final anteprojectStudents =
+        anteprojectData['anteproject_students'] as List<dynamic>?;
+    
+    // Debug: verificar qué datos tenemos
+    debugPrint('🔍 Approval Card - Anteproyecto ID: ${anteproject.id}');
+    debugPrint('🔍 Approval Card - anteproject_students tipo: ${anteprojectStudents.runtimeType}');
+    debugPrint('🔍 Approval Card - anteproject_students valor: $anteprojectStudents');
+    
+    // Convertir de forma segura a Map
+    Map<String, dynamic>? studentInfo;
+    if (anteprojectStudents != null && anteprojectStudents.isNotEmpty) {
+      try {
+        final firstStudent = anteprojectStudents[0];
+        debugPrint('🔍 Approval Card - Primer estudiante tipo: ${firstStudent.runtimeType}');
+        debugPrint('🔍 Approval Card - Primer estudiante valor: $firstStudent');
+        
+        // Función auxiliar para convertir de forma segura
+        Map<String, dynamic> safeConvert(dynamic data) {
+          if (data is Map<String, dynamic>) {
+            return data;
+          } else if (data is Map) {
+            final result = <String, dynamic>{};
+            for (final key in data.keys) {
+              result[key.toString()] = data[key];
+            }
+            return result;
+          } else {
+            return <String, dynamic>{};
+          }
+        }
+        
+        final firstStudentMap = safeConvert(firstStudent);
+        debugPrint('🔍 Approval Card - Estudiante convertido: $firstStudentMap');
+        
+        if (firstStudentMap.containsKey('users')) {
+          final usersData = firstStudentMap['users'];
+          debugPrint('🔍 Approval Card - users tipo: ${usersData.runtimeType}');
+          debugPrint('🔍 Approval Card - users valor: $usersData');
+          
+          if (usersData != null) {
+            studentInfo = safeConvert(usersData);
+            debugPrint('🔍 Approval Card - studentInfo final: $studentInfo');
+          }
+        } else {
+          debugPrint('⚠️ Approval Card - No se encontró campo "users" en estudiante');
+        }
+      } catch (e, stackTrace) {
+        debugPrint('⚠️ Error procesando información del estudiante en approval card: $e');
+        debugPrint('⚠️ Stack trace: $stackTrace');
+        studentInfo = null;
+      }
+    } else {
+      debugPrint('⚠️ Approval Card - No hay estudiantes asociados al anteproyecto ${anteproject.id}');
+    }
+
+    final studentName = studentInfo?['full_name'] ?? 'Estudiante desconocido';
+    final studentEmail = studentInfo?['email'] ?? '';
+    final studentNre = studentInfo?['nre'] ?? '';
 
     return Card(
       elevation: 2,
@@ -56,6 +126,54 @@ class AnteprojectApprovalCard extends StatelessWidget {
                 const SizedBox(width: 12),
                 _buildStatusChip(context, anteproject.status),
               ],
+            ),
+            
+            const SizedBox(height: 12),
+            
+            // Información del estudiante
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade50,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.blue.shade200),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.person, size: 16, color: Colors.blue.shade700),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          studentName,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.blue.shade700,
+                          ),
+                        ),
+                        if (studentEmail.isNotEmpty)
+                          Text(
+                            studentEmail,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.blue.shade600,
+                            ),
+                          ),
+                        if (studentNre.isNotEmpty)
+                          Text(
+                            'NRE: $studentNre',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.blue.shade600,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
             
             const SizedBox(height: 12),
