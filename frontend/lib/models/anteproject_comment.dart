@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'user.dart';
+import '../l10n/app_localizations.dart';
 
 part 'anteproject_comment.g.dart';
 
@@ -14,6 +16,38 @@ enum AnteprojectSection {
   resources,
   other;
 
+  /// Obtiene el nombre de visualización localizado para esta sección.
+  ///
+  /// Requiere un [BuildContext] para acceder a [AppLocalizations].
+  ///
+  /// Ejemplo:
+  /// ```dart
+  /// Text(section.getDisplayName(context))
+  /// ```
+  String getDisplayName(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (this) {
+      case AnteprojectSection.general:
+        return l10n.sectionGeneral;
+      case AnteprojectSection.description:
+        return l10n.sectionDescription;
+      case AnteprojectSection.objectives:
+        return l10n.sectionObjectives;
+      case AnteprojectSection.expectedResults:
+        return l10n.sectionExpectedResults;
+      case AnteprojectSection.timeline:
+        return l10n.sectionTimeline;
+      case AnteprojectSection.methodology:
+        return l10n.sectionMethodology;
+      case AnteprojectSection.resources:
+        return l10n.sectionResources;
+      case AnteprojectSection.other:
+        return l10n.sectionOther;
+    }
+  }
+
+  /// @deprecated Use [getDisplayName] instead. This getter is kept for backward compatibility.
+  @Deprecated('Use getDisplayName(BuildContext context) instead')
   String get displayName {
     switch (this) {
       case AnteprojectSection.general:
@@ -46,7 +80,7 @@ class AnteprojectComment {
   final AnteprojectSection section;
   final DateTime createdAt;
   final DateTime updatedAt;
-  
+
   // Relación con el autor
   final User? author;
 
@@ -65,8 +99,10 @@ class AnteprojectComment {
   factory AnteprojectComment.fromJson(Map<String, dynamic> json) {
     try {
       // Debug: imprimir el JSON recibido
-      debugPrint('🔍 Debug - JSON recibido en AnteprojectComment.fromJson: $json');
-      
+      debugPrint(
+        '🔍 Debug - JSON recibido en AnteprojectComment.fromJson: $json',
+      );
+
       // Manejar la relación con el autor
       User? author;
       if (json['author'] != null) {
@@ -84,8 +120,12 @@ class AnteprojectComment {
           (e) => e.toString().split('.').last == json['section'],
           orElse: () => AnteprojectSection.general,
         ),
-        createdAt: DateTime.parse(json['created_at'] as String? ?? DateTime.now().toIso8601String()),
-        updatedAt: DateTime.parse(json['updated_at'] as String? ?? DateTime.now().toIso8601String()),
+        createdAt: DateTime.parse(
+          json['created_at'] as String? ?? DateTime.now().toIso8601String(),
+        ),
+        updatedAt: DateTime.parse(
+          json['updated_at'] as String? ?? DateTime.now().toIso8601String(),
+        ),
         author: author,
       );
     } catch (e, stackTrace) {

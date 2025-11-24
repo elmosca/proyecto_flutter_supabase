@@ -164,6 +164,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get anteprojectCreatedSuccess => 'Anteproyecto creado exitosamente';
 
   @override
+  String get timelineWillBeEstablishedByTutor =>
+      'La temporalización será establecida por tu tutor asignado usando una herramienta de calendario.';
+
+  @override
+  String get downloadExamplePdf => 'Descargar ejemplo PDF';
+
+  @override
+  String get loadTemplate => 'Cargar Plantilla';
+
+  @override
   String get anteprojectUpdatedSuccess =>
       'Anteproyecto actualizado exitosamente';
 
@@ -657,10 +667,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get reviewedAnteprojects => 'Anteproyectos Revisados';
 
   @override
-  String get approveAnteproject => 'Aprobar';
+  String get approveAnteproject => 'Aprobar Anteproyecto';
 
   @override
-  String get rejectAnteproject => 'Rechazar';
+  String get rejectAnteproject => 'Rechazar Anteproyecto';
 
   @override
   String get requestChanges => 'Solicitar Cambios';
@@ -829,7 +839,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tutorRole => 'Tutor';
 
   @override
-  String get reviewed => 'Revisados';
+  String get reviewed => 'Revisado:';
 
   @override
   String get addStudents => 'Añadir Estudiantes';
@@ -952,6 +962,18 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get submitted => 'Enviado:';
+
+  @override
+  String get lastUpdate => 'Última actualización:';
+
+  @override
+  String get dates => 'Fechas';
+
+  @override
+  String get reviewDates => 'Fechas de Revisión';
+
+  @override
+  String get projectMilestones => 'Hitos del Proyecto';
 
   @override
   String get comments => 'Comentarios';
@@ -1084,7 +1106,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get unknownStatus => 'Desconocido';
 
   @override
-  String get studentCreatedSuccess => 'Estudiante creado exitosamente';
+  String get studentCreatedSuccess => 'Alumno creado exitosamente';
 
   @override
   String errorCreatingStudent(String error) {
@@ -1193,9 +1215,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get downloadExamplePDF => 'Descargar Ejemplo PDF';
 
   @override
-  String get loadTemplate => 'Cargar Plantilla';
-
-  @override
   String errorLoadingSchedule(String error) {
     return 'Error al cargar cronograma: $error';
   }
@@ -1218,6 +1237,9 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get regenerateDatesBasedOnMilestones =>
       'Regenerar Fechas Basadas en Hitos';
+
+  @override
+  String get noMilestonesDefined => 'No se han definido hitos';
 
   @override
   String get anteprojectDetails => 'Detalles del Anteproyecto';
@@ -1294,7 +1316,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String errorMarkingAsRead(String error) {
-    return 'Error al marcar como leída: $error';
+    return 'Error marcando como leída: $error';
   }
 
   @override
@@ -1464,4 +1486,818 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get tasksList => 'Lista de Tareas';
+
+  @override
+  String get errorNetworkTimeout =>
+      'La conexión tardó demasiado. Por favor, verifica tu conexión a internet e inténtalo de nuevo.';
+
+  @override
+  String get errorNetworkNoInternet =>
+      'No hay conexión a internet. Por favor, verifica tu conexión e inténtalo de nuevo.';
+
+  @override
+  String get errorNetworkServerUnavailable =>
+      'El servidor no está disponible en este momento. Por favor, inténtalo más tarde.';
+
+  @override
+  String get errorNetworkDnsError =>
+      'No se pudo resolver la dirección del servidor. Verifica tu conexión a internet.';
+
+  @override
+  String get errorNetworkConnectionLost =>
+      'Se perdió la conexión. Por favor, verifica tu conexión a internet.';
+
+  @override
+  String get errorNetworkRequestFailed =>
+      'La solicitud falló. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get errorNotAuthenticated =>
+      'Debes iniciar sesión para realizar esta acción.';
+
+  @override
+  String get errorInvalidCredentials =>
+      'Las credenciales son incorrectas. Por favor, verifica tu email y contraseña.';
+
+  @override
+  String get errorSessionExpired =>
+      'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.';
+
+  @override
+  String get errorProfileNotFound =>
+      'No se pudo encontrar tu perfil de usuario. Por favor, contacta con soporte.';
+
+  @override
+  String get errorAccountDisabled =>
+      'Tu cuenta está deshabilitada. Por favor, contacta con el administrador.';
+
+  @override
+  String get errorEmailNotVerified =>
+      'Tu email no ha sido verificado. Por favor, revisa tu bandeja de entrada.';
+
+  @override
+  String get errorPasswordTooWeak =>
+      'La contraseña es demasiado débil. Debe tener al menos 8 caracteres.';
+
+  @override
+  String get errorLoginAttemptsExceeded =>
+      'Demasiados intentos de inicio de sesión. Inténtalo más tarde.';
+
+  @override
+  String get errorRateLimitExceeded =>
+      'Demasiadas solicitudes. Por seguridad, debes esperar unos segundos antes de intentar crear otro usuario. Por favor, espera un momento e inténtalo de nuevo.';
+
+  @override
+  String get errorRateLimitEmailSent =>
+      'Se ha alcanzado el límite de solicitudes. Si se envió un email de verificación pero el usuario no se creó completamente, el administrador deberá limpiar manualmente el usuario desde Supabase Dashboard.';
+
+  @override
+  String get errorEmailAlreadyRegistered =>
+      'Este correo electrónico ya está registrado. Si acabas de eliminar un usuario con este correo, por favor espera unos minutos antes de intentar crear otro usuario con el mismo email. Supabase requiere un período de espera antes de permitir reutilizar un email.';
+
+  @override
+  String get errorFieldRequired => 'Este campo es obligatorio.';
+
+  @override
+  String get errorFieldTooShort => 'Este campo es demasiado corto.';
+
+  @override
+  String get errorFieldTooLong => 'Este campo es demasiado largo.';
+
+  @override
+  String get errorInvalidEmail => 'El formato del email no es válido.';
+
+  @override
+  String get errorInvalidUrl => 'La URL no tiene un formato válido.';
+
+  @override
+  String get errorInvalidNumber => 'El valor debe ser un número válido.';
+
+  @override
+  String get errorInvalidJson => 'El formato JSON no es válido.';
+
+  @override
+  String get errorInvalidDate => 'La fecha no tiene un formato válido.';
+
+  @override
+  String get errorInvalidFileType => 'El tipo de archivo no está permitido.';
+
+  @override
+  String get errorInvalidFileSize => 'El archivo es demasiado grande.';
+
+  @override
+  String get errorMissingTaskContext =>
+      'Debe seleccionar un proyecto para crear la tarea.';
+
+  @override
+  String get errorInvalidProjectRelation =>
+      'La relación con el proyecto no es válida.';
+
+  @override
+  String get errorAccessDenied =>
+      'No tienes permisos para realizar esta acción.';
+
+  @override
+  String get errorInsufficientPermissions =>
+      'No tienes suficientes permisos para realizar esta acción.';
+
+  @override
+  String get errorOperationNotAllowed => 'Esta operación no está permitida.';
+
+  @override
+  String get errorResourceNotFound =>
+      'El recurso solicitado no fue encontrado.';
+
+  @override
+  String get errorCannotDeleteCompletedTask =>
+      'No se puede eliminar una tarea completada.';
+
+  @override
+  String get errorCannotEditApprovedAnteproject =>
+      'No se puede editar un anteproyecto aprobado.';
+
+  @override
+  String get errorDatabaseConnectionFailed =>
+      'No se pudo conectar a la base de datos. Inténtalo más tarde.';
+
+  @override
+  String get errorDatabaseQueryFailed =>
+      'La consulta a la base de datos falló. Inténtalo de nuevo.';
+
+  @override
+  String get errorDatabaseConstraintViolation =>
+      'Los datos no cumplen con las reglas de la base de datos.';
+
+  @override
+  String get errorDatabaseDuplicateEntry =>
+      'Ya existe un registro con estos datos.';
+
+  @override
+  String get errorDatabaseForeignKeyViolation =>
+      'No se puede realizar la operación debido a dependencias de datos.';
+
+  @override
+  String get errorDatabaseUnknownError =>
+      'Ocurrió un error en la base de datos. Inténtalo más tarde.';
+
+  @override
+  String get errorDatabaseTimeout =>
+      'La operación tardó demasiado. Inténtalo de nuevo.';
+
+  @override
+  String get errorFileUploadFailed =>
+      'No se pudo subir el archivo. Inténtalo de nuevo.';
+
+  @override
+  String get errorFileDownloadFailed =>
+      'No se pudo descargar el archivo. Inténtalo de nuevo.';
+
+  @override
+  String get errorFileDeleteFailed =>
+      'No se pudo eliminar el archivo. Inténtalo de nuevo.';
+
+  @override
+  String get errorFileNotFound => 'El archivo no fue encontrado.';
+
+  @override
+  String errorFileSizeExceeded(String maxSize) {
+    return 'El archivo es demasiado grande. El tamaño máximo es $maxSize.';
+  }
+
+  @override
+  String errorFileTypeNotAllowed(String allowedTypes) {
+    return 'El tipo de archivo no está permitido. Tipos permitidos: $allowedTypes.';
+  }
+
+  @override
+  String get errorFileCorrupted => 'El archivo está corrupto o dañado.';
+
+  @override
+  String get errorFilePermissionDenied =>
+      'No tienes permisos para acceder a este archivo.';
+
+  @override
+  String get errorInvalidState =>
+      'El estado actual no permite realizar esta operación.';
+
+  @override
+  String get errorOperationNotSupported => 'Esta operación no está soportada.';
+
+  @override
+  String get errorResourceAlreadyExists =>
+      'Ya existe un recurso con estos datos.';
+
+  @override
+  String get errorResourceInUse =>
+      'El recurso está siendo utilizado y no se puede modificar.';
+
+  @override
+  String get errorWorkflowViolation =>
+      'Esta operación no está permitida en el flujo actual.';
+
+  @override
+  String get errorBusinessRuleViolation =>
+      'La operación viola una regla de negocio.';
+
+  @override
+  String get errorQuotaExceeded => 'Has excedido el límite permitido.';
+
+  @override
+  String get errorDeadlineExceeded => 'Se ha excedido el plazo límite.';
+
+  @override
+  String get errorConfigurationMissing =>
+      'Falta configuración requerida. Contacta con soporte.';
+
+  @override
+  String get errorConfigurationInvalid =>
+      'La configuración no es válida. Contacta con soporte.';
+
+  @override
+  String get errorServiceUnavailable =>
+      'El servicio no está disponible. Inténtalo más tarde.';
+
+  @override
+  String get errorMaintenanceMode =>
+      'El sistema está en mantenimiento. Inténtalo más tarde.';
+
+  @override
+  String get errorExternalServiceTimeout =>
+      'El servicio externo tardó demasiado en responder.';
+
+  @override
+  String get errorExternalServiceError =>
+      'El servicio externo no está funcionando correctamente.';
+
+  @override
+  String get errorEmailServiceUnavailable =>
+      'El servicio de email no está disponible.';
+
+  @override
+  String get errorNotificationServiceUnavailable =>
+      'El servicio de notificaciones no está disponible.';
+
+  @override
+  String get errorUnknown =>
+      'Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get errorUnexpected =>
+      'Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo.';
+
+  @override
+  String get errorInternal =>
+      'Ha ocurrido un error interno. Por favor, contacta con soporte.';
+
+  @override
+  String get errorNetworkGeneric =>
+      'Error de conexión. Por favor, verifica tu conexión a internet.';
+
+  @override
+  String get errorAuthenticationGeneric =>
+      'Error de autenticación. Por favor, inicia sesión nuevamente.';
+
+  @override
+  String get errorValidationGeneric =>
+      'Error de validación. Por favor, revisa los datos ingresados.';
+
+  @override
+  String get errorPermissionGeneric =>
+      'No tienes permisos para realizar esta acción.';
+
+  @override
+  String get errorDatabaseGeneric =>
+      'Error de base de datos. Inténtalo más tarde.';
+
+  @override
+  String get errorFileGeneric => 'Error de archivo. Inténtalo de nuevo.';
+
+  @override
+  String get errorBusinessLogicGeneric =>
+      'Error de lógica de negocio. La operación no se puede completar.';
+
+  @override
+  String get errorConfigurationGeneric =>
+      'Error de configuración. Contacta con soporte.';
+
+  @override
+  String get errorExternalServiceGeneric =>
+      'Error de servicio externo. Inténtalo más tarde.';
+
+  @override
+  String get errorTitleNetwork => 'Error de Conexión';
+
+  @override
+  String get errorTitleAuthentication => 'Error de Autenticación';
+
+  @override
+  String get errorTitleValidation => 'Error de Validación';
+
+  @override
+  String get errorTitlePermission => 'Error de Permisos';
+
+  @override
+  String get errorTitleDatabase => 'Error de Base de Datos';
+
+  @override
+  String get errorTitleFile => 'Error de Archivo';
+
+  @override
+  String get errorTitleBusinessLogic => 'Error de Lógica de Negocio';
+
+  @override
+  String get errorTitleConfiguration => 'Error de Configuración';
+
+  @override
+  String get errorTitleExternalService => 'Error de Servicio Externo';
+
+  @override
+  String get errorTitleUnknown => 'Error Desconocido';
+
+  @override
+  String get errorActionNetwork => 'Verificar conexión a internet';
+
+  @override
+  String get errorActionAuthentication => 'Iniciar sesión nuevamente';
+
+  @override
+  String get errorActionValidation => 'Revisar los datos ingresados';
+
+  @override
+  String get errorActionPermission => 'Contactar con el administrador';
+
+  @override
+  String get errorActionDatabase => 'Intentar más tarde';
+
+  @override
+  String get errorActionFile => 'Seleccionar otro archivo';
+
+  @override
+  String get errorActionBusinessLogic => 'Verificar el estado del recurso';
+
+  @override
+  String get errorActionConfiguration => 'Contactar con soporte técnico';
+
+  @override
+  String get errorActionExternalService => 'Intentar más tarde';
+
+  @override
+  String get errorActionUnknown => 'Intentar de nuevo o contactar soporte';
+
+  @override
+  String get forgotPassword => '¿Olvidaste tu contraseña?';
+
+  @override
+  String get resetPassword => 'Restablecer Contraseña';
+
+  @override
+  String get resetPasswordInstructions =>
+      'Ingresa tu nueva contraseña para restablecer el acceso a tu cuenta.';
+
+  @override
+  String get resetPasswordRequestSent => 'Solicitud enviada a tu tutor';
+
+  @override
+  String resetPasswordRequestSentDescription(String tutorName) {
+    return 'Tu tutor $tutorName recibirá una notificación para generar una nueva contraseña temporal. Te enviaremos un email con la nueva contraseña una vez que tu tutor la haya generado.';
+  }
+
+  @override
+  String get userNotFound => 'No se encontró un usuario con ese email';
+
+  @override
+  String get setupPassword => 'Establecer Contraseña';
+
+  @override
+  String get setupPasswordInstructions =>
+      'Establece tu contraseña personal para acceder al sistema. Esta será tu contraseña de acceso.';
+
+  @override
+  String get sendResetLink => 'Enviar Enlace de Recuperación';
+
+  @override
+  String get resetLinkSent =>
+      'Se ha enviado un enlace de recuperación a tu correo electrónico.';
+
+  @override
+  String get newPassword => 'Nueva Contraseña';
+
+  @override
+  String get confirmNewPassword => 'Confirmar Nueva Contraseña';
+
+  @override
+  String get changePassword => 'Cambiar Contraseña';
+
+  @override
+  String get passwordChanged => 'Contraseña actualizada exitosamente';
+
+  @override
+  String get passwordsDoNotMatch => 'Las contraseñas no coinciden';
+
+  @override
+  String get passwordTooShort =>
+      'La contraseña debe tener al menos 6 caracteres';
+
+  @override
+  String get passwordRequired => 'La contraseña es obligatoria';
+
+  @override
+  String get userCreatedSuccess =>
+      'Usuario creado exitosamente. Se ha enviado un email de verificación.';
+
+  @override
+  String get userCreatedInstructions =>
+      'El usuario recibirá un email de verificación. Después de verificar su email, deberá usar la opción \'¿Olvidaste tu contraseña?\' para establecer su contraseña personal.';
+
+  @override
+  String resetPasswordForStudent(String studentName) {
+    return 'Restablecer contraseña para $studentName';
+  }
+
+  @override
+  String get generatePasswordAutomatically =>
+      'Generar contraseña automáticamente';
+
+  @override
+  String get regeneratePassword => 'Regenerar';
+
+  @override
+  String get passwordResetSuccess => 'Contraseña restablecida exitosamente';
+
+  @override
+  String get passwordResetNotificationSent =>
+      'Se ha enviado una notificación al estudiante con la nueva contraseña.';
+
+  @override
+  String passwordResetError(String error) {
+    return 'Error al resetear contraseña: $error';
+  }
+
+  @override
+  String get studentCreatedWithPassword =>
+      'El estudiante ha sido creado con la contraseña establecida. Puede iniciar sesión inmediatamente.';
+
+  @override
+  String get messages => 'Mensajes';
+
+  @override
+  String get tutorMessages => 'Mensajes de Estudiantes';
+
+  @override
+  String get studentMessages => 'Mensajes con el Tutor';
+
+  @override
+  String get helpGuide => 'Guía de Uso';
+
+  @override
+  String get systemSettings => 'Configuración del Sistema';
+
+  @override
+  String get settings => 'Configuración';
+
+  @override
+  String get selectProjectOrAnteprojectMessage =>
+      'Selecciona un proyecto o anteproyecto para ver o responder mensajes de tus estudiantes';
+
+  @override
+  String get waitForStudentsAssignment =>
+      'Espera a que te asignen estudiantes\ncon proyectos o anteproyectos';
+
+  @override
+  String get allTypes => 'Todos los tipos';
+
+  @override
+  String get filterByType => 'Filtrar por tipo';
+
+  @override
+  String get markAllAsRead => 'Marcar todas como leídas';
+
+  @override
+  String get myNotifications => 'Mis Notificaciones';
+
+  @override
+  String get system => 'Sistema';
+
+  @override
+  String get notificationDeleted => 'Notificación eliminada';
+
+  @override
+  String errorDeleting(String error) {
+    return 'Error eliminando: $error';
+  }
+
+  @override
+  String get noNotifications => 'No hay notificaciones';
+
+  @override
+  String get noNotificationsOfThisType => 'No hay notificaciones de este tipo';
+
+  @override
+  String get privateCommunicationsPrivacy =>
+      'Las comunicaciones privadas entre usuarios no se muestran por protección de datos.';
+
+  @override
+  String get viewMessages => 'Ver mensajes';
+
+  @override
+  String get update => 'Actualizar';
+
+  @override
+  String get updateList => 'Actualizar lista';
+
+  @override
+  String get updateMessages => 'Actualizar mensajes';
+
+  @override
+  String get updateComments => 'Actualizar comentarios';
+
+  @override
+  String get now => 'Ahora';
+
+  @override
+  String agoDays(num days) {
+    final intl.NumberFormat daysNumberFormat = intl.NumberFormat.compact(
+      locale: localeName,
+    );
+    final String daysString = daysNumberFormat.format(days);
+
+    return 'Hace $daysString día';
+  }
+
+  @override
+  String agoDaysPlural(num days) {
+    final intl.NumberFormat daysNumberFormat = intl.NumberFormat.compact(
+      locale: localeName,
+    );
+    final String daysString = daysNumberFormat.format(days);
+
+    return 'Hace $daysString días';
+  }
+
+  @override
+  String agoHours(num hours) {
+    final intl.NumberFormat hoursNumberFormat = intl.NumberFormat.compact(
+      locale: localeName,
+    );
+    final String hoursString = hoursNumberFormat.format(hours);
+
+    return 'Hace $hoursString hora';
+  }
+
+  @override
+  String agoHoursPlural(num hours) {
+    final intl.NumberFormat hoursNumberFormat = intl.NumberFormat.compact(
+      locale: localeName,
+    );
+    final String hoursString = hoursNumberFormat.format(hours);
+
+    return 'Hace $hoursString horas';
+  }
+
+  @override
+  String agoMinutes(num minutes) {
+    final intl.NumberFormat minutesNumberFormat = intl.NumberFormat.compact(
+      locale: localeName,
+    );
+    final String minutesString = minutesNumberFormat.format(minutes);
+
+    return 'Hace $minutesString minuto';
+  }
+
+  @override
+  String agoMinutesPlural(num minutes) {
+    final intl.NumberFormat minutesNumberFormat = intl.NumberFormat.compact(
+      locale: localeName,
+    );
+    final String minutesString = minutesNumberFormat.format(minutes);
+
+    return 'Hace $minutesString minutos';
+  }
+
+  @override
+  String agoDaysShort(num days) {
+    final intl.NumberFormat daysNumberFormat = intl.NumberFormat.compact(
+      locale: localeName,
+    );
+    final String daysString = daysNumberFormat.format(days);
+
+    return 'Hace ${daysString}d';
+  }
+
+  @override
+  String agoHoursShort(num hours) {
+    final intl.NumberFormat hoursNumberFormat = intl.NumberFormat.compact(
+      locale: localeName,
+    );
+    final String hoursString = hoursNumberFormat.format(hours);
+
+    return 'Hace ${hoursString}h';
+  }
+
+  @override
+  String agoMinutesShort(num minutes) {
+    final intl.NumberFormat minutesNumberFormat = intl.NumberFormat.compact(
+      locale: localeName,
+    );
+    final String minutesString = minutesNumberFormat.format(minutes);
+
+    return 'Hace ${minutesString}m';
+  }
+
+  @override
+  String get projectQueriesMessage =>
+      'Aquí puedes hacer consultas sobre tu proyecto';
+
+  @override
+  String get anteprojectQueriesMessage =>
+      'Aquí puedes hacer consultas sobre tu anteproyecto';
+
+  @override
+  String get selectProjectOrAnteprojectToStartConversation =>
+      'Selecciona un proyecto o anteproyecto para iniciar o continuar una conversación con tu tutor';
+
+  @override
+  String get noActiveProjects => 'No tienes proyectos activos';
+
+  @override
+  String get createAnteprojectToChat =>
+      'Crea un anteproyecto para poder\nconversar con tu tutor';
+
+  @override
+  String get approvedProjects => 'Proyectos Aprobados';
+
+  @override
+  String get projectInDevelopment => 'Proyecto en desarrollo';
+
+  @override
+  String get viewComments => 'Ver comentarios';
+
+  @override
+  String get manageSchedule => 'Gestionar Cronograma';
+
+  @override
+  String get newUser => 'Nuevo Usuario';
+
+  @override
+  String get userDeleted => 'Usuario Eliminado';
+
+  @override
+  String get systemError => 'Error del Sistema';
+
+  @override
+  String get securityAlert => 'Alerta de Seguridad';
+
+  @override
+  String get settingsChanged => 'Configuración Cambiada';
+
+  @override
+  String get backupCompleted => 'Copia de Seguridad';
+
+  @override
+  String get bulkOperation => 'Operación Masiva';
+
+  @override
+  String get systemMaintenance => 'Mantenimiento';
+
+  @override
+  String get announcement => 'Anuncio';
+
+  @override
+  String get systemNotification => 'Notificación del Sistema';
+
+  @override
+  String get comment => 'Comentario';
+
+  @override
+  String get messageInAnteproject => 'Mensaje en Anteproyecto';
+
+  @override
+  String get messageInProject => 'Mensaje en Proyecto';
+
+  @override
+  String get passwordResetRequest => 'Solicitud de Restablecimiento';
+
+  @override
+  String get taskAssigned => 'Tarea Asignada';
+
+  @override
+  String get statusChanged => 'Estado Cambiado';
+
+  @override
+  String get conversations => 'Conversaciones';
+
+  @override
+  String get newTopic => 'Nuevo tema';
+
+  @override
+  String get writeMessage => 'Escribe un mensaje...';
+
+  @override
+  String get noConversationsYet => 'No hay conversaciones aún';
+
+  @override
+  String get createNewTopicToStart =>
+      'Crea un nuevo tema para empezar\na conversar con tu tutor';
+
+  @override
+  String get useButtonBelow => '👇 Usa el botón de abajo 👇';
+
+  @override
+  String errorLoadingConversations(String error) {
+    return 'Error al cargar conversaciones: $error';
+  }
+
+  @override
+  String get newConversationTopic => 'Nuevo tema de conversación';
+
+  @override
+  String get createNewTopicToOrganize =>
+      'Crea un nuevo tema para organizar tu conversación con el tutor.';
+
+  @override
+  String get topicTitle => 'Título del tema';
+
+  @override
+  String get topicTitleHint => 'Ej: Dudas sobre la metodología';
+
+  @override
+  String get topicTitleHelper => 'Describe brevemente el tema a tratar';
+
+  @override
+  String get pleaseEnterTitle => 'Por favor ingresa un título';
+
+  @override
+  String get titleMinLength => 'El título debe tener al menos 3 caracteres';
+
+  @override
+  String get topicTitleTip =>
+      'Tip: Usa títulos descriptivos como \"Dudas Cap. 3\" o \"Revisión de código\"';
+
+  @override
+  String get createTopic => 'Crear tema';
+
+  @override
+  String errorSendingMessage(String error) {
+    return 'Error al enviar mensaje: $error';
+  }
+
+  @override
+  String get noCommentsYet => 'No hay comentarios aún';
+
+  @override
+  String get beFirstToComment => 'Sé el primero en comentar este anteproyecto';
+
+  @override
+  String get commentsWillAppearHere =>
+      'Los comentarios aparecerán aquí cuando el tutor los agregue';
+
+  @override
+  String viewMoreComments(int count) {
+    return 'Ver $count comentarios más';
+  }
+
+  @override
+  String get internal => 'Interno';
+
+  @override
+  String editedOn(String date) {
+    return 'Editado el $date';
+  }
+
+  @override
+  String get section => 'Sección:';
+
+  @override
+  String get internalCommentLabel =>
+      'Comentario interno (solo visible para tutores)';
+
+  @override
+  String get commentAddedSuccessfully => 'Comentario agregado exitosamente';
+
+  @override
+  String get sectionGeneral => 'General';
+
+  @override
+  String get sectionDescription => 'Descripción';
+
+  @override
+  String get sectionObjectives => 'Objetivos';
+
+  @override
+  String get sectionExpectedResults => 'Resultados Esperados';
+
+  @override
+  String get sectionTimeline => 'Temporalización';
+
+  @override
+  String get sectionMethodology => 'Metodología';
+
+  @override
+  String get sectionResources => 'Recursos';
+
+  @override
+  String get sectionOther => 'Otros';
+
+  @override
+  String get generalInformation => 'Información General';
 }

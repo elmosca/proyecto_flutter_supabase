@@ -178,14 +178,15 @@ void main() {
         );
         
         // Obtener anteproyectos por tutor
-        final tutorAnteprojects = await anteprojectsService.getTutorAnteprojects();
+        final tutorAnteprojectsData = await anteprojectsService.getTutorAnteprojects();
         
         // Verificar que se obtuvieron datos (puede estar vacío)
-        expect(tutorAnteprojects, isA<List<Anteproject>>());
+        expect(tutorAnteprojectsData, isA<List<Map<String, dynamic>>>());
         
         // Si hay anteproyectos, verificar estructura
-        if (tutorAnteprojects.isNotEmpty) {
-          for (final anteproject in tutorAnteprojects) {
+        if (tutorAnteprojectsData.isNotEmpty) {
+          for (final anteprojectData in tutorAnteprojectsData) {
+            final anteproject = Anteproject.fromJson(anteprojectData);
             expect(anteproject.id, isNotNull);
             expect(anteproject.tutorId, isNotNull);
           }

@@ -187,6 +187,25 @@ class MockAuthService extends _i1.Mock implements _i3.AuthService {
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
           as _i4.Future<void>);
+
+  @override
+  _i4.Future<Map<String, dynamic>> resetPasswordForEmail(String? email) =>
+      (super.noSuchMethod(
+            Invocation.method(#resetPasswordForEmail, [email]),
+            returnValue: _i4.Future<Map<String, dynamic>>.value(
+              <String, dynamic>{},
+            ),
+          )
+          as _i4.Future<Map<String, dynamic>>);
+
+  @override
+  _i4.Future<void> updatePassword(String? newPassword) =>
+      (super.noSuchMethod(
+            Invocation.method(#updatePassword, [newPassword]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
 }
 
 /// A class which mocks [AnteprojectsService].
@@ -207,6 +226,16 @@ class MockAnteprojectsService extends _i1.Mock
             ),
           )
           as _i4.Future<List<_i2.Anteproject>>);
+
+  @override
+  _i4.Future<List<Map<String, dynamic>>> getAnteprojectsWithStudentInfo() =>
+      (super.noSuchMethod(
+            Invocation.method(#getAnteprojectsWithStudentInfo, []),
+            returnValue: _i4.Future<List<Map<String, dynamic>>>.value(
+              <Map<String, dynamic>>[],
+            ),
+          )
+          as _i4.Future<List<Map<String, dynamic>>>);
 
   @override
   _i4.Future<_i2.Anteproject?> getAnteproject(int? id) =>
@@ -264,9 +293,17 @@ class MockAnteprojectsService extends _i1.Mock
           as _i4.Future<void>);
 
   @override
-  _i4.Future<void> approveAnteproject(int? id, String? comments) =>
+  _i4.Future<void> approveAnteproject(
+    int? id,
+    String? comments, {
+    Map<String, dynamic>? timeline,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#approveAnteproject, [id, comments]),
+            Invocation.method(
+              #approveAnteproject,
+              [id, comments],
+              {#timeline: timeline},
+            ),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
@@ -294,14 +331,14 @@ class MockAnteprojectsService extends _i1.Mock
           as _i4.Future<List<_i2.Anteproject>>);
 
   @override
-  _i4.Future<List<_i2.Anteproject>> getTutorAnteprojects() =>
+  _i4.Future<List<Map<String, dynamic>>> getTutorAnteprojects() =>
       (super.noSuchMethod(
             Invocation.method(#getTutorAnteprojects, []),
-            returnValue: _i4.Future<List<_i2.Anteproject>>.value(
-              <_i2.Anteproject>[],
+            returnValue: _i4.Future<List<Map<String, dynamic>>>.value(
+              <Map<String, dynamic>>[],
             ),
           )
-          as _i4.Future<List<_i2.Anteproject>>);
+          as _i4.Future<List<Map<String, dynamic>>>);
 
   @override
   _i4.Future<List<_i2.Anteproject>> getStudentAnteprojects() =>
@@ -329,6 +366,14 @@ class MockAnteprojectsService extends _i1.Mock
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
           as _i4.Future<void>);
+
+  @override
+  _i4.Future<List<_i2.User>> getAnteprojectStudents(int? anteprojectId) =>
+      (super.noSuchMethod(
+            Invocation.method(#getAnteprojectStudents, [anteprojectId]),
+            returnValue: _i4.Future<List<_i2.User>>.value(<_i2.User>[]),
+          )
+          as _i4.Future<List<_i2.User>>);
 }
 
 /// A class which mocks [TasksService].

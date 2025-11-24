@@ -3,7 +3,11 @@ import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
-/// Servicio para manejar permisos de la aplicación
+/// Servicio para manejar permisos de la aplicación.
+///
+/// Unifica la verificación y solicitud de permisos entre plataformas (Web,
+/// Android, iOS) y versiones (Android < 13 vs 13+ con permisos granulares).
+/// Proporciona utilidades para almacenamiento, red y apertura de ajustes.
 class PermissionsService {
   static final PermissionsService _instance = PermissionsService._internal();
   factory PermissionsService() => _instance;
@@ -20,7 +24,7 @@ class PermissionsService {
   /// Verifica si la plataforma es Web
   bool get isWeb => kIsWeb;
 
-  /// Solicita permisos de almacenamiento según la versión de Android
+  /// Solicita permisos de almacenamiento según la versión de Android.
   Future<PermissionStatus> requestStoragePermission() async {
     if (isWeb) {
       // En web no se necesitan permisos de almacenamiento
@@ -45,7 +49,7 @@ class PermissionsService {
     return PermissionStatus.granted;
   }
 
-  /// Verifica si el dispositivo es Android 13 o superior
+  /// Verifica si el dispositivo es Android 13 o superior.
   Future<bool> _isAndroid13OrHigher() async {
     if (!isAndroid) return false;
 
@@ -60,7 +64,7 @@ class PermissionsService {
     }
   }
 
-  /// Solicita permisos granulares para Android 13+
+  /// Solicita permisos granulares para Android 13+ (fotos, vídeos y audio).
   Future<PermissionStatus> _requestAndroid13StoragePermissions() async {
     try {
       // Solicitar permisos para imágenes, video y audio
@@ -84,7 +88,7 @@ class PermissionsService {
     }
   }
 
-  /// Verifica el estado actual de los permisos de almacenamiento
+  /// Verifica el estado actual de los permisos de almacenamiento.
   Future<PermissionStatus> checkStoragePermission() async {
     if (isWeb) return PermissionStatus.granted;
     if (isIOS) return PermissionStatus.granted;
@@ -113,14 +117,14 @@ class PermissionsService {
     return PermissionStatus.granted;
   }
 
-  /// Verifica si los permisos de almacenamiento están concedidos
+  /// Verifica si los permisos de almacenamiento están concedidos.
   Future<bool> hasStoragePermission() async {
     final status = await checkStoragePermission();
     return status == PermissionStatus.granted;
   }
 
-  /// Abre la configuración de la aplicación para que el usuario pueda
-  /// conceder permisos manualmente
+  /// Abre la configuración de la aplicación para que el usuario conceda
+  /// permisos manualmente.
   Future<bool> openAppSettings() async {
     try {
       return await openAppSettings();
@@ -130,7 +134,7 @@ class PermissionsService {
     }
   }
 
-  /// Verifica permisos de red
+  /// Verifica permisos de red.
   Future<bool> hasNetworkPermission() async {
     if (isWeb) return true;
 
@@ -145,7 +149,7 @@ class PermissionsService {
     }
   }
 
-  /// Obtiene un mensaje descriptivo del estado del permiso
+  /// Obtiene un mensaje descriptivo del estado del permiso.
   String getPermissionStatusMessage(PermissionStatus status) {
     switch (status) {
       case PermissionStatus.granted:

@@ -284,7 +284,7 @@ abstract class AppLocalizations {
   /// **'Copiado al portapapeles: {value}'**
   String copiedToClipboard(String value);
 
-  /// Botón de eliminar
+  /// Tooltip para eliminar
   ///
   /// In es, this message translates to:
   /// **'Eliminar'**
@@ -397,6 +397,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Anteproyecto creado exitosamente'**
   String get anteprojectCreatedSuccess;
+
+  /// Mensaje informativo sobre la temporalización del anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'La temporalización será establecida por tu tutor asignado usando una herramienta de calendario.'**
+  String get timelineWillBeEstablishedByTutor;
+
+  /// Tooltip para descargar ejemplo PDF
+  ///
+  /// In es, this message translates to:
+  /// **'Descargar ejemplo PDF'**
+  String get downloadExamplePdf;
+
+  /// Botón para cargar plantilla
+  ///
+  /// In es, this message translates to:
+  /// **'Cargar Plantilla'**
+  String get loadTemplate;
 
   /// Mensaje de éxito al actualizar anteproyecto
   ///
@@ -620,7 +638,7 @@ abstract class AppLocalizations {
   /// **'El comentario no puede exceder 1000 caracteres'**
   String get commentsContentMaxLength;
 
-  /// Texto para usuario desconocido
+  /// Nombre por defecto para usuario desconocido
   ///
   /// In es, this message translates to:
   /// **'Usuario desconocido'**
@@ -1322,16 +1340,16 @@ abstract class AppLocalizations {
   /// **'Anteproyectos Revisados'**
   String get reviewedAnteprojects;
 
-  /// Botón para aprobar anteproyecto
+  /// Título para aprobar anteproyecto
   ///
   /// In es, this message translates to:
-  /// **'Aprobar'**
+  /// **'Aprobar Anteproyecto'**
   String get approveAnteproject;
 
-  /// Botón para rechazar anteproyecto
+  /// Título para rechazar anteproyecto
   ///
   /// In es, this message translates to:
-  /// **'Rechazar'**
+  /// **'Rechazar Anteproyecto'**
   String get rejectAnteproject;
 
   /// Acción de solicitar cambios en un anteproyecto
@@ -1490,19 +1508,19 @@ abstract class AppLocalizations {
   /// **'Los comentarios son obligatorios'**
   String get commentsRequired;
 
-  /// Acción de aprobar
+  /// Tooltip o botón para aprobar
   ///
   /// In es, this message translates to:
   /// **'Aprobar'**
   String get approve;
 
-  /// Acción de rechazar
+  /// Tooltip o botón para rechazar
   ///
   /// In es, this message translates to:
   /// **'Rechazar'**
   String get reject;
 
-  /// Acción de actualizar o refrescar
+  /// Botón para actualizar notificaciones
   ///
   /// In es, this message translates to:
   /// **'Actualizar'**
@@ -1646,10 +1664,10 @@ abstract class AppLocalizations {
   /// **'Tutor'**
   String get tutorRole;
 
-  /// Título de sección para elementos revisados
+  /// Etiqueta para fecha de revisión
   ///
   /// In es, this message translates to:
-  /// **'Revisados'**
+  /// **'Revisado:'**
   String get reviewed;
 
   /// Botón para añadir estudiantes
@@ -1868,6 +1886,30 @@ abstract class AppLocalizations {
   /// **'Enviado:'**
   String get submitted;
 
+  /// Etiqueta para fecha de última actualización
+  ///
+  /// In es, this message translates to:
+  /// **'Última actualización:'**
+  String get lastUpdate;
+
+  /// Título de la sección de fechas
+  ///
+  /// In es, this message translates to:
+  /// **'Fechas'**
+  String get dates;
+
+  /// Título de la sección de fechas de revisión
+  ///
+  /// In es, this message translates to:
+  /// **'Fechas de Revisión'**
+  String get reviewDates;
+
+  /// Título de la sección de hitos del proyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Hitos del Proyecto'**
+  String get projectMilestones;
+
   /// Botón para ver comentarios
   ///
   /// In es, this message translates to:
@@ -1952,7 +1994,7 @@ abstract class AppLocalizations {
   /// **'Rechazado'**
   String get rejected;
 
-  /// Etiqueta para estado
+  /// Etiqueta para el estado
   ///
   /// In es, this message translates to:
   /// **'Estado'**
@@ -2102,10 +2144,10 @@ abstract class AppLocalizations {
   /// **'Desconocido'**
   String get unknownStatus;
 
-  /// Mensaje de éxito al crear estudiante
+  /// Mensaje cuando se crea un estudiante exitosamente
   ///
   /// In es, this message translates to:
-  /// **'Estudiante creado exitosamente'**
+  /// **'Alumno creado exitosamente'**
   String get studentCreatedSuccess;
 
   /// Mensaje de error al crear estudiante
@@ -2282,12 +2324,6 @@ abstract class AppLocalizations {
   /// **'Descargar Ejemplo PDF'**
   String get downloadExamplePDF;
 
-  /// Botón para cargar plantilla
-  ///
-  /// In es, this message translates to:
-  /// **'Cargar Plantilla'**
-  String get loadTemplate;
-
   /// Mensaje de error al cargar cronograma
   ///
   /// In es, this message translates to:
@@ -2323,6 +2359,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Regenerar Fechas Basadas en Hitos'**
   String get regenerateDatesBasedOnMilestones;
+
+  /// Mensaje cuando no hay hitos definidos
+  ///
+  /// In es, this message translates to:
+  /// **'No se han definido hitos'**
+  String get noMilestonesDefined;
 
   /// Título de detalles del anteproyecto
   ///
@@ -2390,7 +2432,7 @@ abstract class AppLocalizations {
   /// **'Error al cargar comentarios: {error}'**
   String errorLoadingComments(String error);
 
-  /// Mensaje de validación para comentario
+  /// Mensaje de validación para comentario vacío
   ///
   /// In es, this message translates to:
   /// **'Por favor, escribe un comentario'**
@@ -2438,13 +2480,13 @@ abstract class AppLocalizations {
   /// **'Error al cargar notificaciones: {error}'**
   String errorLoadingNotifications(String error);
 
-  /// Mensaje de error al marcar como leída
+  /// Mensaje de error al marcar notificación como leída
   ///
   /// In es, this message translates to:
-  /// **'Error al marcar como leída: {error}'**
+  /// **'Error marcando como leída: {error}'**
   String errorMarkingAsRead(String error);
 
-  /// Mensaje de éxito al marcar todas como leídas
+  /// Mensaje cuando se marcan todas las notificaciones como leídas
   ///
   /// In es, this message translates to:
   /// **'Todas las notificaciones marcadas como leídas'**
@@ -2570,7 +2612,7 @@ abstract class AppLocalizations {
   /// **'Crear Tutor'**
   String get createTutor;
 
-  /// Mensaje de éxito al crear tutor
+  /// Mensaje cuando se crea un tutor exitosamente
   ///
   /// In es, this message translates to:
   /// **'Tutor creado exitosamente'**
@@ -2707,6 +2749,1308 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Lista de Tareas'**
   String get tasksList;
+
+  /// Error de timeout de red
+  ///
+  /// In es, this message translates to:
+  /// **'La conexión tardó demasiado. Por favor, verifica tu conexión a internet e inténtalo de nuevo.'**
+  String get errorNetworkTimeout;
+
+  /// Error de falta de conexión a internet
+  ///
+  /// In es, this message translates to:
+  /// **'No hay conexión a internet. Por favor, verifica tu conexión e inténtalo de nuevo.'**
+  String get errorNetworkNoInternet;
+
+  /// Error de servidor no disponible
+  ///
+  /// In es, this message translates to:
+  /// **'El servidor no está disponible en este momento. Por favor, inténtalo más tarde.'**
+  String get errorNetworkServerUnavailable;
+
+  /// Error de DNS
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo resolver la dirección del servidor. Verifica tu conexión a internet.'**
+  String get errorNetworkDnsError;
+
+  /// Error de conexión perdida
+  ///
+  /// In es, this message translates to:
+  /// **'Se perdió la conexión. Por favor, verifica tu conexión a internet.'**
+  String get errorNetworkConnectionLost;
+
+  /// Error de solicitud de red fallida
+  ///
+  /// In es, this message translates to:
+  /// **'La solicitud falló. Por favor, inténtalo de nuevo.'**
+  String get errorNetworkRequestFailed;
+
+  /// Error de usuario no autenticado
+  ///
+  /// In es, this message translates to:
+  /// **'Debes iniciar sesión para realizar esta acción.'**
+  String get errorNotAuthenticated;
+
+  /// Error de credenciales inválidas
+  ///
+  /// In es, this message translates to:
+  /// **'Las credenciales son incorrectas. Por favor, verifica tu email y contraseña.'**
+  String get errorInvalidCredentials;
+
+  /// Error de sesión expirada
+  ///
+  /// In es, this message translates to:
+  /// **'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.'**
+  String get errorSessionExpired;
+
+  /// Error de perfil no encontrado
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo encontrar tu perfil de usuario. Por favor, contacta con soporte.'**
+  String get errorProfileNotFound;
+
+  /// Error de cuenta deshabilitada
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta está deshabilitada. Por favor, contacta con el administrador.'**
+  String get errorAccountDisabled;
+
+  /// Error de email no verificado
+  ///
+  /// In es, this message translates to:
+  /// **'Tu email no ha sido verificado. Por favor, revisa tu bandeja de entrada.'**
+  String get errorEmailNotVerified;
+
+  /// Error de contraseña débil
+  ///
+  /// In es, this message translates to:
+  /// **'La contraseña es demasiado débil. Debe tener al menos 8 caracteres.'**
+  String get errorPasswordTooWeak;
+
+  /// Error de intentos de login excedidos
+  ///
+  /// In es, this message translates to:
+  /// **'Demasiados intentos de inicio de sesión. Inténtalo más tarde.'**
+  String get errorLoginAttemptsExceeded;
+
+  /// Error de límite de velocidad (rate limiting) al crear usuarios
+  ///
+  /// In es, this message translates to:
+  /// **'Demasiadas solicitudes. Por seguridad, debes esperar unos segundos antes de intentar crear otro usuario. Por favor, espera un momento e inténtalo de nuevo.'**
+  String get errorRateLimitExceeded;
+
+  /// Mensaje cuando se envió email pero falló la creación por rate limiting
+  ///
+  /// In es, this message translates to:
+  /// **'Se ha alcanzado el límite de solicitudes. Si se envió un email de verificación pero el usuario no se creó completamente, el administrador deberá limpiar manualmente el usuario desde Supabase Dashboard.'**
+  String get errorRateLimitEmailSent;
+
+  /// Error cuando se intenta reutilizar un email recién eliminado
+  ///
+  /// In es, this message translates to:
+  /// **'Este correo electrónico ya está registrado. Si acabas de eliminar un usuario con este correo, por favor espera unos minutos antes de intentar crear otro usuario con el mismo email. Supabase requiere un período de espera antes de permitir reutilizar un email.'**
+  String get errorEmailAlreadyRegistered;
+
+  /// Error de campo requerido
+  ///
+  /// In es, this message translates to:
+  /// **'Este campo es obligatorio.'**
+  String get errorFieldRequired;
+
+  /// Error de campo demasiado corto
+  ///
+  /// In es, this message translates to:
+  /// **'Este campo es demasiado corto.'**
+  String get errorFieldTooShort;
+
+  /// Error de campo demasiado largo
+  ///
+  /// In es, this message translates to:
+  /// **'Este campo es demasiado largo.'**
+  String get errorFieldTooLong;
+
+  /// Error de email inválido
+  ///
+  /// In es, this message translates to:
+  /// **'El formato del email no es válido.'**
+  String get errorInvalidEmail;
+
+  /// Error de URL inválida
+  ///
+  /// In es, this message translates to:
+  /// **'La URL no tiene un formato válido.'**
+  String get errorInvalidUrl;
+
+  /// Error de número inválido
+  ///
+  /// In es, this message translates to:
+  /// **'El valor debe ser un número válido.'**
+  String get errorInvalidNumber;
+
+  /// Error de JSON inválido
+  ///
+  /// In es, this message translates to:
+  /// **'El formato JSON no es válido.'**
+  String get errorInvalidJson;
+
+  /// Error de fecha inválida
+  ///
+  /// In es, this message translates to:
+  /// **'La fecha no tiene un formato válido.'**
+  String get errorInvalidDate;
+
+  /// Error de tipo de archivo inválido
+  ///
+  /// In es, this message translates to:
+  /// **'El tipo de archivo no está permitido.'**
+  String get errorInvalidFileType;
+
+  /// Error de tamaño de archivo inválido
+  ///
+  /// In es, this message translates to:
+  /// **'El archivo es demasiado grande.'**
+  String get errorInvalidFileSize;
+
+  /// Error de contexto de tarea faltante
+  ///
+  /// In es, this message translates to:
+  /// **'Debe seleccionar un proyecto para crear la tarea.'**
+  String get errorMissingTaskContext;
+
+  /// Error de relación de proyecto inválida
+  ///
+  /// In es, this message translates to:
+  /// **'La relación con el proyecto no es válida.'**
+  String get errorInvalidProjectRelation;
+
+  /// Error de acceso denegado
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes permisos para realizar esta acción.'**
+  String get errorAccessDenied;
+
+  /// Error de permisos insuficientes
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes suficientes permisos para realizar esta acción.'**
+  String get errorInsufficientPermissions;
+
+  /// Error de operación no permitida
+  ///
+  /// In es, this message translates to:
+  /// **'Esta operación no está permitida.'**
+  String get errorOperationNotAllowed;
+
+  /// Error de recurso no encontrado
+  ///
+  /// In es, this message translates to:
+  /// **'El recurso solicitado no fue encontrado.'**
+  String get errorResourceNotFound;
+
+  /// Error de no poder eliminar tarea completada
+  ///
+  /// In es, this message translates to:
+  /// **'No se puede eliminar una tarea completada.'**
+  String get errorCannotDeleteCompletedTask;
+
+  /// Error de no poder editar anteproyecto aprobado
+  ///
+  /// In es, this message translates to:
+  /// **'No se puede editar un anteproyecto aprobado.'**
+  String get errorCannotEditApprovedAnteproject;
+
+  /// Error de conexión a base de datos fallida
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo conectar a la base de datos. Inténtalo más tarde.'**
+  String get errorDatabaseConnectionFailed;
+
+  /// Error de consulta a base de datos fallida
+  ///
+  /// In es, this message translates to:
+  /// **'La consulta a la base de datos falló. Inténtalo de nuevo.'**
+  String get errorDatabaseQueryFailed;
+
+  /// Error de violación de constraint de base de datos
+  ///
+  /// In es, this message translates to:
+  /// **'Los datos no cumplen con las reglas de la base de datos.'**
+  String get errorDatabaseConstraintViolation;
+
+  /// Error de entrada duplicada en base de datos
+  ///
+  /// In es, this message translates to:
+  /// **'Ya existe un registro con estos datos.'**
+  String get errorDatabaseDuplicateEntry;
+
+  /// Error de violación de clave foránea
+  ///
+  /// In es, this message translates to:
+  /// **'No se puede realizar la operación debido a dependencias de datos.'**
+  String get errorDatabaseForeignKeyViolation;
+
+  /// Error desconocido de base de datos
+  ///
+  /// In es, this message translates to:
+  /// **'Ocurrió un error en la base de datos. Inténtalo más tarde.'**
+  String get errorDatabaseUnknownError;
+
+  /// Error de timeout de base de datos
+  ///
+  /// In es, this message translates to:
+  /// **'La operación tardó demasiado. Inténtalo de nuevo.'**
+  String get errorDatabaseTimeout;
+
+  /// Error de subida de archivo fallida
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo subir el archivo. Inténtalo de nuevo.'**
+  String get errorFileUploadFailed;
+
+  /// Error de descarga de archivo fallida
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo descargar el archivo. Inténtalo de nuevo.'**
+  String get errorFileDownloadFailed;
+
+  /// Error de eliminación de archivo fallida
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo eliminar el archivo. Inténtalo de nuevo.'**
+  String get errorFileDeleteFailed;
+
+  /// Error de archivo no encontrado
+  ///
+  /// In es, this message translates to:
+  /// **'El archivo no fue encontrado.'**
+  String get errorFileNotFound;
+
+  /// Error de tamaño de archivo excedido
+  ///
+  /// In es, this message translates to:
+  /// **'El archivo es demasiado grande. El tamaño máximo es {maxSize}.'**
+  String errorFileSizeExceeded(String maxSize);
+
+  /// Error de tipo de archivo no permitido
+  ///
+  /// In es, this message translates to:
+  /// **'El tipo de archivo no está permitido. Tipos permitidos: {allowedTypes}.'**
+  String errorFileTypeNotAllowed(String allowedTypes);
+
+  /// Error de archivo corrupto
+  ///
+  /// In es, this message translates to:
+  /// **'El archivo está corrupto o dañado.'**
+  String get errorFileCorrupted;
+
+  /// Error de permisos de archivo denegados
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes permisos para acceder a este archivo.'**
+  String get errorFilePermissionDenied;
+
+  /// Error de estado inválido
+  ///
+  /// In es, this message translates to:
+  /// **'El estado actual no permite realizar esta operación.'**
+  String get errorInvalidState;
+
+  /// Error de operación no soportada
+  ///
+  /// In es, this message translates to:
+  /// **'Esta operación no está soportada.'**
+  String get errorOperationNotSupported;
+
+  /// Error de recurso ya existente
+  ///
+  /// In es, this message translates to:
+  /// **'Ya existe un recurso con estos datos.'**
+  String get errorResourceAlreadyExists;
+
+  /// Error de recurso en uso
+  ///
+  /// In es, this message translates to:
+  /// **'El recurso está siendo utilizado y no se puede modificar.'**
+  String get errorResourceInUse;
+
+  /// Error de violación de flujo de trabajo
+  ///
+  /// In es, this message translates to:
+  /// **'Esta operación no está permitida en el flujo actual.'**
+  String get errorWorkflowViolation;
+
+  /// Error de violación de regla de negocio
+  ///
+  /// In es, this message translates to:
+  /// **'La operación viola una regla de negocio.'**
+  String get errorBusinessRuleViolation;
+
+  /// Error de cuota excedida
+  ///
+  /// In es, this message translates to:
+  /// **'Has excedido el límite permitido.'**
+  String get errorQuotaExceeded;
+
+  /// Error de plazo excedido
+  ///
+  /// In es, this message translates to:
+  /// **'Se ha excedido el plazo límite.'**
+  String get errorDeadlineExceeded;
+
+  /// Error de configuración faltante
+  ///
+  /// In es, this message translates to:
+  /// **'Falta configuración requerida. Contacta con soporte.'**
+  String get errorConfigurationMissing;
+
+  /// Error de configuración inválida
+  ///
+  /// In es, this message translates to:
+  /// **'La configuración no es válida. Contacta con soporte.'**
+  String get errorConfigurationInvalid;
+
+  /// Error de servicio no disponible
+  ///
+  /// In es, this message translates to:
+  /// **'El servicio no está disponible. Inténtalo más tarde.'**
+  String get errorServiceUnavailable;
+
+  /// Error de modo de mantenimiento
+  ///
+  /// In es, this message translates to:
+  /// **'El sistema está en mantenimiento. Inténtalo más tarde.'**
+  String get errorMaintenanceMode;
+
+  /// Error de timeout de servicio externo
+  ///
+  /// In es, this message translates to:
+  /// **'El servicio externo tardó demasiado en responder.'**
+  String get errorExternalServiceTimeout;
+
+  /// Error de servicio externo
+  ///
+  /// In es, this message translates to:
+  /// **'El servicio externo no está funcionando correctamente.'**
+  String get errorExternalServiceError;
+
+  /// Error de servicio de email no disponible
+  ///
+  /// In es, this message translates to:
+  /// **'El servicio de email no está disponible.'**
+  String get errorEmailServiceUnavailable;
+
+  /// Error de servicio de notificaciones no disponible
+  ///
+  /// In es, this message translates to:
+  /// **'El servicio de notificaciones no está disponible.'**
+  String get errorNotificationServiceUnavailable;
+
+  /// Error desconocido
+  ///
+  /// In es, this message translates to:
+  /// **'Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo.'**
+  String get errorUnknown;
+
+  /// Error inesperado
+  ///
+  /// In es, this message translates to:
+  /// **'Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo.'**
+  String get errorUnexpected;
+
+  /// Error interno
+  ///
+  /// In es, this message translates to:
+  /// **'Ha ocurrido un error interno. Por favor, contacta con soporte.'**
+  String get errorInternal;
+
+  /// Error genérico de red
+  ///
+  /// In es, this message translates to:
+  /// **'Error de conexión. Por favor, verifica tu conexión a internet.'**
+  String get errorNetworkGeneric;
+
+  /// Error genérico de autenticación
+  ///
+  /// In es, this message translates to:
+  /// **'Error de autenticación. Por favor, inicia sesión nuevamente.'**
+  String get errorAuthenticationGeneric;
+
+  /// Error genérico de validación
+  ///
+  /// In es, this message translates to:
+  /// **'Error de validación. Por favor, revisa los datos ingresados.'**
+  String get errorValidationGeneric;
+
+  /// Error genérico de permisos
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes permisos para realizar esta acción.'**
+  String get errorPermissionGeneric;
+
+  /// Error genérico de base de datos
+  ///
+  /// In es, this message translates to:
+  /// **'Error de base de datos. Inténtalo más tarde.'**
+  String get errorDatabaseGeneric;
+
+  /// Error genérico de archivo
+  ///
+  /// In es, this message translates to:
+  /// **'Error de archivo. Inténtalo de nuevo.'**
+  String get errorFileGeneric;
+
+  /// Error genérico de lógica de negocio
+  ///
+  /// In es, this message translates to:
+  /// **'Error de lógica de negocio. La operación no se puede completar.'**
+  String get errorBusinessLogicGeneric;
+
+  /// Error genérico de configuración
+  ///
+  /// In es, this message translates to:
+  /// **'Error de configuración. Contacta con soporte.'**
+  String get errorConfigurationGeneric;
+
+  /// Error genérico de servicio externo
+  ///
+  /// In es, this message translates to:
+  /// **'Error de servicio externo. Inténtalo más tarde.'**
+  String get errorExternalServiceGeneric;
+
+  /// Título para errores de red
+  ///
+  /// In es, this message translates to:
+  /// **'Error de Conexión'**
+  String get errorTitleNetwork;
+
+  /// Título para errores de autenticación
+  ///
+  /// In es, this message translates to:
+  /// **'Error de Autenticación'**
+  String get errorTitleAuthentication;
+
+  /// Título para errores de validación
+  ///
+  /// In es, this message translates to:
+  /// **'Error de Validación'**
+  String get errorTitleValidation;
+
+  /// Título para errores de permisos
+  ///
+  /// In es, this message translates to:
+  /// **'Error de Permisos'**
+  String get errorTitlePermission;
+
+  /// Título para errores de base de datos
+  ///
+  /// In es, this message translates to:
+  /// **'Error de Base de Datos'**
+  String get errorTitleDatabase;
+
+  /// Título para errores de archivo
+  ///
+  /// In es, this message translates to:
+  /// **'Error de Archivo'**
+  String get errorTitleFile;
+
+  /// Título para errores de lógica de negocio
+  ///
+  /// In es, this message translates to:
+  /// **'Error de Lógica de Negocio'**
+  String get errorTitleBusinessLogic;
+
+  /// Título para errores de configuración
+  ///
+  /// In es, this message translates to:
+  /// **'Error de Configuración'**
+  String get errorTitleConfiguration;
+
+  /// Título para errores de servicio externo
+  ///
+  /// In es, this message translates to:
+  /// **'Error de Servicio Externo'**
+  String get errorTitleExternalService;
+
+  /// Título para errores desconocidos
+  ///
+  /// In es, this message translates to:
+  /// **'Error Desconocido'**
+  String get errorTitleUnknown;
+
+  /// Acción recomendada para errores de red
+  ///
+  /// In es, this message translates to:
+  /// **'Verificar conexión a internet'**
+  String get errorActionNetwork;
+
+  /// Acción recomendada para errores de autenticación
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciar sesión nuevamente'**
+  String get errorActionAuthentication;
+
+  /// Acción recomendada para errores de validación
+  ///
+  /// In es, this message translates to:
+  /// **'Revisar los datos ingresados'**
+  String get errorActionValidation;
+
+  /// Acción recomendada para errores de permisos
+  ///
+  /// In es, this message translates to:
+  /// **'Contactar con el administrador'**
+  String get errorActionPermission;
+
+  /// Acción recomendada para errores de base de datos
+  ///
+  /// In es, this message translates to:
+  /// **'Intentar más tarde'**
+  String get errorActionDatabase;
+
+  /// Acción recomendada para errores de archivo
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar otro archivo'**
+  String get errorActionFile;
+
+  /// Acción recomendada para errores de lógica de negocio
+  ///
+  /// In es, this message translates to:
+  /// **'Verificar el estado del recurso'**
+  String get errorActionBusinessLogic;
+
+  /// Acción recomendada para errores de configuración
+  ///
+  /// In es, this message translates to:
+  /// **'Contactar con soporte técnico'**
+  String get errorActionConfiguration;
+
+  /// Acción recomendada para errores de servicio externo
+  ///
+  /// In es, this message translates to:
+  /// **'Intentar más tarde'**
+  String get errorActionExternalService;
+
+  /// Acción recomendada para errores desconocidos
+  ///
+  /// In es, this message translates to:
+  /// **'Intentar de nuevo o contactar soporte'**
+  String get errorActionUnknown;
+
+  /// Enlace para recuperar contraseña
+  ///
+  /// In es, this message translates to:
+  /// **'¿Olvidaste tu contraseña?'**
+  String get forgotPassword;
+
+  /// Título de pantalla para restablecer contraseña
+  ///
+  /// In es, this message translates to:
+  /// **'Restablecer Contraseña'**
+  String get resetPassword;
+
+  /// Instrucciones en la pantalla de reset de contraseña
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa tu nueva contraseña para restablecer el acceso a tu cuenta.'**
+  String get resetPasswordInstructions;
+
+  /// Mensaje cuando se envía solicitud de reset al tutor
+  ///
+  /// In es, this message translates to:
+  /// **'Solicitud enviada a tu tutor'**
+  String get resetPasswordRequestSent;
+
+  /// Descripción detallada de la solicitud enviada al tutor
+  ///
+  /// In es, this message translates to:
+  /// **'Tu tutor {tutorName} recibirá una notificación para generar una nueva contraseña temporal. Te enviaremos un email con la nueva contraseña una vez que tu tutor la haya generado.'**
+  String resetPasswordRequestSentDescription(String tutorName);
+
+  /// Error cuando no existe el usuario
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontró un usuario con ese email'**
+  String get userNotFound;
+
+  /// Título de pantalla para establecer contraseña por primera vez
+  ///
+  /// In es, this message translates to:
+  /// **'Establecer Contraseña'**
+  String get setupPassword;
+
+  /// Instrucciones para establecer contraseña por primera vez
+  ///
+  /// In es, this message translates to:
+  /// **'Establece tu contraseña personal para acceder al sistema. Esta será tu contraseña de acceso.'**
+  String get setupPasswordInstructions;
+
+  /// Botón para enviar enlace de reset
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar Enlace de Recuperación'**
+  String get sendResetLink;
+
+  /// Mensaje cuando se envía el link de reset
+  ///
+  /// In es, this message translates to:
+  /// **'Se ha enviado un enlace de recuperación a tu correo electrónico.'**
+  String get resetLinkSent;
+
+  /// Campo para nueva contraseña
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva Contraseña'**
+  String get newPassword;
+
+  /// Campo para confirmar nueva contraseña
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar Nueva Contraseña'**
+  String get confirmNewPassword;
+
+  /// Botón para cambiar contraseña
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar Contraseña'**
+  String get changePassword;
+
+  /// Mensaje cuando se cambia la contraseña
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña actualizada exitosamente'**
+  String get passwordChanged;
+
+  /// Error cuando las contraseñas no coinciden
+  ///
+  /// In es, this message translates to:
+  /// **'Las contraseñas no coinciden'**
+  String get passwordsDoNotMatch;
+
+  /// Error de validación de longitud de contraseña
+  ///
+  /// In es, this message translates to:
+  /// **'La contraseña debe tener al menos 6 caracteres'**
+  String get passwordTooShort;
+
+  /// Error de validación de contraseña requerida
+  ///
+  /// In es, this message translates to:
+  /// **'La contraseña es obligatoria'**
+  String get passwordRequired;
+
+  /// Mensaje cuando se crea un usuario exitosamente
+  ///
+  /// In es, this message translates to:
+  /// **'Usuario creado exitosamente. Se ha enviado un email de verificación.'**
+  String get userCreatedSuccess;
+
+  /// Instrucciones mostradas después de crear un usuario
+  ///
+  /// In es, this message translates to:
+  /// **'El usuario recibirá un email de verificación. Después de verificar su email, deberá usar la opción \'¿Olvidaste tu contraseña?\' para establecer su contraseña personal.'**
+  String get userCreatedInstructions;
+
+  /// Título del diálogo para resetear contraseña de estudiante
+  ///
+  /// In es, this message translates to:
+  /// **'Restablecer contraseña para {studentName}'**
+  String resetPasswordForStudent(String studentName);
+
+  /// Checkbox para generar contraseña automáticamente
+  ///
+  /// In es, this message translates to:
+  /// **'Generar contraseña automáticamente'**
+  String get generatePasswordAutomatically;
+
+  /// Botón para regenerar contraseña
+  ///
+  /// In es, this message translates to:
+  /// **'Regenerar'**
+  String get regeneratePassword;
+
+  /// Mensaje cuando se resetea la contraseña exitosamente
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña restablecida exitosamente'**
+  String get passwordResetSuccess;
+
+  /// Mensaje indicando que se envió notificación al estudiante
+  ///
+  /// In es, this message translates to:
+  /// **'Se ha enviado una notificación al estudiante con la nueva contraseña.'**
+  String get passwordResetNotificationSent;
+
+  /// Mensaje de error al resetear contraseña
+  ///
+  /// In es, this message translates to:
+  /// **'Error al resetear contraseña: {error}'**
+  String passwordResetError(String error);
+
+  /// Mensaje cuando se crea un estudiante con contraseña establecida por tutor/admin
+  ///
+  /// In es, this message translates to:
+  /// **'El estudiante ha sido creado con la contraseña establecida. Puede iniciar sesión inmediatamente.'**
+  String get studentCreatedWithPassword;
+
+  /// Título para la sección de mensajes
+  ///
+  /// In es, this message translates to:
+  /// **'Mensajes'**
+  String get messages;
+
+  /// Título para los mensajes de estudiantes para tutores
+  ///
+  /// In es, this message translates to:
+  /// **'Mensajes de Estudiantes'**
+  String get tutorMessages;
+
+  /// Título para los mensajes con el tutor para estudiantes
+  ///
+  /// In es, this message translates to:
+  /// **'Mensajes con el Tutor'**
+  String get studentMessages;
+
+  /// Título de la guía de uso
+  ///
+  /// In es, this message translates to:
+  /// **'Guía de Uso'**
+  String get helpGuide;
+
+  /// Título de la configuración del sistema
+  ///
+  /// In es, this message translates to:
+  /// **'Configuración del Sistema'**
+  String get systemSettings;
+
+  /// Título genérico de configuración
+  ///
+  /// In es, this message translates to:
+  /// **'Configuración'**
+  String get settings;
+
+  /// Mensaje informativo para tutores sobre cómo seleccionar proyectos/anteproyectos para mensajes
+  ///
+  /// In es, this message translates to:
+  /// **'Selecciona un proyecto o anteproyecto para ver o responder mensajes de tus estudiantes'**
+  String get selectProjectOrAnteprojectMessage;
+
+  /// Mensaje cuando un tutor no tiene estudiantes asignados
+  ///
+  /// In es, this message translates to:
+  /// **'Espera a que te asignen estudiantes\ncon proyectos o anteproyectos'**
+  String get waitForStudentsAssignment;
+
+  /// Opción para mostrar todos los tipos de notificaciones
+  ///
+  /// In es, this message translates to:
+  /// **'Todos los tipos'**
+  String get allTypes;
+
+  /// Placeholder para el filtro de tipos de notificaciones
+  ///
+  /// In es, this message translates to:
+  /// **'Filtrar por tipo'**
+  String get filterByType;
+
+  /// Tooltip para marcar todas las notificaciones como leídas
+  ///
+  /// In es, this message translates to:
+  /// **'Marcar todas como leídas'**
+  String get markAllAsRead;
+
+  /// Tab para notificaciones personales
+  ///
+  /// In es, this message translates to:
+  /// **'Mis Notificaciones'**
+  String get myNotifications;
+
+  /// Tab para notificaciones del sistema
+  ///
+  /// In es, this message translates to:
+  /// **'Sistema'**
+  String get system;
+
+  /// Mensaje cuando se elimina una notificación
+  ///
+  /// In es, this message translates to:
+  /// **'Notificación eliminada'**
+  String get notificationDeleted;
+
+  /// Mensaje de error al eliminar notificación
+  ///
+  /// In es, this message translates to:
+  /// **'Error eliminando: {error}'**
+  String errorDeleting(String error);
+
+  /// Mensaje cuando no hay notificaciones
+  ///
+  /// In es, this message translates to:
+  /// **'No hay notificaciones'**
+  String get noNotifications;
+
+  /// Mensaje cuando no hay notificaciones del tipo filtrado
+  ///
+  /// In es, this message translates to:
+  /// **'No hay notificaciones de este tipo'**
+  String get noNotificationsOfThisType;
+
+  /// Mensaje informativo sobre privacidad de comunicaciones
+  ///
+  /// In es, this message translates to:
+  /// **'Las comunicaciones privadas entre usuarios no se muestran por protección de datos.'**
+  String get privateCommunicationsPrivacy;
+
+  /// Tooltip para ver mensajes
+  ///
+  /// In es, this message translates to:
+  /// **'Ver mensajes'**
+  String get viewMessages;
+
+  /// Tooltip para actualizar
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizar'**
+  String get update;
+
+  /// Tooltip para actualizar lista
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizar lista'**
+  String get updateList;
+
+  /// Tooltip para actualizar mensajes
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizar mensajes'**
+  String get updateMessages;
+
+  /// Tooltip para actualizar comentarios
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizar comentarios'**
+  String get updateComments;
+
+  /// Texto para tiempo reciente (justo ahora)
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora'**
+  String get now;
+
+  /// Formato de fecha relativa para días
+  ///
+  /// In es, this message translates to:
+  /// **'Hace {days} día'**
+  String agoDays(num days);
+
+  /// Formato de fecha relativa para días (plural)
+  ///
+  /// In es, this message translates to:
+  /// **'Hace {days} días'**
+  String agoDaysPlural(num days);
+
+  /// Formato de fecha relativa para horas
+  ///
+  /// In es, this message translates to:
+  /// **'Hace {hours} hora'**
+  String agoHours(num hours);
+
+  /// Formato de fecha relativa para horas (plural)
+  ///
+  /// In es, this message translates to:
+  /// **'Hace {hours} horas'**
+  String agoHoursPlural(num hours);
+
+  /// Formato de fecha relativa para minutos
+  ///
+  /// In es, this message translates to:
+  /// **'Hace {minutes} minuto'**
+  String agoMinutes(num minutes);
+
+  /// Formato de fecha relativa para minutos (plural)
+  ///
+  /// In es, this message translates to:
+  /// **'Hace {minutes} minutos'**
+  String agoMinutesPlural(num minutes);
+
+  /// Formato corto de fecha relativa para días
+  ///
+  /// In es, this message translates to:
+  /// **'Hace {days}d'**
+  String agoDaysShort(num days);
+
+  /// Formato corto de fecha relativa para horas
+  ///
+  /// In es, this message translates to:
+  /// **'Hace {hours}h'**
+  String agoHoursShort(num hours);
+
+  /// Formato corto de fecha relativa para minutos
+  ///
+  /// In es, this message translates to:
+  /// **'Hace {minutes}m'**
+  String agoMinutesShort(num minutes);
+
+  /// Mensaje informativo para consultas sobre proyectos
+  ///
+  /// In es, this message translates to:
+  /// **'Aquí puedes hacer consultas sobre tu proyecto'**
+  String get projectQueriesMessage;
+
+  /// Mensaje informativo para consultas sobre anteproyectos
+  ///
+  /// In es, this message translates to:
+  /// **'Aquí puedes hacer consultas sobre tu anteproyecto'**
+  String get anteprojectQueriesMessage;
+
+  /// Mensaje informativo para estudiantes sobre cómo seleccionar proyectos/anteproyectos para mensajes
+  ///
+  /// In es, this message translates to:
+  /// **'Selecciona un proyecto o anteproyecto para iniciar o continuar una conversación con tu tutor'**
+  String get selectProjectOrAnteprojectToStartConversation;
+
+  /// Mensaje cuando un estudiante no tiene proyectos activos
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes proyectos activos'**
+  String get noActiveProjects;
+
+  /// Instrucción para estudiantes sobre cómo crear un anteproyecto para chatear
+  ///
+  /// In es, this message translates to:
+  /// **'Crea un anteproyecto para poder\nconversar con tu tutor'**
+  String get createAnteprojectToChat;
+
+  /// Título para la sección de proyectos aprobados
+  ///
+  /// In es, this message translates to:
+  /// **'Proyectos Aprobados'**
+  String get approvedProjects;
+
+  /// Subtítulo para proyectos en desarrollo
+  ///
+  /// In es, this message translates to:
+  /// **'Proyecto en desarrollo'**
+  String get projectInDevelopment;
+
+  /// Tooltip para ver comentarios
+  ///
+  /// In es, this message translates to:
+  /// **'Ver comentarios'**
+  String get viewComments;
+
+  /// Tooltip para gestionar cronograma
+  ///
+  /// In es, this message translates to:
+  /// **'Gestionar Cronograma'**
+  String get manageSchedule;
+
+  /// Tipo de notificación: nuevo usuario
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo Usuario'**
+  String get newUser;
+
+  /// Tipo de notificación: usuario eliminado
+  ///
+  /// In es, this message translates to:
+  /// **'Usuario Eliminado'**
+  String get userDeleted;
+
+  /// Tipo de notificación: error del sistema
+  ///
+  /// In es, this message translates to:
+  /// **'Error del Sistema'**
+  String get systemError;
+
+  /// Tipo de notificación: alerta de seguridad
+  ///
+  /// In es, this message translates to:
+  /// **'Alerta de Seguridad'**
+  String get securityAlert;
+
+  /// Tipo de notificación: configuración cambiada
+  ///
+  /// In es, this message translates to:
+  /// **'Configuración Cambiada'**
+  String get settingsChanged;
+
+  /// Tipo de notificación: copia de seguridad
+  ///
+  /// In es, this message translates to:
+  /// **'Copia de Seguridad'**
+  String get backupCompleted;
+
+  /// Tipo de notificación: operación masiva
+  ///
+  /// In es, this message translates to:
+  /// **'Operación Masiva'**
+  String get bulkOperation;
+
+  /// Tipo de notificación: mantenimiento
+  ///
+  /// In es, this message translates to:
+  /// **'Mantenimiento'**
+  String get systemMaintenance;
+
+  /// Tipo de notificación: anuncio
+  ///
+  /// In es, this message translates to:
+  /// **'Anuncio'**
+  String get announcement;
+
+  /// Tipo de notificación: notificación del sistema
+  ///
+  /// In es, this message translates to:
+  /// **'Notificación del Sistema'**
+  String get systemNotification;
+
+  /// Tipo de notificación: comentario
+  ///
+  /// In es, this message translates to:
+  /// **'Comentario'**
+  String get comment;
+
+  /// Tipo de notificación: mensaje en anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Mensaje en Anteproyecto'**
+  String get messageInAnteproject;
+
+  /// Tipo de notificación: mensaje en proyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Mensaje en Proyecto'**
+  String get messageInProject;
+
+  /// Tipo de notificación: solicitud de restablecimiento
+  ///
+  /// In es, this message translates to:
+  /// **'Solicitud de Restablecimiento'**
+  String get passwordResetRequest;
+
+  /// Tipo de notificación: tarea asignada
+  ///
+  /// In es, this message translates to:
+  /// **'Tarea Asignada'**
+  String get taskAssigned;
+
+  /// Tipo de notificación: estado cambiado
+  ///
+  /// In es, this message translates to:
+  /// **'Estado Cambiado'**
+  String get statusChanged;
+
+  /// Título de la pantalla de conversaciones
+  ///
+  /// In es, this message translates to:
+  /// **'Conversaciones'**
+  String get conversations;
+
+  /// Botón para crear nuevo tema de conversación
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo tema'**
+  String get newTopic;
+
+  /// Placeholder para el campo de escribir mensaje
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un mensaje...'**
+  String get writeMessage;
+
+  /// Mensaje cuando no hay conversaciones
+  ///
+  /// In es, this message translates to:
+  /// **'No hay conversaciones aún'**
+  String get noConversationsYet;
+
+  /// Instrucción para crear un nuevo tema de conversación
+  ///
+  /// In es, this message translates to:
+  /// **'Crea un nuevo tema para empezar\na conversar con tu tutor'**
+  String get createNewTopicToStart;
+
+  /// Instrucción para usar el botón flotante
+  ///
+  /// In es, this message translates to:
+  /// **'👇 Usa el botón de abajo 👇'**
+  String get useButtonBelow;
+
+  /// Mensaje de error al cargar conversaciones
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar conversaciones: {error}'**
+  String errorLoadingConversations(String error);
+
+  /// Título del diálogo para crear nuevo tema
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo tema de conversación'**
+  String get newConversationTopic;
+
+  /// Descripción en el diálogo de crear tema
+  ///
+  /// In es, this message translates to:
+  /// **'Crea un nuevo tema para organizar tu conversación con el tutor.'**
+  String get createNewTopicToOrganize;
+
+  /// Label para el título del tema
+  ///
+  /// In es, this message translates to:
+  /// **'Título del tema'**
+  String get topicTitle;
+
+  /// Hint para el título del tema
+  ///
+  /// In es, this message translates to:
+  /// **'Ej: Dudas sobre la metodología'**
+  String get topicTitleHint;
+
+  /// Texto de ayuda para el título del tema
+  ///
+  /// In es, this message translates to:
+  /// **'Describe brevemente el tema a tratar'**
+  String get topicTitleHelper;
+
+  /// Mensaje de validación para título vacío
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor ingresa un título'**
+  String get pleaseEnterTitle;
+
+  /// Mensaje de validación para título muy corto
+  ///
+  /// In es, this message translates to:
+  /// **'El título debe tener al menos 3 caracteres'**
+  String get titleMinLength;
+
+  /// Consejo sobre cómo crear títulos descriptivos
+  ///
+  /// In es, this message translates to:
+  /// **'Tip: Usa títulos descriptivos como \"Dudas Cap. 3\" o \"Revisión de código\"'**
+  String get topicTitleTip;
+
+  /// Botón para crear el tema
+  ///
+  /// In es, this message translates to:
+  /// **'Crear tema'**
+  String get createTopic;
+
+  /// Mensaje de error al enviar mensaje
+  ///
+  /// In es, this message translates to:
+  /// **'Error al enviar mensaje: {error}'**
+  String errorSendingMessage(String error);
+
+  /// Mensaje cuando no hay comentarios
+  ///
+  /// In es, this message translates to:
+  /// **'No hay comentarios aún'**
+  String get noCommentsYet;
+
+  /// Mensaje para animar a comentar
+  ///
+  /// In es, this message translates to:
+  /// **'Sé el primero en comentar este anteproyecto'**
+  String get beFirstToComment;
+
+  /// Mensaje informativo sobre comentarios
+  ///
+  /// In es, this message translates to:
+  /// **'Los comentarios aparecerán aquí cuando el tutor los agregue'**
+  String get commentsWillAppearHere;
+
+  /// Botón para ver más comentarios
+  ///
+  /// In es, this message translates to:
+  /// **'Ver {count} comentarios más'**
+  String viewMoreComments(int count);
+
+  /// Etiqueta para comentarios internos
+  ///
+  /// In es, this message translates to:
+  /// **'Interno'**
+  String get internal;
+
+  /// Indicador de fecha de edición
+  ///
+  /// In es, this message translates to:
+  /// **'Editado el {date}'**
+  String editedOn(String date);
+
+  /// Label para selector de sección
+  ///
+  /// In es, this message translates to:
+  /// **'Sección:'**
+  String get section;
+
+  /// Label para checkbox de comentario interno
+  ///
+  /// In es, this message translates to:
+  /// **'Comentario interno (solo visible para tutores)'**
+  String get internalCommentLabel;
+
+  /// Mensaje de éxito al agregar comentario
+  ///
+  /// In es, this message translates to:
+  /// **'Comentario agregado exitosamente'**
+  String get commentAddedSuccessfully;
+
+  /// Nombre de la sección General
+  ///
+  /// In es, this message translates to:
+  /// **'General'**
+  String get sectionGeneral;
+
+  /// Nombre de la sección Descripción
+  ///
+  /// In es, this message translates to:
+  /// **'Descripción'**
+  String get sectionDescription;
+
+  /// Nombre de la sección Objetivos
+  ///
+  /// In es, this message translates to:
+  /// **'Objetivos'**
+  String get sectionObjectives;
+
+  /// Nombre de la sección Resultados Esperados
+  ///
+  /// In es, this message translates to:
+  /// **'Resultados Esperados'**
+  String get sectionExpectedResults;
+
+  /// Nombre de la sección Temporalización
+  ///
+  /// In es, this message translates to:
+  /// **'Temporalización'**
+  String get sectionTimeline;
+
+  /// Nombre de la sección Metodología
+  ///
+  /// In es, this message translates to:
+  /// **'Metodología'**
+  String get sectionMethodology;
+
+  /// Nombre de la sección Recursos
+  ///
+  /// In es, this message translates to:
+  /// **'Recursos'**
+  String get sectionResources;
+
+  /// Nombre de la sección Otros
+  ///
+  /// In es, this message translates to:
+  /// **'Otros'**
+  String get sectionOther;
+
+  /// Título de la sección de información general
+  ///
+  /// In es, this message translates to:
+  /// **'Información General'**
+  String get generalInformation;
 }
 
 class _AppLocalizationsDelegate

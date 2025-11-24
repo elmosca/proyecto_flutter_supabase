@@ -6,7 +6,13 @@ import '../models/user.dart';
 import '../services/auth_service.dart';
 import '../services/theme_service.dart';
 import '../router/app_router.dart';
+import '../utils/app_exception.dart';
+import '../utils/error_translator.dart';
 
+/// Eventos de autenticación.
+///
+/// Representan las intenciones del usuario o cambios externos del sistema
+/// (por ejemplo, un `signedIn` emitido por Supabase).
 // Events
 abstract class AuthEvent extends Equatable {
   const AuthEvent();
@@ -43,6 +49,7 @@ class AuthUserChanged extends AuthEvent {
   List<Object?> get props => [user];
 }
 
+/// Estados de autenticación renderizados por la UI.
 // States
 abstract class AuthState extends Equatable {
   const AuthState();
@@ -75,6 +82,12 @@ class AuthFailure extends AuthState {
   List<Object> get props => [message];
 }
 
+/// BLoC de autenticación.
+///
+/// Orquesta el flujo de login/logout, chequeo de sesión y reacción a cambios
+/// de estado de Supabase Auth. Emite estados para que la UI navegue y muestre
+/// mensajes adecuados. Maneja errores mediante `AppException` y traducciones
+/// de `ErrorTranslator`.
 // BLoC
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthService _authService;
@@ -158,7 +171,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(const AuthFailure('Credenciales inválidas'));
       }
     } catch (e) {
-      emit(AuthFailure(e.toString()));
+      // Manejar errores usando el nuevo sistema
+      if (e is AppException) {
+        final fallbackMessage = ErrorTranslator.getFallbackMessage(e);
+        emit(AuthFailure(fallbackMessage));
+      } else {
+        // Error no categorizado
+        emit(AuthFailure('Error inesperado: ${e.toString()}'));
+      }
     }
   }
 
@@ -174,7 +194,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ThemeService.instance.reset();
       emit(AuthUnauthenticated());
     } catch (e) {
-      emit(AuthFailure(e.toString()));
+      // Manejar errores usando el nuevo sistema
+      if (e is AppException) {
+        final fallbackMessage = ErrorTranslator.getFallbackMessage(e);
+        emit(AuthFailure(fallbackMessage));
+      } else {
+        emit(AuthFailure('Error inesperado: ${e.toString()}'));
+      }
     }
   }
 
@@ -197,7 +223,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         debugPrint('ℹ️ No hay sesión activa en Supabase');
       }
     } catch (e) {
-      emit(AuthFailure(e.toString()));
+      // Manejar errores usando el nuevo sistema
+      if (e is AppException) {
+        final fallbackMessage = ErrorTranslator.getFallbackMessage(e);
+        emit(AuthFailure(fallbackMessage));
+      } else {
+        emit(AuthFailure('Error inesperado: ${e.toString()}'));
+      }
     }
   }
 

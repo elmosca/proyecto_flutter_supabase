@@ -5,8 +5,15 @@ import '../../screens/forms/import_students_csv_screen.dart';
 
 class AddStudentsDialog extends StatelessWidget {
   final int tutorId;
+  final VoidCallback? onStudentAdded;
+  final VoidCallback? onImportCompleted;
 
-  const AddStudentsDialog({super.key, required this.tutorId});
+  const AddStudentsDialog({
+    super.key,
+    required this.tutorId,
+    this.onStudentAdded,
+    this.onImportCompleted,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +34,9 @@ class AddStudentsDialog extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton.icon(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _navigateToAddIndividual(context);
+            onPressed: () async {
+              Navigator.of(context).pop(); // Cerrar el diálogo primero
+              await _navigateToAddIndividual(context);
             },
             icon: const Icon(Icons.person_add),
             label: Text(AppLocalizations.of(context)!.addIndividually),
@@ -45,9 +52,9 @@ class AddStudentsDialog extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton.icon(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _navigateToImportCSV(context);
+            onPressed: () async {
+              Navigator.of(context).pop(); // Cerrar el diálogo primero
+              await _navigateToImportCSV(context);
             },
             icon: const Icon(Icons.upload_file),
             label: Text(AppLocalizations.of(context)!.importFromCSV),
@@ -71,15 +78,32 @@ class AddStudentsDialog extends StatelessWidget {
     );
   }
 
-  void _navigateToAddIndividual(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => AddStudentForm(tutorId: tutorId),
-      ),
+  Future<bool?> _navigateToAddIndividual(BuildContext context) async {
+    final result = await Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => AddStudentForm(tutorId: tutorId)),
     );
+    // Si se creó un estudiante, notificar al padre para recargar
+    if (result == true && onStudentAdded != null) {
+      onStudentAdded!();
+    }
+    return result;
   }
 
-  void _navigateToImportCSV(BuildContext context) {
+  Future<String?> _navigateToImportCSV(BuildContext context) async {
+    final result = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ImportStudentsCSVScreen(tutorId: tutorId),
+      ),
+    );
+    // Si se completó la importación, el resultado será 'imported'
+    if (result == 'imported' && onImportCompleted != null) {
+      onImportCompleted!();
+    }
+    return result;
+  }
+
+  // Método estático para navegar directamente a importación CSV (sin diálogo)
+  static void navigateToImportCSV(BuildContext context, {int? tutorId}) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => ImportStudentsCSVScreen(tutorId: tutorId),

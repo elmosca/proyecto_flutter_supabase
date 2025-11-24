@@ -2,6 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../models/anteproject.dart';
 import '../services/anteprojects_service.dart';
+import '../utils/app_exception.dart';
+import '../utils/error_translator.dart';
 
 // Events
 abstract class AnteprojectsEvent extends Equatable {
@@ -111,7 +113,13 @@ class AnteprojectsBloc extends Bloc<AnteprojectsEvent, AnteprojectsState> {
       final anteprojects = await anteprojectsService.getAnteprojects();
       emit(AnteprojectsLoaded(anteprojects));
     } catch (e) {
-      emit(AnteprojectsFailure(e.toString()));
+      // Manejar errores usando el nuevo sistema
+      if (e is AppException) {
+        final fallbackMessage = ErrorTranslator.getFallbackMessage(e);
+        emit(AnteprojectsFailure(fallbackMessage));
+      } else {
+        emit(AnteprojectsFailure('Error inesperado: ${e.toString()}'));
+      }
     }
   }
 
@@ -136,7 +144,13 @@ class AnteprojectsBloc extends Bloc<AnteprojectsEvent, AnteprojectsState> {
         emit(const AnteprojectsFailure('Error al crear el anteproyecto'));
       }
     } catch (e) {
-      emit(AnteprojectsFailure(e.toString()));
+      // Manejar errores usando el nuevo sistema
+      if (e is AppException) {
+        final fallbackMessage = ErrorTranslator.getFallbackMessage(e);
+        emit(AnteprojectsFailure(fallbackMessage));
+      } else {
+        emit(AnteprojectsFailure('Error inesperado: ${e.toString()}'));
+      }
     }
   }
 
@@ -164,7 +178,13 @@ class AnteprojectsBloc extends Bloc<AnteprojectsEvent, AnteprojectsState> {
         emit(const AnteprojectsFailure('Error al actualizar el anteproyecto'));
       }
     } catch (e) {
-      emit(AnteprojectsFailure(e.toString()));
+      // Manejar errores usando el nuevo sistema
+      if (e is AppException) {
+        final fallbackMessage = ErrorTranslator.getFallbackMessage(e);
+        emit(AnteprojectsFailure(fallbackMessage));
+      } else {
+        emit(AnteprojectsFailure('Error inesperado: ${e.toString()}'));
+      }
     }
   }
 
@@ -175,7 +195,9 @@ class AnteprojectsBloc extends Bloc<AnteprojectsEvent, AnteprojectsState> {
     emit(AnteprojectsLoading());
 
     try {
-      // Por ahora, solo emitir éxito (el servicio no tiene método delete)
+      // Llamar al servicio para eliminar el anteproyecto
+      await anteprojectsService.deleteAnteproject(event.id);
+      
       emit(
         const AnteprojectOperationSuccess(
           'Anteproyecto eliminado exitosamente',
@@ -184,7 +206,13 @@ class AnteprojectsBloc extends Bloc<AnteprojectsEvent, AnteprojectsState> {
       // Recargar la lista
       add(AnteprojectsLoadRequested());
     } catch (e) {
-      emit(AnteprojectsFailure(e.toString()));
+      // Manejar errores usando el nuevo sistema
+      if (e is AppException) {
+        final fallbackMessage = ErrorTranslator.getFallbackMessage(e);
+        emit(AnteprojectsFailure(fallbackMessage));
+      } else {
+        emit(AnteprojectsFailure('Error inesperado: ${e.toString()}'));
+      }
     }
   }
 
@@ -220,7 +248,13 @@ class AnteprojectsBloc extends Bloc<AnteprojectsEvent, AnteprojectsState> {
         emit(const AnteprojectsFailure('Anteproyecto no encontrado'));
       }
     } catch (e) {
-      emit(AnteprojectsFailure(e.toString()));
+      // Manejar errores usando el nuevo sistema
+      if (e is AppException) {
+        final fallbackMessage = ErrorTranslator.getFallbackMessage(e);
+        emit(AnteprojectsFailure(fallbackMessage));
+      } else {
+        emit(AnteprojectsFailure('Error inesperado: ${e.toString()}'));
+      }
     }
   }
 }

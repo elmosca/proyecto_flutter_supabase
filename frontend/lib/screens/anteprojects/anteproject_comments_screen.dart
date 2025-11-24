@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../blocs/auth_bloc.dart';
 import '../../models/anteproject.dart';
 import '../../models/anteproject_comment.dart';
 import '../../models/user.dart';
 import '../../services/anteproject_comments_service.dart';
+import '../../l10n/app_localizations.dart';
 
 class AnteprojectCommentsScreen extends StatefulWidget {
   final Anteproject anteproject;
@@ -10,24 +13,37 @@ class AnteprojectCommentsScreen extends StatefulWidget {
   const AnteprojectCommentsScreen({super.key, required this.anteproject});
 
   @override
-  State<AnteprojectCommentsScreen> createState() => _AnteprojectCommentsScreenState();
+  State<AnteprojectCommentsScreen> createState() =>
+      _AnteprojectCommentsScreenState();
 }
 
 class _AnteprojectCommentsScreenState extends State<AnteprojectCommentsScreen> {
-  final AnteprojectCommentsService _commentsService = AnteprojectCommentsService();
+  final AnteprojectCommentsService _commentsService =
+      AnteprojectCommentsService();
   final TextEditingController _commentController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  
+
   List<AnteprojectComment> _comments = [];
   bool _isLoading = true;
   bool _isSubmitting = false;
   bool _isInternal = false;
   AnteprojectSection _selectedSection = AnteprojectSection.general;
+  User? _currentUser;
 
   @override
   void initState() {
     super.initState();
+    _loadCurrentUser();
     _loadComments();
+  }
+
+  void _loadCurrentUser() {
+    final authState = context.read<AuthBloc>().state;
+    if (authState is AuthAuthenticated) {
+      setState(() {
+        _currentUser = authState.user;
+      });
+    }
   }
 
   @override
@@ -43,14 +59,24 @@ class _AnteprojectCommentsScreenState extends State<AnteprojectCommentsScreen> {
         _isLoading = true;
       });
 
-      final comments = await _commentsService.getAnteprojectComments(widget.anteproject.id);
-      
+      final comments = await _commentsService.getAnteprojectComments(
+        widget.anteproject.id,
+      );
+
       if (mounted) {
+        // Filtrar comentarios internos si el usuario es estudiante
+        List<AnteprojectComment> filteredComments = comments;
+        if (_currentUser?.role == UserRole.student) {
+          filteredComments = comments
+              .where((comment) => !comment.isInternal)
+              .toList();
+        }
+
         setState(() {
-          _comments = comments;
+          _comments = filteredComments;
           _isLoading = false;
         });
-        
+
         // Scroll to bottom after loading
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (_scrollController.hasClients) {
@@ -67,9 +93,10 @@ class _AnteprojectCommentsScreenState extends State<AnteprojectCommentsScreen> {
         setState(() {
           _isLoading = false;
         });
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error al cargar comentarios: $e'),
+            content: Text(l10n.errorLoadingComments(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -79,9 +106,10 @@ class _AnteprojectCommentsScreenState extends State<AnteprojectCommentsScreen> {
 
   Future<void> _submitComment() async {
     if (_commentController.text.trim().isEmpty) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Por favor, escribe un comentario'),
+        SnackBar(
+          content: Text(l10n.pleaseWriteComment),
           backgroundColor: Colors.orange,
         ),
       );
@@ -118,9 +146,10 @@ class _AnteprojectCommentsScreenState extends State<AnteprojectCommentsScreen> {
           }
         });
 
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Comentario agregado exitosamente'),
+          SnackBar(
+            content: Text(l10n.commentAddedSuccessfully),
             backgroundColor: Colors.green,
           ),
         );
@@ -130,9 +159,10 @@ class _AnteprojectCommentsScreenState extends State<AnteprojectCommentsScreen> {
         setState(() {
           _isSubmitting = false;
         });
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error al agregar comentario: $e'),
+            content: Text(l10n.errorAddingComment(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -142,16 +172,17 @@ class _AnteprojectCommentsScreenState extends State<AnteprojectCommentsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Comentarios - ${widget.anteproject.title}'),
+        title: Text('${l10n.comments} - ${widget.anteproject.title}'),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _loadComments,
-            tooltip: 'Actualizar comentarios',
+            tooltip: l10n.updateComments,
           ),
         ],
       ),
@@ -163,10 +194,7 @@ class _AnteprojectCommentsScreenState extends State<AnteprojectCommentsScreen> {
             color: Colors.grey.shade50,
             child: Row(
               children: [
-                Icon(
-                  Icons.assignment,
-                  color: Colors.blue.shade600,
-                ),
+                Icon(Icons.assignment, color: Colors.blue.shade600),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Column(
@@ -180,7 +208,9 @@ class _AnteprojectCommentsScreenState extends State<AnteprojectCommentsScreen> {
                         ),
                       ),
                       Text(
-                        'Estado: ${widget.anteproject.status.displayName}',
+                        l10n.anteprojectStatusLabel(
+                          widget.anteproject.status.displayName,
+                        ),
                         style: TextStyle(
                           color: Colors.grey.shade600,
                           fontSize: 14,
@@ -198,26 +228,29 @@ class _AnteprojectCommentsScreenState extends State<AnteprojectCommentsScreen> {
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _comments.isEmpty
-                    ? _buildEmptyState()
-                    : ListView.builder(
-                        controller: _scrollController,
-                        padding: const EdgeInsets.all(16),
-                        itemCount: _comments.length,
-                        itemBuilder: (context, index) {
-                          final comment = _comments[index];
-                          return _buildCommentCard(comment);
-                        },
-                      ),
+                ? _buildEmptyState()
+                : ListView.builder(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.all(16),
+                    itemCount: _comments.length,
+                    itemBuilder: (context, index) {
+                      final comment = _comments[index];
+                      return _buildCommentCard(comment);
+                    },
+                  ),
           ),
 
-          // Formulario de nuevo comentario
-          _buildCommentForm(),
+          // Formulario de nuevo comentario (solo para tutores y admins)
+          if (_currentUser?.role == UserRole.tutor ||
+              _currentUser?.role == UserRole.admin)
+            _buildCommentForm(),
         ],
       ),
     );
   }
 
   Widget _buildEmptyState() {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -229,18 +262,13 @@ class _AnteprojectCommentsScreenState extends State<AnteprojectCommentsScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            'No hay comentarios aún',
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.grey.shade600,
-            ),
+            l10n.noCommentsYet,
+            style: TextStyle(fontSize: 18, color: Colors.grey.shade600),
           ),
           const SizedBox(height: 8),
           Text(
-            'Sé el primero en comentar este anteproyecto',
-            style: TextStyle(
-              color: Colors.grey.shade500,
-            ),
+            l10n.beFirstToComment,
+            style: TextStyle(color: Colors.grey.shade500),
           ),
         ],
       ),
@@ -248,7 +276,8 @@ class _AnteprojectCommentsScreenState extends State<AnteprojectCommentsScreen> {
   }
 
   Widget _buildCommentCard(AnteprojectComment comment) {
-    final authorName = comment.author?.fullName ?? 'Usuario desconocido';
+    final l10n = AppLocalizations.of(context)!;
+    final authorName = comment.author?.fullName ?? l10n.unknownUser;
     final authorRole = comment.author?.role ?? UserRole.student;
 
     return Card(
@@ -289,13 +318,16 @@ class _AnteprojectCommentsScreenState extends State<AnteprojectCommentsScreen> {
                           ),
                           const SizedBox(width: 8),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.blue.shade100,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
-                              comment.section.displayName,
+                              comment.section.getDisplayName(context),
                               style: TextStyle(
                                 color: Colors.blue.shade700,
                                 fontSize: 10,
@@ -317,14 +349,17 @@ class _AnteprojectCommentsScreenState extends State<AnteprojectCommentsScreen> {
                 ),
                 if (comment.isInternal) ...[
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.orange.shade100,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: Colors.orange.shade300),
                     ),
                     child: Text(
-                      'Interno',
+                      l10n.internal,
                       style: TextStyle(
                         color: Colors.orange.shade700,
                         fontSize: 10,
@@ -338,16 +373,13 @@ class _AnteprojectCommentsScreenState extends State<AnteprojectCommentsScreen> {
             const SizedBox(height: 12),
 
             // Contenido del comentario
-            Text(
-              comment.content,
-              style: const TextStyle(fontSize: 14),
-            ),
+            Text(comment.content, style: const TextStyle(fontSize: 14)),
 
             // Indicador de edición si fue actualizado
             if (comment.updatedAt != comment.createdAt) ...[
               const SizedBox(height: 8),
               Text(
-                'Editado el ${_formatDate(comment.updatedAt)}',
+                l10n.editedOn(_formatDate(comment.updatedAt)),
                 style: TextStyle(
                   color: Colors.grey.shade500,
                   fontSize: 11,
@@ -362,6 +394,7 @@ class _AnteprojectCommentsScreenState extends State<AnteprojectCommentsScreen> {
   }
 
   Widget _buildCommentForm() {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -381,9 +414,9 @@ class _AnteprojectCommentsScreenState extends State<AnteprojectCommentsScreen> {
             children: [
               Icon(Icons.category, size: 20, color: Colors.grey.shade600),
               const SizedBox(width: 8),
-              const Text(
-                'Sección:',
-                style: TextStyle(fontWeight: FontWeight.w500),
+              Text(
+                l10n.section,
+                style: const TextStyle(fontWeight: FontWeight.w500),
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -391,13 +424,16 @@ class _AnteprojectCommentsScreenState extends State<AnteprojectCommentsScreen> {
                   value: _selectedSection,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                     isDense: true,
                   ),
                   items: AnteprojectSection.values.map((section) {
                     return DropdownMenuItem(
                       value: section,
-                      child: Text(section.displayName),
+                      child: Text(section.getDisplayName(context)),
                     );
                   }).toList(),
                   onChanged: (value) {
@@ -413,29 +449,29 @@ class _AnteprojectCommentsScreenState extends State<AnteprojectCommentsScreen> {
           ),
           const SizedBox(height: 8),
 
-          // Checkbox para comentario interno
-          Row(
-            children: [
-              Checkbox(
-                value: _isInternal,
-                onChanged: (value) {
-                  setState(() {
-                    _isInternal = value ?? false;
-                  });
-                },
-              ),
-              Expanded(
-                child: Text(
-                  'Comentario interno (solo visible para tutores)',
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 14,
+          // Checkbox para comentario interno (solo visible para tutores/admin)
+          if (_currentUser?.role == UserRole.tutor ||
+              _currentUser?.role == UserRole.admin) ...[
+            Row(
+              children: [
+                Checkbox(
+                  value: _isInternal,
+                  onChanged: (value) {
+                    setState(() {
+                      _isInternal = value ?? false;
+                    });
+                  },
+                ),
+                Expanded(
+                  child: Text(
+                    l10n.internalCommentLabel,
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
                   ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
+              ],
+            ),
+            const SizedBox(height: 8),
+          ],
 
           // Campo de texto
           Row(
@@ -443,10 +479,10 @@ class _AnteprojectCommentsScreenState extends State<AnteprojectCommentsScreen> {
               Expanded(
                 child: TextField(
                   controller: _commentController,
-                  decoration: const InputDecoration(
-                    hintText: 'Escribe tu comentario...',
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(
+                  decoration: InputDecoration(
+                    hintText: l10n.commentsWriteComment,
+                    border: const OutlineInputBorder(),
+                    contentPadding: const EdgeInsets.symmetric(
                       horizontal: 12,
                       vertical: 8,
                     ),
@@ -496,17 +532,18 @@ class _AnteprojectCommentsScreenState extends State<AnteprojectCommentsScreen> {
   }
 
   String _formatDate(DateTime date) {
+    final l10n = AppLocalizations.of(context)!;
     final now = DateTime.now();
     final difference = now.difference(date);
 
     if (difference.inDays > 0) {
       return '${date.day}/${date.month}/${date.year}';
     } else if (difference.inHours > 0) {
-      return 'Hace ${difference.inHours}h';
+      return l10n.agoHoursShort(difference.inHours);
     } else if (difference.inMinutes > 0) {
-      return 'Hace ${difference.inMinutes}m';
+      return l10n.agoMinutesShort(difference.inMinutes);
     } else {
-      return 'Ahora';
+      return l10n.now;
     }
   }
 }
