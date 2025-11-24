@@ -1,0 +1,230 @@
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_markdown/flutter_markdown.dart';
+import '../../models/user.dart';
+import '../../widgets/navigation/persistent_scaffold.dart';
+import '../../config/app_config.dart';
+
+/// Pantalla de ayuda que muestra información y guías según el rol del usuario
+class HelpScreen extends StatefulWidget {
+  final User user;
+
+  const HelpScreen({super.key, required this.user});
+
+  @override
+  State<HelpScreen> createState() => _HelpScreenState();
+}
+
+class _HelpScreenState extends State<HelpScreen> {
+  String? _guideText;
+  bool _isLoading = true;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadGuide();
+  }
+
+  Future<void> _loadGuide() async {
+    final locale = Localizations.localeOf(context).languageCode;
+    String fileName;
+    
+    switch (widget.user.role) {
+      case UserRole.student:
+        fileName = locale == 'en'
+            ? 'guia_estudiante.md'
+            : 'guia_estudiante.md';
+        break;
+      case UserRole.tutor:
+        fileName = 'guia_tutor.md';
+        break;
+      case UserRole.admin:
+        fileName = 'guia_administrador.md';
+        break;
+    }
+
+    // Construir URL de GitHub raw content
+    final url = '${AppConfig.githubGuidesBaseUrl}/$fileName';
+
+    try {
+      final response = await http
+          .get(Uri.parse(url))
+          .timeout(const Duration(seconds: 10));
+      
+      if (response.statusCode == 200) {
+        if (mounted) {
+          setState(() {
+            _guideText = response.body;
+            _isLoading = false;
+          });
+        }
+      } else {
+        throw Exception('Error HTTP ${response.statusCode}: ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      debugPrint('Error cargando guía desde GitHub: $e');
+      debugPrint('URL intentada: $url');
+      if (mounted) {
+        setState(() {
+          _guideText = null;
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PersistentScaffold(
+      title: 'Guía de Uso',
+      titleKey: 'help',
+      user: widget.user,
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _guideText == null
+              ? _buildErrorView(context)
+              : SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildHeader(context),
+                      const SizedBox(height: 24),
+                      _buildMarkdownContent(context),
+                    ],
+                  ),
+                ),
+    );
+  }
+
+  Widget _buildErrorView(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
+            const SizedBox(height: 16),
+            Text(
+              'No se pudo cargar la guía',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'La guía se carga desde GitHub. Verifica tu conexión a internet o contacta al administrador del sistema.',
+              style: TextStyle(color: Colors.grey[600]),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: () => _loadGuide(),
+              icon: const Icon(Icons.refresh),
+              label: const Text('Reintentar'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMarkdownContent(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: MarkdownBody(
+          data: _guideText!,
+          styleSheet: MarkdownStyleSheet(
+            p: const TextStyle(fontSize: 14, height: 1.6),
+            h1: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            h2: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            h3: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            h4: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            code: TextStyle(
+              fontSize: 13,
+              fontFamily: 'monospace',
+              backgroundColor: Colors.grey[200],
+            ),
+            codeblockDecoration: BoxDecoration(
+              color: Colors.grey[100],
+              borderRadius: BorderRadius.circular(4),
+            ),
+            blockquote: TextStyle(
+              fontSize: 14,
+              fontStyle: FontStyle.italic,
+              color: Colors.grey[700],
+            ),
+            listBullet: const TextStyle(fontSize: 14),
+            strong: const TextStyle(fontWeight: FontWeight.bold),
+            em: const TextStyle(fontStyle: FontStyle.italic),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    String roleEmoji;
+    String roleTitle;
+    String roleDescription;
+
+    switch (widget.user.role) {
+      case UserRole.student:
+        roleEmoji = '📚';
+        roleTitle = 'Guía para Estudiantes';
+        roleDescription =
+            'Aprende cómo gestionar tus anteproyectos, tareas y proyectos';
+        break;
+      case UserRole.tutor:
+        roleEmoji = '👨‍🏫';
+        roleTitle = 'Guía para Tutores';
+        roleDescription =
+            'Aprende cómo supervisar estudiantes, revisar anteproyectos y gestionar el sistema';
+        break;
+      case UserRole.admin:
+        roleEmoji = '👨‍💼';
+        roleTitle = 'Guía para Administradores';
+        roleDescription =
+            'Aprende cómo gestionar el sistema, usuarios y configuración';
+        break;
+    }
+
+    return Card(
+      color: Colors.blue[50],
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Row(
+          children: [
+            Text(
+              roleEmoji,
+              style: const TextStyle(fontSize: 48),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    roleTitle,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue[900],
+                        ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    roleDescription,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.blue[700],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
