@@ -22,8 +22,9 @@ class AppConfig {
   
   // URLs de guías de usuario en GitHub (raw content)
   // Las guías se cargan dinámicamente desde el repositorio de GitHub
+  // Nota: Si las guías están en la rama 'develop', cambiar 'main' por 'develop'
   static const String githubGuidesBaseUrl =
-      'https://raw.githubusercontent.com/elmosca/proyecto_flutter_supabase/main/docs/guias_usuario';
+      'https://raw.githubusercontent.com/elmosca/proyecto_flutter_supabase/develop/docs/guias_usuario';
 
   // Credenciales de prueba - Solo del dominio jualas.es
   static const Map<String, String> testCredentials = {
