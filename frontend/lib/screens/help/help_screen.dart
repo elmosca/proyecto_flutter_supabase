@@ -45,16 +45,55 @@ class _HelpScreenState extends State<HelpScreen> {
 
     // Construir URL de GitHub raw content
     final url = '${AppConfig.githubGuidesBaseUrl}/$fileName';
+    
+    debugPrint('📥 Cargando guía desde: $url');
 
     try {
       final response = await http
-          .get(Uri.parse(url))
+          .get(
+            Uri.parse(url),
+            headers: {
+              'Accept': 'text/plain, text/markdown, */*',
+              'User-Agent': 'Flutter-App/1.0',
+            },
+          )
           .timeout(const Duration(seconds: 10));
       
       if (response.statusCode == 200) {
+        String content = response.body;
+        
+        // Verificar que no sea HTML (página de error o redirección)
+        final trimmedContent = content.trim();
+        if (trimmedContent.startsWith('<!DOCTYPE') || 
+            trimmedContent.startsWith('<html') ||
+            trimmedContent.startsWith('<?xml')) {
+          debugPrint('⚠️ GitHub devolvió HTML en lugar de Markdown');
+          debugPrint('Primeros 500 caracteres recibidos:');
+          debugPrint(trimmedContent.substring(0, trimmedContent.length > 500 ? 500 : trimmedContent.length));
+          debugPrint('Content-Type: ${response.headers['content-type']}');
+          throw Exception('GitHub devolvió HTML en lugar de Markdown. Verifica la URL: $url');
+        }
+        
+        // Verificar que comience con Markdown (normalmente # o texto)
+        if (!trimmedContent.startsWith('#') && 
+            !trimmedContent.startsWith('*') &&
+            !trimmedContent.startsWith('-') &&
+            !trimmedContent.startsWith('[') &&
+            trimmedContent.length > 10) {
+          debugPrint('⚠️ El contenido no parece ser Markdown válido');
+          debugPrint('Primeros 200 caracteres: ${trimmedContent.substring(0, trimmedContent.length > 200 ? 200 : trimmedContent.length)}');
+        }
+        
+        // Verificar que sea Markdown válido
+        if (content.trim().isEmpty) {
+          throw Exception('El contenido está vacío');
+        }
+        
+        debugPrint('✅ Guía cargada correctamente desde GitHub (${content.length} caracteres)');
+        
         if (mounted) {
           setState(() {
-            _guideText = response.body;
+            _guideText = content;
             _isLoading = false;
           });
         }
@@ -62,7 +101,7 @@ class _HelpScreenState extends State<HelpScreen> {
         throw Exception('Error HTTP ${response.statusCode}: ${response.reasonPhrase}');
       }
     } catch (e) {
-      debugPrint('Error cargando guía desde GitHub: $e');
+      debugPrint('❌ Error cargando guía desde GitHub: $e');
       debugPrint('URL intentada: $url');
       if (mounted) {
         setState(() {
