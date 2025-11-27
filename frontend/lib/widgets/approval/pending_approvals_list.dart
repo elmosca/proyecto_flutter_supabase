@@ -6,7 +6,7 @@ import '../../l10n/app_localizations.dart';
 import 'anteproject_approval_card.dart';
 
 class PendingApprovalsList extends StatelessWidget {
-  final List<Anteproject> anteprojects;
+  final List<Map<String, dynamic>> anteprojects;
 
   const PendingApprovalsList({
     super.key,
@@ -91,11 +91,11 @@ class PendingApprovalsList extends StatelessWidget {
               child: ListView.builder(
                 itemCount: anteprojects.length,
                 itemBuilder: (context, index) {
-                  final anteproject = anteprojects[index];
+                  final anteprojectData = anteprojects[index];
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: AnteprojectApprovalCard(
-                      anteproject: anteproject,
+                      anteprojectData: anteprojectData,
                       showActions: true,
                     ),
                   );

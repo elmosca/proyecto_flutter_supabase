@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/user.dart' as app_user;
 import '../../services/user_service.dart';
+import '../../services/theme_service.dart';
+import '../../utils/validators.dart';
 
 class EditStudentForm extends StatefulWidget {
   final app_user.User student;
@@ -19,11 +21,11 @@ class _EditStudentFormState extends State<EditStudentForm> {
   final _nreController = TextEditingController();
   final _phoneController = TextEditingController();
   final _biographyController = TextEditingController();
-  
+
   String _selectedSpecialty = 'DAM';
   String _selectedAcademicYear = '2024-2025';
   app_user.UserStatus _selectedStatus = app_user.UserStatus.active;
-  
+
   bool _isLoading = false;
 
   final List<String> _specialties = [
@@ -35,11 +37,7 @@ class _EditStudentFormState extends State<EditStudentForm> {
     'Desarrollo de Aplicaciones Web',
   ];
 
-  final List<String> _academicYears = [
-    '2024-2025',
-    '2025-2026',
-    '2026-2027',
-  ];
+  final List<String> _academicYears = ['2024-2025', '2025-2026', '2026-2027'];
 
   @override
   void initState() {
@@ -53,7 +51,9 @@ class _EditStudentFormState extends State<EditStudentForm> {
     _nreController.text = widget.student.nre ?? '';
     _phoneController.text = widget.student.phone ?? '';
     _biographyController.text = widget.student.biography ?? '';
-    _selectedSpecialty = widget.student.specialty ?? 'Desarrollo de Aplicaciones Multiplataforma';
+    _selectedSpecialty =
+        widget.student.specialty ??
+        'Desarrollo de Aplicaciones Multiplataforma';
     _selectedAcademicYear = widget.student.academicYear ?? '2024-2025';
     _selectedStatus = widget.student.status;
   }
@@ -77,7 +77,7 @@ class _EditStudentFormState extends State<EditStudentForm> {
 
     try {
       final userService = UserService();
-      
+
       final updatedUser = app_user.User(
         id: widget.student.id,
         fullName: _fullNameController.text.trim(),
@@ -103,13 +103,17 @@ class _EditStudentFormState extends State<EditStudentForm> {
             backgroundColor: Colors.green,
           ),
         );
-        Navigator.of(context).pop(updatedUser); // Retornar el usuario actualizado
+        Navigator.of(
+          context,
+        ).pop(updatedUser); // Retornar el usuario actualizado
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.errorUpdatingStudent(e.toString())),
+            content: Text(
+              AppLocalizations.of(context)!.errorUpdatingStudent(e.toString()),
+            ),
             backgroundColor: Colors.red,
           ),
         );
@@ -128,7 +132,7 @@ class _EditStudentFormState extends State<EditStudentForm> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.editStudent),
-        backgroundColor: Colors.blue,
+        backgroundColor: ThemeService.instance.currentPrimaryColor,
         foregroundColor: Colors.white,
       ),
       body: Form(
@@ -155,15 +159,12 @@ class _EditStudentFormState extends State<EditStudentForm> {
                 label: AppLocalizations.of(context)!.email,
                 icon: Icons.email,
                 keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return AppLocalizations.of(context)!.emailRequired;
-                  }
-                  if (!value.contains('@')) {
-                    return AppLocalizations.of(context)!.emailInvalid;
-                  }
-                  return null;
-                },
+                helperText: 'Debe ser del dominio: jualas.es',
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) => Validators.email(
+                  value,
+                  AppLocalizations.of(context)!.emailRequired,
+                ),
               ),
               const SizedBox(height: 16),
               _buildFormField(
@@ -221,7 +222,7 @@ class _EditStudentFormState extends State<EditStudentForm> {
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _submitForm,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: ThemeService.instance.currentPrimaryColor,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
@@ -244,18 +245,22 @@ class _EditStudentFormState extends State<EditStudentForm> {
     TextInputType? keyboardType,
     int maxLines = 1,
     String? Function(String?)? validator,
+    String? helperText,
+    AutovalidateMode? autovalidateMode,
   }) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
       maxLines: maxLines,
       validator: validator,
+      autovalidateMode: autovalidateMode,
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon),
         border: const OutlineInputBorder(),
         filled: true,
         fillColor: Colors.grey.shade50,
+        helperText: helperText,
       ),
     );
   }
@@ -276,10 +281,7 @@ class _EditStudentFormState extends State<EditStudentForm> {
         fillColor: Colors.grey.shade50,
       ),
       items: items.map((String item) {
-        return DropdownMenuItem<String>(
-          value: item,
-          child: Text(item),
-        );
+        return DropdownMenuItem<String>(value: item, child: Text(item));
       }).toList(),
       onChanged: onChanged,
     );
@@ -301,11 +303,11 @@ class _EditStudentFormState extends State<EditStudentForm> {
           child: Row(
             children: [
               Icon(
-                status == app_user.UserStatus.active 
-                    ? Icons.check_circle 
+                status == app_user.UserStatus.active
+                    ? Icons.check_circle
                     : Icons.cancel,
-                color: status == app_user.UserStatus.active 
-                    ? Colors.green 
+                color: status == app_user.UserStatus.active
+                    ? Colors.green
                     : Colors.red,
                 size: 20,
               ),

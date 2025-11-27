@@ -2,16 +2,58 @@ import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import '../models/models.dart';
 import 'email_notification_service.dart';
+import '../utils/app_exception.dart';
+import '../utils/network_error_detector.dart';
+import 'supabase_interceptor.dart';
 
+/// Servicio para gestión de anteproyectos de TFG.
+///
+/// Proporciona operaciones CRUD y consultas especializadas sobre anteproyectos:
+/// - Creación, edición y eliminación de anteproyectos
+/// - Consultas por rol (estudiante, tutor, admin)
+/// - Gestión de archivos adjuntos
+/// - Envío de notificaciones por email
+/// - Filtrado y búsqueda avanzada
+///
+/// ## Funcionalidades principales:
+/// - CRUD completo de anteproyectos
+/// - Consultas específicas por tutor con información de estudiantes
+/// - Gestión de archivos adjuntos
+/// - Búsqueda y filtrado por estado, tipo, año académico
+/// - Notificaciones automáticas por email
+///
+/// ## Seguridad:
+/// - Requiere autenticación: Sí
+/// - Roles permitidos: Todos (con restricciones por RLS)
+/// - Políticas RLS aplicadas: Los usuarios solo ven sus anteproyectos o los de sus estudiantes
+///
+/// ## Ejemplo de uso:
+/// ```dart
+/// final service = AnteprojectsService();
+/// final anteprojects = await service.getAnteprojects();
+/// ```
+///
+/// Ver también: [ApprovalService], [Anteproject]
 class AnteprojectsService {
   final supabase.SupabaseClient _supabase = supabase.Supabase.instance.client;
 
-  /// Obtiene todos los anteproyectos del usuario actual
+  /// Obtiene todos los anteproyectos del usuario actual.
+  ///
+  /// Retorna:
+  /// - Lista de [Anteproject] ordenados por fecha de creación (más recientes primero)
+  ///
+  /// Lanza:
+  /// - [AuthenticationException] si no hay usuario autenticado
+  /// - [DatabaseException] si falla la consulta
   Future<List<Anteproject>> getAnteprojects() async {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const AnteprojectsException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage:
+              'User not authenticated when trying to get anteprojects',
+        );
       }
 
       // Obtener anteproyectos según el rol del usuario
@@ -22,16 +64,41 @@ class AnteprojectsService {
 
       return response.map<Anteproject>(Anteproject.fromJson).toList();
     } catch (e) {
-      throw AnteprojectsException('Error al obtener anteproyectos: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error getting anteprojects: $e',
+        originalError: e,
+      );
     }
   }
 
-  /// Obtiene todos los anteproyectos con información del estudiante (para tutores)
+  /// Obtiene anteproyectos con información de estudiantes (solo para tutores).
+  ///
+  /// Retorna:
+  /// - Lista de mapas con anteproyectos y datos de estudiantes asignados al tutor
+  ///
+  /// Lanza:
+  /// - [AuthenticationException] si no hay usuario autenticado
+  /// - [DatabaseException] si falla la consulta
   Future<List<Map<String, dynamic>>> getAnteprojectsWithStudentInfo() async {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const AnteprojectsException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage:
+              'User not authenticated when trying to get anteprojects with student info',
+        );
       }
 
       debugPrint(
@@ -48,15 +115,17 @@ class AnteprojectsService {
       final tutorId = userResponse['id'] as int;
       debugPrint('🔍 AnteprojectsService: ID del tutor: $tutorId');
 
-      // Obtener anteproyectos de los estudiantes asignados a este tutor
+      // Obtener anteproyectos asignados a este tutor
+      // Filtramos por tutor_id directamente en anteprojects
+      // Usamos relaciones opcionales para no excluir anteproyectos sin estudiantes
       final response = await _supabase
           .from('anteprojects')
           .select('''
             *,
-            anteproject_students!inner(
+            anteproject_students(
               student_id,
               is_lead_author,
-              users!inner(
+              users(
                 id,
                 full_name,
                 email,
@@ -65,32 +134,282 @@ class AnteprojectsService {
               )
             )
           ''')
-          .eq('anteproject_students.users.tutor_id', tutorId)
+          .eq('tutor_id', tutorId)
           .order('created_at', ascending: false);
 
       debugPrint(
-        '🔍 AnteprojectsService: Respuesta de anteproyectos: $response',
+        '🔍 AnteprojectsService: Respuesta de anteproyectos: ${response.length} encontrados',
       );
 
-      return List<Map<String, dynamic>>.from(response);
+      // Función auxiliar para convertir objetos minificados de Supabase
+      Map<String, dynamic> safeConvertMap(dynamic data) {
+        if (data is Map<String, dynamic>) {
+          return data;
+        } else if (data is Map) {
+          // Iterar sobre las claves manualmente para evitar problemas con objetos minificados
+          final result = <String, dynamic>{};
+          for (final key in data.keys) {
+            final value = data[key];
+            result[key.toString()] = value;
+          }
+          return result;
+        } else {
+          // Último recurso: intentar casting
+          try {
+            final map = data as Map;
+            final result = <String, dynamic>{};
+            for (final key in map.keys) {
+              result[key.toString()] = map[key];
+            }
+            return result;
+          } catch (e) {
+            debugPrint('⚠️ No se pudo convertir objeto: ${data.runtimeType}');
+            return <String, dynamic>{};
+          }
+        }
+      }
+
+      // Convertir cada item a Map<String, dynamic> para evitar problemas de tipos
+      final result = <Map<String, dynamic>>[];
+      for (final item in response) {
+        try {
+          // Convertir el item principal usando la función segura
+          final itemMap = safeConvertMap(item);
+
+          // Si el mapa está vacío, saltar este item
+          if (itemMap.isEmpty) {
+            debugPrint('⚠️ Item vacío después de conversión, saltando...');
+            continue;
+          }
+
+          // Debug: verificar estructura de datos
+          debugPrint('🔍 Procesando anteproyecto ID: ${itemMap['id']}');
+          debugPrint(
+            '🔍 Tiene anteproject_students: ${itemMap.containsKey('anteproject_students')}',
+          );
+
+          // Verificar que los datos anidados también sean Maps válidos
+          if (itemMap.containsKey('anteproject_students')) {
+            final students = itemMap['anteproject_students'];
+            debugPrint(
+              '🔍 Tipo de anteproject_students: ${students.runtimeType}',
+            );
+            debugPrint('🔍 Valor de anteproject_students: $students');
+
+            if (students != null && students is List) {
+              // Convertir cada estudiante a Map si es necesario
+              final studentsList = students
+                  .map((s) {
+                    try {
+                      final studentMap = safeConvertMap(s);
+
+                      // Debug: verificar estructura del estudiante
+                      debugPrint('🔍 Estudiante procesado: $studentMap');
+
+                      // Convertir el campo 'users' si existe
+                      if (studentMap.containsKey('users') &&
+                          studentMap['users'] != null) {
+                        final usersData = studentMap['users'];
+                        debugPrint(
+                          '🔍 Tipo de users: ${usersData.runtimeType}',
+                        );
+                        debugPrint('🔍 Valor de users: $usersData');
+                        studentMap['users'] = safeConvertMap(usersData);
+                        debugPrint(
+                          '🔍 Users convertido: ${studentMap['users']}',
+                        );
+                      }
+
+                      return studentMap;
+                    } catch (e) {
+                      debugPrint(
+                        '⚠️ Error convirtiendo estudiante en getAnteprojectsWithStudentInfo: $e',
+                      );
+                      return <String, dynamic>{};
+                    }
+                  })
+                  .where((s) => s.isNotEmpty)
+                  .toList();
+
+              itemMap['anteproject_students'] = studentsList;
+              debugPrint(
+                '🔍 Lista final de estudiantes: ${studentsList.length} estudiantes',
+              );
+            } else if (students == null) {
+              debugPrint(
+                '⚠️ anteproject_students es null para anteproyecto ${itemMap['id']}',
+              );
+            }
+          } else {
+            debugPrint(
+              '⚠️ No se encontró anteproject_students en anteproyecto ${itemMap['id']}',
+            );
+          }
+
+          result.add(itemMap);
+        } catch (e) {
+          debugPrint(
+            '❌ Error procesando anteproyecto en getAnteprojectsWithStudentInfo: $e',
+          );
+          debugPrint('   Tipo del item: ${item.runtimeType}');
+          debugPrint('   Item: $item');
+          // Continuar con el siguiente item en lugar de fallar completamente
+        }
+      }
+
+      debugPrint(
+        '✅ ${result.length} anteproyectos procesados correctamente con info de estudiantes',
+      );
+      return result;
     } catch (e) {
       debugPrint('❌ AnteprojectsService: Error al obtener anteproyectos: $e');
-      throw AnteprojectsException('Error al obtener anteproyectos: $e');
+
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error getting anteprojects with student info: $e',
+        originalError: e,
+      );
     }
   }
 
   /// Obtiene un anteproyecto específico por ID
   Future<Anteproject?> getAnteproject(int id) async {
     try {
+      debugPrint('🔍 Obteniendo anteproyecto ID: $id');
+
       final response = await _supabase
           .from('anteprojects')
           .select()
           .eq('id', id)
           .single();
 
-      return Anteproject.fromJson(response);
+      debugPrint('🔍 Respuesta recibida, tipo: ${response.runtimeType}');
+
+      // Conversión robusta a Map<String, dynamic>
+      // Crear un nuevo mapa iterando sobre las claves para evitar problemas de tipo
+      Map<String, dynamic> anteprojectData = <String, dynamic>{};
+      try {
+        final responseMap = response as Map;
+        for (final key in responseMap.keys) {
+          anteprojectData[key.toString()] = responseMap[key];
+        }
+      } catch (e) {
+        debugPrint('⚠️ Error en conversión, intentando método alternativo: $e');
+        // Método alternativo: usar Map.from con conversión explícita
+        anteprojectData = Map<String, dynamic>.from(
+          Map<dynamic, dynamic>.from(response as Map),
+        );
+      }
+
+      debugPrint('🔍 Datos convertidos a Map, parseando...');
+      debugPrint(
+        '🔍 project_type en datos: ${anteprojectData['project_type']}',
+      );
+
+      // Normalizar expected_results si existe (puede venir como objeto minificado)
+      if (anteprojectData.containsKey('expected_results')) {
+        final expectedResultsRaw = anteprojectData['expected_results'];
+        debugPrint(
+          '🔍 expected_results tipo: ${expectedResultsRaw.runtimeType}',
+        );
+        debugPrint('🔍 expected_results valor: $expectedResultsRaw');
+
+        if (expectedResultsRaw != null) {
+          if (expectedResultsRaw is Map<String, dynamic>) {
+            // Ya está en el formato correcto
+            anteprojectData['expected_results'] = expectedResultsRaw;
+          } else if (expectedResultsRaw is Map) {
+            // Convertir objeto minificado a Map<String, dynamic>
+            final normalizedExpectedResults = <String, dynamic>{};
+            for (final key in expectedResultsRaw.keys) {
+              final value = expectedResultsRaw[key];
+              if (value is Map) {
+                // Normalizar valores anidados (hitos con title y description)
+                final normalizedValue = <String, dynamic>{};
+                for (final innerKey in value.keys) {
+                  normalizedValue[innerKey.toString()] = value[innerKey];
+                }
+                normalizedExpectedResults[key.toString()] = normalizedValue;
+              } else {
+                normalizedExpectedResults[key.toString()] = value;
+              }
+            }
+            anteprojectData['expected_results'] = normalizedExpectedResults;
+            debugPrint(
+              '🔍 expected_results normalizado: $normalizedExpectedResults',
+            );
+          } else {
+            debugPrint(
+              '⚠️ expected_results no es un Map, tipo: ${expectedResultsRaw.runtimeType}',
+            );
+            anteprojectData['expected_results'] = <String, dynamic>{};
+          }
+        } else {
+          anteprojectData['expected_results'] = <String, dynamic>{};
+        }
+      } else {
+        debugPrint('⚠️ No se encontró expected_results en los datos');
+        anteprojectData['expected_results'] = <String, dynamic>{};
+      }
+
+      // Normalizar timeline de la misma manera
+      if (anteprojectData.containsKey('timeline')) {
+        final timelineRaw = anteprojectData['timeline'];
+        if (timelineRaw is Map) {
+          final normalizedTimeline = <String, dynamic>{};
+          for (final key in timelineRaw.keys) {
+            normalizedTimeline[key.toString()] = timelineRaw[key];
+          }
+          anteprojectData['timeline'] = normalizedTimeline;
+        } else if (timelineRaw == null) {
+          anteprojectData['timeline'] = <String, dynamic>{};
+        }
+      } else {
+        anteprojectData['timeline'] = <String, dynamic>{};
+      }
+
+      // Usar directamente los datos convertidos, ya que Anteproject.fromJson espera snake_case
+      // El modelo tiene @JsonKey para mapear automáticamente
+      final anteproject = Anteproject.fromJson(anteprojectData);
+      debugPrint('✅ Anteproyecto parseado correctamente: ${anteproject.title}');
+      debugPrint(
+        '🔍 expectedResults después del parseo: ${anteproject.expectedResults}',
+      );
+      debugPrint(
+        '🔍 expectedResults cantidad: ${anteproject.expectedResults.length}',
+      );
+
+      return anteproject;
     } catch (e) {
-      throw AnteprojectsException('Error al obtener anteproyecto: $e');
+      debugPrint('❌ Error al obtener anteproyecto ID $id: $e');
+      debugPrint('   Tipo del error: ${e.runtimeType}');
+      debugPrint('   Stack trace: ${StackTrace.current}');
+
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error getting anteproject: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -99,7 +418,10 @@ class AnteprojectsService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const AnteprojectsException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
       }
 
       // ignore: avoid_print
@@ -129,6 +451,11 @@ class AnteprojectsService {
       data.remove('updated_at');
       data.remove('submitted_at');
       data.remove('reviewed_at');
+
+      // Asegurar que objectives se incluya si existe
+      if (anteproject.objectives != null) {
+        data['objectives'] = anteproject.objectives;
+      }
 
       // Asignar tutor automáticamente
       if (userRole == 'student' && tutorId != null) {
@@ -180,7 +507,21 @@ class AnteprojectsService {
     } catch (e) {
       // ignore: avoid_print
       print('❌ Debug - Error al crear anteproyecto: $e');
-      throw AnteprojectsException('Error al crear anteproyecto: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error creating anteproject: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -189,7 +530,10 @@ class AnteprojectsService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const AnteprojectsException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
       }
 
       final data = anteproject.toJson();
@@ -198,6 +542,37 @@ class AnteprojectsService {
       data.remove('created_at');
       data['updated_at'] = DateTime.now().toIso8601String();
 
+      // Asegurar que objectives se incluya si existe
+      if (anteproject.objectives != null) {
+        data['objectives'] = anteproject.objectives;
+      }
+
+      // Asegurar que expected_results se incluya correctamente
+      debugPrint(
+        '🔍 Actualizando anteproyecto - expectedResults: ${anteproject.expectedResults}',
+      );
+      debugPrint(
+        '🔍 Actualizando anteproyecto - expectedResults tipo: ${anteproject.expectedResults.runtimeType}',
+      );
+      debugPrint(
+        '🔍 Actualizando anteproyecto - expectedResults cantidad: ${anteproject.expectedResults.length}',
+      );
+      if (anteproject.expectedResults.isNotEmpty) {
+        data['expected_results'] = anteproject.expectedResults;
+      } else {
+        data['expected_results'] = <String, dynamic>{};
+      }
+
+      // Asegurar que timeline se incluya correctamente
+      if (anteproject.timeline.isNotEmpty) {
+        data['timeline'] = anteproject.timeline;
+      } else {
+        data['timeline'] = <String, dynamic>{};
+      }
+
+      debugPrint('🔍 Datos a actualizar: ${data.keys.toList()}');
+      debugPrint('🔍 expected_results en data: ${data['expected_results']}');
+
       final response = await _supabase
           .from('anteprojects')
           .update(data)
@@ -205,9 +580,56 @@ class AnteprojectsService {
           .select()
           .single();
 
-      return Anteproject.fromJson(response);
+      debugPrint(
+        '🔍 Respuesta después de actualizar: ${response['expected_results']}',
+      );
+
+      // Normalizar la respuesta antes de parsearla
+      final Map<String, dynamic> responseData = <String, dynamic>{};
+      for (final key in (response as Map).keys) {
+        responseData[key.toString()] = response[key];
+      }
+
+      // Normalizar expected_results en la respuesta
+      if (responseData.containsKey('expected_results')) {
+        final expectedResultsRaw = responseData['expected_results'];
+        if (expectedResultsRaw is Map) {
+          final normalizedExpectedResults = <String, dynamic>{};
+          for (final key in expectedResultsRaw.keys) {
+            final value = expectedResultsRaw[key];
+            if (value is Map) {
+              final normalizedValue = <String, dynamic>{};
+              for (final innerKey in value.keys) {
+                normalizedValue[innerKey.toString()] = value[innerKey];
+              }
+              normalizedExpectedResults[key.toString()] = normalizedValue;
+            } else {
+              normalizedExpectedResults[key.toString()] = value;
+            }
+          }
+          responseData['expected_results'] = normalizedExpectedResults;
+        } else if (expectedResultsRaw == null) {
+          responseData['expected_results'] = <String, dynamic>{};
+        }
+      }
+
+      return Anteproject.fromJson(responseData);
     } catch (e) {
-      throw AnteprojectsException('Error al actualizar anteproyecto: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error updating anteproject: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -216,7 +638,10 @@ class AnteprojectsService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const AnteprojectsException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
       }
 
       await _supabase
@@ -231,7 +656,21 @@ class AnteprojectsService {
       // Enviar notificación al tutor
       await _notifyTutorOnSubmission(id);
     } catch (e) {
-      throw AnteprojectsException('Error al enviar anteproyecto: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw BusinessLogicException(
+        'workflow_violation',
+        technicalMessage: 'Error sending anteproject: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -241,11 +680,18 @@ class AnteprojectsService {
   }
 
   /// Aprueba un anteproyecto (solo tutores)
-  Future<void> approveAnteproject(int id, String comments) async {
+  Future<void> approveAnteproject(
+    int id,
+    String comments, {
+    Map<String, dynamic>? timeline,
+  }) async {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const AnteprojectsException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
       }
 
       // Obtener información del anteproyecto antes de aprobarlo
@@ -260,16 +706,21 @@ class AnteprojectsService {
           anteprojectResponse['description'] as String?;
       final tutorId = anteprojectResponse['tutor_id'] as int;
 
+      // Preparar datos de actualización
+      final updateData = <String, dynamic>{
+        'status': 'approved',
+        'reviewed_at': DateTime.now().toIso8601String(),
+        'tutor_comments': comments,
+        'updated_at': DateTime.now().toIso8601String(),
+      };
+
+      // Si se proporciona un timeline, agregarlo
+      if (timeline != null && timeline.isNotEmpty) {
+        updateData['timeline'] = timeline;
+      }
+
       // Aprobar el anteproyecto
-      await _supabase
-          .from('anteprojects')
-          .update({
-            'status': 'approved',
-            'reviewed_at': DateTime.now().toIso8601String(),
-            'tutor_comments': comments,
-            'updated_at': DateTime.now().toIso8601String(),
-          })
-          .eq('id', id);
+      await _supabase.from('anteprojects').update(updateData).eq('id', id);
 
       // Crear proyecto automáticamente basado en el anteproyecto aprobado
       await _createProjectFromAnteproject(
@@ -279,7 +730,21 @@ class AnteprojectsService {
         tutorId: tutorId,
       );
     } catch (e) {
-      throw AnteprojectsException('Error al aprobar anteproyecto: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw BusinessLogicException(
+        'workflow_violation',
+        technicalMessage: 'Error approving anteproject: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -288,7 +753,10 @@ class AnteprojectsService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const AnteprojectsException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
       }
 
       await _supabase
@@ -301,7 +769,21 @@ class AnteprojectsService {
           })
           .eq('id', id);
     } catch (e) {
-      throw AnteprojectsException('Error al rechazar anteproyecto: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw BusinessLogicException(
+        'workflow_violation',
+        technicalMessage: 'Error rejecting anteproject: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -325,11 +807,16 @@ class AnteprojectsService {
   }
 
   /// Obtiene anteproyectos del tutor actual
-  Future<List<Anteproject>> getTutorAnteprojects() async {
+  /// Obtiene anteproyectos del tutor con información de estudiantes
+  /// Retorna una lista de mapas que incluyen el anteproyecto y la información del estudiante
+  Future<List<Map<String, dynamic>>> getTutorAnteprojects() async {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const AnteprojectsException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
       }
 
       // Primero obtener el ID del usuario desde la tabla users
@@ -339,16 +826,240 @@ class AnteprojectsService {
           .eq('email', user.email!)
           .single();
 
-      final userId = userResponse['id'] as int;
+      final tutorId = userResponse['id'] as int;
+      debugPrint('🔍 Obteniendo anteproyectos para tutor ID: $tutorId');
 
+      // Obtener anteproyectos con información de estudiantes
+      // Usamos relación opcional (sin !inner) para no excluir anteproyectos sin estudiantes
       final response = await _supabase
           .from('anteprojects')
-          .select()
-          .eq('tutor_id', userId)
+          .select('''
+            *,
+            anteproject_students(
+              student_id,
+              is_lead_author,
+              users(
+                id,
+                full_name,
+                email,
+                nre,
+                tutor_id
+              )
+            )
+          ''')
+          .eq('tutor_id', tutorId)
           .order('created_at', ascending: false);
 
-      return response.map<Anteproject>(Anteproject.fromJson).toList();
+      debugPrint(
+        '🔍 Respuesta de anteproyectos del tutor: ${response.length} encontrados',
+      );
+
+      // Debug: imprimir la respuesta cruda de Supabase
+      if (response.isNotEmpty) {
+        final firstItem = response[0];
+        debugPrint('🔍 DEBUG RAW - Primer anteproyecto crudo: $firstItem');
+        debugPrint(
+          '🔍 DEBUG RAW - Tipo del primer item: ${firstItem.runtimeType}',
+        );
+        final firstMap = firstItem as Map;
+        debugPrint(
+          '🔍 DEBUG RAW - Claves del primer item: ${firstMap.keys.toList()}',
+        );
+        if (firstMap.containsKey('anteproject_students')) {
+          debugPrint(
+            '🔍 DEBUG RAW - anteproject_students existe: ${firstMap['anteproject_students']}',
+          );
+          debugPrint(
+            '🔍 DEBUG RAW - Tipo de anteproject_students: ${firstMap['anteproject_students'].runtimeType}',
+          );
+        } else {
+          debugPrint(
+            '⚠️ DEBUG RAW - NO se encontró anteproject_students en la respuesta cruda',
+          );
+        }
+      }
+
+      // Convertir cada item a Map<String, dynamic> para evitar problemas de tipos
+      // Mantener las relaciones anidadas para que el frontend pueda usarlas
+      final result = <Map<String, dynamic>>[];
+      for (final item in response) {
+        try {
+          // Función auxiliar para convertir objetos minificados de Supabase
+          Map<String, dynamic> safeConvertMap(dynamic data) {
+            if (data is Map<String, dynamic>) {
+              return data;
+            } else if (data is Map) {
+              // Iterar sobre las claves manualmente para evitar problemas con objetos minificados
+              final result = <String, dynamic>{};
+              for (final key in data.keys) {
+                final value = data[key];
+                result[key.toString()] = value;
+              }
+              return result;
+            } else {
+              // Último recurso: intentar casting
+              try {
+                final map = data as Map;
+                final result = <String, dynamic>{};
+                for (final key in map.keys) {
+                  result[key.toString()] = map[key];
+                }
+                return result;
+              } catch (e) {
+                debugPrint(
+                  '⚠️ No se pudo convertir objeto: ${data.runtimeType}',
+                );
+                return <String, dynamic>{};
+              }
+            }
+          }
+
+          // Convertir el item principal usando la función segura
+          final itemMap = safeConvertMap(item);
+
+          // Si el mapa está vacío, saltar este item
+          if (itemMap.isEmpty) {
+            debugPrint('⚠️ Item vacío después de conversión, saltando...');
+            continue;
+          }
+
+          // Debug: verificar estructura de datos
+          debugPrint(
+            '🔍 getTutorAnteprojects - Procesando anteproyecto ID: ${itemMap['id']}',
+          );
+          debugPrint(
+            '🔍 getTutorAnteprojects - Tiene anteproject_students: ${itemMap.containsKey('anteproject_students')}',
+          );
+
+          // Verificar que los datos anidados también sean Maps válidos
+          if (itemMap.containsKey('anteproject_students')) {
+            final students = itemMap['anteproject_students'];
+            debugPrint(
+              '🔍 getTutorAnteprojects - Tipo de anteproject_students: ${students.runtimeType}',
+            );
+            debugPrint(
+              '🔍 getTutorAnteprojects - Valor de anteproject_students: $students',
+            );
+
+            if (students != null && students is List) {
+              debugPrint(
+                '🔍 getTutorAnteprojects - Lista tiene ${students.length} estudiantes',
+              );
+
+              // Convertir cada estudiante a Map si es necesario
+              final studentsList = students
+                  .map((s) {
+                    try {
+                      final studentMap = safeConvertMap(s);
+                      debugPrint(
+                        '🔍 getTutorAnteprojects - Estudiante procesado: $studentMap',
+                      );
+
+                      // Convertir el campo 'users' si existe
+                      if (studentMap.containsKey('users') &&
+                          studentMap['users'] != null) {
+                        final usersData = studentMap['users'];
+                        debugPrint(
+                          '🔍 getTutorAnteprojects - Tipo de users: ${usersData.runtimeType}',
+                        );
+                        debugPrint(
+                          '🔍 getTutorAnteprojects - Valor de users: $usersData',
+                        );
+                        final usersMap = safeConvertMap(usersData);
+
+                        // Normalizar el ID a número de forma robusta
+                        if (usersMap.containsKey('id') &&
+                            usersMap['id'] != null) {
+                          final idValue = usersMap['id'];
+                          if (idValue is int) {
+                            usersMap['id'] = idValue;
+                          } else if (idValue is num) {
+                            usersMap['id'] = idValue.toInt();
+                          } else {
+                            final parsedId = int.tryParse(idValue.toString());
+                            if (parsedId != null) {
+                              usersMap['id'] = parsedId;
+                            } else {
+                              debugPrint(
+                                '⚠️ No se pudo convertir ID: $idValue (tipo: ${idValue.runtimeType})',
+                              );
+                            }
+                          }
+                        }
+
+                        // Normalizar tutor_id si existe
+                        if (usersMap.containsKey('tutor_id') &&
+                            usersMap['tutor_id'] != null) {
+                          final tutorIdValue = usersMap['tutor_id'];
+                          if (tutorIdValue is int) {
+                            usersMap['tutor_id'] = tutorIdValue;
+                          } else if (tutorIdValue is num) {
+                            usersMap['tutor_id'] = tutorIdValue.toInt();
+                          } else {
+                            final parsedTutorId = int.tryParse(
+                              tutorIdValue.toString(),
+                            );
+                            if (parsedTutorId != null) {
+                              usersMap['tutor_id'] = parsedTutorId;
+                            } else {
+                              usersMap['tutor_id'] = null;
+                            }
+                          }
+                        }
+
+                        studentMap['users'] = usersMap;
+                        debugPrint(
+                          '🔍 getTutorAnteprojects - Users convertido: ${studentMap['users']}',
+                        );
+                      } else {
+                        debugPrint(
+                          '⚠️ getTutorAnteprojects - No se encontró campo "users" en estudiante',
+                        );
+                      }
+
+                      return studentMap;
+                    } catch (e) {
+                      debugPrint('⚠️ Error convirtiendo estudiante: $e');
+                      return <String, dynamic>{};
+                    }
+                  })
+                  .where((s) => s.isNotEmpty)
+                  .toList();
+
+              itemMap['anteproject_students'] = studentsList;
+              debugPrint(
+                '🔍 getTutorAnteprojects - Lista final de estudiantes: ${studentsList.length} estudiantes',
+              );
+            } else if (students == null) {
+              debugPrint(
+                '⚠️ getTutorAnteprojects - anteproject_students es null para anteproyecto ${itemMap['id']}',
+              );
+            } else {
+              debugPrint(
+                '⚠️ getTutorAnteprojects - anteproject_students no es una lista: ${students.runtimeType}',
+              );
+            }
+          } else {
+            debugPrint(
+              '⚠️ getTutorAnteprojects - No se encontró anteproject_students en anteproyecto ${itemMap['id']}',
+            );
+          }
+
+          result.add(itemMap);
+        } catch (e) {
+          debugPrint('❌ Error procesando anteproyecto del tutor: $e');
+          debugPrint('   Tipo del item: ${item.runtimeType}');
+          debugPrint('   Item: $item');
+          // Continuar con el siguiente item en lugar de fallar completamente
+        }
+      }
+
+      debugPrint(
+        '✅ ${result.length} anteproyectos procesados correctamente para el tutor',
+      );
+      return result;
     } catch (e) {
+      debugPrint('❌ Error al obtener anteproyectos del tutor: $e');
       throw AnteprojectsException(
         'Error al obtener anteproyectos del tutor: $e',
       );
@@ -360,7 +1071,10 @@ class AnteprojectsService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const AnteprojectsException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
       }
 
       // Primero obtener el ID del usuario desde la tabla users
@@ -372,28 +1086,63 @@ class AnteprojectsService {
 
       final userId = userResponse['id'] as int;
 
-      // Obtener anteproyectos donde el estudiante es autor
-      final response = await _supabase
+      debugPrint('🔍 Obteniendo anteproyectos para estudiante ID: $userId');
+
+      // Primero obtener los IDs de los anteproyectos del estudiante
+      final studentAnteprojectsResponse = await _supabase
           .from('anteproject_students')
-          .select('''
-            anteproject_id,
-            anteprojects!inner(*)
-          ''')
+          .select('anteproject_id')
           .eq('student_id', userId);
 
-      // Extraer los anteproyectos de la respuesta
+      if (studentAnteprojectsResponse.isEmpty) {
+        debugPrint('ℹ️ No se encontraron anteproyectos para el estudiante');
+        return [];
+      }
+
+      final anteprojectIds = studentAnteprojectsResponse
+          .map((r) => r['anteproject_id'] as int)
+          .toList();
+
+      debugPrint('🔍 IDs de anteproyectos encontrados: $anteprojectIds');
+
+      // Obtener los anteproyectos directamente sin relaciones anidadas
+      // para evitar problemas de conversión de tipos
+      final response = await _supabase
+          .from('anteprojects')
+          .select('*')
+          .inFilter('id', anteprojectIds)
+          .order('created_at', ascending: false);
+
+      debugPrint(
+        '🔍 Respuesta de anteproyectos: ${response.length} encontrados',
+      );
+
+      // Convertir la respuesta a List<Anteproject>
       final anteprojects = <Anteproject>[];
       for (final item in response) {
-        if (item['anteprojects'] != null) {
-          anteprojects.add(Anteproject.fromJson(item['anteprojects']));
+        try {
+          // Asegurar que el item sea un Map<String, dynamic>
+          final anteprojectData = Map<String, dynamic>.from(item);
+
+          final anteproject = Anteproject.fromJson(anteprojectData);
+          anteprojects.add(anteproject);
+        } catch (e) {
+          debugPrint('❌ Error procesando anteproyecto: $e');
+          debugPrint('   Tipo del item: ${item.runtimeType}');
+          debugPrint('   Datos: $item');
+          // Continuar con el siguiente anteproyecto
         }
       }
 
       // Ordenar por fecha de creación
       anteprojects.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
+      debugPrint(
+        '✅ ${anteprojects.length} anteproyectos procesados correctamente',
+      );
       return anteprojects;
     } catch (e) {
+      debugPrint('❌ Error al obtener anteproyectos del estudiante: $e');
       throw AnteprojectsException(
         'Error al obtener anteproyectos del estudiante: $e',
       );
@@ -495,7 +1244,10 @@ class AnteprojectsService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw const AnteprojectsException('Usuario no autenticado');
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
       }
 
       // Obtener información del usuario actual
@@ -538,8 +1290,10 @@ class AnteprojectsService {
             .eq('student_id', userId)
             .single();
       } catch (e) {
-        throw const AnteprojectsException(
-          'No tienes permisos para eliminar este anteproyecto',
+        throw PermissionException(
+          'access_denied',
+          technicalMessage:
+              'User does not have permission to delete this anteproject',
         );
       }
 
@@ -563,7 +1317,21 @@ class AnteprojectsService {
     } catch (e) {
       // ignore: avoid_print
       print('❌ Debug - Error al eliminar anteproyecto: $e');
-      throw AnteprojectsException('Error al eliminar anteproyecto: $e');
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error deleting anteproject: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -575,22 +1343,49 @@ class AnteprojectsService {
     required int tutorId,
   }) async {
     try {
+      // Verificar si ya existe un proyecto para este anteproyecto
+      final existingProject = await _supabase
+          .from('projects')
+          .select('id')
+          .eq('anteproject_id', anteprojectId)
+          .maybeSingle();
+
+      if (existingProject != null) {
+        debugPrint(
+          '⚠️ Ya existe un proyecto (ID: ${existingProject['id']}) para el anteproyecto: $anteprojectId',
+        );
+        // Actualizar el project_id en el anteproyecto si no está actualizado
+        await _supabase
+            .from('anteprojects')
+            .update({'project_id': existingProject['id']})
+            .eq('id', anteprojectId);
+        return;
+      }
+
       // Obtener el estudiante autor del anteproyecto
       final studentResponse = await _supabase
           .from('anteproject_students')
           .select('student_id')
           .eq('anteproject_id', anteprojectId)
           .eq('is_lead_author', true)
-          .single();
+          .maybeSingle();
 
-      final studentId = studentResponse['student_id'] as int;
+      if (studentResponse == null) {
+        debugPrint(
+          '⚠️ No se encontró estudiante autor para el anteproyecto: $anteprojectId',
+        );
+        // Crear proyecto sin estudiante asignado (el tutor puede asignarlo después)
+      }
 
-      // Crear el proyecto
+      final studentId = studentResponse?['student_id'] as int?;
+
+      // Crear el proyecto con la referencia al anteproyecto
       final projectData = {
         'title': title,
         'description': description,
         'tutor_id': tutorId,
-        'status': 'active',
+        'anteproject_id': anteprojectId, // Vincular con el anteproyecto
+        'status': 'planning', // Estado inicial: planning
         'created_at': DateTime.now().toIso8601String(),
         'updated_at': DateTime.now().toIso8601String(),
       };
@@ -603,28 +1398,75 @@ class AnteprojectsService {
 
       final projectId = projectResponse['id'] as int;
 
-      // Crear la relación estudiante-proyecto
-      await _supabase.from('project_students').insert({
-        'project_id': projectId,
-        'student_id': studentId,
-        'is_lead_student': true,
-        'created_at': DateTime.now().toIso8601String(),
-      });
+      // Actualizar el project_id en el anteproyecto para vincularlos
+      await _supabase
+          .from('anteprojects')
+          .update({
+            'project_id': projectId,
+            'updated_at': DateTime.now().toIso8601String(),
+          })
+          .eq('id', anteprojectId);
 
-      // Crear la relación anteproyecto-proyecto para trazabilidad
-      await _supabase.from('anteproject_projects').insert({
-        'anteproject_id': anteprojectId,
-        'project_id': projectId,
-        'created_at': DateTime.now().toIso8601String(),
-      });
+      // Crear la relación estudiante-proyecto si existe estudiante
+      if (studentId != null) {
+        try {
+          await _supabase.from('project_students').insert({
+            'project_id': projectId,
+            'student_id': studentId,
+            'is_lead': true, // Usar is_lead en lugar de is_lead_student
+            'joined_at': DateTime.now().toIso8601String(),
+          });
+          debugPrint(
+            '✅ Relación estudiante-proyecto creada: estudiante $studentId -> proyecto $projectId',
+          );
+        } catch (e) {
+          debugPrint('⚠️ Error al crear relación estudiante-proyecto: $e');
+          // No fallar si no se puede crear la relación
+        }
+      }
 
       debugPrint(
         '✅ Proyecto creado automáticamente: $projectId para anteproyecto: $anteprojectId',
       );
     } catch (e) {
       debugPrint('❌ Error al crear proyecto desde anteproyecto: $e');
+      debugPrint('   Stack trace: ${StackTrace.current}');
       // No fallar la aprobación si no se puede crear el proyecto
       // El tutor puede crear el proyecto manualmente después
+    }
+  }
+
+  /// Obtiene los estudiantes asignados a un anteproyecto específico
+  Future<List<User>> getAnteprojectStudents(int anteprojectId) async {
+    try {
+      debugPrint(
+        '🔍 Obteniendo estudiantes del anteproyecto ID: $anteprojectId',
+      );
+
+      final response = await _supabase
+          .from('anteproject_students')
+          .select('''
+            student_id,
+            users!inner(*)
+          ''')
+          .eq('anteproject_id', anteprojectId);
+
+      debugPrint('🔍 Respuesta de anteproject_students: $response');
+
+      // Extraer usuarios
+      final students = <User>[];
+      for (final item in response) {
+        if (item['users'] != null) {
+          final userData = item['users'] as Map<String, dynamic>;
+          students.add(User.fromJson(userData));
+        }
+      }
+
+      debugPrint('✅ ${students.length} estudiantes encontrados');
+      return students;
+    } catch (e) {
+      debugPrint('❌ Error obteniendo estudiantes del anteproyecto: $e');
+      throw AnteprojectsException('Error al obtener estudiantes: $e');
     }
   }
 }

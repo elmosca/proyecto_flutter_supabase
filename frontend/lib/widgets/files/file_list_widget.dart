@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -38,10 +39,14 @@ class _FileListWidgetState extends State<FileListWidget> {
     try {
       setState(() => _isLoading = true);
       
+      debugPrint('📁 Cargando archivos: attachableType=${widget.attachableType}, attachableId=${widget.attachableId}');
+      
       final files = await _filesService.getEntityFiles(
         attachableType: widget.attachableType,
         attachableId: widget.attachableId,
       );
+      
+      debugPrint('📁 Archivos encontrados: ${files.length}');
       
       if (mounted) {
         setState(() {
@@ -49,13 +54,17 @@ class _FileListWidgetState extends State<FileListWidget> {
           _isLoading = false;
         });
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      debugPrint('❌ Error al cargar archivos: $e');
+      debugPrint('Stack trace: $stackTrace');
+      
       if (mounted) {
         setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error al cargar archivos: $e'),
             backgroundColor: Colors.red,
+            duration: const Duration(seconds: 5),
           ),
         );
       }
@@ -108,9 +117,17 @@ class _FileListWidgetState extends State<FileListWidget> {
     }
   }
 
-  Future<void> _openFile(String filePath) async {
+  Future<void> _openFile(FileAttachment file) async {
     try {
-      final uri = Uri.parse(filePath);
+      // Para archivos de texto, mostrar en un visor propio con UTF-8
+      if (file.mimeType == 'text/plain' || 
+          file.originalFilename.toLowerCase().endsWith('.txt')) {
+        await _showTextFileViewer(file);
+        return;
+      }
+      
+      // Para otros archivos, abrir con la aplicación externa
+      final uri = Uri.parse(file.filePath);
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       } else {
@@ -121,6 +138,64 @@ class _FileListWidgetState extends State<FileListWidget> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error al abrir archivo: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _showTextFileViewer(FileAttachment file) async {
+    try {
+      // Mostrar diálogo de carga
+      if (!mounted) return;
+      
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+
+      // Descargar el archivo usando el filename (path en el bucket)
+      final fileBytes = await _filesService.downloadFile(file.filename);
+      
+      // Decodificar como UTF-8
+      final content = utf8.decode(fileBytes, allowMalformed: true);
+      
+      if (!mounted) return;
+      Navigator.of(context).pop(); // Cerrar diálogo de carga
+      
+      // Mostrar el contenido en un diálogo
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(file.originalFilename),
+          content: SizedBox(
+            width: double.maxFinite,
+            height: 400,
+            child: SingleChildScrollView(
+              child: SelectableText(
+                content,
+                style: const TextStyle(fontFamily: 'monospace'),
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cerrar'),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      if (mounted) {
+        Navigator.of(context).pop(); // Cerrar diálogo de carga si está abierto
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error al leer archivo: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -266,7 +341,7 @@ class _FileListWidgetState extends State<FileListWidget> {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.open_in_new),
-                        onPressed: () => _openFile(file.filePath),
+                        onPressed: () => _openFile(file),
                         tooltip: l10n.openFile,
                       ),
                       IconButton(
@@ -277,7 +352,7 @@ class _FileListWidgetState extends State<FileListWidget> {
                       ),
                     ],
                   ),
-                  onTap: () => _openFile(file.filePath),
+                  onTap: () => _openFile(file),
                 ),
               );
             },

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../blocs/auth_bloc.dart';
 import '../../blocs/tasks_bloc.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/task.dart';
+import '../../models/user.dart';
 import '../../services/logging_service.dart';
+import '../../widgets/navigation/app_bar_actions.dart';
 import '../forms/task_form.dart';
 
 class KanbanBoard extends StatefulWidget {
@@ -28,14 +31,28 @@ class _KanbanBoardState extends State<KanbanBoard> {
   // Índice donde se insertaría la tarea (para placeholder)
   int? _dropTargetIndex;
   TaskStatus? _dropTargetStatus;
+  User? _currentUser;
+
+  // Bandera para evitar múltiples drops simultáneos
+  bool _isProcessingDrop = false;
 
   @override
   void initState() {
     super.initState();
+    _loadCurrentUser();
     // Cargar tareas al inicializar
     context.read<TasksBloc>().add(
       TasksLoadRequested(projectId: widget.projectId),
     );
+  }
+
+  Future<void> _loadCurrentUser() async {
+    final authState = context.read<AuthBloc>().state;
+    if (authState is AuthAuthenticated) {
+      setState(() {
+        _currentUser = authState.user;
+      });
+    }
   }
 
   @override
@@ -102,15 +119,29 @@ class _KanbanBoardState extends State<KanbanBoard> {
       return Scaffold(
         appBar: AppBar(
           title: Text(l10n.kanbanBoardTitle),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: () => context.read<TasksBloc>().add(
-                TasksLoadRequested(projectId: widget.projectId),
-              ),
-              tooltip: l10n.tasksListRefresh,
-            ),
-          ],
+          actions: _currentUser != null
+              ? AppBarActions.build(
+                  context,
+                  _currentUser!,
+                  additionalActions: [
+                    IconButton(
+                      icon: const Icon(Icons.refresh),
+                      onPressed: () => context.read<TasksBloc>().add(
+                        TasksLoadRequested(projectId: widget.projectId),
+                      ),
+                      tooltip: l10n.tasksListRefresh,
+                    ),
+                  ],
+                )
+              : [
+                  IconButton(
+                    icon: const Icon(Icons.refresh),
+                    onPressed: () => context.read<TasksBloc>().add(
+                      TasksLoadRequested(projectId: widget.projectId),
+                    ),
+                    tooltip: l10n.tasksListRefresh,
+                  ),
+                ],
         ),
         body: body,
         floatingActionButton: FloatingActionButton(
@@ -145,12 +176,22 @@ class _KanbanBoardState extends State<KanbanBoard> {
 
     return DragTarget<Task>(
       onAcceptWithDetails: (details) {
-        final task = details.data;
-        _handleTaskDrop(task, status, columnTasks.length);
+        // Solo procesar si no hay una zona de drop específica activa
+        // y no se está procesando otro drop
+        if (_dropTargetIndex == null && !_isProcessingDrop) {
+          final task = details.data;
+          // Si la tarea ya está en esta columna, usar el final de la lista
+          // Si viene de otra columna, también usar el final
+          final targetIndex = task.status == status
+              ? columnTasks.length - 1
+              : columnTasks.length;
+          _handleTaskDrop(task, status, targetIndex);
+        }
       },
       onWillAcceptWithDetails: (details) {
-        // Permitir drop siempre, tanto para cambio de estado como reordenamiento
-        return true;
+        // Solo aceptar si no hay una zona de drop específica activa
+        // Esto evita que la columna capture el drop cuando hay una zona específica
+        return _dropTargetIndex == null;
       },
       builder: (context, candidateData, rejectedData) {
         final isHighlighted = candidateData.isNotEmpty;
@@ -262,6 +303,12 @@ class _KanbanBoardState extends State<KanbanBoard> {
           });
         },
         onAcceptWithDetails: (details) {
+          // Solo procesar si no se está procesando otro drop
+          if (!_isProcessingDrop) {
+            final task = details.data;
+            _handleTaskDrop(task, columnStatus, 0);
+          }
+
           setState(() {
             _dropTargetIndex = null;
             _dropTargetStatus = null;
@@ -465,13 +512,16 @@ class _KanbanBoardState extends State<KanbanBoard> {
         }
       },
       onAcceptWithDetails: (details) {
-        final task = details.data;
-        _handleTaskDrop(task, status, dropIndex);
+        // Solo procesar si no se está procesando otro drop
+        if (!_isProcessingDrop) {
+          final task = details.data;
+          _handleTaskDrop(task, status, dropIndex);
 
-        setState(() {
-          _dropTargetIndex = null;
-          _dropTargetStatus = null;
-        });
+          setState(() {
+            _dropTargetIndex = null;
+            _dropTargetStatus = null;
+          });
+        }
       },
       builder: (context, candidateData, rejectedData) {
         if (isTargeted || candidateData.isNotEmpty) {
@@ -651,11 +701,26 @@ class _KanbanBoardState extends State<KanbanBoard> {
   }
 
   void _handleTaskDrop(Task task, TaskStatus newStatus, int targetIndex) {
+    // Evitar procesar múltiples drops simultáneos
+    if (_isProcessingDrop) {
+      LoggingService.debug('⚠️ Drop ya en proceso, ignorando');
+      return;
+    }
+
     LoggingService.debug('🔄 Drag & Drop: ${task.title}');
     LoggingService.debug('   Estado actual: ${task.status.name}');
     LoggingService.debug('   Estado nuevo: ${newStatus.name}');
     LoggingService.debug('   Índice destino: $targetIndex');
 
+    // Marcar que estamos procesando el drop
+    setState(() {
+      _isProcessingDrop = true;
+      _draggingTask = null;
+      _dropTargetIndex = null;
+      _dropTargetStatus = null;
+    });
+
+    // Enviar el evento al BLoC
     context.read<TasksBloc>().add(
       TaskReorderRequested(
         taskId: task.id,
@@ -664,10 +729,14 @@ class _KanbanBoardState extends State<KanbanBoard> {
       ),
     );
 
-    setState(() {
-      _draggingTask = null;
-      _dropTargetIndex = null;
-      _dropTargetStatus = null;
+    // Resetear la bandera después de un breve delay
+    // para permitir que el BLoC procese el evento
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        setState(() {
+          _isProcessingDrop = false;
+        });
+      }
     });
   }
 

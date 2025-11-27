@@ -60,25 +60,68 @@ class TestCredentialsWidget extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            // Estudiante específico
+            // Estudiantes del dominio jualas.es
             _buildCredentialCard(
               context,
-              title: 'Estudiante - Juan Antonio Francés Pérez',
-              email: '3850437@alu.murciaeduca.es',
-              password: 'student123',
+              title: 'Estudiante - Laura Sánchez Pérez',
+              email: 'laura.sanchez@jualas.es',
+              password: 'EzmvfdQmijMa',
               color: Colors.blue,
               icon: Icons.school,
             ),
 
             const SizedBox(height: 12),
 
-            // Estudiante de prueba
             _buildCredentialCard(
               context,
-              title: 'Estudiante de Prueba',
-              email: 'student.test@alumno.cifpcarlos3.es',
-              password: 'student123',
-              color: Colors.blue.shade300,
+              title: 'Estudiante - Miguel Torres García',
+              email: 'miguel.torres@jualas.es',
+              password: 'dmAzgm2dJlNV',
+              color: Colors.blue,
+              icon: Icons.school,
+            ),
+
+            const SizedBox(height: 12),
+
+            _buildCredentialCard(
+              context,
+              title: 'Estudiante - Sofía Ramírez López',
+              email: 'sofia.ramirez@jualas.es',
+              password: '0lDs9o5n3U&m',
+              color: Colors.blue,
+              icon: Icons.school,
+            ),
+
+            const SizedBox(height: 12),
+
+            _buildCredentialCard(
+              context,
+              title: 'Estudiante - Diego Fernández Martínez',
+              email: 'diego.fernandez@jualas.es',
+              password: 'Tn2ZCbt3L3W9',
+              color: Colors.blue,
+              icon: Icons.school,
+            ),
+
+            const SizedBox(height: 12),
+
+            _buildCredentialCard(
+              context,
+              title: 'Estudiante - Elena Moreno Ruiz',
+              email: 'elena.moreno@jualas.es',
+              password: r'Iia*IX%$zAl3',
+              color: Colors.blue,
+              icon: Icons.school,
+            ),
+
+            const SizedBox(height: 12),
+
+            _buildCredentialCard(
+              context,
+              title: 'Estudiante - Pablo Jiménez Sánchez',
+              email: 'pablo.jimenez@jualas.es',
+              password: 'knCOcimmcPWR',
+              color: Colors.blue,
               icon: Icons.school,
             ),
           ],

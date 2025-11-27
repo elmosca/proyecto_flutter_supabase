@@ -205,6 +205,18 @@
   "@anteprojectCreatedSuccess": {
     "description": "Mensaje de éxito al crear anteproyecto"
   },
+  "timelineWillBeEstablishedByTutor": "La temporalización será establecida por tu tutor asignado usando una herramienta de calendario.",
+  "@timelineWillBeEstablishedByTutor": {
+    "description": "Mensaje informativo sobre la temporalización del anteproyecto"
+  },
+  "downloadExamplePdf": "Descargar ejemplo PDF",
+  "@downloadExamplePdf": {
+    "description": "Tooltip para descargar ejemplo PDF"
+  },
+  "loadTemplate": "Cargar plantilla",
+  "@loadTemplate": {
+    "description": "Tooltip para cargar plantilla"
+  },
   "anteprojectUpdatedSuccess": "Anteproyecto actualizado exitosamente",
   "@anteprojectUpdatedSuccess": {
     "description": "Mensaje de éxito al actualizar anteproyecto"
@@ -1291,6 +1303,26 @@
   "@submitted": {
     "description": "Etiqueta para fecha de envío"
   },
+  "lastUpdate": "Última actualización:",
+  "@lastUpdate": {
+    "description": "Etiqueta para fecha de última actualización"
+  },
+  "reviewed": "Revisado:",
+  "@reviewed": {
+    "description": "Etiqueta para fecha de revisión"
+  },
+  "dates": "Fechas",
+  "@dates": {
+    "description": "Título de la sección de fechas"
+  },
+  "reviewDates": "Fechas de Revisión",
+  "@reviewDates": {
+    "description": "Título de la sección de fechas de revisión"
+  },
+  "projectMilestones": "Hitos del Proyecto",
+  "@projectMilestones": {
+    "description": "Título de la sección de hitos del proyecto"
+  },
   "comments": "Comentarios",
   "@comments": {
     "description": "Botón para ver comentarios"
@@ -1684,6 +1716,10 @@
     "regenerateDatesBasedOnMilestones": "Regenerar Fechas Basadas en Hitos",
     "@regenerateDatesBasedOnMilestones": {
       "description": "Botón para regenerar fechas"
+    },
+    "noMilestonesDefined": "No se han definido hitos",
+    "@noMilestonesDefined": {
+      "description": "Mensaje cuando no hay hitos definidos"
     },
     "anteprojectDetails": "Detalles del Anteproyecto",
     "@anteprojectDetails": {
@@ -2086,5 +2122,1070 @@
   "tasksList": "Lista de Tareas",
   "@tasksList": {
     "description": "Pestaña de lista de tareas"
+  },
+  "errorNetworkTimeout": "La conexión tardó demasiado. Por favor, verifica tu conexión a internet e inténtalo de nuevo.",
+  "@errorNetworkTimeout": {
+    "description": "Error de timeout de red"
+  },
+  "errorNetworkNoInternet": "No hay conexión a internet. Por favor, verifica tu conexión e inténtalo de nuevo.",
+  "@errorNetworkNoInternet": {
+    "description": "Error de falta de conexión a internet"
+  },
+  "errorNetworkServerUnavailable": "El servidor no está disponible en este momento. Por favor, inténtalo más tarde.",
+  "@errorNetworkServerUnavailable": {
+    "description": "Error de servidor no disponible"
+  },
+  "errorNetworkDnsError": "No se pudo resolver la dirección del servidor. Verifica tu conexión a internet.",
+  "@errorNetworkDnsError": {
+    "description": "Error de DNS"
+  },
+  "errorNetworkConnectionLost": "Se perdió la conexión. Por favor, verifica tu conexión a internet.",
+  "@errorNetworkConnectionLost": {
+    "description": "Error de conexión perdida"
+  },
+  "errorNetworkRequestFailed": "La solicitud falló. Por favor, inténtalo de nuevo.",
+  "@errorNetworkRequestFailed": {
+    "description": "Error de solicitud de red fallida"
+  },
+  "errorNotAuthenticated": "Debes iniciar sesión para realizar esta acción.",
+  "@errorNotAuthenticated": {
+    "description": "Error de usuario no autenticado"
+  },
+  "errorInvalidCredentials": "Las credenciales son incorrectas. Por favor, verifica tu email y contraseña.",
+  "@errorInvalidCredentials": {
+    "description": "Error de credenciales inválidas"
+  },
+  "errorSessionExpired": "Tu sesión ha expirado. Por favor, inicia sesión nuevamente.",
+  "@errorSessionExpired": {
+    "description": "Error de sesión expirada"
+  },
+  "errorProfileNotFound": "No se pudo encontrar tu perfil de usuario. Por favor, contacta con soporte.",
+  "@errorProfileNotFound": {
+    "description": "Error de perfil no encontrado"
+  },
+  "errorAccountDisabled": "Tu cuenta está deshabilitada. Por favor, contacta con el administrador.",
+  "@errorAccountDisabled": {
+    "description": "Error de cuenta deshabilitada"
+  },
+  "errorEmailNotVerified": "Tu email no ha sido verificado. Por favor, revisa tu bandeja de entrada.",
+  "@errorEmailNotVerified": {
+    "description": "Error de email no verificado"
+  },
+  "errorPasswordTooWeak": "La contraseña es demasiado débil. Debe tener al menos 8 caracteres.",
+  "@errorPasswordTooWeak": {
+    "description": "Error de contraseña débil"
+  },
+  "errorLoginAttemptsExceeded": "Demasiados intentos de inicio de sesión. Inténtalo más tarde.",
+  "@errorLoginAttemptsExceeded": {
+    "description": "Error de intentos de login excedidos"
+  },
+  "errorRateLimitExceeded": "Demasiadas solicitudes. Por seguridad, debes esperar unos segundos antes de intentar crear otro usuario. Por favor, espera un momento e inténtalo de nuevo.",
+  "@errorRateLimitExceeded": {
+    "description": "Error de límite de velocidad (rate limiting) al crear usuarios"
+  },
+  "errorRateLimitEmailSent": "Se ha alcanzado el límite de solicitudes. Si se envió un email de verificación pero el usuario no se creó completamente, el administrador deberá limpiar manualmente el usuario desde Supabase Dashboard.",
+  "@errorRateLimitEmailSent": {
+    "description": "Mensaje cuando se envió email pero falló la creación por rate limiting"
+  },
+  "errorEmailAlreadyRegistered": "Este correo electrónico ya está registrado. Si acabas de eliminar un usuario con este correo, por favor espera unos minutos antes de intentar crear otro usuario con el mismo email. Supabase requiere un período de espera antes de permitir reutilizar un email.",
+  "@errorEmailAlreadyRegistered": {
+    "description": "Error cuando se intenta reutilizar un email recién eliminado"
+  },
+  "errorFieldRequired": "Este campo es obligatorio.",
+  "@errorFieldRequired": {
+    "description": "Error de campo requerido"
+  },
+  "errorFieldTooShort": "Este campo es demasiado corto.",
+  "@errorFieldTooShort": {
+    "description": "Error de campo demasiado corto"
+  },
+  "errorFieldTooLong": "Este campo es demasiado largo.",
+  "@errorFieldTooLong": {
+    "description": "Error de campo demasiado largo"
+  },
+  "errorInvalidEmail": "El formato del email no es válido.",
+  "@errorInvalidEmail": {
+    "description": "Error de email inválido"
+  },
+  "errorInvalidUrl": "La URL no tiene un formato válido.",
+  "@errorInvalidUrl": {
+    "description": "Error de URL inválida"
+  },
+  "errorInvalidNumber": "El valor debe ser un número válido.",
+  "@errorInvalidNumber": {
+    "description": "Error de número inválido"
+  },
+  "errorInvalidJson": "El formato JSON no es válido.",
+  "@errorInvalidJson": {
+    "description": "Error de JSON inválido"
+  },
+  "errorInvalidDate": "La fecha no tiene un formato válido.",
+  "@errorInvalidDate": {
+    "description": "Error de fecha inválida"
+  },
+  "errorInvalidFileType": "El tipo de archivo no está permitido.",
+  "@errorInvalidFileType": {
+    "description": "Error de tipo de archivo inválido"
+  },
+  "errorInvalidFileSize": "El archivo es demasiado grande.",
+  "@errorInvalidFileSize": {
+    "description": "Error de tamaño de archivo inválido"
+  },
+  "errorMissingTaskContext": "Debe seleccionar un proyecto para crear la tarea.",
+  "@errorMissingTaskContext": {
+    "description": "Error de contexto de tarea faltante"
+  },
+  "errorInvalidProjectRelation": "La relación con el proyecto no es válida.",
+  "@errorInvalidProjectRelation": {
+    "description": "Error de relación de proyecto inválida"
+  },
+  "errorAccessDenied": "No tienes permisos para realizar esta acción.",
+  "@errorAccessDenied": {
+    "description": "Error de acceso denegado"
+  },
+  "errorInsufficientPermissions": "No tienes suficientes permisos para realizar esta acción.",
+  "@errorInsufficientPermissions": {
+    "description": "Error de permisos insuficientes"
+  },
+  "errorOperationNotAllowed": "Esta operación no está permitida.",
+  "@errorOperationNotAllowed": {
+    "description": "Error de operación no permitida"
+  },
+  "errorResourceNotFound": "El recurso solicitado no fue encontrado.",
+  "@errorResourceNotFound": {
+    "description": "Error de recurso no encontrado"
+  },
+  "errorCannotDeleteCompletedTask": "No se puede eliminar una tarea completada.",
+  "@errorCannotDeleteCompletedTask": {
+    "description": "Error de no poder eliminar tarea completada"
+  },
+  "errorCannotEditApprovedAnteproject": "No se puede editar un anteproyecto aprobado.",
+  "@errorCannotEditApprovedAnteproject": {
+    "description": "Error de no poder editar anteproyecto aprobado"
+  },
+  "errorDatabaseConnectionFailed": "No se pudo conectar a la base de datos. Inténtalo más tarde.",
+  "@errorDatabaseConnectionFailed": {
+    "description": "Error de conexión a base de datos fallida"
+  },
+  "errorDatabaseQueryFailed": "La consulta a la base de datos falló. Inténtalo de nuevo.",
+  "@errorDatabaseQueryFailed": {
+    "description": "Error de consulta a base de datos fallida"
+  },
+  "errorDatabaseConstraintViolation": "Los datos no cumplen con las reglas de la base de datos.",
+  "@errorDatabaseConstraintViolation": {
+    "description": "Error de violación de constraint de base de datos"
+  },
+  "errorDatabaseDuplicateEntry": "Ya existe un registro con estos datos.",
+  "@errorDatabaseDuplicateEntry": {
+    "description": "Error de entrada duplicada en base de datos"
+  },
+  "errorDatabaseForeignKeyViolation": "No se puede realizar la operación debido a dependencias de datos.",
+  "@errorDatabaseForeignKeyViolation": {
+    "description": "Error de violación de clave foránea"
+  },
+  "errorDatabaseUnknownError": "Ocurrió un error en la base de datos. Inténtalo más tarde.",
+  "@errorDatabaseUnknownError": {
+    "description": "Error desconocido de base de datos"
+  },
+  "errorDatabaseTimeout": "La operación tardó demasiado. Inténtalo de nuevo.",
+  "@errorDatabaseTimeout": {
+    "description": "Error de timeout de base de datos"
+  },
+  "errorFileUploadFailed": "No se pudo subir el archivo. Inténtalo de nuevo.",
+  "@errorFileUploadFailed": {
+    "description": "Error de subida de archivo fallida"
+  },
+  "errorFileDownloadFailed": "No se pudo descargar el archivo. Inténtalo de nuevo.",
+  "@errorFileDownloadFailed": {
+    "description": "Error de descarga de archivo fallida"
+  },
+  "errorFileDeleteFailed": "No se pudo eliminar el archivo. Inténtalo de nuevo.",
+  "@errorFileDeleteFailed": {
+    "description": "Error de eliminación de archivo fallida"
+  },
+  "errorFileNotFound": "El archivo no fue encontrado.",
+  "@errorFileNotFound": {
+    "description": "Error de archivo no encontrado"
+  },
+  "errorFileSizeExceeded": "El archivo es demasiado grande. El tamaño máximo es {maxSize}.",
+  "@errorFileSizeExceeded": {
+    "description": "Error de tamaño de archivo excedido",
+    "placeholders": {
+      "maxSize": {
+        "type": "String",
+        "description": "Tamaño máximo permitido"
+      }
+    }
+  },
+  "errorFileTypeNotAllowed": "El tipo de archivo no está permitido. Tipos permitidos: {allowedTypes}.",
+  "@errorFileTypeNotAllowed": {
+    "description": "Error de tipo de archivo no permitido",
+    "placeholders": {
+      "allowedTypes": {
+        "type": "String",
+        "description": "Tipos de archivo permitidos"
+      }
+    }
+  },
+  "errorFileCorrupted": "El archivo está corrupto o dañado.",
+  "@errorFileCorrupted": {
+    "description": "Error de archivo corrupto"
+  },
+  "errorFilePermissionDenied": "No tienes permisos para acceder a este archivo.",
+  "@errorFilePermissionDenied": {
+    "description": "Error de permisos de archivo denegados"
+  },
+  "errorInvalidState": "El estado actual no permite realizar esta operación.",
+  "@errorInvalidState": {
+    "description": "Error de estado inválido"
+  },
+  "errorOperationNotSupported": "Esta operación no está soportada.",
+  "@errorOperationNotSupported": {
+    "description": "Error de operación no soportada"
+  },
+  "errorResourceAlreadyExists": "Ya existe un recurso con estos datos.",
+  "@errorResourceAlreadyExists": {
+    "description": "Error de recurso ya existente"
+  },
+  "errorResourceInUse": "El recurso está siendo utilizado y no se puede modificar.",
+  "@errorResourceInUse": {
+    "description": "Error de recurso en uso"
+  },
+  "errorWorkflowViolation": "Esta operación no está permitida en el flujo actual.",
+  "@errorWorkflowViolation": {
+    "description": "Error de violación de flujo de trabajo"
+  },
+  "errorBusinessRuleViolation": "La operación viola una regla de negocio.",
+  "@errorBusinessRuleViolation": {
+    "description": "Error de violación de regla de negocio"
+  },
+  "errorQuotaExceeded": "Has excedido el límite permitido.",
+  "@errorQuotaExceeded": {
+    "description": "Error de cuota excedida"
+  },
+  "errorDeadlineExceeded": "Se ha excedido el plazo límite.",
+  "@errorDeadlineExceeded": {
+    "description": "Error de plazo excedido"
+  },
+  "errorConfigurationMissing": "Falta configuración requerida. Contacta con soporte.",
+  "@errorConfigurationMissing": {
+    "description": "Error de configuración faltante"
+  },
+  "errorConfigurationInvalid": "La configuración no es válida. Contacta con soporte.",
+  "@errorConfigurationInvalid": {
+    "description": "Error de configuración inválida"
+  },
+  "errorServiceUnavailable": "El servicio no está disponible. Inténtalo más tarde.",
+  "@errorServiceUnavailable": {
+    "description": "Error de servicio no disponible"
+  },
+  "errorMaintenanceMode": "El sistema está en mantenimiento. Inténtalo más tarde.",
+  "@errorMaintenanceMode": {
+    "description": "Error de modo de mantenimiento"
+  },
+  "errorExternalServiceTimeout": "El servicio externo tardó demasiado en responder.",
+  "@errorExternalServiceTimeout": {
+    "description": "Error de timeout de servicio externo"
+  },
+  "errorExternalServiceError": "El servicio externo no está funcionando correctamente.",
+  "@errorExternalServiceError": {
+    "description": "Error de servicio externo"
+  },
+  "errorEmailServiceUnavailable": "El servicio de email no está disponible.",
+  "@errorEmailServiceUnavailable": {
+    "description": "Error de servicio de email no disponible"
+  },
+  "errorNotificationServiceUnavailable": "El servicio de notificaciones no está disponible.",
+  "@errorNotificationServiceUnavailable": {
+    "description": "Error de servicio de notificaciones no disponible"
+  },
+  "errorUnknown": "Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo.",
+  "@errorUnknown": {
+    "description": "Error desconocido"
+  },
+  "errorUnexpected": "Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo.",
+  "@errorUnexpected": {
+    "description": "Error inesperado"
+  },
+  "errorInternal": "Ha ocurrido un error interno. Por favor, contacta con soporte.",
+  "@errorInternal": {
+    "description": "Error interno"
+  },
+  "errorNetworkGeneric": "Error de conexión. Por favor, verifica tu conexión a internet.",
+  "@errorNetworkGeneric": {
+    "description": "Error genérico de red"
+  },
+  "errorAuthenticationGeneric": "Error de autenticación. Por favor, inicia sesión nuevamente.",
+  "@errorAuthenticationGeneric": {
+    "description": "Error genérico de autenticación"
+  },
+  "errorValidationGeneric": "Error de validación. Por favor, revisa los datos ingresados.",
+  "@errorValidationGeneric": {
+    "description": "Error genérico de validación"
+  },
+  "errorPermissionGeneric": "No tienes permisos para realizar esta acción.",
+  "@errorPermissionGeneric": {
+    "description": "Error genérico de permisos"
+  },
+  "errorDatabaseGeneric": "Error de base de datos. Inténtalo más tarde.",
+  "@errorDatabaseGeneric": {
+    "description": "Error genérico de base de datos"
+  },
+  "errorFileGeneric": "Error de archivo. Inténtalo de nuevo.",
+  "@errorFileGeneric": {
+    "description": "Error genérico de archivo"
+  },
+  "errorBusinessLogicGeneric": "Error de lógica de negocio. La operación no se puede completar.",
+  "@errorBusinessLogicGeneric": {
+    "description": "Error genérico de lógica de negocio"
+  },
+  "errorConfigurationGeneric": "Error de configuración. Contacta con soporte.",
+  "@errorConfigurationGeneric": {
+    "description": "Error genérico de configuración"
+  },
+  "errorExternalServiceGeneric": "Error de servicio externo. Inténtalo más tarde.",
+  "@errorExternalServiceGeneric": {
+    "description": "Error genérico de servicio externo"
+  },
+  "errorTitleNetwork": "Error de Conexión",
+  "@errorTitleNetwork": {
+    "description": "Título para errores de red"
+  },
+  "errorTitleAuthentication": "Error de Autenticación",
+  "@errorTitleAuthentication": {
+    "description": "Título para errores de autenticación"
+  },
+  "errorTitleValidation": "Error de Validación",
+  "@errorTitleValidation": {
+    "description": "Título para errores de validación"
+  },
+  "errorTitlePermission": "Error de Permisos",
+  "@errorTitlePermission": {
+    "description": "Título para errores de permisos"
+  },
+  "errorTitleDatabase": "Error de Base de Datos",
+  "@errorTitleDatabase": {
+    "description": "Título para errores de base de datos"
+  },
+  "errorTitleFile": "Error de Archivo",
+  "@errorTitleFile": {
+    "description": "Título para errores de archivo"
+  },
+  "errorTitleBusinessLogic": "Error de Lógica de Negocio",
+  "@errorTitleBusinessLogic": {
+    "description": "Título para errores de lógica de negocio"
+  },
+  "errorTitleConfiguration": "Error de Configuración",
+  "@errorTitleConfiguration": {
+    "description": "Título para errores de configuración"
+  },
+  "errorTitleExternalService": "Error de Servicio Externo",
+  "@errorTitleExternalService": {
+    "description": "Título para errores de servicio externo"
+  },
+  "errorTitleUnknown": "Error Desconocido",
+  "@errorTitleUnknown": {
+    "description": "Título para errores desconocidos"
+  },
+  "errorActionNetwork": "Verificar conexión a internet",
+  "@errorActionNetwork": {
+    "description": "Acción recomendada para errores de red"
+  },
+  "errorActionAuthentication": "Iniciar sesión nuevamente",
+  "@errorActionAuthentication": {
+    "description": "Acción recomendada para errores de autenticación"
+  },
+  "errorActionValidation": "Revisar los datos ingresados",
+  "@errorActionValidation": {
+    "description": "Acción recomendada para errores de validación"
+  },
+  "errorActionPermission": "Contactar con el administrador",
+  "@errorActionPermission": {
+    "description": "Acción recomendada para errores de permisos"
+  },
+  "errorActionDatabase": "Intentar más tarde",
+  "@errorActionDatabase": {
+    "description": "Acción recomendada para errores de base de datos"
+  },
+  "errorActionFile": "Seleccionar otro archivo",
+  "@errorActionFile": {
+    "description": "Acción recomendada para errores de archivo"
+  },
+  "errorActionBusinessLogic": "Verificar el estado del recurso",
+  "@errorActionBusinessLogic": {
+    "description": "Acción recomendada para errores de lógica de negocio"
+  },
+  "errorActionConfiguration": "Contactar con soporte técnico",
+  "@errorActionConfiguration": {
+    "description": "Acción recomendada para errores de configuración"
+  },
+  "errorActionExternalService": "Intentar más tarde",
+  "@errorActionExternalService": {
+    "description": "Acción recomendada para errores de servicio externo"
+  },
+  "errorActionUnknown": "Intentar de nuevo o contactar soporte",
+  "@errorActionUnknown": {
+    "description": "Acción recomendada para errores desconocidos"
+  },
+  "forgotPassword": "¿Olvidaste tu contraseña?",
+  "@forgotPassword": {
+    "description": "Enlace para recuperar contraseña"
+  },
+  "resetPassword": "Restablecer Contraseña",
+  "@resetPassword": {
+    "description": "Título de pantalla para restablecer contraseña"
+  },
+  "resetPasswordInstructions": "Ingresa tu nueva contraseña para restablecer el acceso a tu cuenta.",
+  "@resetPasswordInstructions": {
+    "description": "Instrucciones en la pantalla de reset de contraseña"
+  },
+  "resetPasswordRequestSent": "Solicitud enviada a tu tutor",
+  "@resetPasswordRequestSent": {
+    "description": "Mensaje cuando se envía solicitud de reset al tutor"
+  },
+  "resetPasswordRequestSentDescription": "Tu tutor {tutorName} recibirá una notificación para generar una nueva contraseña temporal. Te enviaremos un email con la nueva contraseña una vez que tu tutor la haya generado.",
+  "@resetPasswordRequestSentDescription": {
+    "description": "Descripción detallada de la solicitud enviada al tutor",
+    "placeholders": {
+      "tutorName": {
+        "type": "String"
+      }
+    }
+  },
+  "userNotFound": "No se encontró un usuario con ese email",
+  "@userNotFound": {
+    "description": "Error cuando no existe el usuario"
+  },
+  "setupPassword": "Establecer Contraseña",
+  "@setupPassword": {
+    "description": "Título de pantalla para establecer contraseña por primera vez"
+  },
+  "setupPasswordInstructions": "Establece tu contraseña personal para acceder al sistema. Esta será tu contraseña de acceso.",
+  "@setupPasswordInstructions": {
+    "description": "Instrucciones para establecer contraseña por primera vez"
+  },
+  "sendResetLink": "Enviar Enlace de Recuperación",
+  "@sendResetLink": {
+    "description": "Botón para enviar enlace de reset"
+  },
+  "resetLinkSent": "Se ha enviado un enlace de recuperación a tu correo electrónico.",
+  "@resetLinkSent": {
+    "description": "Mensaje cuando se envía el link de reset"
+  },
+  "newPassword": "Nueva Contraseña",
+  "@newPassword": {
+    "description": "Campo para nueva contraseña"
+  },
+  "confirmNewPassword": "Confirmar Nueva Contraseña",
+  "@confirmNewPassword": {
+    "description": "Campo para confirmar nueva contraseña"
+  },
+  "changePassword": "Cambiar Contraseña",
+  "@changePassword": {
+    "description": "Botón para cambiar contraseña"
+  },
+  "passwordChanged": "Contraseña actualizada exitosamente",
+  "@passwordChanged": {
+    "description": "Mensaje cuando se cambia la contraseña"
+  },
+  "passwordsDoNotMatch": "Las contraseñas no coinciden",
+  "@passwordsDoNotMatch": {
+    "description": "Error cuando las contraseñas no coinciden"
+  },
+  "passwordTooShort": "La contraseña debe tener al menos 6 caracteres",
+  "@passwordTooShort": {
+    "description": "Error de validación de longitud de contraseña"
+  },
+  "passwordRequired": "La contraseña es obligatoria",
+  "@passwordRequired": {
+    "description": "Error de validación de contraseña requerida"
+  },
+  "userCreatedSuccess": "Usuario creado exitosamente. Se ha enviado un email de verificación.",
+  "@userCreatedSuccess": {
+    "description": "Mensaje cuando se crea un usuario exitosamente"
+  },
+  "userCreatedInstructions": "El usuario recibirá un email de verificación. Después de verificar su email, deberá usar la opción '¿Olvidaste tu contraseña?' para establecer su contraseña personal.",
+  "@userCreatedInstructions": {
+    "description": "Instrucciones mostradas después de crear un usuario"
+  },
+  "studentCreatedSuccess": "Alumno creado exitosamente",
+  "@studentCreatedSuccess": {
+    "description": "Mensaje cuando se crea un estudiante exitosamente"
+  },
+  "tutorCreatedSuccess": "Tutor creado exitosamente",
+  "@tutorCreatedSuccess": {
+    "description": "Mensaje cuando se crea un tutor exitosamente"
+  },
+  "resetPasswordForStudent": "Restablecer contraseña para {studentName}",
+  "@resetPasswordForStudent": {
+    "description": "Título del diálogo para resetear contraseña de estudiante",
+    "placeholders": {
+      "studentName": {
+        "type": "String"
+      }
+    }
+  },
+  "generatePasswordAutomatically": "Generar contraseña automáticamente",
+  "@generatePasswordAutomatically": {
+    "description": "Checkbox para generar contraseña automáticamente"
+  },
+  "regeneratePassword": "Regenerar",
+  "@regeneratePassword": {
+    "description": "Botón para regenerar contraseña"
+  },
+  "passwordResetSuccess": "Contraseña restablecida exitosamente",
+  "@passwordResetSuccess": {
+    "description": "Mensaje cuando se resetea la contraseña exitosamente"
+  },
+  "passwordResetNotificationSent": "Se ha enviado una notificación al estudiante con la nueva contraseña.",
+  "@passwordResetNotificationSent": {
+    "description": "Mensaje indicando que se envió notificación al estudiante"
+  },
+  "passwordResetError": "Error al resetear contraseña: {error}",
+  "@passwordResetError": {
+    "description": "Mensaje de error al resetear contraseña",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "studentCreatedWithPassword": "El estudiante ha sido creado con la contraseña establecida. Puede iniciar sesión inmediatamente.",
+  "@studentCreatedWithPassword": {
+    "description": "Mensaje cuando se crea un estudiante con contraseña establecida por tutor/admin"
+  },
+  "messages": "Mensajes",
+  "@messages": {
+    "description": "Título para la sección de mensajes"
+  },
+  "tutorMessages": "Mensajes de Estudiantes",
+  "@tutorMessages": {
+    "description": "Título para los mensajes de estudiantes para tutores"
+  },
+  "studentMessages": "Mensajes con el Tutor",
+  "@studentMessages": {
+    "description": "Título para los mensajes con el tutor para estudiantes"
+  },
+  "helpGuide": "Guía de Uso",
+  "@helpGuide": {
+    "description": "Título de la guía de uso"
+  },
+  "systemSettings": "Configuración del Sistema",
+  "@systemSettings": {
+    "description": "Título de la configuración del sistema"
+  },
+  "settings": "Configuración",
+  "@settings": {
+    "description": "Título genérico de configuración"
+  },
+  "selectProjectOrAnteprojectMessage": "Selecciona un proyecto o anteproyecto para ver o responder mensajes de tus estudiantes",
+  "@selectProjectOrAnteprojectMessage": {
+    "description": "Mensaje informativo para tutores sobre cómo seleccionar proyectos/anteproyectos para mensajes"
+  },
+  "waitForStudentsAssignment": "Espera a que te asignen estudiantes\ncon proyectos o anteproyectos",
+  "@waitForStudentsAssignment": {
+    "description": "Mensaje cuando un tutor no tiene estudiantes asignados"
+  },
+  "allTypes": "Todos los tipos",
+  "@allTypes": {
+    "description": "Opción para mostrar todos los tipos de notificaciones"
+  },
+  "filterByType": "Filtrar por tipo",
+  "@filterByType": {
+    "description": "Placeholder para el filtro de tipos de notificaciones"
+  },
+  "refresh": "Actualizar",
+  "@refresh": {
+    "description": "Botón para actualizar notificaciones"
+  },
+  "markAllAsRead": "Marcar todas como leídas",
+  "@markAllAsRead": {
+    "description": "Tooltip para marcar todas las notificaciones como leídas"
+  },
+  "myNotifications": "Mis Notificaciones",
+  "@myNotifications": {
+    "description": "Tab para notificaciones personales"
+  },
+  "system": "Sistema",
+  "@system": {
+    "description": "Tab para notificaciones del sistema"
+  },
+  "allNotificationsMarkedAsRead": "Todas las notificaciones marcadas como leídas",
+  "@allNotificationsMarkedAsRead": {
+    "description": "Mensaje cuando se marcan todas las notificaciones como leídas"
+  },
+  "notificationDeleted": "Notificación eliminada",
+  "@notificationDeleted": {
+    "description": "Mensaje cuando se elimina una notificación"
+  },
+  "errorMarkingAsRead": "Error marcando como leída: {error}",
+  "@errorMarkingAsRead": {
+    "description": "Mensaje de error al marcar notificación como leída",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "Mensaje de error"
+      }
+    }
+  },
+  "errorDeleting": "Error eliminando: {error}",
+  "@errorDeleting": {
+    "description": "Mensaje de error al eliminar notificación",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "Mensaje de error"
+      }
+    }
+  },
+  "noNotifications": "No hay notificaciones",
+  "@noNotifications": {
+    "description": "Mensaje cuando no hay notificaciones"
+  },
+  "noNotificationsOfThisType": "No hay notificaciones de este tipo",
+  "@noNotificationsOfThisType": {
+    "description": "Mensaje cuando no hay notificaciones del tipo filtrado"
+  },
+  "privateCommunicationsPrivacy": "Las comunicaciones privadas entre usuarios no se muestran por protección de datos.",
+  "@privateCommunicationsPrivacy": {
+    "description": "Mensaje informativo sobre privacidad de comunicaciones"
+  },
+  "viewMessages": "Ver mensajes",
+  "@viewMessages": {
+    "description": "Tooltip para ver mensajes"
+  },
+  "update": "Actualizar",
+  "@update": {
+    "description": "Tooltip para actualizar"
+  },
+  "updateList": "Actualizar lista",
+  "@updateList": {
+    "description": "Tooltip para actualizar lista"
+  },
+  "updateMessages": "Actualizar mensajes",
+  "@updateMessages": {
+    "description": "Tooltip para actualizar mensajes"
+  },
+  "updateComments": "Actualizar comentarios",
+  "@updateComments": {
+    "description": "Tooltip para actualizar comentarios"
+  },
+  "delete": "Eliminar",
+  "@delete": {
+    "description": "Tooltip para eliminar"
+  },
+  "now": "Ahora",
+  "@now": {
+    "description": "Texto para tiempo reciente (justo ahora)"
+  },
+  "agoDays": "Hace {days} día",
+  "@agoDays": {
+    "description": "Formato de fecha relativa para días",
+    "placeholders": {
+      "days": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
+  "agoDaysPlural": "Hace {days} días",
+  "@agoDaysPlural": {
+    "description": "Formato de fecha relativa para días (plural)",
+    "placeholders": {
+      "days": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
+  "agoHours": "Hace {hours} hora",
+  "@agoHours": {
+    "description": "Formato de fecha relativa para horas",
+    "placeholders": {
+      "hours": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
+  "agoHoursPlural": "Hace {hours} horas",
+  "@agoHoursPlural": {
+    "description": "Formato de fecha relativa para horas (plural)",
+    "placeholders": {
+      "hours": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
+  "agoMinutes": "Hace {minutes} minuto",
+  "@agoMinutes": {
+    "description": "Formato de fecha relativa para minutos",
+    "placeholders": {
+      "minutes": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
+  "agoMinutesPlural": "Hace {minutes} minutos",
+  "@agoMinutesPlural": {
+    "description": "Formato de fecha relativa para minutos (plural)",
+    "placeholders": {
+      "minutes": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
+  "agoDaysShort": "Hace {days}d",
+  "@agoDaysShort": {
+    "description": "Formato corto de fecha relativa para días",
+    "placeholders": {
+      "days": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
+  "agoHoursShort": "Hace {hours}h",
+  "@agoHoursShort": {
+    "description": "Formato corto de fecha relativa para horas",
+    "placeholders": {
+      "hours": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
+  "agoMinutesShort": "Hace {minutes}m",
+  "@agoMinutesShort": {
+    "description": "Formato corto de fecha relativa para minutos",
+    "placeholders": {
+      "minutes": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
+  "projectQueriesMessage": "Aquí puedes hacer consultas sobre tu proyecto",
+  "@projectQueriesMessage": {
+    "description": "Mensaje informativo para consultas sobre proyectos"
+  },
+  "anteprojectQueriesMessage": "Aquí puedes hacer consultas sobre tu anteproyecto",
+  "@anteprojectQueriesMessage": {
+    "description": "Mensaje informativo para consultas sobre anteproyectos"
+  },
+  "selectProjectOrAnteprojectToStartConversation": "Selecciona un proyecto o anteproyecto para iniciar o continuar una conversación con tu tutor",
+  "@selectProjectOrAnteprojectToStartConversation": {
+    "description": "Mensaje informativo para estudiantes sobre cómo seleccionar proyectos/anteproyectos para mensajes"
+  },
+  "noActiveProjects": "No tienes proyectos activos",
+  "@noActiveProjects": {
+    "description": "Mensaje cuando un estudiante no tiene proyectos activos"
+  },
+  "createAnteprojectToChat": "Crea un anteproyecto para poder\nconversar con tu tutor",
+  "@createAnteprojectToChat": {
+    "description": "Instrucción para estudiantes sobre cómo crear un anteproyecto para chatear"
+  },
+  "approvedProjects": "Proyectos Aprobados",
+  "@approvedProjects": {
+    "description": "Título para la sección de proyectos aprobados"
+  },
+  "projectInDevelopment": "Proyecto en desarrollo",
+  "@projectInDevelopment": {
+    "description": "Subtítulo para proyectos en desarrollo"
+  },
+  "status": "Estado",
+  "@status": {
+    "description": "Etiqueta para el estado"
+  },
+  "viewComments": "Ver comentarios",
+  "@viewComments": {
+    "description": "Tooltip para ver comentarios"
+  },
+  "manageSchedule": "Gestionar Cronograma",
+  "@manageSchedule": {
+    "description": "Tooltip para gestionar cronograma"
+  },
+  "reject": "Rechazar",
+  "@reject": {
+    "description": "Tooltip o botón para rechazar"
+  },
+  "approve": "Aprobar",
+  "@approve": {
+    "description": "Tooltip o botón para aprobar"
+  },
+  "approveAnteproject": "Aprobar Anteproyecto",
+  "@approveAnteproject": {
+    "description": "Título para aprobar anteproyecto"
+  },
+  "rejectAnteproject": "Rechazar Anteproyecto",
+  "@rejectAnteproject": {
+    "description": "Título para rechazar anteproyecto"
+  },
+  "newUser": "Nuevo Usuario",
+  "@newUser": {
+    "description": "Tipo de notificación: nuevo usuario"
+  },
+  "userDeleted": "Usuario Eliminado",
+  "@userDeleted": {
+    "description": "Tipo de notificación: usuario eliminado"
+  },
+  "systemError": "Error del Sistema",
+  "@systemError": {
+    "description": "Tipo de notificación: error del sistema"
+  },
+  "securityAlert": "Alerta de Seguridad",
+  "@securityAlert": {
+    "description": "Tipo de notificación: alerta de seguridad"
+  },
+  "settingsChanged": "Configuración Cambiada",
+  "@settingsChanged": {
+    "description": "Tipo de notificación: configuración cambiada"
+  },
+  "backupCompleted": "Copia de Seguridad",
+  "@backupCompleted": {
+    "description": "Tipo de notificación: copia de seguridad"
+  },
+  "bulkOperation": "Operación Masiva",
+  "@bulkOperation": {
+    "description": "Tipo de notificación: operación masiva"
+  },
+  "systemMaintenance": "Mantenimiento",
+  "@systemMaintenance": {
+    "description": "Tipo de notificación: mantenimiento"
+  },
+  "announcement": "Anuncio",
+  "@announcement": {
+    "description": "Tipo de notificación: anuncio"
+  },
+  "systemNotification": "Notificación del Sistema",
+  "@systemNotification": {
+    "description": "Tipo de notificación: notificación del sistema"
+  },
+  "comment": "Comentario",
+  "@comment": {
+    "description": "Tipo de notificación: comentario"
+  },
+  "messageInAnteproject": "Mensaje en Anteproyecto",
+  "@messageInAnteproject": {
+    "description": "Tipo de notificación: mensaje en anteproyecto"
+  },
+  "messageInProject": "Mensaje en Proyecto",
+  "@messageInProject": {
+    "description": "Tipo de notificación: mensaje en proyecto"
+  },
+  "passwordResetRequest": "Solicitud de Restablecimiento",
+  "@passwordResetRequest": {
+    "description": "Tipo de notificación: solicitud de restablecimiento"
+  },
+  "taskAssigned": "Tarea Asignada",
+  "@taskAssigned": {
+    "description": "Tipo de notificación: tarea asignada"
+  },
+  "statusChanged": "Estado Cambiado",
+  "@statusChanged": {
+    "description": "Tipo de notificación: estado cambiado"
+  },
+  "confirmApproveAnteproject": "¿Estás seguro de que quieres aprobar este anteproyecto?",
+  "@confirmApproveAnteproject": {
+    "description": "Mensaje de confirmación para aprobar anteproyecto"
+  },
+  "confirmRejectAnteproject": "¿Estás seguro de que quieres rechazar este anteproyecto?",
+  "@confirmRejectAnteproject": {
+    "description": "Mensaje de confirmación para rechazar anteproyecto"
+  },
+  "conversations": "Conversaciones",
+  "@conversations": {
+    "description": "Título de la pantalla de conversaciones"
+  },
+  "newTopic": "Nuevo tema",
+  "@newTopic": {
+    "description": "Botón para crear nuevo tema de conversación"
+  },
+  "writeMessage": "Escribe un mensaje...",
+  "@writeMessage": {
+    "description": "Placeholder para el campo de escribir mensaje"
+  },
+  "noConversationsYet": "No hay conversaciones aún",
+  "@noConversationsYet": {
+    "description": "Mensaje cuando no hay conversaciones"
+  },
+  "createNewTopicToStart": "Crea un nuevo tema para empezar\na conversar con tu tutor",
+  "@createNewTopicToStart": {
+    "description": "Instrucción para crear un nuevo tema de conversación"
+  },
+  "useButtonBelow": "👇 Usa el botón de abajo 👇",
+  "@useButtonBelow": {
+    "description": "Instrucción para usar el botón flotante"
+  },
+  "errorLoadingConversations": "Error al cargar conversaciones: {error}",
+  "@errorLoadingConversations": {
+    "description": "Mensaje de error al cargar conversaciones",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "Mensaje de error"
+      }
+    }
+  },
+  "newConversationTopic": "Nuevo tema de conversación",
+  "@newConversationTopic": {
+    "description": "Título del diálogo para crear nuevo tema"
+  },
+  "createNewTopicToOrganize": "Crea un nuevo tema para organizar tu conversación con el tutor.",
+  "@createNewTopicToOrganize": {
+    "description": "Descripción en el diálogo de crear tema"
+  },
+  "topicTitle": "Título del tema",
+  "@topicTitle": {
+    "description": "Label para el título del tema"
+  },
+  "topicTitleHint": "Ej: Dudas sobre la metodología",
+  "@topicTitleHint": {
+    "description": "Hint para el título del tema"
+  },
+  "topicTitleHelper": "Describe brevemente el tema a tratar",
+  "@topicTitleHelper": {
+    "description": "Texto de ayuda para el título del tema"
+  },
+  "pleaseEnterTitle": "Por favor ingresa un título",
+  "@pleaseEnterTitle": {
+    "description": "Mensaje de validación para título vacío"
+  },
+  "titleMinLength": "El título debe tener al menos 3 caracteres",
+  "@titleMinLength": {
+    "description": "Mensaje de validación para título muy corto"
+  },
+  "topicTitleTip": "Tip: Usa títulos descriptivos como \"Dudas Cap. 3\" o \"Revisión de código\"",
+  "@topicTitleTip": {
+    "description": "Consejo sobre cómo crear títulos descriptivos"
+  },
+  "createTopic": "Crear tema",
+  "@createTopic": {
+    "description": "Botón para crear el tema"
+  },
+  "errorSendingMessage": "Error al enviar mensaje: {error}",
+  "@errorSendingMessage": {
+    "description": "Mensaje de error al enviar mensaje",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "Mensaje de error"
+      }
+    }
+  },
+  "noCommentsYet": "No hay comentarios aún",
+  "@noCommentsYet": {
+    "description": "Mensaje cuando no hay comentarios"
+  },
+  "beFirstToComment": "Sé el primero en comentar este anteproyecto",
+  "@beFirstToComment": {
+    "description": "Mensaje para animar a comentar"
+  },
+  "commentsWillAppearHere": "Los comentarios aparecerán aquí cuando el tutor los agregue",
+  "@commentsWillAppearHere": {
+    "description": "Mensaje informativo sobre comentarios"
+  },
+  "viewMoreComments": "Ver {count} comentarios más",
+  "@viewMoreComments": {
+    "description": "Botón para ver más comentarios",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Número de comentarios adicionales"
+      }
+    }
+  },
+  "unknownUser": "Usuario desconocido",
+  "@unknownUser": {
+    "description": "Nombre por defecto para usuario desconocido"
+  },
+  "internal": "Interno",
+  "@internal": {
+    "description": "Etiqueta para comentarios internos"
+  },
+  "editedOn": "Editado el {date}",
+  "@editedOn": {
+    "description": "Indicador de fecha de edición",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "description": "Fecha formateada"
+      }
+    }
+  },
+  "section": "Sección:",
+  "@section": {
+    "description": "Label para selector de sección"
+  },
+  "internalCommentLabel": "Comentario interno (solo visible para tutores)",
+  "@internalCommentLabel": {
+    "description": "Label para checkbox de comentario interno"
+  },
+  "pleaseWriteComment": "Por favor, escribe un comentario",
+  "@pleaseWriteComment": {
+    "description": "Mensaje de validación para comentario vacío"
+  },
+  "commentAddedSuccessfully": "Comentario agregado exitosamente",
+  "@commentAddedSuccessfully": {
+    "description": "Mensaje de éxito al agregar comentario"
+  },
+  "errorAddingComment": "Error al agregar comentario: {error}",
+  "@errorAddingComment": {
+    "description": "Mensaje de error al agregar comentario",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "Mensaje de error"
+      }
+    }
+  },
+  "errorLoadingComments": "Error al cargar comentarios: {error}",
+  "@errorLoadingComments": {
+    "description": "Mensaje de error al cargar comentarios",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "Mensaje de error"
+      }
+    }
+  },
+  "sectionGeneral": "General",
+  "@sectionGeneral": {
+    "description": "Nombre de la sección General"
+  },
+  "sectionDescription": "Descripción",
+  "@sectionDescription": {
+    "description": "Nombre de la sección Descripción"
+  },
+  "sectionObjectives": "Objetivos",
+  "@sectionObjectives": {
+    "description": "Nombre de la sección Objetivos"
+  },
+  "sectionExpectedResults": "Resultados Esperados",
+  "@sectionExpectedResults": {
+    "description": "Nombre de la sección Resultados Esperados"
+  },
+  "sectionTimeline": "Temporalización",
+  "@sectionTimeline": {
+    "description": "Nombre de la sección Temporalización"
+  },
+  "sectionMethodology": "Metodología",
+  "@sectionMethodology": {
+    "description": "Nombre de la sección Metodología"
+  },
+  "sectionResources": "Recursos",
+  "@sectionResources": {
+    "description": "Nombre de la sección Recursos"
+  },
+  "sectionOther": "Otros",
+  "@sectionOther": {
+    "description": "Nombre de la sección Otros"
+  },
+  "generalInformation": "Información General",
+  "@generalInformation": {
+    "description": "Título de la sección de información general"
   }
 }

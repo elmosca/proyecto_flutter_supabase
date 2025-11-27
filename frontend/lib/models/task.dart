@@ -2,6 +2,45 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'task.g.dart';
 
+/// Modelo que representa una tarea en el sistema de gestión de proyectos.
+///
+/// Mapea a la tabla `tasks` de Supabase y contiene toda la información
+/// necesaria para la gestión de tareas: metadatos, estado, fechas, asignaciones
+/// y posicionamiento en el sistema Kanban.
+///
+/// ## Propiedades principales:
+/// - [id]: Identificador único autoincremental
+/// - [title]: Título de la tarea (requerido)
+/// - [description]: Descripción detallada de la tarea
+/// - [status]: Estado actual de la tarea
+/// - [dueDate]: Fecha límite de la tarea (opcional)
+/// - [kanbanPosition]: Posición en el tablero Kanban
+/// - [complexity]: Nivel de complejidad de la tarea
+/// - [estimatedHours]: Horas estimadas de trabajo
+/// - [actualHours]: Horas reales trabajadas
+///
+/// ## Ejemplo JSON:
+/// ```json
+/// {
+///   "id": 1,
+///   "title": "Implementar autenticación",
+///   "description": "Crear sistema de login con Supabase Auth",
+///   "status": "in_progress",
+///   "due_date": "2025-02-01T00:00:00Z",
+///   "complexity": "medium",
+///   "estimated_hours": 8,
+///   "created_at": "2025-01-01T00:00:00Z"
+/// }
+/// ```
+///
+/// ## Estados posibles:
+/// - [todo]: Tarea pendiente de iniciar
+/// - [in_progress]: Tarea en progreso
+/// - [in_review]: Tarea en revisión
+/// - [done]: Tarea completada
+/// - [blocked]: Tarea bloqueada
+///
+/// Ver también: [TaskStatus], [TaskComplexity]
 @JsonSerializable()
 class Task {
   final int id;
@@ -116,22 +155,36 @@ class Task {
   int get hashCode => id.hashCode;
 }
 
+/// Estados posibles de una tarea en el flujo de trabajo.
 enum TaskStatus {
+  /// Tarea pendiente de iniciar.
   @JsonValue('pending')
   pending,
+
+  /// Tarea en progreso de desarrollo.
   @JsonValue('in_progress')
   inProgress,
+
+  /// Tarea en revisión o testing.
   @JsonValue('under_review')
   underReview,
+
+  /// Tarea completada y finalizada.
   @JsonValue('completed')
   completed,
 }
 
+/// Niveles de complejidad de una tarea.
 enum TaskComplexity {
+  /// Tarea simple, requiere poco tiempo y esfuerzo.
   @JsonValue('simple')
   simple,
+
+  /// Tarea de complejidad media, requiere tiempo moderado.
   @JsonValue('medium')
   medium,
+
+  /// Tarea compleja, requiere mucho tiempo y esfuerzo.
   @JsonValue('complex')
   complex,
 }

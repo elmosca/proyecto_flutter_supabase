@@ -19,6 +19,7 @@ docs/base_datos/migraciones/
 ├── 20240914000001_add_objectives_column.sql
 ├── 20241215000001_create_schedule_tables.sql
 ├── 20250127000001_create_profiles_table.sql
+├── 20250127000003_make_password_hash_nullable.sql
 ├── 20241004T120000_update_tasks_kanban_position.sql
 └── 20250119000001_enable_rls_comments.sql (y siguientes...)
 ```
@@ -131,6 +132,22 @@ docs/base_datos/migraciones/
 
 ---
 
-**Última Actualización**: 2025-01-19  
-**Versión**: 1.0  
+## 🔐 Migración: password_hash nullable (2025-01-27)
+
+### Propósito
+Hacer `password_hash` nullable en la tabla `users` porque ahora usamos Supabase Auth para gestionar contraseñas. Las contraseñas se almacenan en `auth.users`, no en la tabla `users`.
+
+### Archivos
+- `20250127000003_make_password_hash_nullable.sql` - Migración principal
+- `20250127000003_make_password_hash_nullable_rollback.sql` - Rollback
+
+### Estado
+- ✅ Migración aplicada
+- ✅ `password_hash` ahora es nullable
+- ✅ Código actualizado para no incluir password_hash
+
+---
+
+**Última Actualización**: 2025-01-27  
+**Versión**: 1.1  
 **Estado**: Implementación Completa

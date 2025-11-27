@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../blocs/auth_bloc.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/anteproject.dart';
 import '../../models/schedule.dart';
 import '../../models/user.dart';
 import '../../services/schedule_service.dart';
 import '../../services/anteprojects_service.dart';
+import '../../widgets/navigation/app_bar_actions.dart';
 
 class ScheduleManagementScreen extends StatefulWidget {
   final Anteproject anteproject;
@@ -30,12 +33,23 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
   bool _isLoading = false;
   bool _isEditing = false;
   User? _student;
+  User? _currentUser;
 
   @override
   void initState() {
     super.initState();
+    _loadCurrentUser();
     _loadExistingSchedule();
     _loadStudent();
+  }
+
+  Future<void> _loadCurrentUser() async {
+    final authState = context.read<AuthBloc>().state;
+    if (authState is AuthAuthenticated) {
+      setState(() {
+        _currentUser = authState.user;
+      });
+    }
   }
 
   Future<void> _loadStudent() async {
@@ -223,14 +237,27 @@ class _ScheduleManagementScreenState extends State<ScheduleManagementScreen> {
         title: Text(AppLocalizations.of(context)!.scheduleManagement),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
-        actions: [
-          if (!_isLoading)
-            IconButton(
-              icon: const Icon(Icons.save),
-              onPressed: _saveSchedule,
-              tooltip: 'Guardar cronograma',
-            ),
-        ],
+        actions: _currentUser != null
+            ? AppBarActions.build(
+                context,
+                _currentUser!,
+                additionalActions: [
+                  if (!_isLoading)
+                    IconButton(
+                      icon: const Icon(Icons.save),
+                      onPressed: _saveSchedule,
+                      tooltip: 'Guardar cronograma',
+                    ),
+                ],
+              )
+            : [
+                if (!_isLoading)
+                  IconButton(
+                    icon: const Icon(Icons.save),
+                    onPressed: _saveSchedule,
+                    tooltip: 'Guardar cronograma',
+                  ),
+              ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
