@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/foundation.dart';
 
-import '../../blocs/anteprojects_bloc.dart';
 import '../../models/anteproject.dart';
 import '../../services/anteprojects_service.dart';
 import '../../l10n/app_localizations.dart';
@@ -206,14 +205,77 @@ class _TutorAnteprojectsListState extends State<TutorAnteprojectsList> {
     BuildContext context,
     Map<String, dynamic> anteprojectData,
   ) {
-    final anteproject = Anteproject.fromJson(anteprojectData);
+    // Crear una copia limpia del mapa sin relaciones anidadas para parsear
+    final anteprojectMap = Map<String, dynamic>.from(anteprojectData);
+    anteprojectMap.remove('anteproject_students');
+    
+    // Asegurar que todos los valores sean del tipo correcto
+    final cleanedMap = <String, dynamic>{};
+    for (final entry in anteprojectMap.entries) {
+      try {
+        cleanedMap[entry.key] = entry.value;
+      } catch (e) {
+        // Omitir el campo problemático
+      }
+    }
+    
+    final anteproject = Anteproject.fromJson(cleanedMap);
 
     // Obtener información del estudiante desde la tabla de relación
     final anteprojectStudents =
         anteprojectData['anteproject_students'] as List<dynamic>?;
-    final studentInfo = anteprojectStudents?.isNotEmpty == true
-        ? anteprojectStudents![0]['users'] as Map<String, dynamic>?
-        : null;
+    
+    // Debug: verificar qué datos tenemos
+    debugPrint('🔍 Tutor List - Anteproyecto ID: ${anteproject.id}');
+    debugPrint('🔍 Tutor List - anteproject_students tipo: ${anteprojectStudents.runtimeType}');
+    debugPrint('🔍 Tutor List - anteproject_students valor: $anteprojectStudents');
+    
+    // Convertir de forma segura a Map
+    Map<String, dynamic>? studentInfo;
+    if (anteprojectStudents != null && anteprojectStudents.isNotEmpty) {
+      try {
+        final firstStudent = anteprojectStudents[0];
+        debugPrint('🔍 Tutor List - Primer estudiante tipo: ${firstStudent.runtimeType}');
+        debugPrint('🔍 Tutor List - Primer estudiante valor: $firstStudent');
+        
+        // Función auxiliar para convertir de forma segura
+        Map<String, dynamic> safeConvert(dynamic data) {
+          if (data is Map<String, dynamic>) {
+            return data;
+          } else if (data is Map) {
+            final result = <String, dynamic>{};
+            for (final key in data.keys) {
+              result[key.toString()] = data[key];
+            }
+            return result;
+          } else {
+            return <String, dynamic>{};
+          }
+        }
+        
+        final firstStudentMap = safeConvert(firstStudent);
+        debugPrint('🔍 Tutor List - Estudiante convertido: $firstStudentMap');
+        
+        if (firstStudentMap.containsKey('users')) {
+          final usersData = firstStudentMap['users'];
+          debugPrint('🔍 Tutor List - users tipo: ${usersData.runtimeType}');
+          debugPrint('🔍 Tutor List - users valor: $usersData');
+          
+          if (usersData != null) {
+            studentInfo = safeConvert(usersData);
+            debugPrint('🔍 Tutor List - studentInfo final: $studentInfo');
+          }
+        } else {
+          debugPrint('⚠️ Tutor List - No se encontró campo "users" en estudiante');
+        }
+      } catch (e, stackTrace) {
+        debugPrint('⚠️ Error procesando información del estudiante en tutor list: $e');
+        debugPrint('⚠️ Stack trace: $stackTrace');
+        studentInfo = null;
+      }
+    } else {
+      debugPrint('⚠️ Tutor List - No hay estudiantes asociados al anteproyecto ${anteproject.id}');
+    }
 
     final studentName = studentInfo?['full_name'] ?? 'Estudiante desconocido';
     final studentEmail = studentInfo?['email'] ?? '';
@@ -387,35 +449,79 @@ class _TutorAnteprojectsListState extends State<TutorAnteprojectsList> {
     List<Map<String, dynamic>> anteproyectos,
   ) {
     return anteproyectos.where((anteprojectData) {
-      final anteproject = Anteproject.fromJson(anteprojectData);
+      try {
+        // Crear una copia limpia del mapa sin relaciones anidadas para parsear
+        final anteprojectMap = Map<String, dynamic>.from(anteprojectData);
+        anteprojectMap.remove('anteproject_students');
+        
+        // Asegurar que todos los valores sean del tipo correcto
+        final cleanedMap = <String, dynamic>{};
+        for (final entry in anteprojectMap.entries) {
+          try {
+            cleanedMap[entry.key] = entry.value;
+          } catch (e) {
+            // Omitir el campo problemático
+          }
+        }
+        
+        final anteproject = Anteproject.fromJson(cleanedMap);
 
-      // Obtener información del estudiante desde la tabla de relación
-      final anteprojectStudents =
-          anteprojectData['anteproject_students'] as List<dynamic>?;
-      final studentInfo = anteprojectStudents?.isNotEmpty == true
-          ? anteprojectStudents![0]['users'] as Map<String, dynamic>?
-          : null;
+        // Obtener información del estudiante desde la tabla de relación
+        final anteprojectStudents =
+            anteprojectData['anteproject_students'] as List<dynamic>?;
+        
+        // Convertir de forma segura a Map
+        Map<String, dynamic>? studentInfo;
+        if (anteprojectStudents?.isNotEmpty == true) {
+          try {
+            final firstStudent = anteprojectStudents![0];
+            if (firstStudent is Map<String, dynamic>) {
+              final usersData = firstStudent['users'];
+              if (usersData is Map<String, dynamic>) {
+                studentInfo = usersData;
+              } else if (usersData != null) {
+                studentInfo = Map<String, dynamic>.from(usersData);
+              }
+            } else {
+              final firstStudentMap = Map<String, dynamic>.from(firstStudent);
+              final usersData = firstStudentMap['users'];
+              if (usersData is Map<String, dynamic>) {
+                studentInfo = usersData;
+              } else if (usersData != null) {
+                studentInfo = Map<String, dynamic>.from(usersData);
+              }
+            }
+          } catch (e) {
+            // Si hay error, continuar sin información del estudiante
+            studentInfo = null;
+          }
+        }
 
-      final studentName = studentInfo?['full_name'] ?? '';
-      final studentEmail = studentInfo?['email'] ?? '';
+        final studentName = studentInfo?['full_name'] ?? '';
+        final studentEmail = studentInfo?['email'] ?? '';
 
-      // Filtro por búsqueda
-      if (_searchQuery.isNotEmpty) {
-        final query = _searchQuery.toLowerCase();
-        if (!anteproject.title.toLowerCase().contains(query) &&
-            !anteproject.description.toLowerCase().contains(query) &&
-            !studentName.toLowerCase().contains(query) &&
-            !studentEmail.toLowerCase().contains(query)) {
+        // Filtro por búsqueda
+        if (_searchQuery.isNotEmpty) {
+          final query = _searchQuery.toLowerCase();
+          if (!anteproject.title.toLowerCase().contains(query) &&
+              !anteproject.description.toLowerCase().contains(query) &&
+              !studentName.toLowerCase().contains(query) &&
+              !studentEmail.toLowerCase().contains(query)) {
+            return false;
+          }
+        }
+
+        // Filtro por estado
+        if (_selectedStatus != null && anteproject.status != _selectedStatus) {
           return false;
         }
-      }
 
-      // Filtro por estado
-      if (_selectedStatus != null && anteproject.status != _selectedStatus) {
+        return true;
+      } catch (e) {
+        debugPrint('⚠️ Error filtrando anteproyecto: $e');
+        // Si hay error al parsear, excluir del resultado
         return false;
       }
-
-      return true;
     }).toList();
   }
 

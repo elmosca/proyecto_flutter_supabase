@@ -2,26 +2,42 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import '../../services/user_management_service.dart';
+import '../../utils/validators.dart';
 
 class CsvImportWidget extends StatefulWidget {
   final Function(Map<String, dynamic>) onImportComplete;
-  
-  const CsvImportWidget({
-    super.key,
-    required this.onImportComplete,
-  });
+
+  const CsvImportWidget({super.key, required this.onImportComplete});
 
   @override
   State<CsvImportWidget> createState() => _CsvImportWidgetState();
 }
 
+/// Resultado de validación de una fila del CSV
+class _CsvRowValidation {
+  final int lineNumber;
+  final Map<String, dynamic> data;
+  final bool isValid;
+  final String? errorMessage;
+  final bool emailValid;
+
+  _CsvRowValidation({
+    required this.lineNumber,
+    required this.data,
+    required this.isValid,
+    this.errorMessage,
+    this.emailValid = false,
+  });
+}
+
 class _CsvImportWidgetState extends State<CsvImportWidget> {
   final UserManagementService _userManagementService = UserManagementService();
-  
+
   bool _isImporting = false;
   String? _selectedFileName;
   List<Map<String, dynamic>> _parsedData = [];
   String? _errorMessage;
+  List<_CsvRowValidation> _rowValidations = [];
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +52,7 @@ class _CsvImportWidgetState extends State<CsvImportWidget> {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
-            
+
             // Información sobre el formato CSV
             Container(
               padding: const EdgeInsets.all(12),
@@ -75,16 +91,16 @@ class _CsvImportWidgetState extends State<CsvImportWidget> {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Botón para seleccionar archivo
             ElevatedButton.icon(
               onPressed: _isImporting ? null : _selectFile,
               icon: const Icon(Icons.upload_file),
               label: Text(_selectedFileName ?? 'Seleccionar archivo CSV'),
             ),
-            
+
             if (_selectedFileName != null) ...[
               const SizedBox(height: 16),
               Text(
@@ -95,44 +111,161 @@ class _CsvImportWidgetState extends State<CsvImportWidget> {
                 ),
               ),
             ],
-            
-            if (_parsedData.isNotEmpty) ...[
+
+            // Resumen de validación
+            if (_rowValidations.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: _errorMessage == null
+                      ? Colors.green.shade50
+                      : Colors.orange.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: _errorMessage == null
+                        ? Colors.green.shade200
+                        : Colors.orange.shade200,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      _errorMessage == null
+                          ? Icons.check_circle
+                          : Icons.warning,
+                      color: _errorMessage == null
+                          ? Colors.green.shade700
+                          : Colors.orange.shade700,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Resumen de Validación',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: _errorMessage == null
+                                  ? Colors.green.shade700
+                                  : Colors.orange.shade700,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.check_circle,
+                                color: Colors.green,
+                                size: 16,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                '${_parsedData.length} válidos',
+                                style: TextStyle(color: Colors.green.shade700),
+                              ),
+                              const SizedBox(width: 16),
+                              const Icon(
+                                Icons.error,
+                                color: Colors.red,
+                                size: 16,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                '${_rowValidations.length - _parsedData.length} errores',
+                                style: TextStyle(color: Colors.red.shade700),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+
+            // Vista previa detallada con validación
+            if (_rowValidations.isNotEmpty) ...[
               const SizedBox(height: 16),
               Text(
-                '${_parsedData.length} estudiantes encontrados:',
+                'Validación por Fila (${_rowValidations.length} filas):',
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               Container(
-                height: 200,
+                constraints: const BoxConstraints(maxHeight: 250),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey.shade300),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: ListView.builder(
-                  itemCount: _parsedData.length,
+                  shrinkWrap: true,
+                  itemCount: _rowValidations.length > 10
+                      ? 10
+                      : _rowValidations.length,
                   itemBuilder: (context, index) {
-                    final student = _parsedData[index];
+                    final validation = _rowValidations[index];
                     return ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.blue.shade100,
-                        child: Text('${index + 1}'),
+                      dense: true,
+                      leading: Icon(
+                        validation.isValid ? Icons.check_circle : Icons.error,
+                        color: validation.isValid ? Colors.green : Colors.red,
+                        size: 20,
                       ),
-                      title: Text(student['full_name'] ?? 'Sin nombre'),
-                      subtitle: Text(student['email'] ?? 'Sin email'),
-                      trailing: Text(
-                        student['specialty'] ?? 'Sin especialidad',
+                      title: Text(
+                        'Línea ${validation.lineNumber}: ${validation.data['full_name'] ?? 'Sin nombre'}',
                         style: TextStyle(
-                          color: Colors.grey.shade600,
-                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 13,
+                          color: validation.isValid
+                              ? Colors.green.shade700
+                              : Colors.red.shade700,
                         ),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            validation.data['email'] ?? '',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: validation.emailValid
+                                  ? Colors.green.shade600
+                                  : Colors.red.shade600,
+                            ),
+                          ),
+                          if (!validation.isValid &&
+                              validation.errorMessage != null)
+                            Text(
+                              validation.errorMessage!,
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: Colors.red.shade700,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                        ],
                       ),
                     );
                   },
                 ),
               ),
+              if (_rowValidations.length > 10)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    '... y ${_rowValidations.length - 10} filas más',
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      color: Colors.grey.shade600,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
             ],
-            
+
             if (_errorMessage != null) ...[
               const SizedBox(height: 16),
               Container(
@@ -156,9 +289,9 @@ class _CsvImportWidgetState extends State<CsvImportWidget> {
                 ),
               ),
             ],
-            
+
             const SizedBox(height: 16),
-            
+
             // Botón para importar
             if (_parsedData.isNotEmpty)
               SizedBox(
@@ -166,7 +299,9 @@ class _CsvImportWidgetState extends State<CsvImportWidget> {
                 child: ElevatedButton(
                   onPressed: _isImporting ? null : _importStudents,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
+                    backgroundColor: _errorMessage == null
+                        ? Colors.green
+                        : Colors.orange,
                     foregroundColor: Colors.white,
                   ),
                   child: _isImporting
@@ -178,14 +313,20 @@ class _CsvImportWidgetState extends State<CsvImportWidget> {
                               height: 20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
                               ),
                             ),
                             SizedBox(width: 12),
                             Text('Importando...'),
                           ],
                         )
-                      : const Text('Importar Estudiantes'),
+                      : Text(
+                          _errorMessage == null
+                              ? 'Importar ${_parsedData.length} Estudiantes'
+                              : 'Importar ${_parsedData.length} Estudiantes (${_rowValidations.length - _parsedData.length} con errores se omitirán)',
+                        ),
                 ),
               ),
           ],
@@ -221,8 +362,11 @@ class _CsvImportWidgetState extends State<CsvImportWidget> {
   Future<void> _parseCsvFile(List<int> bytes) async {
     try {
       final content = utf8.decode(bytes);
-      final lines = content.split('\n').where((line) => line.trim().isNotEmpty).toList();
-      
+      final lines = content
+          .split('\n')
+          .where((line) => line.trim().isNotEmpty)
+          .toList();
+
       if (lines.isEmpty) {
         setState(() {
           _errorMessage = 'El archivo CSV está vacío';
@@ -231,9 +375,18 @@ class _CsvImportWidgetState extends State<CsvImportWidget> {
       }
 
       // Verificar encabezados
-      final headers = lines[0].split(',').map((h) => h.trim().toLowerCase()).toList();
-      final requiredHeaders = ['email', 'password', 'full_name', 'specialty', 'academic_year'];
-      
+      final headers = lines[0]
+          .split(',')
+          .map((h) => h.trim().toLowerCase())
+          .toList();
+      final requiredHeaders = [
+        'email',
+        'password',
+        'full_name',
+        'specialty',
+        'academic_year',
+      ];
+
       for (final required in requiredHeaders) {
         if (!headers.contains(required)) {
           setState(() {
@@ -243,26 +396,90 @@ class _CsvImportWidgetState extends State<CsvImportWidget> {
         }
       }
 
-      // Parsear datos
+      // Parsear y validar datos
       final List<Map<String, dynamic>> parsedData = [];
-      
+      final List<_CsvRowValidation> validations = [];
+      final List<String> errors = [];
+
       for (int i = 1; i < lines.length; i++) {
-        final values = lines[i].split(',').map((v) => v.trim()).toList();
-        
-        if (values.length >= 5) {
-          parsedData.add({
-            'email': values[0],
-            'password': values[1],
-            'full_name': values[2],
-            'specialty': values[3],
-            'academic_year': values[4],
-          });
+        final line = lines[i].trim();
+        if (line.isEmpty) continue;
+
+        final values = line.split(',').map((v) => v.trim()).toList();
+
+        if (values.length < 5) {
+          errors.add('Línea ${i + 1}: Número de columnas incorrecto');
+          validations.add(
+            _CsvRowValidation(
+              lineNumber: i + 1,
+              data: {},
+              isValid: false,
+              errorMessage: 'Número de columnas incorrecto (se requieren 5)',
+            ),
+          );
+          continue;
+        }
+
+        final row = {
+          'email': values[0],
+          'password': values[1],
+          'full_name': values[2],
+          'specialty': values[3],
+          'academic_year': values[4],
+        };
+
+        // Validar datos requeridos y email
+        String? validationError;
+        bool emailValid = false;
+
+        // Validar nombre completo
+        if (row['full_name']?.toString().trim().isEmpty ?? true) {
+          validationError = 'Nombre completo es obligatorio';
+        }
+        // Validar email
+        else if (row['email']?.toString().trim().isEmpty ?? true) {
+          validationError = 'Email es obligatorio';
+        }
+        // Validar formato de email
+        else {
+          final emailValue = row['email']?.toString().trim() ?? '';
+          final emailError = Validators.email(emailValue);
+          if (emailError != null) {
+            validationError = 'Email inválido: $emailError';
+          } else {
+            emailValid = true;
+          }
+        }
+        // Validar contraseña
+        if (validationError == null &&
+            (row['password']?.toString().trim().isEmpty ?? true)) {
+          validationError = 'Contraseña es obligatoria';
+        }
+
+        // Crear validación de fila
+        final validation = _CsvRowValidation(
+          lineNumber: i + 1,
+          data: row,
+          isValid: validationError == null,
+          errorMessage: validationError,
+          emailValid: emailValid,
+        );
+
+        validations.add(validation);
+
+        if (validationError != null) {
+          errors.add('Línea ${i + 1}: $validationError');
+        } else {
+          parsedData.add(row);
         }
       }
 
       setState(() {
         _parsedData = parsedData;
-        _errorMessage = null;
+        _rowValidations = validations;
+        _errorMessage = errors.isNotEmpty
+            ? 'Se encontraron ${errors.length} errores de validación. Revisa los detalles abajo.'
+            : null;
       });
     } catch (e) {
       setState(() {
@@ -285,7 +502,7 @@ class _CsvImportWidgetState extends State<CsvImportWidget> {
       );
 
       widget.onImportComplete(result);
-      
+
       // Limpiar el formulario
       setState(() {
         _selectedFileName = null;

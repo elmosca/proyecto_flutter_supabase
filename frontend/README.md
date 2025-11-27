@@ -1,266 +1,224 @@
-# 🚀 Frontend TFG - Flutter Multiplataforma
+# Frontend (Flutter) – Aplicación Multiplataforma
 
-## 📋 **Descripción del Proyecto**
-
-Aplicación Flutter multiplataforma para el Sistema de Seguimiento de Proyectos TFG, conectada al backend Supabase en servidor de red.
-
-## 🌐 **Configuración del Servidor**
-
-### **Información del Backend**
-- **IP del Servidor**: `192.168.1.9`
-- **Puerto API**: `54321`
-- **URL Base**: `http://192.168.1.9:54321`
-
-### **Servicios Disponibles**
-- **API REST**: `http://192.168.1.9:54321`
-- **Storage S3**: `http://192.168.1.9:54321/storage/v1/s3`
-- **Supabase Studio**: `http://192.168.1.9:54323`
-- **Email Testing (Inbucket)**: `http://192.168.1.9:54324`
-
-### **Credenciales de Storage**
-- **Access Key**: `625729a08b95bf1b7ff351a663f3a23c`
-- **Secret Key**: `850181e4652dd023b7a98c58ae0d2d34bd487ee0cc3254aed6eda37307425907`
-- **Región**: `local`
-
-## 🛠️ **Configuración del Entorno**
-
-### **Prerrequisitos**
-```bash
-# Verificar Flutter
-flutter --version
-
-# Verificar dispositivos disponibles
-flutter devices
-
-# Habilitar plataformas (si es necesario)
-flutter config --enable-web
-flutter config --enable-windows
-```
-
-### **Instalación de Dependencias**
-```bash
-# Instalar dependencias
-flutter pub get
-
-# Verificar dependencias
-flutter pub deps
-```
-
-## 🚀 **Ejecución del Proyecto**
-
-### **Web (Recomendado para desarrollo)**
-```bash
-# Ejecutar en Edge
-flutter run -d edge
-
-# Ejecutar en Chrome
-flutter run -d chrome
-
-# Ejecutar en puerto específico
-flutter run -d edge --web-port=8082
-```
-
-### **Windows**
-```bash
-# Habilitar modo desarrollador primero
-start ms-settings:developers
-
-# Ejecutar aplicación
-flutter run -d windows
-```
-
-### **Android (Configurado)**
-```bash
-# Requiere Android Studio instalado
-flutter run -d android
-
-# Build APK
-flutter build apk --debug
-
-# Build App Bundle para Google Play
-flutter build appbundle --release
-```
-
-## 📱 **Plataformas Soportadas**
-
-| Plataforma | Estado | Prioridad | Comandos |
-|------------|--------|-----------|----------|
-| **Web** | ✅ Funcional | ALTA | `flutter run -d edge` |
-| **Windows** | ✅ Funcional | ALTA | `flutter run -d windows` |
-| **Android** | 🟡 Configurado (requiere Android Studio) | ALTA | `flutter run -d android` |
-| **iOS** | ⏳ Pendiente | MEDIA | `flutter run -d ios` |
-| **macOS** | ⏳ Pendiente | BAJA | `flutter run -d macos` |
-| **Linux** | ⏳ Pendiente | BAJA | `flutter run -d linux` |
-
-## 🔧 **Estructura del Proyecto**
-
-```
-frontend/
-├── lib/
-│   ├── main.dart                 # Punto de entrada
-│   ├── models/                   # Modelos de datos
-│   ├── services/                 # Servicios de comunicación
-│   ├── blocs/                    # Gestión de estado
-│   ├── screens/                  # Pantallas de la app
-│   │   ├── auth/                 # Autenticación
-│   │   ├── student/              # Pantallas de estudiante
-│   │   ├── tutor/                # Pantallas de tutor
-│   │   └── kanban/               # Tablero Kanban
-│   ├── widgets/                  # Widgets reutilizables
-│   │   ├── common/               # Widgets comunes
-│   │   ├── forms/                # Formularios
-│   │   └── platform/             # Widgets específicos por plataforma
-│   ├── utils/                    # Utilidades
-│   │   └── config.dart           # Configuración del proyecto
-│   └── themes/                   # Temas por plataforma
-├── web/                          # Configuración específica de web
-├── windows/                      # Configuración específica de Windows
-└── pubspec.yaml                  # Dependencias
-```
-
-## 🔐 **Autenticación**
-
-### **Credenciales de Prueba**
-```json
-{
-  "student": "carlos.lopez@alumno.cifpcarlos3.es",
-  "tutor": "maria.garcia@cifpcarlos3.es",
-  "admin": "admin@cifpcarlos3.es",
-  "password": "password123"
-}
-```
-
-### **Flujo de Autenticación**
-1. **Login**: Usuario introduce credenciales
-2. **Validación**: Supabase Auth valida credenciales
-3. **Roles**: Sistema determina rol del usuario
-4. **Navegación**: Redirige al dashboard correspondiente
-
-## 📊 **Funcionalidades Implementadas**
-
-### **✅ Completadas**
-- [x] Configuración multiplataforma
-- [x] Conexión con backend en servidor de red
-- [x] Pantalla de login funcional
-- [x] Dashboards por rol (estudiante, tutor, admin)
-- [x] Formularios de anteproyectos (crear/editar)
-- [x] Lista de anteproyectos con gestión
-- [x] Formularios de tareas (crear/editar)
-- [x] Lista de tareas con gestión
-- [x] Tablero Kanban básico
-- [x] Sistema de comentarios completo con BLoC e internacionalización
-- [x] Navegación integrada entre pantallas
-- [x] Internacionalización completa (español/inglés)
-- [x] Código completamente limpio (0 errores, 0 warnings)
-- [x] Testing unitario y de integración
-
-### **🔄 Pendientes**
-- [ ] Flujo de aprobación de anteproyectos (Frontend)
-- [ ] Subida de archivos y gestión (Frontend)
-
-### **⏳ Futuras Mejoras**
-- [ ] Sistema de notificaciones push
-- [ ] Generación de PDFs
-- [ ] Optimizaciones de rendimiento
-- [ ] Despliegue en tiendas de aplicaciones
-
-## 🛠️ **Herramientas de Desarrollo**
-
-### **Supabase Studio**
-- **URL**: http://192.168.1.9:54323
-- **Uso**: Gestión de base de datos, usuarios, políticas RLS
-
-### **Email Testing (Inbucket)**
-- **URL**: http://192.168.1.9:54324
-- **Uso**: Pruebas de envío de emails
-
-## 🔧 **Comandos Útiles**
-
-### **Desarrollo**
-```bash
-# Hot reload
-r
-
-# Hot restart
-R
-
-# Salir
-q
-
-# Ver logs
-flutter logs
-```
-
-### **Build**
-```bash
-# Build para web
-flutter build web --release
-
-# Build para Windows
-flutter build windows --release
-
-# Build para Android
-flutter build apk --release
-```
-
-### **Testing**
-```bash
-# Ejecutar tests
-flutter test
-
-# Ejecutar tests con cobertura
-flutter test --coverage
-```
-
-### **Análisis**
-```bash
-# Analizar código
-flutter analyze
-
-# Formatear código
-flutter format .
-```
-
-## 🚨 **Solución de Problemas**
-
-### **Problema: Modo Desarrollador en Windows**
-```bash
-# Abrir configuración de desarrollador
-start ms-settings:developers
-
-# Habilitar "Modo desarrollador"
-```
-
-### **Problema: CORS en Web**
-```bash
-# Verificar configuración de Supabase
-# Asegurar que el backend permite CORS desde el dominio
-```
-
-### **Problema: Conexión al Servidor**
-```bash
-# Verificar conectividad
-ping 192.168.1.9
-
-# Verificar puerto
-telnet 192.168.1.9 54321
-```
-
-## 📞 **Soporte**
-
-### **Enlaces Útiles**
-- **Backend Status**: http://192.168.1.9:54321/health
-- **Supabase Studio**: http://192.168.1.9:54323
-- **Email Testing**: http://192.168.1.9:54324
-
-### **Documentación**
-- [Plan de Desarrollo](../docs/desarrollo/plan_desarrollo_frontend.md)
-- [Guía de Inicio](../docs/desarrollo/guia_inicio_frontend.md)
-- [Checklist Semanal](../docs/desarrollo/checklist_frontend_semanal.md)
-- [Configuración Android](ANDROID_SETUP_GUIDE.md)
+Aplicación Flutter para Web, Android y Escritorio. Este README está orientado al desarrollo, ejecución y distribución de la app.
 
 ---
 
-**Estado**: ✅ **85% COMPLETADO** - Sistema de comentarios implementado  
-**Última actualización**: 30 de agosto de 2024  
-**Versión**: 1.2.0
+## Características
+- Arquitectura basada en BLoC y servicios.
+- Internacionalización (ES/EN).
+- Navegación con GoRouter.
+- UI responsive (Web/Escritorio/Móvil).
+
+---
+
+## Plataformas soportadas
+
+| Plataforma | Estado | Requisitos mínimos | Comando rápido |
+|-----------|--------|--------------------|----------------|
+| Web       | Estable | Navegador moderno | `flutter run -d chrome` |
+| Windows   | Estable | Windows 10+       | `flutter run -d windows` |
+| Android   | Estable | Android Studio/SDK| `flutter run -d android` |
+| macOS     | Opcional| Xcode + macOS     | `flutter run -d macos` |
+| Linux     | Opcional| Toolchain GTK     | `flutter run -d linux` |
+
+> Habilita plataformas si es necesario: `flutter config --enable-web --enable-windows`
+
+---
+
+## Requisitos
+- Flutter SDK estable: `flutter --version`
+- Para Android: Android Studio + SDK/AVD
+- Para Windows: Modo desarrollador activado
+- Para Web: Navegador Chromium/Chrome/Edge
+
+---
+
+## Configuración (genérica)
+La app espera variables (defínelas con `--dart-define` o en tu gestor de secretos):
+
+```bash
+# Ejemplos (placeholders, no reales):
+--dart-define=SUPABASE_URL=https://<TU-PROYECTO>.supabase.co \
+--dart-define=SUPABASE_ANON_KEY=<TU_ANON_KEY>
+```
+
+Nunca incluyas claves reales en el repositorio. Usa entornos/CI para inyectarlas.
+
+---
+
+## Instalación de dependencias
+```bash
+flutter pub get
+```
+
+---
+
+## Ejecución
+
+### Web
+```bash
+flutter run -d chrome
+# o
+flutter run -d edge
+```
+
+### Windows
+```bash
+# Asegúrate de tener activado el "Modo desarrollador"
+flutter run -d windows
+```
+
+### Android
+```bash
+flutter run -d android
+```
+
+---
+
+## Build/Distribución
+```bash
+# Web
+flutter build web --release
+
+# Windows
+flutter build windows --release
+
+# Android (APK)
+flutter build apk --release
+
+# Android (App Bundle)
+flutter build appbundle --release
+```
+
+Los artefactos resultantes se ubicarán en `build/` según la plataforma.
+
+---
+
+## Estructura del proyecto (resumen)
+```
+lib/
+  main.dart                 # Punto de entrada
+  models/                   # Modelos de datos (json_serializable)
+  services/                 # Lógica de negocio / acceso a datos
+  blocs/                    # Estado (BLoC)
+  screens/                  # Vistas/pantallas
+  widgets/                  # Componentes reutilizables
+  utils/                    # Utilidades (errores, helpers)
+  themes/                   # Tematización
+```
+
+---
+
+## Calidad de código
+```bash
+# Análisis
+flutter analyze
+
+# Formateo
+flutter format .
+```
+
+---
+
+## Tests
+```bash
+# Unitarios / integración
+flutter test
+
+# Cobertura
+flutter test --coverage
+```
+
+---
+
+## Solución de problemas
+- Dependencias: `flutter pub get` y `flutter clean` si algo falla.
+- Dispositivos: `flutter devices` para verificar targets disponibles.
+- Web: usa `--web-renderer html` si encuentras problemas de renderizado.
+- Android: revisa permisos y un AVD con API reciente.
+
+---
+
+## Documentación de la API (dartdoc)
+Para generar la documentación de la API (HTML):
+```bash
+dart doc
+
+---
+
+## Licencia
+Consulta el archivo `LICENSE` en la raíz del repositorio.
+
+---
+
+## Arquitectura y decisiones clave
+- Capas: `blocs` (estado), `services` (lógica/acceso a datos), `models` (DTOs/serialización), `screens`/`widgets` (UI), `utils` (errores/i18n/helpers).
+- Navegación con `GoRouter` y rutas por rol.
+- BLoC para aislar UI de lógica de negocio.
+- Trade‑offs: simplicidad de testing en servicios y blocs; serialización con `json_serializable` para tipado estricto.
+
+## Configuración y entornos
+- Variables esperadas (solo nombres y propósito):
+  - `SUPABASE_URL`: URL del proyecto en Supabase Cloud.
+  - `SUPABASE_ANON_KEY`: clave pública para el cliente.
+  - `APP_ENV`: dev/staging/prod (opcional) para toggles.
+- Inyección: `--dart-define` en local; secretos en CI/CD para builds.
+
+## Estándares de código
+- Lint y formateo: `flutter analyze` y `flutter format .`.
+- Effective Dart: nombres descriptivos, funciones puras en servicios cuando sea posible.
+- Commits: preferible Conventional Commits (feat, fix, refactor, docs, chore, test).
+
+## Tests y calidad
+- Unit: servicios y blocs con mocks (preferible `mocktail`/`Mockito`).
+- Integración: pruebas de flujo crítico (login, navegación por roles).
+- Cobertura: `flutter test --coverage` y revisar umbral mínimo en CI (si aplica).
+
+## i18n / l10n
+- Archivos ARB en `lib/l10n/`.
+- Flujo: actualizar `.arb` → regenerar clases de localización → usar `AppLocalizations`.
+- Reglas: no hardcodear strings; mantener claves descriptivas y consistentes.
+
+## Gestión de errores y observabilidad
+- Excepciones tipadas: `AppException` y subclases (Network, Auth, Validation, Database...).
+- Traducción de errores: `ErrorTranslator` → clave de i18n.
+- Logging: usar `debugPrint`/logger configurable por entorno.
+
+## Seguridad y datos
+- Roles: admin, tutor, student (autorización en backend mediante RLS/policies).
+- No registrar PII en logs.
+- Permisos por plataforma (Android/iOS/Web) gestionados en `services/permissions_*` (si aplica).
+
+## Modelo de datos y migraciones
+- Modelos en `lib/models/` con `@JsonSerializable()`.
+- Coordinación de cambios de esquema con backend (migraciones en `docs/base_datos/migraciones/`).
+
+## APIs y contratos
+- Servicios en `lib/services/` encapsulan endpoints/Edge Functions.
+- Errores esperados documentados en dartdoc (métodos con `/// Lanza:`).
+- Puntos de extensión: nuevos servicios/funciones deben seguir las mismas convenciones.
+
+## CI/CD
+- Recomendado: jobs para `analyze`, `test`, `build` por plataforma.
+- Secretos: inyectar `SUPABASE_URL`/`SUPABASE_ANON_KEY` desde el gestor de secretos.
+
+## Rendimiento y accesibilidad
+- Evitar rebuilds innecesarios (memorización/selectores en BLoC/Provider).
+- Listas grandes: virtualización/lazy builders.
+- A11y: labels, focus, contraste; probar con lector de pantalla.
+
+## Recetas (tareas comunes)
+- Añadir pantalla nueva: crear `Screen`, ruta en `GoRouter`, opcional `Bloc` y estados/eventos.
+- Añadir BLoC: definir eventos/estados, pruebas de transición, inyección en UI.
+- Añadir modelo: clase con `@JsonSerializable()`, `fromJson/toJson`, pruebas de serialización.
+- Añadir permiso en Android: actualizar `AndroidManifest.xml` + solicitud en runtime.
+
+## Documentación de API (dartdoc)
+- Comandos: `dart doc` (salida por defecto en `doc/api`).
+- Estilo: usar `///`, describir parámetros/retornos/excepciones y ejemplo breve.
+
+## Mantenimiento
+- Actualizar dependencias periódicamente (respetar breaking changes).
+- Abrir issues internos con pasos para reproducir, logs y entorno.
+- Contacto/roles: mantener responsables por módulo (sin datos personales en el repo).

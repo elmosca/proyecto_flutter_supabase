@@ -3,11 +3,16 @@ import '../../l10n/app_localizations.dart';
 import '../../models/user.dart' as app_user;
 import '../../services/user_service.dart';
 import '../forms/edit_student_form.dart';
+import '../../widgets/dialogs/reset_password_dialog.dart';
+import '../../widgets/dialogs/add_students_dialog.dart';
 
 class StudentListScreen extends StatefulWidget {
   final int tutorId;
 
-  const StudentListScreen({super.key, required this.tutorId});
+  const StudentListScreen({
+    super.key,
+    required this.tutorId,
+  });
 
   @override
   State<StudentListScreen> createState() => _StudentListScreenState();
@@ -35,7 +40,7 @@ class _StudentListScreenState extends State<StudentListScreen> {
     try {
       final userService = UserService();
       final students = await userService.getStudentsByTutor(widget.tutorId);
-      
+
       if (mounted) {
         setState(() {
           _students = students;
@@ -49,7 +54,9 @@ class _StudentListScreenState extends State<StudentListScreen> {
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.errorDeletingStudent(e.toString())),
+            content: Text(
+              AppLocalizations.of(context)!.errorDeletingStudent(e.toString()),
+            ),
             backgroundColor: Colors.red,
           ),
         );
@@ -59,33 +66,51 @@ class _StudentListScreenState extends State<StudentListScreen> {
 
   List<app_user.User> get _filteredStudents {
     if (_searchQuery.isEmpty) return _students;
-    
+
     return _students.where((student) {
-      return student.fullName.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-             student.email.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-             (student.nre?.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false);
+      return student.fullName.toLowerCase().contains(
+            _searchQuery.toLowerCase(),
+          ) ||
+          student.email.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          (student.nre?.toLowerCase().contains(_searchQuery.toLowerCase()) ??
+              false);
     }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.myStudents),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadStudents,
-            tooltip: l10n.refresh,
-          ),
-        ],
-      ),
-      body: Column(
+
+    // Retornar solo el contenido sin Scaffold
+    // El PersistentScaffold en el router maneja el AppBar y drawer
+    return Column(
         children: [
+          // Barra de acciones
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            color: Colors.grey.shade50,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: _addStudent,
+                  icon: const Icon(Icons.add),
+                  label: Text(l10n.addStudent),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                IconButton(
+                  onPressed: _loadStudents,
+                  icon: const Icon(Icons.refresh),
+                  tooltip: l10n.refresh,
+                ),
+              ],
+            ),
+          ),
+          
           // Barra de búsqueda
           Padding(
             padding: const EdgeInsets.all(16),
@@ -111,19 +136,18 @@ class _StudentListScreenState extends State<StudentListScreen> {
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _filteredStudents.isEmpty
-                    ? _buildEmptyState()
-                    : ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        itemCount: _filteredStudents.length,
-                        itemBuilder: (context, index) {
-                          final student = _filteredStudents[index];
-                          return _buildStudentCard(student);
-                        },
-                      ),
+                ? _buildEmptyState()
+                : ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: _filteredStudents.length,
+                    itemBuilder: (context, index) {
+                      final student = _filteredStudents[index];
+                      return _buildStudentCard(student);
+                    },
+                  ),
           ),
         ],
-      ),
-    );
+      );
   }
 
   Widget _buildEmptyState() {
@@ -131,28 +155,19 @@ class _StudentListScreenState extends State<StudentListScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.people_outline,
-            size: 64,
-            color: Colors.grey.shade400,
-          ),
+          Icon(Icons.people_outline, size: 64, color: Colors.grey.shade400),
           const SizedBox(height: 16),
           Text(
             _searchQuery.isEmpty
                 ? AppLocalizations.of(context)!.noStudentsAssigned
                 : AppLocalizations.of(context)!.noStudentsFound,
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.grey.shade600,
-            ),
+            style: TextStyle(fontSize: 18, color: Colors.grey.shade600),
           ),
           if (_searchQuery.isEmpty) ...[
             const SizedBox(height: 8),
             Text(
               AppLocalizations.of(context)!.useDashboardButtons,
-              style: TextStyle(
-                color: Colors.grey.shade500,
-              ),
+              style: TextStyle(color: Colors.grey.shade500),
             ),
           ],
         ],
@@ -182,18 +197,12 @@ class _StudentListScreenState extends State<StudentListScreen> {
             if (student.nre != null && student.nre!.isNotEmpty)
               Text(
                 '${AppLocalizations.of(context)!.nre}: ${student.nre}',
-                style: TextStyle(
-                  color: Colors.grey.shade600,
-                  fontSize: 12,
-                ),
+                style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
               ),
             if (student.specialty != null && student.specialty!.isNotEmpty)
               Text(
                 student.specialty!,
-                style: TextStyle(
-                  color: Colors.blue.shade600,
-                  fontSize: 12,
-                ),
+                style: TextStyle(color: Colors.blue.shade600, fontSize: 12),
               ),
           ],
         ),
@@ -205,6 +214,9 @@ class _StudentListScreenState extends State<StudentListScreen> {
                 break;
               case 'edit':
                 _editStudent(student);
+                break;
+              case 'reset_password':
+                _resetStudentPassword(student);
                 break;
               case 'delete':
                 _deleteStudent(student);
@@ -233,12 +245,28 @@ class _StudentListScreenState extends State<StudentListScreen> {
               ),
             ),
             PopupMenuItem(
+              value: 'reset_password',
+              child: Row(
+                children: [
+                  const Icon(Icons.lock_reset, color: Colors.teal),
+                  const SizedBox(width: 8),
+                  Text(
+                    AppLocalizations.of(context)!.resetPassword,
+                    style: const TextStyle(color: Colors.teal),
+                  ),
+                ],
+              ),
+            ),
+            PopupMenuItem(
               value: 'delete',
               child: Row(
                 children: [
                   const Icon(Icons.delete, color: Colors.red),
                   const SizedBox(width: 8),
-                  Text(AppLocalizations.of(context)!.deleteStudent, style: const TextStyle(color: Colors.red)),
+                  Text(
+                    AppLocalizations.of(context)!.deleteStudent,
+                    style: const TextStyle(color: Colors.red),
+                  ),
                 ],
               ),
             ),
@@ -259,20 +287,44 @@ class _StudentListScreenState extends State<StudentListScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildDetailRow(AppLocalizations.of(context)!.email, student.email),
+              _buildDetailRow(
+                AppLocalizations.of(context)!.email,
+                student.email,
+              ),
               if (student.nre != null && student.nre!.isNotEmpty)
-                _buildDetailRow(AppLocalizations.of(context)!.nre, student.nre!),
+                _buildDetailRow(
+                  AppLocalizations.of(context)!.nre,
+                  student.nre!,
+                ),
               if (student.phone != null && student.phone!.isNotEmpty)
-                _buildDetailRow(AppLocalizations.of(context)!.phone, student.phone!),
+                _buildDetailRow(
+                  AppLocalizations.of(context)!.phone,
+                  student.phone!,
+                ),
               if (student.specialty != null && student.specialty!.isNotEmpty)
-                _buildDetailRow(AppLocalizations.of(context)!.specialty, student.specialty!),
-              if (student.academicYear != null && student.academicYear!.isNotEmpty)
-                _buildDetailRow(AppLocalizations.of(context)!.academicYear, student.academicYear!),
+                _buildDetailRow(
+                  AppLocalizations.of(context)!.specialty,
+                  student.specialty!,
+                ),
+              if (student.academicYear != null &&
+                  student.academicYear!.isNotEmpty)
+                _buildDetailRow(
+                  AppLocalizations.of(context)!.academicYear,
+                  student.academicYear!,
+                ),
               if (student.biography != null && student.biography!.isNotEmpty)
-                _buildDetailRow(AppLocalizations.of(context)!.biography, student.biography!),
-              _buildDetailRow(AppLocalizations.of(context)!.status, student.status.displayName),
-              _buildDetailRow(AppLocalizations.of(context)!.creationDate, 
-                student.createdAt.toString().split(' ')[0]),
+                _buildDetailRow(
+                  AppLocalizations.of(context)!.biography,
+                  student.biography!,
+                ),
+              _buildDetailRow(
+                AppLocalizations.of(context)!.status,
+                student.status.displayName,
+              ),
+              _buildDetailRow(
+                AppLocalizations.of(context)!.creationDate,
+                student.createdAt.toString().split(' ')[0],
+              ),
             ],
           ),
         ),
@@ -299,25 +351,58 @@ class _StudentListScreenState extends State<StudentListScreen> {
               style: const TextStyle(fontWeight: FontWeight.w500),
             ),
           ),
-          Expanded(
-            child: Text(value),
-          ),
+          Expanded(child: Text(value)),
         ],
       ),
     );
   }
 
-  void _editStudent(app_user.User student) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => EditStudentForm(student: student),
+  void _addStudent() {
+    // Mostrar diálogo para elegir entre añadir individualmente o importar CSV
+    showDialog(
+      context: context,
+      builder: (context) => AddStudentsDialog(
+        tutorId: widget.tutorId,
+        onStudentAdded: () {
+          // Recargar la lista cuando se añade un estudiante
+          _loadStudents();
+        },
+        onImportCompleted: () {
+          // Recargar la lista cuando se completa la importación
+          _loadStudents();
+        },
       ),
-    ).then((updatedStudent) {
-      if (updatedStudent != null) {
-        // Recargar la lista para mostrar los cambios
-        _loadStudents();
-      }
-    });
+    );
+  }
+
+  void _editStudent(app_user.User student) {
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (context) => EditStudentForm(student: student),
+          ),
+        )
+        .then((updatedStudent) {
+          if (updatedStudent != null) {
+            // Recargar la lista para mostrar los cambios
+            _loadStudents();
+          }
+        });
+  }
+
+  Future<void> _resetStudentPassword(app_user.User student) async {
+    if (!mounted) return;
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => ResetPasswordDialog(
+        studentEmail: student.email,
+        studentName: student.fullName,
+      ),
+    );
+    // Recargar lista si se reseteó la contraseña
+    if (result == true && mounted) {
+      _loadStudents();
+    }
   }
 
   void _deleteStudent(app_user.User student) {
@@ -325,7 +410,9 @@ class _StudentListScreenState extends State<StudentListScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(AppLocalizations.of(context)!.confirmDeletion),
-        content: Text(AppLocalizations.of(context)!.confirmDeleteStudent(student.fullName)),
+        content: Text(
+          AppLocalizations.of(context)!.confirmDeleteStudent(student.fullName),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -348,7 +435,7 @@ class _StudentListScreenState extends State<StudentListScreen> {
     try {
       final userService = UserService();
       await userService.deleteUser(student.id);
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -362,7 +449,9 @@ class _StudentListScreenState extends State<StudentListScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.errorDeletingStudent(e.toString())),
+            content: Text(
+              AppLocalizations.of(context)!.errorDeletingStudent(e.toString()),
+            ),
             backgroundColor: Colors.red,
           ),
         );

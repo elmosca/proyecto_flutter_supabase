@@ -3,6 +3,8 @@ import 'package:equatable/equatable.dart';
 import '../models/comment.dart';
 import '../models/user.dart';
 import '../services/comments_service.dart';
+import '../utils/app_exception.dart';
+import '../utils/error_translator.dart';
 
 // Events
 abstract class CommentsEvent extends Equatable {
@@ -80,10 +82,7 @@ class CommentsLoaded extends CommentsState {
   final List<Comment> comments;
   final User currentUser;
 
-  const CommentsLoaded({
-    required this.comments,
-    required this.currentUser,
-  });
+  const CommentsLoaded({required this.comments, required this.currentUser});
 
   @override
   List<Object> get props => [comments, currentUser];
@@ -102,10 +101,7 @@ class CommentAdding extends CommentsState {
   final List<Comment> comments;
   final User currentUser;
 
-  const CommentAdding({
-    required this.comments,
-    required this.currentUser,
-  });
+  const CommentAdding({required this.comments, required this.currentUser});
 
   @override
   List<Object> get props => [comments, currentUser];
@@ -115,10 +111,7 @@ class CommentAdded extends CommentsState {
   final List<Comment> comments;
   final User currentUser;
 
-  const CommentAdded({
-    required this.comments,
-    required this.currentUser,
-  });
+  const CommentAdded({required this.comments, required this.currentUser});
 
   @override
   List<Object> get props => [comments, currentUser];
@@ -128,10 +121,7 @@ class CommentUpdating extends CommentsState {
   final List<Comment> comments;
   final User currentUser;
 
-  const CommentUpdating({
-    required this.comments,
-    required this.currentUser,
-  });
+  const CommentUpdating({required this.comments, required this.currentUser});
 
   @override
   List<Object> get props => [comments, currentUser];
@@ -141,10 +131,7 @@ class CommentUpdated extends CommentsState {
   final List<Comment> comments;
   final User currentUser;
 
-  const CommentUpdated({
-    required this.comments,
-    required this.currentUser,
-  });
+  const CommentUpdated({required this.comments, required this.currentUser});
 
   @override
   List<Object> get props => [comments, currentUser];
@@ -154,10 +141,7 @@ class CommentDeleting extends CommentsState {
   final List<Comment> comments;
   final User currentUser;
 
-  const CommentDeleting({
-    required this.comments,
-    required this.currentUser,
-  });
+  const CommentDeleting({required this.comments, required this.currentUser});
 
   @override
   List<Object> get props => [comments, currentUser];
@@ -167,10 +151,7 @@ class CommentDeleted extends CommentsState {
   final List<Comment> comments;
   final User currentUser;
 
-  const CommentDeleted({
-    required this.comments,
-    required this.currentUser,
-  });
+  const CommentDeleted({required this.comments, required this.currentUser});
 
   @override
   List<Object> get props => [comments, currentUser];
@@ -184,9 +165,9 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
   CommentsBloc({
     required CommentsService commentsService,
     required User currentUser,
-  })  : _commentsService = commentsService,
-        _currentUser = currentUser,
-        super(CommentsInitial()) {
+  }) : _commentsService = commentsService,
+       _currentUser = currentUser,
+       super(CommentsInitial()) {
     on<CommentsLoadRequested>(_onCommentsLoadRequested);
     on<CommentAddRequested>(_onCommentAddRequested);
     on<CommentUpdateRequested>(_onCommentUpdateRequested);
@@ -202,12 +183,15 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
 
     try {
       final comments = await _commentsService.getCommentsByTaskId(event.taskId);
-      emit(CommentsLoaded(
-        comments: comments,
-        currentUser: _currentUser,
-      ));
+      emit(CommentsLoaded(comments: comments, currentUser: _currentUser));
     } catch (e) {
-      emit(CommentsError(e.toString()));
+      // Manejar errores usando el nuevo sistema
+      if (e is AppException) {
+        final fallbackMessage = ErrorTranslator.getFallbackMessage(e);
+        emit(CommentsError(fallbackMessage));
+      } else {
+        emit(CommentsError('Error inesperado: ${e.toString()}'));
+      }
     }
   }
 
@@ -217,10 +201,12 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
   ) async {
     if (state is CommentsLoaded) {
       final currentState = state as CommentsLoaded;
-      emit(CommentAdding(
-        comments: currentState.comments,
-        currentUser: currentState.currentUser,
-      ));
+      emit(
+        CommentAdding(
+          comments: currentState.comments,
+          currentUser: currentState.currentUser,
+        ),
+      );
 
       try {
         final newComment = await _commentsService.addComment(
@@ -233,10 +219,12 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
         final updatedComments = List<Comment>.from(currentState.comments)
           ..add(newComment);
 
-        emit(CommentAdded(
-          comments: updatedComments,
-          currentUser: currentState.currentUser,
-        ));
+        emit(
+          CommentAdded(
+            comments: updatedComments,
+            currentUser: currentState.currentUser,
+          ),
+        );
       } catch (e) {
         emit(CommentsError(e.toString()));
       }
@@ -249,10 +237,12 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
   ) async {
     if (state is CommentsLoaded) {
       final currentState = state as CommentsLoaded;
-      emit(CommentUpdating(
-        comments: currentState.comments,
-        currentUser: currentState.currentUser,
-      ));
+      emit(
+        CommentUpdating(
+          comments: currentState.comments,
+          currentUser: currentState.currentUser,
+        ),
+      );
 
       try {
         final updatedComment = await _commentsService.updateComment(
@@ -264,10 +254,12 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
           return comment.id == event.commentId ? updatedComment : comment;
         }).toList();
 
-        emit(CommentUpdated(
-          comments: updatedComments,
-          currentUser: currentState.currentUser,
-        ));
+        emit(
+          CommentUpdated(
+            comments: updatedComments,
+            currentUser: currentState.currentUser,
+          ),
+        );
       } catch (e) {
         emit(CommentsError(e.toString()));
       }
@@ -280,10 +272,12 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
   ) async {
     if (state is CommentsLoaded) {
       final currentState = state as CommentsLoaded;
-      emit(CommentDeleting(
-        comments: currentState.comments,
-        currentUser: currentState.currentUser,
-      ));
+      emit(
+        CommentDeleting(
+          comments: currentState.comments,
+          currentUser: currentState.currentUser,
+        ),
+      );
 
       try {
         await _commentsService.deleteComment(event.commentId);
@@ -292,10 +286,12 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
             .where((comment) => comment.id != event.commentId)
             .toList();
 
-        emit(CommentDeleted(
-          comments: updatedComments,
-          currentUser: currentState.currentUser,
-        ));
+        emit(
+          CommentDeleted(
+            comments: updatedComments,
+            currentUser: currentState.currentUser,
+          ),
+        );
       } catch (e) {
         emit(CommentsError(e.toString()));
       }
@@ -309,10 +305,10 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
     if (state is CommentsLoaded) {
       final currentState = state as CommentsLoaded;
       // Buscar el taskId del primer comentario o usar un valor por defecto
-      final taskId = currentState.comments.isNotEmpty 
-          ? currentState.comments.first.taskId 
+      final taskId = currentState.comments.isNotEmpty
+          ? currentState.comments.first.taskId
           : 1;
-      
+
       add(CommentsLoadRequested(taskId));
     }
   }

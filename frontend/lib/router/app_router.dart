@@ -6,18 +6,28 @@ import '../blocs/auth_bloc.dart';
 import '../screens/auth/login_screen_bloc.dart';
 import '../screens/dashboard/student_dashboard_screen.dart';
 import '../screens/dashboard/tutor_dashboard.dart';
+import '../screens/dashboard/admin_dashboard.dart';
+import '../screens/admin/users_management_screen.dart';
+import '../screens/admin/tutor_selector_for_approval_screen.dart';
+import '../screens/admin/settings_screen.dart';
 import '../models/user.dart';
 import '../screens/lists/tasks_list.dart';
 import '../screens/lists/student_projects_list.dart';
 import '../screens/lists/my_anteprojects_list.dart';
-import '../screens/lists/anteprojects_list.dart';
-import '../screens/lists/tutor_anteprojects_list.dart';
 import '../screens/notifications/notifications_screen.dart';
+import '../screens/anteprojects/anteprojects_review_screen.dart';
 import '../widgets/navigation/persistent_scaffold.dart';
 import '../screens/kanban/kanban_board.dart';
 import '../screens/approval/approval_screen.dart';
 import '../blocs/approval_bloc.dart';
 import '../screens/student/student_list_screen.dart';
+import '../screens/auth/reset_password_screen.dart';
+import '../screens/help/help_screen.dart';
+import '../screens/forms/task_form.dart';
+import '../blocs/tasks_bloc.dart';
+import '../l10n/app_localizations.dart';
+import '../screens/messages/tutor_messages_selector_screen.dart';
+import '../screens/messages/message_project_selector_screen.dart';
 
 class AppRouter {
   static final GoRouter _router = GoRouter(
@@ -26,6 +36,11 @@ class AppRouter {
       // Redirigir la ruta raíz al login
       if (state.uri.path == '/') {
         return '/login';
+      }
+
+      // Excluir /reset-password del redirect - necesita acceso sin autenticación
+      if (state.uri.path == '/reset-password') {
+        return null; // No redirigir - permitir acceso a reset password
       }
 
       // Solo redirigir si no estamos en login
@@ -51,6 +66,31 @@ class AppRouter {
         path: '/login',
         name: 'login',
         builder: (context, state) => const LoginScreenBloc(),
+      ),
+      GoRoute(
+        path: '/reset-password',
+        name: 'reset-password',
+        builder: (context, state) {
+          // Extraer type de query parameters (puede venir de la URL o del hash fragment)
+          final type = state.uri.queryParameters['type']; // 'setup' o 'reset'
+
+          // Extraer parámetros de error si existen
+          final error = state.uri.queryParameters['error'];
+          final errorCode = state.uri.queryParameters['error_code'];
+          final errorDescription =
+              state.uri.queryParameters['error_description'];
+
+          // Extraer code si existe (puede venir como query parameter)
+          final code = state.uri.queryParameters['code'];
+
+          return ResetPasswordScreen(
+            type: type,
+            code: code,
+            error: error,
+            errorCode: errorCode,
+            errorDescription: errorDescription,
+          );
+        },
       ),
       GoRoute(
         path: '/dashboard/student',
@@ -86,9 +126,13 @@ class AppRouter {
         builder: (context, state) {
           final user = state.extra as User?;
           if (user == null) {
+            debugPrint('❌ Router: Usuario nulo en /dashboard/admin');
             return const LoginScreenBloc();
           }
-          return TutorDashboard(user: user);
+          debugPrint(
+            '✅ Router: Navegando a AdminDashboard para usuario: ${user.fullName}',
+          );
+          return AdminDashboard(user: user);
         },
       ),
       // Rutas adicionales para el menú lateral
@@ -96,7 +140,15 @@ class AppRouter {
         path: '/anteprojects',
         name: 'anteprojects',
         builder: (context, state) {
-          final user = state.extra as User?;
+          // Intentar obtener el usuario del extra primero, si no, del AuthBloc
+          User? user = state.extra as User?;
+          if (user == null) {
+            final authState = context.read<AuthBloc>().state;
+            if (authState is AuthAuthenticated) {
+              user = authState.user;
+            }
+          }
+
           if (user == null) {
             debugPrint('❌ Router: Usuario nulo en /anteprojects');
             return const LoginScreenBloc();
@@ -110,8 +162,8 @@ class AppRouter {
           if (user.role == UserRole.student) {
             body = MyAnteprojectsList(user: user);
           } else {
-            // Para tutores y admin
-            body = const TutorAnteprojectsList();
+            // Para tutores y admin - usar AnteprojectsReviewScreen sin Scaffold
+            body = const AnteprojectsReviewScreen();
           }
 
           return PersistentScaffold(
@@ -134,55 +186,43 @@ class AppRouter {
           debugPrint(
             '✅ Router: Navegando a TasksList para usuario: ${user.fullName}',
           );
-          return PersistentScaffold(
-            title: 'Tareas',
-            titleKey: 'tasks',
-            user: user,
-            body: const TasksList(projectId: null),
-          );
+          return _TasksScreenWrapper(user: user);
         },
       ),
       GoRoute(
         path: '/notifications',
         name: 'notifications',
         builder: (context, state) {
-          // Para notificaciones, intentamos obtener el usuario del estado anterior
-          // Si no está disponible, usamos un usuario vacío temporal
-          final user = state.extra as User?;
+          final authState = context.read<AuthBloc>().state;
+          if (authState is! AuthAuthenticated) {
+            return const LoginScreenBloc();
+          }
+          final user = authState.user;
           debugPrint('✅ Router: Navegando a NotificationsScreen');
 
-          if (user != null) {
-            return PersistentScaffold(
-              title: 'Notificaciones',
-              titleKey: 'notifications',
-              user: user,
-              body: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.notifications_none,
-                      size: 64,
-                      color: Colors.blue,
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'No hay notificaciones',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Te notificaremos cuando haya novedades',
-                      style: TextStyle(color: Colors.grey.shade600),
-                    ),
-                  ],
-                ),
-              ),
+          return NotificationsScreen(user: user);
+        },
+      ),
+      GoRoute(
+        path: '/help',
+        name: 'help',
+        builder: (context, state) {
+          final user = state.extra as User?;
+          if (user == null) {
+            final authState = context.read<AuthBloc>().state;
+            if (authState is! AuthAuthenticated) {
+              return const LoginScreenBloc();
+            }
+            final authenticatedUser = authState.user;
+            debugPrint(
+              '✅ Router: Navegando a HelpScreen para usuario: ${authenticatedUser.fullName}',
             );
+            return HelpScreen(user: authenticatedUser);
           }
-
-          // Fallback si no hay usuario
-          return const NotificationsScreen();
+          debugPrint(
+            '✅ Router: Navegando a HelpScreen para usuario: ${user.fullName}',
+          );
+          return HelpScreen(user: user);
         },
       ),
       // Rutas adicionales para estudiantes
@@ -218,12 +258,7 @@ class AppRouter {
           debugPrint(
             '✅ Router: Navegando a Kanban para usuario: ${user.fullName}',
           );
-          return PersistentScaffold(
-            title: 'Kanban',
-            titleKey: 'kanban',
-            user: user,
-            body: const KanbanBoard(projectId: null),
-          );
+          return _KanbanScreenWrapper(user: user);
         },
       ),
       // Rutas adicionales para tutores y admin
@@ -239,12 +274,110 @@ class AppRouter {
           debugPrint(
             '✅ Router: Navegando a Estudiantes para tutor: ${user.fullName}',
           );
+
           return PersistentScaffold(
             title: 'Estudiantes',
             titleKey: 'myStudents',
             user: user,
             body: StudentListScreen(tutorId: user.id),
           );
+        },
+      ),
+      GoRoute(
+        path: '/student/messages',
+        name: 'student-messages',
+        builder: (context, state) {
+          final user = state.extra as User?;
+          if (user == null) {
+            final authState = context.read<AuthBloc>().state;
+            if (authState is AuthAuthenticated) {
+              final authUser = authState.user;
+              if (authUser.role != UserRole.student) {
+                return const LoginScreenBloc();
+              }
+              final l10n = AppLocalizations.of(context)!;
+              return PersistentScaffold(
+                title: l10n.studentMessages,
+                titleKey: 'studentMessages',
+                user: authUser,
+                body: const MessageProjectSelectorScreen(),
+              );
+            }
+            return const LoginScreenBloc();
+          }
+          if (user.role != UserRole.student) {
+            return const LoginScreenBloc();
+          }
+          debugPrint(
+            '✅ Router: Navegando a Mensajes para estudiante: ${user.fullName}',
+          );
+          final l10n = AppLocalizations.of(context)!;
+          return PersistentScaffold(
+            title: l10n.studentMessages,
+            titleKey: 'studentMessages',
+            user: user,
+            body: const MessageProjectSelectorScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/tutor/messages',
+        name: 'tutor-messages',
+        builder: (context, state) {
+          final user = state.extra as User?;
+          if (user == null) {
+            final authState = context.read<AuthBloc>().state;
+            if (authState is AuthAuthenticated) {
+              final authUser = authState.user;
+              if (authUser.role != UserRole.tutor) {
+                return const LoginScreenBloc();
+              }
+              final l10n = AppLocalizations.of(context)!;
+              return PersistentScaffold(
+                title: l10n.tutorMessages,
+                titleKey: 'tutorMessages',
+                user: authUser,
+                body: const TutorMessagesSelectorScreen(useOwnScaffold: false),
+              );
+            }
+            return const LoginScreenBloc();
+          }
+          if (user.role != UserRole.tutor) {
+            return const LoginScreenBloc();
+          }
+          debugPrint(
+            '✅ Router: Navegando a Mensajes para tutor: ${user.fullName}',
+          );
+          final l10n = AppLocalizations.of(context)!;
+          return PersistentScaffold(
+            title: l10n.tutorMessages,
+            titleKey: 'tutorMessages',
+            user: user,
+            body: const TutorMessagesSelectorScreen(useOwnScaffold: false),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/admin/approval-workflow',
+        name: 'admin-approval-workflow',
+        builder: (context, state) {
+          final user = state.extra as User?;
+          if (user == null) {
+            debugPrint('❌ Router: Usuario nulo en /admin/approval-workflow');
+            return const LoginScreenBloc();
+          }
+          if (user.role != UserRole.admin) {
+            return PersistentScaffold(
+              title: 'Acceso denegado',
+              titleKey: 'dashboard',
+              user: user,
+              body: const Center(child: Text('Se requiere rol administrador')),
+            );
+          }
+          debugPrint(
+            '✅ Router: Navegando a Seleccionar Tutor para Flujo de Aprobación',
+          );
+          return TutorSelectorForApprovalScreen(adminUser: user);
         },
       ),
       GoRoute(
@@ -259,14 +392,9 @@ class AppRouter {
           debugPrint(
             '✅ Router: Navegando a Flujo de Aprobación para: ${user.fullName}',
           );
-          return PersistentScaffold(
-            title: 'Flujo de Aprobación',
-            titleKey: 'approvalWorkflow',
-            user: user,
-            body: BlocProvider<ApprovalBloc>(
-              create: (_) => ApprovalBloc()..add(const LoadPendingApprovals()),
-              child: const ApprovalScreen(),
-            ),
+          return BlocProvider<ApprovalBloc>(
+            create: (_) => ApprovalBloc()..add(const LoadPendingApprovals()),
+            child: _ApprovalScreenWithScaffold(user: user),
           );
         },
       ),
@@ -275,9 +403,21 @@ class AppRouter {
         name: 'admin-users',
         builder: (context, state) {
           debugPrint('✅ Router: Navegando a Gestión de Usuarios');
-          return const Placeholder(
-            child: Center(child: Text('Gestionar Usuarios')),
-          );
+          final authState = context.read<AuthBloc>().state;
+          if (authState is! AuthAuthenticated) {
+            return const LoginScreenBloc();
+          }
+          final user = authState.user;
+          if (user.role != UserRole.admin) {
+            // No autorizado: volver a su dashboard
+            return PersistentScaffold(
+              title: 'Acceso denegado',
+              titleKey: 'dashboard',
+              user: user,
+              body: const Center(child: Text('Se requiere rol administrador')),
+            );
+          }
+          return UsersManagementScreen(user: user);
         },
       ),
       GoRoute(
@@ -285,9 +425,20 @@ class AppRouter {
         name: 'admin-settings',
         builder: (context, state) {
           debugPrint('✅ Router: Navegando a Configuración del Sistema');
-          return const Placeholder(
-            child: Center(child: Text('Configuración del Sistema')),
-          );
+          final authState = context.read<AuthBloc>().state;
+          if (authState is! AuthAuthenticated) {
+            return const LoginScreenBloc();
+          }
+          final user = authState.user;
+          if (user.role != UserRole.admin) {
+            return PersistentScaffold(
+              title: 'Acceso denegado',
+              titleKey: 'dashboard',
+              user: user,
+              body: const Center(child: Text('Se requiere rol administrador')),
+            );
+          }
+          return SettingsScreen(user: user);
         },
       ),
     ],
@@ -337,5 +488,150 @@ class AppRouter {
         );
       }
     }
+  }
+
+  // Método helper para navegar al login
+  static void goToLogin(BuildContext context) {
+    try {
+      context.go('/login');
+    } catch (e) {
+      // Si hay error, usar Navigator como fallback
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const LoginScreenBloc()),
+        (route) => false,
+      );
+    }
+  }
+}
+
+/// Widget wrapper para ApprovalScreen con PersistentScaffold y acceso al ApprovalBloc
+class _ApprovalScreenWithScaffold extends StatelessWidget {
+  final User user;
+
+  const _ApprovalScreenWithScaffold({required this.user});
+
+  @override
+  Widget build(BuildContext context) {
+    return PersistentScaffold(
+      title: 'Flujo de Aprobación',
+      titleKey: 'approvalWorkflow',
+      user: user,
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.refresh),
+          onPressed: () {
+            context.read<ApprovalBloc>().add(const RefreshApprovals());
+          },
+          tooltip: 'Actualizar',
+        ),
+      ],
+      body: const ApprovalScreen(
+        useOwnScaffold: false, // Usa PersistentScaffold
+      ),
+    );
+  }
+}
+
+/// Widget wrapper para el Kanban que proporciona acciones y FloatingActionButton
+/// cuando se usa dentro de PersistentScaffold
+class _KanbanScreenWrapper extends StatefulWidget {
+  final User user;
+
+  const _KanbanScreenWrapper({required this.user});
+
+  @override
+  State<_KanbanScreenWrapper> createState() => _KanbanScreenWrapperState();
+}
+
+class _KanbanScreenWrapperState extends State<_KanbanScreenWrapper> {
+  Future<void> _createTask() async {
+    await showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 600),
+          child: const TaskForm(projectId: null),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return PersistentScaffold(
+      title: 'Kanban',
+      titleKey: 'kanban',
+      user: widget.user,
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.refresh),
+          onPressed: () {
+            context.read<TasksBloc>().add(
+              const TasksLoadRequested(projectId: null),
+            );
+          },
+          tooltip: l10n.tasksListRefresh,
+        ),
+      ],
+      floatingActionButton: FloatingActionButton(
+        onPressed: _createTask,
+        child: const Icon(Icons.add),
+      ),
+      body: const KanbanBoard(projectId: null, isEmbedded: true),
+    );
+  }
+}
+
+/// Widget wrapper para la lista de Tareas que proporciona acciones y FloatingActionButton
+/// cuando se usa dentro de PersistentScaffold
+class _TasksScreenWrapper extends StatefulWidget {
+  final User user;
+
+  const _TasksScreenWrapper({required this.user});
+
+  @override
+  State<_TasksScreenWrapper> createState() => _TasksScreenWrapperState();
+}
+
+class _TasksScreenWrapperState extends State<_TasksScreenWrapper> {
+  Future<void> _createTask() async {
+    await showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 600),
+          child: const TaskForm(projectId: null),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return PersistentScaffold(
+      title: 'Tareas',
+      titleKey: 'tasks',
+      user: widget.user,
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.refresh),
+          onPressed: () {
+            context.read<TasksBloc>().add(
+              const TasksLoadRequested(projectId: null),
+            );
+          },
+          tooltip: l10n.tasksListRefresh,
+        ),
+      ],
+      floatingActionButton: FloatingActionButton(
+        onPressed: _createTask,
+        child: const Icon(Icons.add),
+      ),
+      body: const TasksList(projectId: null, isEmbedded: true),
+    );
   }
 }

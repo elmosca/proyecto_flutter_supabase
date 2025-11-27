@@ -1,20 +1,17 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../config/app_config.dart';
 import '../../models/user.dart';
-import '../../blocs/approval_bloc.dart';
+import '../../blocs/auth_bloc.dart';
 import '../../services/theme_service.dart';
 import '../../services/user_service.dart';
 import '../../services/anteprojects_service.dart';
 import '../../models/anteproject.dart';
-import '../approval/approval_screen.dart';
-import '../anteprojects/anteprojects_review_screen.dart';
-import '../student/student_list_screen.dart';
 import '../../widgets/dialogs/add_students_dialog.dart';
 import '../../widgets/navigation/app_top_bar.dart';
 import '../../widgets/navigation/app_side_drawer.dart';
@@ -32,7 +29,7 @@ class _TutorDashboardState extends State<TutorDashboard> {
   bool _isLoading = true;
   Timer? _loadingTimer;
   List<User> _students = [];
-  List<Anteproject> _anteprojects = [];
+  List<Map<String, dynamic>> _anteprojectsData = [];
   String _selectedAcademicYear = '2024-2025';
   final UserService _userService = UserService();
   final AnteprojectsService _anteprojectsService = AnteprojectsService();
@@ -50,20 +47,38 @@ class _TutorDashboardState extends State<TutorDashboard> {
   }
 
   Future<void> _loadData() async {
+    // Verificar que el widget sigue montado antes de continuar
+    if (!mounted) return;
+
     try {
+      // Verificar que el usuario esté autenticado antes de hacer las llamadas
+      final authState = context.read<AuthBloc>().state;
+      if (authState is! AuthAuthenticated) {
+        // Si el usuario se desconectó, no hacer nada
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+        return;
+      }
+
       // Cargar estudiantes y anteproyectos del tutor en paralelo
       final futures = await Future.wait([
         _userService.getStudentsByTutor(widget.user.id),
         _anteprojectsService.getTutorAnteprojects(),
       ]);
 
+      // Verificar que el widget sigue montado después de las operaciones asíncronas
+      if (!mounted) return;
+
       final students = futures[0] as List<User>;
-      final anteprojects = futures[1] as List<Anteproject>;
+      final anteprojectsData = futures[1] as List<Map<String, dynamic>>;
 
       if (mounted) {
         setState(() {
           _students = students;
-          _anteprojects = anteprojects;
+          _anteprojectsData = anteprojectsData;
 
           // Inicializar el año académico seleccionado si no está disponible
           final availableYears = <String>{};
@@ -73,8 +88,51 @@ class _TutorDashboardState extends State<TutorDashboard> {
               availableYears.add(student.academicYear!);
             }
           }
-          for (final anteproject in anteprojects) {
-            availableYears.add(anteproject.academicYear);
+          for (final anteprojectData in anteprojectsData) {
+            try {
+              // Función auxiliar para convertir de forma segura objetos minificados de Supabase
+              Map<String, dynamic> safeConvert(dynamic data) {
+                if (data is Map<String, dynamic>) {
+                  return data;
+                } else if (data is Map) {
+                  // Convertir Map genérico a Map<String, dynamic>
+                  final result = <String, dynamic>{};
+                  data.forEach((key, value) {
+                    result[key.toString()] = value;
+                  });
+                  return result;
+                } else {
+                  // Para objetos minificados, intentar casting directo
+                  try {
+                    final map = data as Map;
+                    final result = <String, dynamic>{};
+                    for (final key in map.keys) {
+                      result[key.toString()] = map[key];
+                    }
+                    return result;
+                  } catch (e) {
+                    return <String, dynamic>{};
+                  }
+                }
+              }
+
+              // Convertir de forma segura
+              final anteprojectMap = safeConvert(anteprojectData);
+              // Remover relaciones anidadas que no están en el modelo Anteproject
+              anteprojectMap.remove('anteproject_students');
+
+              // Si el mapa está vacío, saltar este anteproyecto
+              if (anteprojectMap.isEmpty) {
+                continue;
+              }
+
+              final anteproject = Anteproject.fromJson(anteprojectMap);
+              availableYears.add(anteproject.academicYear);
+            } catch (e) {
+              debugPrint('Error parseando anteproyecto en _loadData: $e');
+              debugPrint('   Tipo del dato: ${anteprojectData.runtimeType}');
+              // Continuar con el siguiente anteproyecto
+            }
           }
 
           // Solo cambiar el año si no hay datos para el año actual
@@ -91,11 +149,21 @@ class _TutorDashboardState extends State<TutorDashboard> {
       }
     } catch (e) {
       debugPrint('Error al cargar datos: $e');
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
+
+      // Si el widget ya no está montado (por ejemplo, el usuario se desconectó), no hacer nada
+      if (!mounted) return;
+
+      // Verificar si el error es de autenticación
+      final authState = context.read<AuthBloc>().state;
+      if (authState is! AuthAuthenticated) {
+        // Si el usuario se desconectó, no mostrar error, simplemente salir
+        return;
       }
+
+      // Para otros errores, actualizar el estado
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -105,17 +173,97 @@ class _TutorDashboardState extends State<TutorDashboard> {
     }).toList();
   }
 
-  List<Anteproject> get _pendingAnteprojects {
-    return _anteprojects.where((anteproject) {
-      return anteproject.status == AnteprojectStatus.submitted ||
-          anteproject.status == AnteprojectStatus.underReview;
+  List<Map<String, dynamic>> get _pendingAnteprojects {
+    return _anteprojectsData.where((anteprojectData) {
+      try {
+        // Función auxiliar para convertir de forma segura objetos minificados de Supabase
+        Map<String, dynamic> safeConvert(dynamic data) {
+          if (data is Map<String, dynamic>) {
+            return data;
+          } else if (data is Map) {
+            final result = <String, dynamic>{};
+            data.forEach((key, value) {
+              result[key.toString()] = value;
+            });
+            return result;
+          } else {
+            try {
+              final map = data as Map;
+              final result = <String, dynamic>{};
+              map.forEach((key, value) {
+                result[key.toString()] = value;
+              });
+              return result;
+            } catch (e) {
+              return <String, dynamic>{};
+            }
+          }
+        }
+
+        // Convertir de forma segura
+        final anteprojectMap = safeConvert(anteprojectData);
+        anteprojectMap.remove('anteproject_students');
+
+        // Si el mapa está vacío, excluir este anteproyecto
+        if (anteprojectMap.isEmpty) {
+          return false;
+        }
+
+        final anteproject = Anteproject.fromJson(anteprojectMap);
+        return anteproject.status == AnteprojectStatus.submitted ||
+            anteproject.status == AnteprojectStatus.underReview;
+      } catch (e) {
+        debugPrint('Error parseando anteproyecto en _pendingAnteprojects: $e');
+        debugPrint('   Tipo del dato: ${anteprojectData.runtimeType}');
+        return false;
+      }
     }).toList();
   }
 
-  List<Anteproject> get _reviewedAnteprojects {
-    return _anteprojects.where((anteproject) {
-      return anteproject.status == AnteprojectStatus.approved ||
-          anteproject.status == AnteprojectStatus.rejected;
+  List<Map<String, dynamic>> get _reviewedAnteprojects {
+    return _anteprojectsData.where((anteprojectData) {
+      try {
+        // Función auxiliar para convertir de forma segura objetos minificados de Supabase
+        Map<String, dynamic> safeConvert(dynamic data) {
+          if (data is Map<String, dynamic>) {
+            return data;
+          } else if (data is Map) {
+            final result = <String, dynamic>{};
+            data.forEach((key, value) {
+              result[key.toString()] = value;
+            });
+            return result;
+          } else {
+            try {
+              final map = data as Map;
+              final result = <String, dynamic>{};
+              map.forEach((key, value) {
+                result[key.toString()] = value;
+              });
+              return result;
+            } catch (e) {
+              return <String, dynamic>{};
+            }
+          }
+        }
+
+        // Convertir de forma segura
+        final anteprojectMap = safeConvert(anteprojectData);
+        anteprojectMap.remove('anteproject_students');
+
+        // Si el mapa está vacío, excluir este anteproyecto
+        if (anteprojectMap.isEmpty) {
+          return false;
+        }
+
+        final anteproject = Anteproject.fromJson(anteprojectMap);
+        return anteproject.status == AnteprojectStatus.approved ||
+            anteproject.status == AnteprojectStatus.rejected;
+      } catch (e) {
+        debugPrint('Error parseando anteproyecto en _reviewedAnteprojects: $e');
+        debugPrint('   Tipo del dato: ${anteprojectData.runtimeType}');
+        return false;
+      }
     }).toList();
   }
 
@@ -130,8 +278,50 @@ class _TutorDashboardState extends State<TutorDashboard> {
     }
 
     // Añadir años de anteproyectos
-    for (final anteproject in _anteprojects) {
-      years.add(anteproject.academicYear);
+    for (final anteprojectData in _anteprojectsData) {
+      try {
+        // Función auxiliar para convertir de forma segura objetos minificados de Supabase
+        Map<String, dynamic> safeConvert(dynamic data) {
+          if (data is Map<String, dynamic>) {
+            return data;
+          } else if (data is Map) {
+            final result = <String, dynamic>{};
+            data.forEach((key, value) {
+              result[key.toString()] = value;
+            });
+            return result;
+          } else {
+            try {
+              final map = data as Map;
+              final result = <String, dynamic>{};
+              map.forEach((key, value) {
+                result[key.toString()] = value;
+              });
+              return result;
+            } catch (e) {
+              return <String, dynamic>{};
+            }
+          }
+        }
+
+        // Convertir de forma segura
+        final anteprojectMap = safeConvert(anteprojectData);
+        anteprojectMap.remove('anteproject_students');
+
+        // Si el mapa está vacío, saltar este anteproyecto
+        if (anteprojectMap.isEmpty) {
+          continue;
+        }
+
+        final anteproject = Anteproject.fromJson(anteprojectMap);
+        years.add(anteproject.academicYear);
+      } catch (e) {
+        debugPrint(
+          'Error parseando anteproyecto en _availableAcademicYears: $e',
+        );
+        debugPrint('   Tipo del dato: ${anteprojectData.runtimeType}');
+        // Continuar con el siguiente anteproyecto
+      }
     }
 
     // Si no hay años, usar el año actual por defecto
@@ -422,45 +612,22 @@ class _TutorDashboardState extends State<TutorDashboard> {
   // Logout ahora gestionado por AppTopBar
 
   void _navigateToApprovalWorkflow() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => BlocProvider(
-          create: (context) => ApprovalBloc(),
-          child: const ApprovalScreen(),
-        ),
-      ),
-    );
+    // Usar la ruta del router para navegación consistente
+    context.go('/approval-workflow', extra: widget.user);
   }
 
   void _reviewAnteprojects() {
-    Navigator.of(context)
-        .push(
-          MaterialPageRoute(
-            builder: (context) =>
-                const AnteprojectsReviewScreen(initialFilter: 'pending'),
-          ),
-        )
-        .then((_) => _loadData()); // Recargar datos al volver
+    // Navegar a la pantalla de anteproyectos (se abrirá con todos los filtros disponibles)
+    context.go('/anteprojects', extra: widget.user);
   }
 
   void _viewAllAnteprojects() {
-    Navigator.of(context)
-        .push(
-          MaterialPageRoute(
-            builder: (context) =>
-                const AnteprojectsReviewScreen(initialFilter: 'reviewed'),
-          ),
-        )
-        .then((_) => _loadData()); // Recargar datos al volver
+    // Navegar a la pantalla de anteproyectos (se abrirá con todos los filtros disponibles)
+    context.go('/anteprojects', extra: widget.user);
   }
 
   void _viewAllStudents() {
-    Navigator.of(context)
-        .push(
-          MaterialPageRoute(
-            builder: (context) => StudentListScreen(tutorId: widget.user.id),
-          ),
-        )
-        .then((_) => _loadData()); // Recargar datos al volver
+    // Navegar a la pantalla de mis estudiantes
+    context.go('/students', extra: widget.user);
   }
 }

@@ -19,13 +19,19 @@ class AppConfig {
   static const String inbucketUrl = 'https://resend.com/emails';
   static const String storageUrl =
       'https://zkririyknhlwoxhsoqih.supabase.co/storage/v1/s3';
+  
+  // URLs de guías de usuario en GitHub (raw content)
+  // Las guías se cargan dinámicamente desde el repositorio de GitHub
+  // Nota: Si las guías están en la rama 'develop', cambiar 'main' por 'develop'
+  static const String githubGuidesBaseUrl =
+      'https://raw.githubusercontent.com/elmosca/proyecto_flutter_supabase/develop/docs/guias_usuario';
 
-  // Credenciales de prueba
+  // Credenciales de prueba - Solo del dominio jualas.es
   static const Map<String, String> testCredentials = {
-    'student': 'student.test@alumno.cifpcarlos3.es',
-    'tutor': 'tutor.test@cifpcarlos3.es',
+    'student': 'laura.sanchez@jualas.es',
+    'tutor': 'jualas@jualas.es',
     'admin': 'admin@jualas.es',
-    'student_password': 'password123',
+    'student_password': 'EzmvfdQmijMa', // Contraseña temporal de Laura Sánchez
     'tutor_password': 'password123',
     'admin_password': 'password123',
   };

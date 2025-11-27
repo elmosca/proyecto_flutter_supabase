@@ -5,6 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../services/files_service.dart';
 import '../../services/permissions_service.dart';
 import '../../l10n/app_localizations.dart';
+import '../../utils/app_exception.dart';
 
 class FileUploadWidget extends StatefulWidget {
   final String attachableType;
@@ -73,9 +74,13 @@ class _FileUploadWidgetState extends State<FileUploadWidget> {
           throw Exception('Tipo de archivo no permitido');
         }
 
-        // Validar tamaño (máximo 50MB)
+        // Validar tamaño (máximo 10MB)
         if (!_filesService.isValidFileSize(file.size)) {
-          throw Exception('El archivo excede el tamaño máximo de 50MB');
+          final fileSizeMB = (file.size / (1024 * 1024)).toStringAsFixed(2);
+          throw Exception(
+            'El archivo ($fileSizeMB MB) excede el tamaño máximo permitido de 10MB. '
+            'Por favor, comprime el archivo o selecciona uno más pequeño.',
+          );
         }
 
         setState(() {
@@ -132,10 +137,39 @@ class _FileUploadWidgetState extends State<FileUploadWidget> {
     } catch (e) {
       if (mounted) {
         setState(() => _isUploading = false);
+        
+        // Extraer mensaje de error más amigable
+        String errorMessage;
+        if (e is FileException) {
+          // Si es una FileException, usar el mensaje técnico que ya está formateado
+          errorMessage = e.technicalMessage ?? e.debugMessage;
+        } else if (e.toString().contains('exceeded') || 
+                   e.toString().contains('excede') ||
+                   e.toString().contains('too large') ||
+                   e.toString().contains('muy grande')) {
+          // Detectar errores de tamaño y formatear mensaje
+          final fileSizeMB = _selectedFileBytes != null 
+              ? (_selectedFileBytes!.length / (1024 * 1024)).toStringAsFixed(2)
+              : 'desconocido';
+          errorMessage = 'El archivo ($fileSizeMB MB) excede el tamaño máximo permitido de 10MB. '
+              'Por favor, comprime el archivo o selecciona uno más pequeño.';
+        } else {
+          // Para otros errores, mostrar el mensaje original
+          errorMessage = e.toString().replaceAll('Exception: ', '');
+        }
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error al subir archivo: $e'),
+            content: Text(errorMessage),
             backgroundColor: Colors.red,
+            duration: const Duration(seconds: 5),
+            action: SnackBarAction(
+              label: 'Cerrar',
+              textColor: Colors.white,
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+            ),
           ),
         );
       }
@@ -273,7 +307,7 @@ class _FileUploadWidgetState extends State<FileUploadWidget> {
                         textAlign: TextAlign.center,
                       ),
                       Text(
-                        '${l10n.maxFileSize}: 50MB',
+                        '${l10n.maxFileSize}: 10MB',
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: theme.colorScheme.onSurfaceVariant,
                         ),

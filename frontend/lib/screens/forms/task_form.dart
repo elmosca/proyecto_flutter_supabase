@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../blocs/auth_bloc.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/task.dart';
 import '../../models/project.dart';
+import '../../models/user.dart';
 import '../../blocs/tasks_bloc.dart';
 import '../../services/projects_service.dart';
 import '../../utils/task_localizations.dart';
 import '../../utils/validators.dart';
+import '../../widgets/navigation/app_bar_actions.dart';
 
 class TaskForm extends StatefulWidget {
   final int? projectId;
@@ -32,16 +35,27 @@ class _TaskFormState extends State<TaskForm> {
 
   // El proyecto ya está seleccionado previamente
   Project? _selectedProject;
+  User? _currentUser;
 
   bool get _isEditing => widget.task != null;
 
   @override
   void initState() {
     super.initState();
+    _loadCurrentUser();
     debugPrint('🔍 TaskForm inicializado con projectId: ${widget.projectId}');
     _initializeProject();
     if (_isEditing) {
       _initializeFormWithTask();
+    }
+  }
+
+  Future<void> _loadCurrentUser() async {
+    final authState = context.read<AuthBloc>().state;
+    if (authState is AuthAuthenticated) {
+      setState(() {
+        _currentUser = authState.user;
+      });
     }
   }
 
@@ -87,13 +101,25 @@ class _TaskFormState extends State<TaskForm> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_isEditing ? l10n.taskEditFormTitle : l10n.taskFormTitle),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.save),
-            onPressed: _saveTask,
-            tooltip: _isEditing ? l10n.taskUpdateButton : l10n.taskCreateButton,
-          ),
-        ],
+        actions: _currentUser != null
+            ? AppBarActions.build(
+                context,
+                _currentUser!,
+                additionalActions: [
+                  IconButton(
+                    icon: const Icon(Icons.save),
+                    onPressed: _saveTask,
+                    tooltip: _isEditing ? l10n.taskUpdateButton : l10n.taskCreateButton,
+                  ),
+                ],
+              )
+            : [
+                IconButton(
+                  icon: const Icon(Icons.save),
+                  onPressed: _saveTask,
+                  tooltip: _isEditing ? l10n.taskUpdateButton : l10n.taskCreateButton,
+                ),
+              ],
       ),
       body: BlocListener<TasksBloc, TasksState>(
         listener: (context, state) {
@@ -316,8 +342,11 @@ class _TaskFormState extends State<TaskForm> {
       return;
     }
 
+    // Obtener el projectId: si estamos editando, usar el de la tarea si no se proporciona uno
+    final effectiveProjectId = widget.projectId ?? widget.task?.projectId;
+    
     // Validar que se haya proporcionado un projectId
-    if (widget.projectId == null) {
+    if (effectiveProjectId == null) {
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -339,7 +368,7 @@ class _TaskFormState extends State<TaskForm> {
         ? int.tryParse(_estimatedHoursController.text)
         : null;
 
-    debugPrint('🔍 Guardando tarea con projectId: ${widget.projectId}');
+    debugPrint('🔍 Guardando tarea con projectId: $effectiveProjectId');
 
     if (_isEditing) {
       final updatedTask = widget.task!.copyWith(
@@ -347,7 +376,7 @@ class _TaskFormState extends State<TaskForm> {
         description: _descriptionController.text,
         status: _selectedStatus,
         complexity: _selectedComplexity,
-        projectId: widget.projectId!, // Usar el projectId pasado como parámetro
+        projectId: effectiveProjectId, // Usar el projectId efectivo
         dueDate: _selectedDueDate,
         estimatedHours: estimatedHours,
         tags: tags,
@@ -358,7 +387,7 @@ class _TaskFormState extends State<TaskForm> {
     } else {
       final newTask = Task(
         id: 0, // Se asignará en el backend
-        projectId: widget.projectId!, // Usar el projectId pasado como parámetro
+        projectId: effectiveProjectId, // Usar el projectId efectivo
         title: _titleController.text,
         description: _descriptionController.text,
         status: _selectedStatus,

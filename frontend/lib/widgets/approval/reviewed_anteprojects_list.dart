@@ -6,7 +6,7 @@ import '../../l10n/app_localizations.dart';
 import 'anteproject_approval_card.dart';
 
 class ReviewedAnteprojectsList extends StatelessWidget {
-  final List<Anteproject> anteprojects;
+  final List<Map<String, dynamic>> anteprojects;
 
   const ReviewedAnteprojectsList({
     super.key,
@@ -91,11 +91,11 @@ class ReviewedAnteprojectsList extends StatelessWidget {
               child: ListView.builder(
                 itemCount: anteprojects.length,
                 itemBuilder: (context, index) {
-                  final anteproject = anteprojects[index];
+                  final anteprojectData = anteprojects[index];
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: AnteprojectApprovalCard(
-                      anteproject: anteproject,
+                      anteprojectData: anteprojectData,
                       showActions: false, // No mostrar acciones para anteproyectos ya revisados
                     ),
                   );

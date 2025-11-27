@@ -9,6 +9,7 @@ import '../../services/tasks_service.dart';
 import '../../services/comments_service.dart';
 import '../../widgets/comments/comments_widget.dart';
 import '../../widgets/files/file_list_widget.dart';
+import '../../widgets/navigation/app_bar_actions.dart';
 import '../../utils/task_localizations.dart';
 
 class TaskDetailScreen extends StatefulWidget {
@@ -26,6 +27,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
   late Task _currentTask;
   bool _isEditingDescription = false;
   late TextEditingController _descriptionController;
+  User? _currentUser;
 
   @override
   void initState() {
@@ -35,6 +37,16 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
     _descriptionController = TextEditingController(
       text: _currentTask.description,
     );
+    _loadCurrentUser();
+  }
+
+  Future<void> _loadCurrentUser() async {
+    final authState = context.read<AuthBloc>().state;
+    if (authState is AuthAuthenticated) {
+      setState(() {
+        _currentUser = authState.user;
+      });
+    }
   }
 
   @override
@@ -68,6 +80,9 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
         title: Text(l10n.taskDetails),
         backgroundColor: theme.colorScheme.primary,
         foregroundColor: theme.colorScheme.onPrimary,
+        actions: _currentUser != null
+            ? AppBarActions.standard(context, _currentUser!)
+            : null,
         bottom: TabBar(
           controller: _tabController,
           indicatorColor: theme.colorScheme.onPrimary,

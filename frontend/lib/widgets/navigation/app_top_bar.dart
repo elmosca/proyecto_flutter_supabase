@@ -7,6 +7,7 @@ import '../notifications/notifications_bell.dart';
 import '../common/language_selector.dart';
 import '../../router/app_router.dart';
 import '../../themes/role_themes.dart';
+import 'messages_button.dart';
 
 class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
   final User user;
@@ -61,14 +62,8 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         const LanguageSelectorAppBar(),
-        if (showNotifications)
-          NotificationsBell(
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const _NotificationsScreenLazy(),
-              ),
-            ),
-          ),
+        if (showNotifications) NotificationsBell(user: user),
+        MessagesButton(user: user),
         ...?actions,
         IconButton(
           icon: const Icon(Icons.logout),
@@ -88,6 +83,8 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
         return l10n.dashboardTutor;
       case 'dashboardAdmin':
         return l10n.dashboardAdmin;
+      case 'dashboard':
+        return l10n.dashboard;
       case 'projects':
         return l10n.projects;
       case 'anteprojects':
@@ -98,17 +95,24 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
         return l10n.kanbanBoard;
       case 'notifications':
         return l10n.notifications;
+      case 'conversations':
+        return l10n.conversations;
+      case 'approvalWorkflow':
+        return l10n.approvalWorkflow;
+      case 'myStudents':
+        return l10n.myStudents;
+      case 'dashboardAdminUsersManagement':
+        return l10n.dashboardAdminUsersManagement;
+      case 'settings':
+        return l10n.systemSettings;
+      case 'help':
+        return l10n.helpGuide;
+      case 'tutorMessages':
+        return l10n.tutorMessages;
+      case 'studentMessages':
+        return l10n.studentMessages;
       default:
         return l10n.dashboard;
     }
-  }
-}
-
-class _NotificationsScreenLazy extends StatelessWidget {
-  const _NotificationsScreenLazy();
-
-  @override
-  Widget build(BuildContext context) {
-    return const SizedBox.shrink();
   }
 }

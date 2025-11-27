@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../models/anteproject.dart';
 import '../../models/project.dart';
 import '../../models/user.dart';
 import '../../services/anteprojects_service.dart';

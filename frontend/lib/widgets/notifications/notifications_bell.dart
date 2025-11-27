@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:go_router/go_router.dart';
 import '../../services/notifications_service.dart';
+import '../../models/user.dart';
+import '../../l10n/app_localizations.dart';
 
 class NotificationsBell extends StatefulWidget {
   final VoidCallback? onTap;
+  final User? user;
 
-  const NotificationsBell({super.key, this.onTap});
+  const NotificationsBell({super.key, this.onTap, this.user});
 
   @override
   State<NotificationsBell> createState() => _NotificationsBellState();
@@ -64,6 +68,7 @@ class _NotificationsBellState extends State<NotificationsBell> {
       return const SizedBox.shrink();
     }
 
+    final l10n = AppLocalizations.of(context)!;
     return Stack(
       children: [
         IconButton(
@@ -74,8 +79,14 @@ class _NotificationsBellState extends State<NotificationsBell> {
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
               : const Icon(Icons.notifications_outlined),
-          onPressed: widget.onTap,
-          tooltip: 'Notificaciones',
+          onPressed: () {
+            if (widget.onTap != null) {
+              widget.onTap!();
+            } else if (widget.user != null) {
+              context.go('/notifications', extra: widget.user);
+            }
+          },
+          tooltip: l10n.notifications,
         ),
         if (_unreadCount > 0)
           Positioned(

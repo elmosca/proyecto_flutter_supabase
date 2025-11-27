@@ -3,6 +3,23 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'user.g.dart';
 
+/// Modelo que representa al usuario de la aplicación.
+///
+/// Mapea a la tabla `users` de la base de datos y contiene información de
+/// identidad, contacto, rol, estado y metadatos de creación/actualización.
+///
+/// Ejemplo JSON:
+/// ```json
+/// {
+///   "id": 1,
+///   "full_name": "Ada Lovelace",
+///   "email": "ada@example.com",
+///   "role": "student",
+///   "status": "active",
+///   "created_at": "2025-01-01T00:00:00Z",
+///   "updated_at": "2025-01-10T12:00:00Z"
+/// }
+/// ```
 @JsonSerializable()
 class User {
   final int id;
@@ -44,8 +61,29 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     try {
+      // Conversión robusta del ID
+      int parseId(dynamic idValue) {
+        if (idValue == null) {
+          throw ArgumentError('ID no puede ser null');
+        }
+        if (idValue is int) return idValue;
+        if (idValue is num) return idValue.toInt();
+        final parsed = int.tryParse(idValue.toString());
+        if (parsed != null) return parsed;
+        throw ArgumentError('No se pudo convertir ID a int: $idValue (tipo: ${idValue.runtimeType})');
+      }
+      
+      // Conversión robusta del tutor_id
+      int? parseTutorId(dynamic tutorIdValue) {
+        if (tutorIdValue == null) return null;
+        if (tutorIdValue is int) return tutorIdValue;
+        if (tutorIdValue is num) return tutorIdValue.toInt();
+        final parsed = int.tryParse(tutorIdValue.toString());
+        return parsed;
+      }
+      
       return User(
-        id: (json['id'] as num).toInt(),
+        id: parseId(json['id']),
         fullName: json['full_name'] as String? ?? '',
         email: json['email'] as String? ?? '',
         nre: json['nre'] as String?,
@@ -60,12 +98,12 @@ class User {
           orElse: () => UserStatus.active,
         ),
         specialty: json['specialty'] as String?,
-        tutorId: json['tutor_id'] != null ? (json['tutor_id'] as num).toInt() : null,
+        tutorId: parseTutorId(json['tutor_id']),
         academicYear: json['academic_year'] as String?,
-        createdAt: json['created_at'] != null 
+        createdAt: json['created_at'] != null
             ? DateTime.parse(json['created_at'] as String)
             : DateTime.now(),
-        updatedAt: json['updated_at'] != null 
+        updatedAt: json['updated_at'] != null
             ? DateTime.parse(json['updated_at'] as String)
             : DateTime.now(),
       );
@@ -125,17 +163,25 @@ class User {
 }
 
 enum UserRole {
+  /// Administrador del sistema.
   @JsonValue('admin')
   admin,
+
+  /// Tutor docente.
   @JsonValue('tutor')
   tutor,
+
+  /// Estudiante.
   @JsonValue('student')
   student,
 }
 
 enum UserStatus {
+  /// Usuario activo.
   @JsonValue('active')
   active,
+
+  /// Usuario inactivo.
   @JsonValue('inactive')
   inactive,
 }
