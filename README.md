@@ -3,9 +3,9 @@
 
 ## 📊 **ESTADO ACTUAL DEL PROYECTO**
 
-**Fecha de actualización**: 7 de septiembre de 2025 (MVP 100% COMPLETADO)  
-**Progreso general**: 100% completado  
-**Estado**: 🟢 **MVP COMPLETAMENTE FUNCIONAL**
+**Fecha de actualización**: 29 de noviembre de 2025
+**Progreso general**: 100% completado (Fase de Mantenimiento y Optimización)
+**Estado**: 🟢 **MVP COMPLETAMENTE FUNCIONAL** - Sincronizado con rama de desarrollo
 
 ### **Backend**: ✅ **100% COMPLETADO**
 - ✅ Modelo de datos completo (19 tablas)
@@ -38,19 +38,6 @@
 ---
 
 ## 🎯 **DESCRIPCIÓN DEL PROYECTO**
-
-Sistema de gestión colaborativa para Trabajos de Fin de Grado (TFG) del ciclo formativo de Desarrollo de Aplicaciones Multiplataforma (DAM). Permite a estudiantes, tutores y administradores gestionar el ciclo completo de un TFG, desde la propuesta del anteproyecto hasta la entrega final.
-
-### **Características Principales:**
-- 🔐 **Autenticación por roles** (estudiante/tutor/admin)
-- 📋 **Gestión de anteproyectos** con flujo de aprobación
-- 📊 **Tablero Kanban** para gestión de tareas
-- 💬 **Sistema de comentarios** en tiempo real
-- 📁 **Subida de archivos** por tarea
-- 🔔 **Notificaciones** automáticas
-- 📱 **Multiplataforma** (Web, Android, iOS, Escritorio)
-
----
 
 ## 🏗️ **ARQUITECTURA TÉCNICA**
 
@@ -129,7 +116,7 @@ flutter run -d chrome
 
 ## 📁 **ESTRUCTURA DEL PROYECTO**
 
-```
+```text
 proyecto_flutter_supabase/
 ├── docs/
 │   ├── arquitectura/           # Especificaciones técnicas
@@ -150,6 +137,30 @@ proyecto_flutter_supabase/
 │   └── pubspec.yaml           # Dependencias
 └── README.md                   # Este archivo
 ```
+
+```
+
+---
+
+## 🌿 **CONTROL DE VERSIONES Y RAMAS**
+
+El proyecto sigue una estrategia de ramas estructurada para garantizar la estabilidad y el desarrollo continuo:
+
+### **Ramas Activas**
+
+1.  **`main`** (Producción/Estable)
+    *   **Propósito**: Contiene la versión estable y probada del código.
+    *   **Estado**: Sincronizada recientemente con `develop` (Noviembre 2025).
+    *   **Uso**: Despliegues y demostraciones finales.
+
+2.  **`develop`** (Desarrollo)
+    *   **Propósito**: Rama principal de integración para nuevas funcionalidades.
+    *   **Estado**: Fuente de verdad para el trabajo en curso.
+    *   **Flujo**: Las nuevas características se integran aquí antes de pasar a `main`.
+
+3.  **`backup-supabase-local`** (Respaldo)
+    *   **Propósito**: Preservar la configuración local específica de Supabase.
+    *   **Uso**: Referencia para configuraciones de entorno local y migraciones específicas.
 
 ---
 
@@ -326,20 +337,6 @@ flutter build web
 
 ### **✅ COMPLETADO (30 agosto - 6 septiembre)**
 1. **✅ Corregir tests de dashboard** (problema de renderizado de imágenes grandes)
-2. **✅ Implementar formularios de tareas** (TaskForm)
-3. **✅ Crear lista de tareas** (TasksList)
-4. **✅ Implementar tablero Kanban** básico
-
-### **✅ COMPLETADO (6-12 septiembre)**
-1. **✅ Completar tablero Kanban** con drag & drop
-2. **✅ Implementar flujos de trabajo** (aprobación, asignación)
-3. **✅ Crear sistema de comentarios**
-
-### **✅ COMPLETADO (13-19 septiembre)**
-1. **✅ Testing completo** y corrección de bugs
-2. **✅ Optimización de rendimiento**
-3. **✅ Preparación para despliegue**
-
 ---
 
 ## 🚨 **ESTADO DE DESARROLLO**
@@ -439,6 +436,6 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para
 
 ---
 
-**Fecha de actualización**: 7 de septiembre de 2025  
-**Versión**: 1.0.0-beta  
-**Estado**: 🟢 **MVP PRÁCTICAMENTE COMPLETADO**
+**Fecha de actualización**: 29 de noviembre de 2025
+**Versión**: 1.1.0
+**Estado**: 🟢 **MVP COMPLETADO Y ESTABILIZADO**
