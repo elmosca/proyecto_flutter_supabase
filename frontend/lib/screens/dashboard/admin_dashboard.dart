@@ -421,9 +421,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   ],
                 ),
                 const SizedBox(height: 8),
-                const Text(
+                Text(
                   'URL: ${AppConfig.supabaseStudioUrl}',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 12,
                     color: Colors.grey,
                     fontFamily: 'monospace',
