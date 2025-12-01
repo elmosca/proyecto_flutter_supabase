@@ -32,11 +32,17 @@ supabase/.temp/
 
 # Flutter común
 **/build/
+**/dist/
 **/.dart_tool/
 **/.packages
 **/.flutter-plugins
 **/.flutter-plugins-dependencies
 **/.metadata
+
+# Builds y distribuciones compiladas
+**/*-build.zip
+**/*.zip
+!**/ejemplos_csv/*.csv
 
 # Flutter iOS
 **/ios/Pods/
