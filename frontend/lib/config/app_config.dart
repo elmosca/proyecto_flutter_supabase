@@ -1,19 +1,43 @@
 import 'package:flutter/foundation.dart';
+// Importar configuración local (puede tener valores reales o placeholders)
+// En GitHub: valores placeholder
+// Localmente: el desarrollador puede sobrescribir con valores reales
+import 'app_config_local.dart' as local;
 
 /// Configuración simplificada de la aplicación
+///
+/// Las credenciales de Supabase se cargan desde app_config_local.dart si existe.
+/// Si no existe (en GitHub), se usan valores placeholder seguros.
+///
+/// Para desarrollo local:
+/// 1. Copia app_config_template.dart a app_config_local.dart
+/// 2. Completa con tus credenciales reales de Supabase
 class AppConfig {
   // Configuración de Supabase
-  // IMPORTANTE: Estos valores son para desarrollo local.
-  // Para producción, usa variables de entorno:
-  // flutter run --dart-define=SUPABASE_URL=tu_url --dart-define=SUPABASE_ANON_KEY=tu_key
-  static const String supabaseUrl = String.fromEnvironment(
-    'SUPABASE_URL',
-    defaultValue: 'https://zkririyknhlwoxhsoqih.supabase.co',
-  );
-  static const String supabaseAnonKey = String.fromEnvironment(
-    'SUPABASE_ANON_KEY',
-    defaultValue: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InprcmlyaXlrbmhsd294aHNvcWloIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY0MDkxNjUsImV4cCI6MjA3MTk4NTE2NX0.N9egQFLIqsYdbpjOeSELNiHy5G5RWqa0JY5luZWNBJg',
-  );
+  // Prioridad: 1) Variables de entorno, 2) app_config_local.dart
+  //
+  // NOTA: app_config_local.dart existe en GitHub con valores placeholder.
+  // Para desarrollo local, modifica ese archivo con tus credenciales reales.
+  static String get supabaseUrl {
+    // Primero intentar variables de entorno (para CI/CD)
+    const envUrl = String.fromEnvironment('SUPABASE_URL', defaultValue: '');
+    if (envUrl.isNotEmpty) return envUrl;
+
+    // Usar configuración local (puede tener valores reales o placeholder)
+    return local.AppConfigLocal.supabaseUrl;
+  }
+
+  static String get supabaseAnonKey {
+    // Primero intentar variables de entorno (para CI/CD)
+    const envKey = String.fromEnvironment(
+      'SUPABASE_ANON_KEY',
+      defaultValue: '',
+    );
+    if (envKey.isNotEmpty) return envKey;
+
+    // Usar configuración local (puede tener valores reales o placeholder)
+    return local.AppConfigLocal.supabaseAnonKey;
+  }
 
   // Información de la aplicación
   static const String appName = 'TFG Sistema Multiplataforma';
@@ -22,12 +46,12 @@ class AppConfig {
   static const String platformName = 'Flutter Web';
 
   // URLs de servicios externos
-  static const String supabaseStudioUrl =
-      'https://supabase.com/dashboard/project/zkririyknhlwoxhsoqih';
+  static String get supabaseStudioUrl => local.AppConfigLocal.supabaseStudioUrl;
+
   static const String inbucketUrl = 'https://resend.com/emails';
-  static const String storageUrl =
-      'https://zkririyknhlwoxhsoqih.supabase.co/storage/v1/s3';
-  
+
+  static String get storageUrl => local.AppConfigLocal.storageUrl;
+
   // URLs de guías de usuario en GitHub (raw content)
   // Las guías se cargan dinámicamente desde el repositorio de GitHub
   // Nota: Si las guías están en la rama 'develop', cambiar 'main' por 'develop'

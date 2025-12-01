@@ -71,3 +71,8 @@ scripts/setup-mcp-*.ps1
 scripts/setup-mcp-*.sh
 docs/mcp-server/
 
+# Configuración local con credenciales reales de Supabase
+# Nota: El archivo existe en el repo con valores placeholder,
+# pero los cambios locales (con credenciales reales) no se suben
+# frontend/lib/config/app_config_local.dart
+
