@@ -72,7 +72,9 @@ scripts/setup-mcp-*.sh
 docs/mcp-server/
 
 # Configuración local con credenciales reales de Supabase
-# Nota: El archivo existe en el repo con valores placeholder,
-# pero los cambios locales (con credenciales reales) no se suben
-# frontend/lib/config/app_config_local.dart
+# Este archivo NO se sube a GitHub, cada desarrollador crea el suyo desde app_config_template.dart
+frontend/lib/config/app_config_local.dart
+
+# Backup de credenciales (ya no necesario, pero por si acaso)
+.git/credentials_backup.json
 
