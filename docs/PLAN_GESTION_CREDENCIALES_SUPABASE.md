@@ -9,7 +9,7 @@ Mover las credenciales de Supabase (URL y Anon Key) fuera del código fuente par
 ## 🎯 Estado Actual
 
 ### ❌ Problema Actual
-- Las credenciales de Supabase están **hardcodeadas** en `frontend/lib/config/app_config.dart`:
+- Las credenciales de Supabase estaban **hardcodeadas** en `frontend/lib/config/app_config.dart`:
   - `supabaseUrl`: `https://TU_PROYECTO_ID.supabase.co`
   - `supabaseAnonKey`: JWT token completo
 - Estas credenciales aparecen en el código y se suben a GitHub
@@ -100,7 +100,7 @@ frontend/lib/config/
 class AppConfigLocal {
   // Credenciales reales de Supabase
   static const String supabaseUrl = 'https://TU_PROYECTO_ID.supabase.co';
-  static const String supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
+  static const String supabaseAnonKey = 'TU_ANON_KEY_AQUI';
   
   // URLs de servicios
   static const String supabaseStudioUrl = 'https://supabase.com/dashboard/project/TU_PROYECTO_ID';
