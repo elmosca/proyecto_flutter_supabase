@@ -4,7 +4,7 @@
 
 **Service Role Key expuesta:**
 ```
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InprcmlyaXlrbmhsd294aHNvcWloIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NjQwOTE2NSwiZXhwIjoyMDcxOTg1MTY1fQ.fPkjQkJHx8q30eMIYcMflqKYmtZ4d2e22cHOwHBGhcA
+[CLAVE_REMOVIDA_POR_SEGURIDAD]
 ```
 
 ## 📍 Ubicaciones en el Historial
@@ -32,7 +32,7 @@ Para eliminar esta clave del historial completo:
 1. **Usar BFG Repo-Cleaner** (recomendado):
    ```powershell
    # Crear archivo replace.txt
-   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InprcmlyaXlrbmhsd294aHNvcWloIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NjQwOTE2NSwiZXhwIjoyMDcxOTg1MTY1fQ.fPkjQkJHx8q30eMIYcMflqKYmtZ4d2e22cHOwHBGhcA==>REMOVIDO_POR_SEGURIDAD" | Out-File -FilePath replace.txt -Encoding UTF8
+   "[CLAVE_REMOVIDA_POR_SEGURIDAD]==>REMOVIDO_POR_SEGURIDAD" | Out-File -FilePath replace.txt -Encoding UTF8
    
    # Ejecutar BFG
    java -jar bfg.jar --replace-text replace.txt
@@ -48,7 +48,7 @@ Para eliminar esta clave del historial completo:
 
 2. **O usar el script automatizado**:
    ```powershell
-   .\scripts\eliminar-service-role-key-historial.ps1 -ServiceRoleKey "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InprcmlyaXlrbmhsd294aHNvcWloIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NjQwOTE2NSwiZXhwIjoyMDcxOTg1MTY1fQ.fPkjQkJHx8q30eMIYcMflqKYmtZ4d2e22cHOwHBGhcA"
+   .\scripts\eliminar-service-role-key-historial.ps1 -ServiceRoleKey "[CLAVE_REMOVIDA_POR_SEGURIDAD]"
    ```
 
 ## ⚠️ Nota Importante
