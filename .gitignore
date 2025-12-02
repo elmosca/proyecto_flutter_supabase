@@ -78,3 +78,6 @@ frontend/lib/config/app_config_local.dart
 # Backup de credenciales (ya no necesario, pero por si acaso)
 .git/credentials_backup.json
 
+
+# Wiki temporal directory
+wiki_setup/wiki_temp/
