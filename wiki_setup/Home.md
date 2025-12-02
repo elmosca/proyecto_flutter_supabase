@@ -54,10 +54,10 @@ Selecciona tu rol para acceder a la guía correspondiente:
 
 Para desarrolladores y personal técnico:
 
-- 🔐 [**Arquitectura de Autenticación**](Arquitectura-Autenticacion) - Sistema de login y roles
-- 📝 [**Registro de Usuarios por Roles**](Registro-Usuarios) - Lógica de registro (no implementado)
-- 🚀 [**Guía de Despliegue VPS Debian**](Guia-Despliegue) - Instalación y configuración
-- 🏗️ [**Arquitectura del Sistema**](Arquitectura-Sistema) - Visión técnica general
+- 🏗️ [**01. Arquitectura**](01-Arquitectura) - Arquitectura y especificación funcional
+- 🗄️ [**02. Base de Datos**](02-Base-de-Datos) - Modelo de datos y migraciones
+- 🛠️ [**03. Guía de Desarrollo**](03-Guia-Desarrollo) - Configuración y desarrollo
+- 📁 [**04. Estructura de Código**](04-Estructura-Codigo) - Organización del frontend
 
 ---
 
@@ -69,7 +69,7 @@ Para desarrolladores y personal técnico:
 2. Consulta las **[Preguntas Frecuentes (FAQ)](FAQ)**
 3. Revisa la **[Guía de Inicio Rápido](Guia-Inicio-Rapido)**
 4. Contacta a tu **tutor o administrador**
-5. Reporta un problema en **[Issues](https://github.com/USUARIO/REPO/issues)**
+5. Reporta un problema en **[Issues](https://github.com/elmosca/proyecto_flutter_supabase/issues)**
 
 ### 📞 Canales de Soporte
 
@@ -149,7 +149,7 @@ Para desarrolladores y personal técnico:
 
 ¿Encontraste útil esta documentación? ¿Tienes sugerencias de mejora?
 
-- Deja tus comentarios en [Issues](https://github.com/USUARIO/REPO/issues)
+- Deja tus comentarios en [Issues](https://github.com/elmosca/proyecto_flutter_supabase/issues)
 - Contacta al equipo de desarrollo
 
 ---

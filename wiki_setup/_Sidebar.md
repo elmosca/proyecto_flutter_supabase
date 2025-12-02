@@ -28,9 +28,10 @@
 
 ### 🛠️ Documentación Técnica
 
-- [🔐 Autenticación](Arquitectura-Autenticacion)
-- [📝 Registro de Usuarios](Registro-Usuarios)
-- [🚀 Despliegue VPS](Guia-Despliegue)
+- [🏗️ Arquitectura](01-Arquitectura)
+- [🗄️ Base de Datos](02-Base-de-Datos)
+- [🛠️ Guía de Desarrollo](03-Guia-Desarrollo)
+- [📁 Estructura de Código](04-Estructura-Codigo)
 
 ---
 
@@ -44,9 +45,9 @@
 
 ### 🔗 Enlaces
 
-- [🐛 Reportar Issue](https://github.com/USUARIO/REPO/issues)
-- [💬 Discusiones](https://github.com/USUARIO/REPO/discussions)
-- [📦 Repositorio](https://github.com/USUARIO/REPO)
+- [🐛 Reportar Issue](https://github.com/elmosca/proyecto_flutter_supabase/issues)
+- [💬 Discusiones](https://github.com/elmosca/proyecto_flutter_supabase/discussions)
+- [📦 Repositorio](https://github.com/elmosca/proyecto_flutter_supabase)
 
 ---
 

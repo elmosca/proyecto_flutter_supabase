@@ -19,8 +19,8 @@ NC='\033[0m' # No Color
 # =============================================================================
 
 # ⚠️ IMPORTANTE: Reemplaza estos valores con los de tu repositorio
-REPO_USER="TU_USUARIO_GITHUB"
-REPO_NAME="TU_REPOSITORIO"
+REPO_USER="elmosca"
+REPO_NAME="proyecto_flutter_supabase"
 REPO_WIKI_URL="https://github.com/${REPO_USER}/${REPO_NAME}.wiki.git"
 
 # Directorios
@@ -144,10 +144,17 @@ copy_user_guides() {
     
     cd "$WIKI_DIR"
     
+    # Nota: Las guías de usuario fueron eliminadas en la limpieza de documentación
+    # Si existen en docs/guias_usuario/, se copiarán. Si no, se mantendrán las versiones
+    # que ya están en wiki_setup/ (Guia-Estudiantes.md, etc.)
+    
     # Guía de Estudiantes
     if [ -f "${DOCS_DIR}/guias_usuario/guia_estudiante.md" ]; then
         cp "${DOCS_DIR}/guias_usuario/guia_estudiante.md" Guia-Estudiantes.md
-        print_success "✓ Guía de Estudiantes copiada"
+        print_success "✓ Guía de Estudiantes copiada desde docs/"
+    elif [ -f "../wiki_setup/Guia-Estudiantes.md" ]; then
+        cp "../wiki_setup/Guia-Estudiantes.md" Guia-Estudiantes.md
+        print_success "✓ Guía de Estudiantes copiada desde wiki_setup/"
     else
         print_warning "! Guía de estudiantes no encontrada"
     fi
@@ -155,7 +162,10 @@ copy_user_guides() {
     # Guía de Tutores
     if [ -f "${DOCS_DIR}/guias_usuario/guia_tutor.md" ]; then
         cp "${DOCS_DIR}/guias_usuario/guia_tutor.md" Guia-Tutores.md
-        print_success "✓ Guía de Tutores copiada"
+        print_success "✓ Guía de Tutores copiada desde docs/"
+    elif [ -f "../wiki_setup/Guia-Tutores.md" ]; then
+        cp "../wiki_setup/Guia-Tutores.md" Guia-Tutores.md
+        print_success "✓ Guía de Tutores copiada desde wiki_setup/"
     else
         print_warning "! Guía de tutores no encontrada"
     fi
@@ -163,7 +173,10 @@ copy_user_guides() {
     # Guía de Administradores
     if [ -f "${DOCS_DIR}/guias_usuario/guia_administrador.md" ]; then
         cp "${DOCS_DIR}/guias_usuario/guia_administrador.md" Guia-Administradores.md
-        print_success "✓ Guía de Administradores copiada"
+        print_success "✓ Guía de Administradores copiada desde docs/"
+    elif [ -f "../wiki_setup/Guia-Administradores.md" ]; then
+        cp "../wiki_setup/Guia-Administradores.md" Guia-Administradores.md
+        print_success "✓ Guía de Administradores copiada desde wiki_setup/"
     else
         print_warning "! Guía de administradores no encontrada"
     fi
@@ -177,28 +190,33 @@ copy_technical_docs() {
     
     cd "$WIKI_DIR"
     
-    # Arquitectura de Autenticación
-    if [ -f "${DOCS_DIR}/arquitectura/login.md" ]; then
-        cp "${DOCS_DIR}/arquitectura/login.md" Arquitectura-Autenticacion.md
-        print_success "✓ Arquitectura de Autenticación copiada"
+    # Copiar las 4 guías principales de documentación
+    if [ -f "${DOCS_DIR}/01_ARQUITECTURA.md" ]; then
+        cp "${DOCS_DIR}/01_ARQUITECTURA.md" 01-Arquitectura.md
+        print_success "✓ Arquitectura copiada"
     else
-        print_warning "! Arquitectura de autenticación no encontrada"
+        print_warning "! 01_ARQUITECTURA.md no encontrada"
     fi
     
-    # Registro de Usuarios
-    if [ -f "${DOCS_DIR}/arquitectura/registro_usuarios_por_roles.md" ]; then
-        cp "${DOCS_DIR}/arquitectura/registro_usuarios_por_roles.md" Registro-Usuarios.md
-        print_success "✓ Registro de Usuarios copiado"
+    if [ -f "${DOCS_DIR}/02_BASE_DE_DATOS.md" ]; then
+        cp "${DOCS_DIR}/02_BASE_DE_DATOS.md" 02-Base-de-Datos.md
+        print_success "✓ Base de Datos copiada"
     else
-        print_warning "! Registro de usuarios no encontrado"
+        print_warning "! 02_BASE_DE_DATOS.md no encontrada"
     fi
     
-    # Guía de Despliegue
-    if [ -f "${DOCS_DIR}/despliegue/guia_despliegue_vps_debian.md" ]; then
-        cp "${DOCS_DIR}/despliegue/guia_despliegue_vps_debian.md" Guia-Despliegue.md
-        print_success "✓ Guía de Despliegue copiada"
+    if [ -f "${DOCS_DIR}/03_GUIA_DESARROLLO.md" ]; then
+        cp "${DOCS_DIR}/03_GUIA_DESARROLLO.md" 03-Guia-Desarrollo.md
+        print_success "✓ Guía de Desarrollo copiada"
     else
-        print_warning "! Guía de despliegue no encontrada"
+        print_warning "! 03_GUIA_DESARROLLO.md no encontrada"
+    fi
+    
+    if [ -f "${DOCS_DIR}/04_ESTRUCTURA_CODIGO.md" ]; then
+        cp "${DOCS_DIR}/04_ESTRUCTURA_CODIGO.md" 04-Estructura-Codigo.md
+        print_success "✓ Estructura de Código copiada"
+    else
+        print_warning "! 04_ESTRUCTURA_CODIGO.md no encontrada"
     fi
     
     cd ..
@@ -251,9 +269,10 @@ show_summary() {
     echo "  - 🔵 Guía de Estudiantes"
     echo "  - 🟢 Guía de Tutores"
     echo "  - 🔴 Guía de Administradores"
-    echo "  - 🔐 Arquitectura de Autenticación"
-    echo "  - 📝 Registro de Usuarios"
-    echo "  - 🚀 Guía de Despliegue"
+    echo "  - 🏗️ Arquitectura (01)"
+    echo "  - 🗄️ Base de Datos (02)"
+    echo "  - 🛠️ Guía de Desarrollo (03)"
+    echo "  - 📁 Estructura de Código (04)"
     echo "  - ❓ FAQ"
     echo "  - 🚀 Guía de Inicio Rápido"
     echo ""
