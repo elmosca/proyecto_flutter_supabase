@@ -577,7 +577,7 @@ Para problemas técnicos del sistema:
 
 **¿Cómo obtener soporte?**
 - Contacta al administrador del sistema
-- Reporta en [Issues del proyecto](https://github.com/USUARIO/REPO/issues)
+- Reporta en [Issues del proyecto](https://github.com/elmosca/proyecto_flutter_supabase/issues)
 
 ---
 

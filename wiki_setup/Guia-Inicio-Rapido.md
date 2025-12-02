@@ -322,7 +322,7 @@ Si tienes problemas o preguntas:
 
 4. 💬 **Contacta a tu tutor/administrador**
 
-5. 🐛 **Reporta problemas técnicos** en [Issues](https://github.com/USUARIO/REPO/issues)
+5. 🐛 **Reporta problemas técnicos** en [Issues](https://github.com/elmosca/proyecto_flutter_supabase/issues)
 
 ---
 

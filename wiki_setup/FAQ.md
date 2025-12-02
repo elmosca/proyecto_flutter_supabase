@@ -331,7 +331,7 @@ Sí, la aplicación es **responsive** y funciona en:
 <details>
 <summary><strong>¿Dónde puedo reportar un bug?</strong></summary>
 
-1. Ve a [GitHub Issues](https://github.com/USUARIO/REPO/issues)
+1. Ve a [GitHub Issues](https://github.com/elmosca/proyecto_flutter_supabase/issues)
 2. Haz clic en **"New Issue"**
 3. Describe el problema:
    - ¿Qué estabas haciendo?
@@ -347,8 +347,8 @@ Sí, la aplicación es **responsive** y funciona en:
 
 **Opciones:**
 
-1. **Reporta bugs**: [GitHub Issues](https://github.com/USUARIO/REPO/issues)
-2. **Sugiere mejoras**: [GitHub Discussions](https://github.com/USUARIO/REPO/discussions)
+1. **Reporta bugs**: [GitHub Issues](https://github.com/elmosca/proyecto_flutter_supabase/issues)
+2. **Sugiere mejoras**: [GitHub Discussions](https://github.com/elmosca/proyecto_flutter_supabase/discussions)
 3. **Contribuye código**: Fork + Pull Request
 4. **Mejora documentación**: Edita la wiki
 
@@ -363,7 +363,7 @@ Sí, la aplicación es **responsive** y funciona en:
 
 1. 🔎 **Busca en la wiki** (arriba a la derecha)
 2. 📖 **Lee la guía** de tu rol específico
-3. 💬 **Pregunta en [Discussions](https://github.com/USUARIO/REPO/discussions)**
+3. 💬 **Pregunta en [Discussions](https://github.com/elmosca/proyecto_flutter_supabase/discussions)**
 4. 📧 **Contacta a tu tutor/administrador**
 
 ---
@@ -378,5 +378,5 @@ Sí, la aplicación es **responsive** y funciona en:
 ---
 
 **📅 Última actualización**: Noviembre 2025  
-**❓ ¿Falta algo?**: [Sugiere una pregunta](https://github.com/USUARIO/REPO/discussions)
+**❓ ¿Falta algo?**: [Sugiere una pregunta](https://github.com/elmosca/proyecto_flutter_supabase/discussions)
 
