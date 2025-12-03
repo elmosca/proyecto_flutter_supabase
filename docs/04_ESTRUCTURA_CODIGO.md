@@ -234,9 +234,12 @@ El proyecto utiliza **Edge Functions** de Supabase para lógica de negocio avanz
 
 ### Funciones Disponibles
 
+Las Edge Functions se despliegan en Supabase y se gestionan desde el Dashboard de Supabase.
+
 | Función | Propósito | Ubicación |
 | :--- | :--- | :--- |
 | `send-email` | Envío de notificaciones por email | Supabase Dashboard > Edge Functions |
+| `reset-password` | Restablecimiento de contraseñas | Supabase Dashboard > Edge Functions |
 
 ### Uso de Edge Functions
 

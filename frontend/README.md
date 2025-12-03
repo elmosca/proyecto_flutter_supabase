@@ -34,16 +34,37 @@ Aplicación Flutter para Web, Android y Escritorio. Este README está orientado 
 
 ---
 
-## Configuración (genérica)
-La app espera variables (defínelas con `--dart-define` o en tu gestor de secretos):
+## Configuración
+
+### Variables de Entorno
+
+La aplicación puede usar variables de entorno para conectarse a Supabase. Hay dos formas de configurarlas:
+
+#### Opción 1: Archivo `.env` (Recomendado para desarrollo local)
+
+1. Crea un archivo `.env` en el directorio `frontend/` con tus credenciales:
+   ```bash
+   SUPABASE_URL=https://tu-proyecto.supabase.co
+   SUPABASE_ANON_KEY=tu_anon_key_aqui
+   ```
+
+2. El archivo `.env` NO se sube a GitHub (está en `.gitignore`)
+
+> **Nota**: Actualmente Flutter no lee archivos `.env` directamente. Puedes usar herramientas como `flutter_dotenv` o pasar las variables con `--dart-define` (ver Opción 2).
+
+#### Opción 2: Variables de entorno con `--dart-define`
 
 ```bash
-# Ejemplos (placeholders, no reales):
---dart-define=SUPABASE_URL=https://<TU-PROYECTO>.supabase.co \
---dart-define=SUPABASE_ANON_KEY=<TU_ANON_KEY>
+flutter run -d chrome \
+  --dart-define=SUPABASE_URL=https://tu-proyecto.supabase.co \
+  --dart-define=SUPABASE_ANON_KEY=tu_anon_key
 ```
 
-Nunca incluyas claves reales en el repositorio. Usa entornos/CI para inyectarlas.
+#### Opción 3: Configuración local en código
+
+Si prefieres no usar variables de entorno, puedes editar directamente `lib/config/app_config_local.dart` (ver `app_config_template.dart` como referencia).
+
+> **Importante**: Nunca incluyas claves reales en el repositorio. El archivo `.env` está en `.gitignore` y no se sube a GitHub.
 
 ---
 
