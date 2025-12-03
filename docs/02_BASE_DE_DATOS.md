@@ -11,9 +11,9 @@ El modelo de datos se basa en **PostgreSQL** y está diseñado para soportar la 
 | Entidad | Descripción | Campos Destacados |
 | :--- | :--- | :--- |
 | `users` | Perfiles de usuario. | `full_name`, `email`, `nre` (solo estudiantes), `role` (`admin`, `tutor`, `student`). |
-| `anteprojects` | Propuestas de TFG. | `title`, `project_type`, `status` (`draft`, `approved`, `rejected`), `tutor_id`. |
+| `anteprojects` | Propuestas de TFG. | `title`, `project_type`, `status` (`draft`, `submitted`, `under_review`, `approved`, `rejected`), `tutor_id`. |
 | `projects` | Proyectos activos. | `title`, `status`, `tutor_id`, `anteproject_id` (FK). |
-| `tasks` | Tareas del proyecto. | `project_id`, `status` (`pending`, `completed`), `kanban_position`. |
+| `tasks` | Tareas del proyecto. | `project_id`, `status` (`pending`, `in_progress`, `under_review`, `completed`), `kanban_position`. |
 | `milestones` | Hitos del proyecto. | `project_id`, `planned_date`, `status`. |
 | `files` | Archivos subidos. | `file_path`, `uploaded_by`, `task_id` (polimórfico). |
 
@@ -43,8 +43,8 @@ La seguridad de los datos es crítica y se implementa mediante **RLS** en Postgr
 
 ## 2.4. Documentación Adicional
 
-*   **Modelo de Datos Completo**: El archivo `docs/base_datos/modelo_datos.md` contiene la estructura SQL detallada de cada tabla.
-*   **Scripts de Migración**: El directorio `docs/base_datos/migraciones/` contiene todos los archivos `.sql` necesarios para replicar la base de datos.
+*   **Scripts de Migración**: El directorio `docs/base_datos/migraciones/` contiene todos los archivos `.sql` necesarios para replicar la base de datos. Las migraciones deben ejecutarse en orden cronológico según su nombre de archivo.
+*   **Índice de Migraciones**: Consulta `docs/base_datos/migraciones/INDICE_MIGRACIONES.md` para ver el orden de ejecución.
 
 ---
 *Este documento consolida la información de `docs/base_datos/modelo_datos.md` y `docs/base_datos/migraciones/README.md`.*

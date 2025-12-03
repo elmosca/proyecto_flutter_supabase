@@ -25,7 +25,7 @@ Las entidades clave del sistema definen la lógica de negocio y la estructura de
 | **Usuario** | Perfil de usuario con rol (`admin`, `tutor`, `student`). | Relacionado con `anteprojects`, `projects`, `tasks`. |
 | **Anteproyecto** | Propuesta inicial del TFG. | Relación 1:1 con `projects` (una vez aprobado). |
 | **Proyecto** | Proyecto de TFG activo y aprobado. | Relacionado con `users` (estudiantes y tutor), `tasks`, `milestones`. |
-| **Tarea** | Unidad de trabajo gestionada en el tablero Kanban. | Relacionado con `projects`, `users` (asignados), `comments`, `files`. |
+| **Tarea** | Unidad de trabajo gestionada en el tablero Kanban. | Relacionado con `projects`, `users` (asignados), `comments`, `files`. Estados: `pending`, `in_progress`, `under_review`, `completed`. |
 | **Hito (Milestone)** | Puntos de control clave con fechas previstas. | Relacionado con `projects` y `tasks`. |
 | **Archivo** | Entregas o documentos asociados a tareas o comentarios. | Almacenado en Supabase Storage. |
 
@@ -35,7 +35,7 @@ Las entidades clave del sistema definen la lógica de negocio y la estructura de
 2.  **Revisión y Aprobación**: El Tutor revisa el `Anteproyecto`.
     *   Si es **Aprobado**, se crea automáticamente un `Proyecto` activo.
     *   Si es **Rechazado** o requiere cambios, se notifica al estudiante.
-3.  **Desarrollo**: El estudiante gestiona el `Proyecto` a través del tablero **Kanban** de `Tareas`.
+3.  **Desarrollo**: El estudiante gestiona el `Proyecto` a través del tablero **Kanban** de `Tareas` con estados: `pending`, `in_progress`, `under_review`, `completed`.
 4.  **Seguimiento**: El Tutor realiza el seguimiento del progreso, comenta las `Tareas` y evalúa los `Hitos`.
 5.  **Finalización**: El proyecto se marca como `completed` tras la entrega final.
 
