@@ -6,7 +6,7 @@ import '../../models/project.dart';
 import '../../models/user.dart';
 import '../../services/anteprojects_service.dart';
 import '../../services/projects_service.dart';
-import '../../widgets/navigation/app_bar_actions.dart';
+import '../../widgets/navigation/persistent_scaffold.dart';
 import '../../l10n/app_localizations.dart';
 import 'conversation_threads_screen.dart';
 
@@ -48,14 +48,17 @@ class _MessageProjectSelectorScreenState
   }
 
   Future<void> _loadData() async {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
       _errorMessage = null;
     });
 
     try {
-      debugPrint('🔄 MessageProjectSelector: Cargando proyectos y anteproyectos...');
-      
+      debugPrint(
+        '🔄 MessageProjectSelector: Cargando proyectos y anteproyectos...',
+      );
+
       // Cargar proyectos y anteproyectos en paralelo
       final results = await Future.wait([
         _projectsService.getStudentProjects(),
@@ -67,32 +70,48 @@ class _MessageProjectSelectorScreenState
 
       // Filtrar anteproyectos: excluir los aprobados ya que aparecen como proyectos
       final anteprojects = allAnteprojects
-          .where((anteproject) => anteproject.status != AnteprojectStatus.approved)
+          .where(
+            (anteproject) => anteproject.status != AnteprojectStatus.approved,
+          )
           .toList();
 
-      debugPrint('✅ MessageProjectSelector: ${projects.length} proyectos encontrados');
+      debugPrint(
+        '✅ MessageProjectSelector: ${projects.length} proyectos encontrados',
+      );
       if (projects.isNotEmpty) {
         for (var project in projects) {
           debugPrint('   - Proyecto: ${project.title} (ID: ${project.id})');
         }
       }
-      
-      debugPrint('✅ MessageProjectSelector: ${allAnteprojects.length} anteproyectos totales encontrados');
-      debugPrint('✅ MessageProjectSelector: ${anteprojects.length} anteproyectos (sin aprobados)');
+
+      debugPrint(
+        '✅ MessageProjectSelector: ${allAnteprojects.length} anteproyectos totales encontrados',
+      );
+      debugPrint(
+        '✅ MessageProjectSelector: ${anteprojects.length} anteproyectos (sin aprobados)',
+      );
       if (anteprojects.isNotEmpty) {
         for (var anteproject in anteprojects) {
-          debugPrint('   - Anteproyecto: ${anteproject.title} (ID: ${anteproject.id}, Estado: ${anteproject.status})');
+          debugPrint(
+            '   - Anteproyecto: ${anteproject.title} (ID: ${anteproject.id}, Estado: ${anteproject.status})',
+          );
         }
       }
-      
+
       // Mostrar anteproyectos aprobados que no tienen proyecto asociado (por si acaso)
       final approvedWithoutProject = allAnteprojects
-          .where((anteproject) => anteproject.status == AnteprojectStatus.approved)
+          .where(
+            (anteproject) => anteproject.status == AnteprojectStatus.approved,
+          )
           .toList();
       if (approvedWithoutProject.isNotEmpty) {
-        debugPrint('ℹ️ MessageProjectSelector: ${approvedWithoutProject.length} anteproyectos aprobados (deben aparecer como proyectos)');
+        debugPrint(
+          'ℹ️ MessageProjectSelector: ${approvedWithoutProject.length} anteproyectos aprobados (deben aparecer como proyectos)',
+        );
         for (var anteproject in approvedWithoutProject) {
-          debugPrint('   - Anteproyecto aprobado: ${anteproject.title} (ID: ${anteproject.id})');
+          debugPrint(
+            '   - Anteproyecto aprobado: ${anteproject.title} (ID: ${anteproject.id})',
+          );
         }
       }
 
@@ -116,58 +135,90 @@ class _MessageProjectSelectorScreenState
   }
 
   void _openProjectChat(Project project) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ConversationThreadsScreen(project: project),
-      ),
-    ).then((_) {
-      // Recargar datos cuando se vuelve de la pantalla de conversación
-      // para mostrar proyectos/anteproyectos actualizados
-      _loadData();
-    });
+    if (_currentUser == null) return;
+
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (context) => PersistentScaffold(
+              title: project.title,
+              titleKey: 'conversations',
+              user: _currentUser!,
+              body: ConversationThreadsScreen(
+                project: project,
+                useOwnScaffold: false,
+              ),
+            ),
+          ),
+        )
+        .then((_) {
+          // Recargar datos cuando se vuelve de la pantalla de conversación
+          // para mostrar proyectos/anteproyectos actualizados
+          _loadData();
+        });
   }
 
   void _openAnteprojectChat(Anteproject anteproject) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) =>
-            ConversationThreadsScreen(anteproject: anteproject),
-      ),
-    ).then((_) {
-      // Recargar datos cuando se vuelve de la pantalla de conversación
-      // para mostrar proyectos/anteproyectos actualizados
-      _loadData();
-    });
+    if (_currentUser == null) return;
+
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (context) => PersistentScaffold(
+              title: anteproject.title,
+              titleKey: 'conversations',
+              user: _currentUser!,
+              body: ConversationThreadsScreen(
+                anteproject: anteproject,
+                useOwnScaffold: false,
+              ),
+            ),
+          ),
+        )
+        .then((_) {
+          // Recargar datos cuando se vuelve de la pantalla de conversación
+          // para mostrar proyectos/anteproyectos actualizados
+          _loadData();
+        });
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.studentMessages),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        actions: [
-          // Botón de recarga para actualizar la lista
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: l10n.updateList,
-            onPressed: _loadData,
+    // No usar Scaffold propio porque estamos dentro de PersistentScaffold
+    final content = _isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : _errorMessage != null
+        ? _buildErrorState()
+        : (_projects.isEmpty && _anteprojects.isEmpty)
+        ? _buildEmptyState()
+        : _buildProjectsList();
+
+    // Si el contenido es desplazable, usar RefreshIndicator
+    if (!_isLoading &&
+        _errorMessage == null &&
+        (_projects.isNotEmpty || _anteprojects.isNotEmpty)) {
+      return Stack(
+        children: [
+          RefreshIndicator(onRefresh: _loadData, child: content),
+          // Botón de recarga flotante
+          Positioned(
+            bottom: 16,
+            right: 16,
+            child: FloatingActionButton(
+              onPressed: _loadData,
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              tooltip: l10n.updateList,
+              child: const Icon(Icons.refresh),
+            ),
           ),
-          ...(_currentUser != null
-              ? AppBarActions.standard(context, _currentUser!)
-              : []),
         ],
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _errorMessage != null
-              ? _buildErrorState()
-              : (_projects.isEmpty && _anteprojects.isEmpty)
-                  ? _buildEmptyState()
-                  : _buildProjectsList(),
-    );
+      );
+    }
+
+    // Para estados que no son desplazables, solo mostrar el contenido
+    return content;
   }
 
   Widget _buildErrorState() {
@@ -176,11 +227,7 @@ class _MessageProjectSelectorScreenState
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Colors.red.shade300,
-          ),
+          Icon(Icons.error_outline, size: 64, color: Colors.red.shade300),
           const SizedBox(height: 16),
           Text(
             _errorMessage!,
@@ -188,10 +235,7 @@ class _MessageProjectSelectorScreenState
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: _loadData,
-            child: Text(l10n.retry),
-          ),
+          ElevatedButton(onPressed: _loadData, child: Text(l10n.retry)),
         ],
       ),
     );
@@ -221,9 +265,7 @@ class _MessageProjectSelectorScreenState
           Text(
             l10n.createAnteprojectToChat,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.grey.shade500,
-            ),
+            style: TextStyle(color: Colors.grey.shade500),
           ),
         ],
       ),
@@ -256,10 +298,7 @@ class _MessageProjectSelectorScreenState
                 Expanded(
                   child: Text(
                     l10n.selectProjectOrAnteprojectToStartConversation,
-                    style: TextStyle(
-                      color: Colors.blue.shade900,
-                      fontSize: 14,
-                    ),
+                    style: TextStyle(color: Colors.blue.shade900, fontSize: 14),
                   ),
                 ),
               ],
@@ -271,7 +310,11 @@ class _MessageProjectSelectorScreenState
           if (_projects.isNotEmpty) ...[
             Row(
               children: [
-                Icon(Icons.check_circle, color: Colors.green.shade700, size: 24),
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green.shade700,
+                  size: 24,
+                ),
                 const SizedBox(width: 8),
                 Text(
                   l10n.approvedProjects,
@@ -283,13 +326,15 @@ class _MessageProjectSelectorScreenState
               ],
             ),
             const SizedBox(height: 12),
-            ..._projects.map((project) => _buildProjectCard(
-                  title: project.title,
-                  subtitle: l10n.projectInDevelopment,
-                  color: Colors.green,
-                  icon: Icons.assignment_turned_in,
-                  onTap: () => _openProjectChat(project),
-                )),
+            ..._projects.map(
+              (project) => _buildProjectCard(
+                title: project.title,
+                subtitle: l10n.projectInDevelopment,
+                color: Colors.green,
+                icon: Icons.assignment_turned_in,
+                onTap: () => _openProjectChat(project),
+              ),
+            ),
             const SizedBox(height: 24),
           ],
 
@@ -309,13 +354,15 @@ class _MessageProjectSelectorScreenState
               ],
             ),
             const SizedBox(height: 12),
-            ..._anteprojects.map((anteproject) => _buildProjectCard(
-                  title: anteproject.title,
-                  subtitle: '${l10n.status}: ${anteproject.status.displayName}',
-                  color: Colors.blue,
-                  icon: Icons.description,
-                  onTap: () => _openAnteprojectChat(anteproject),
-                )),
+            ..._anteprojects.map(
+              (anteproject) => _buildProjectCard(
+                title: anteproject.title,
+                subtitle: '${l10n.status}: ${anteproject.status.displayName}',
+                color: Colors.blue,
+                icon: Icons.description,
+                onTap: () => _openAnteprojectChat(anteproject),
+              ),
+            ),
           ],
         ],
       ),
@@ -372,11 +419,7 @@ class _MessageProjectSelectorScreenState
                   ],
                 ),
               ),
-              Icon(
-                Icons.chat_bubble,
-                color: color,
-                size: 24,
-              ),
+              Icon(Icons.chat_bubble, color: color, size: 24),
               const SizedBox(width: 8),
               Icon(
                 Icons.arrow_forward_ios,
@@ -390,4 +433,3 @@ class _MessageProjectSelectorScreenState
     );
   }
 }
-

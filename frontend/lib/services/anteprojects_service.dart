@@ -1077,7 +1077,7 @@ class AnteprojectsService {
         );
       }
 
-      // Primero obtener el ID del usuario desde la tabla users
+      // Obtener el ID del usuario desde la tabla users
       final userResponse = await _supabase
           .from('users')
           .select('id')
@@ -1088,44 +1088,35 @@ class AnteprojectsService {
 
       debugPrint('🔍 Obteniendo anteproyectos para estudiante ID: $userId');
 
-      // Primero obtener los IDs de los anteproyectos del estudiante
-      final studentAnteprojectsResponse = await _supabase
+      // CAMBIO: Usar relación anidada en lugar de dos consultas
+      // Esta es la misma estrategia que usa getStudentProjects() que funciona correctamente
+      final response = await _supabase
           .from('anteproject_students')
-          .select('anteproject_id')
+          .select('''
+            anteproject_id,
+            anteprojects!inner(*)
+          ''')
           .eq('student_id', userId);
 
-      if (studentAnteprojectsResponse.isEmpty) {
-        debugPrint('ℹ️ No se encontraron anteproyectos para el estudiante');
-        return [];
-      }
-
-      final anteprojectIds = studentAnteprojectsResponse
-          .map((r) => r['anteproject_id'] as int)
-          .toList();
-
-      debugPrint('🔍 IDs de anteproyectos encontrados: $anteprojectIds');
-
-      // Obtener los anteproyectos directamente sin relaciones anidadas
-      // para evitar problemas de conversión de tipos
-      final response = await _supabase
-          .from('anteprojects')
-          .select('*')
-          .inFilter('id', anteprojectIds)
-          .order('created_at', ascending: false);
-
-      debugPrint(
-        '🔍 Respuesta de anteproyectos: ${response.length} encontrados',
-      );
+      debugPrint('🔍 Respuesta de anteproject_students: ${response.length} encontrados');
 
       // Convertir la respuesta a List<Anteproject>
       final anteprojects = <Anteproject>[];
       for (final item in response) {
         try {
-          // Asegurar que el item sea un Map<String, dynamic>
-          final anteprojectData = Map<String, dynamic>.from(item);
-
-          final anteproject = Anteproject.fromJson(anteprojectData);
-          anteprojects.add(anteproject);
+          if (item['anteprojects'] != null) {
+            // Asegurar que el item sea un Map<String, dynamic>
+            final itemMap = Map<String, dynamic>.from(item);
+            final anteprojectData = itemMap['anteprojects'];
+            
+            // Convertir a Map<String, dynamic> si es necesario
+            final anteprojectMap = anteprojectData is Map<String, dynamic>
+                ? anteprojectData
+                : Map<String, dynamic>.from(anteprojectData as Map);
+            
+            final anteproject = Anteproject.fromJson(anteprojectMap);
+            anteprojects.add(anteproject);
+          }
         } catch (e) {
           debugPrint('❌ Error procesando anteproyecto: $e');
           debugPrint('   Tipo del item: ${item.runtimeType}');
