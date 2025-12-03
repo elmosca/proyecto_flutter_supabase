@@ -70,8 +70,8 @@ El proyecto utiliza **Flutter** y **Supabase**.
 
 ## 3.4. Documentación Adicional
 
-*   **Guías de Despliegue:** El directorio `docs/despliegue/` contiene guías para la puesta en producción (ej. VPS, Windows).
-*   **Documentación de la API:** El directorio `docs/interfaz_api/` documenta las Edge Functions y la comunicación con el backend.
+*   **Migraciones de Base de Datos:** Consulta `docs/base_datos/migraciones/` para las migraciones SQL necesarias.
+*   **Edge Functions:** Las Edge Functions de Supabase se documentan en el código fuente y en el dashboard de Supabase.
 
 ---
 *Este documento consolida la información de `docs/desarrollo/01-configuracion/guia_inicio_frontend.md` y otros archivos de desarrollo.*

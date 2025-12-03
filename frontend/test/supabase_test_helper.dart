@@ -15,12 +15,12 @@ class SupabaseTestHelper {
       // Inicializar mocks de Supabase
       SupabaseMock.initializeMocks();
       _isMocked = true;
-      
+
       // Intentar inicializar Supabase real si no estamos en tests
       if (!_isInTestEnvironment()) {
         await _initializeRealSupabase();
       }
-      
+
       _isInitialized = true;
       debugPrint('✅ SupabaseTestHelper initialized');
     } catch (e) {
@@ -41,12 +41,22 @@ class SupabaseTestHelper {
   }
 
   /// Inicializar Supabase real (para tests de integración)
+  /// Usa variables de entorno si están disponibles
   static Future<void> _initializeRealSupabase() async {
     try {
-      await Supabase.initialize(
-        url: 'http://localhost:54321',
-        anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0',
+      const envUrl = String.fromEnvironment('SUPABASE_URL', defaultValue: '');
+      const envAnonKey = String.fromEnvironment(
+        'SUPABASE_ANON_KEY',
+        defaultValue: '',
       );
+
+      final supabaseUrl = envUrl.isNotEmpty ? envUrl : 'http://localhost:54321';
+
+      final supabaseAnonKey = envAnonKey.isNotEmpty
+          ? envAnonKey
+          : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0';
+
+      await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
     } catch (e) {
       debugPrint('⚠️ Real Supabase initialization failed: $e');
     }
@@ -69,17 +79,9 @@ class SupabaseTestHelper {
   }
 
   /// Configurar usuario autenticado en mocks
-  static void setAuthenticatedUser({
-    String? id,
-    String? email,
-    String? role,
-  }) {
+  static void setAuthenticatedUser({String? id, String? email, String? role}) {
     if (_isMocked) {
-      SupabaseMock.setAuthenticatedUser(
-        id: id,
-        email: email,
-        role: role,
-      );
+      SupabaseMock.setAuthenticatedUser(id: id, email: email, role: role);
     }
   }
 
@@ -137,16 +139,8 @@ mixin SupabaseTestMixin {
     await SupabaseTestHelper.cleanup();
   }
 
-  void setAuthenticatedUser({
-    String? id,
-    String? email,
-    String? role,
-  }) {
-    SupabaseTestHelper.setAuthenticatedUser(
-      id: id,
-      email: email,
-      role: role,
-    );
+  void setAuthenticatedUser({String? id, String? email, String? role}) {
+    SupabaseTestHelper.setAuthenticatedUser(id: id, email: email, role: role);
   }
 
   void setUnauthenticatedUser() {

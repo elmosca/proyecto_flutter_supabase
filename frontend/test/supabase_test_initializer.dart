@@ -13,17 +13,29 @@ class SupabaseTestInitializer {
     try {
       // Inicializar mocks primero
       SupabaseMock.initializeMocks();
-      
+
       // Inicializar Supabase real con configuración de test
-      await Supabase.initialize(
-        url: 'http://localhost:54321',
-        anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0',
+      // Usar variables de entorno si están disponibles
+      const envUrl = String.fromEnvironment('SUPABASE_URL', defaultValue: '');
+      const envAnonKey = String.fromEnvironment(
+        'SUPABASE_ANON_KEY',
+        defaultValue: '',
       );
-      
+
+      final supabaseUrl = envUrl.isNotEmpty ? envUrl : 'http://localhost:54321';
+
+      final supabaseAnonKey = envAnonKey.isNotEmpty
+          ? envAnonKey
+          : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0';
+
+      await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
+
       _isInitialized = true;
       debugPrint('✅ SupabaseTestInitializer: Supabase initialized for tests');
     } catch (e) {
-      debugPrint('⚠️ SupabaseTestInitializer: Failed to initialize Supabase: $e');
+      debugPrint(
+        '⚠️ SupabaseTestInitializer: Failed to initialize Supabase: $e',
+      );
       // Continuar sin Supabase para tests que no lo necesiten
       _isInitialized = true;
     }
