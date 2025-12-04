@@ -1,9 +1,8 @@
 # === Raíz: monorepo Flutter + Supabase ===
 
-# Entornos / secretos (mantener .env.example)
+# Entornos / secretos (NO subir archivos .env)
 **/.env
 **/.env.*
-!**/.env.example
 
 # Logs (mantener .gitkeep si se desea versionar carpetas vacías)
 **/logs/**

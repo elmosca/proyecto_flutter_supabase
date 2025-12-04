@@ -7,7 +7,6 @@ import '../../models/conversation_thread.dart';
 import '../../models/user.dart';
 import '../../services/conversation_threads_service.dart';
 import '../../widgets/navigation/app_bar_actions.dart';
-import '../../widgets/navigation/persistent_scaffold.dart';
 import '../../l10n/app_localizations.dart';
 import 'thread_messages_screen.dart';
 import 'create_thread_dialog.dart';
@@ -134,42 +133,22 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
   void _openThread(ConversationThread thread) {
     if (_currentUser == null) return;
 
-    // Si estamos dentro de PersistentScaffold, usar navegación con PersistentScaffold
-    if (!widget.useOwnScaffold) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => PersistentScaffold(
-            title: thread.title,
-            titleKey: 'conversations',
-            user: _currentUser!,
-            body: ThreadMessagesScreen(
-              thread: thread,
-              project: widget.project,
-              anteproject: widget.anteproject,
-              useOwnScaffold: false,
-            ),
-          ),
+    // Navegación simplificada: directamente a ThreadMessagesScreen
+    // ThreadMessagesScreen gestiona su propio Scaffold cuando useOwnScaffold es true
+    // Esto evita el anidamiento de PersistentScaffold que causa AppBars duplicadas
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ThreadMessagesScreen(
+          thread: thread,
+          project: widget.project,
+          anteproject: widget.anteproject,
+          useOwnScaffold: true, // Esta pantalla ahora gestiona su propio Scaffold
         ),
-      ).then((_) {
-        // Recargar al volver para actualizar contadores
-        _loadThreads();
-      });
-    } else {
-      // Navegación normal con Scaffold propio
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => ThreadMessagesScreen(
-            thread: thread,
-            project: widget.project,
-            anteproject: widget.anteproject,
-            useOwnScaffold: true,
-          ),
-        ),
-      ).then((_) {
-        // Recargar al volver para actualizar contadores
-        _loadThreads();
-      });
-    }
+      ),
+    ).then((_) {
+      // Recargar al volver para actualizar contadores
+      _loadThreads();
+    });
   }
 
   Widget _buildBody() {

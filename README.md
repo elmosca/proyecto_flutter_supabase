@@ -1,441 +1,104 @@
-# 🎓 Sistema de Seguimiento de Proyectos TFG
-# Ciclo Formativo de Desarrollo de Aplicaciones Multiplataforma (DAM)
+# 🎓 Sistema de Seguimiento de Proyectos TFG - Ciclo DAM
 
-## 📊 **ESTADO ACTUAL DEL PROYECTO**
+## 🎯 **PROPÓSITO DEL PROYECTO**
 
-**Fecha de actualización**: 29 de noviembre de 2025
-**Progreso general**: 100% completado (Fase de Mantenimiento y Optimización)
-**Estado**: 🟢 **MVP COMPLETAMENTE FUNCIONAL** - Sincronizado con rama de desarrollo
+Este proyecto es el **Sistema de Seguimiento de Proyectos de Trabajo de Fin de Grado (TFG)**, desarrollado como parte del Ciclo Formativo de Grado Superior de **Desarrollo de Aplicaciones Multiplataforma (DAM)**.
 
-### **Backend**: ✅ **100% COMPLETADO**
-- ✅ Modelo de datos completo (19 tablas)
-- ✅ Sistema de autenticación JWT
-- ✅ APIs REST funcionales (3 APIs)
-- ✅ Seguridad RLS implementada
-- ✅ Datos de ejemplo disponibles
-
-### **Frontend**: ✅ **100% COMPLETADO**
-- ✅ Configuración inicial multiplataforma
-- ✅ Autenticación básica implementada
-- ✅ Dashboards por rol creados
-- ✅ Modelos y servicios implementados
-- ✅ Gestión de estado BLoC implementada
-- ✅ Formularios de anteproyectos con validaciones
-- ✅ Lista de anteproyectos funcional
-- ✅ Formularios de tareas con validaciones
-- ✅ Lista de tareas funcional
-- ✅ Tablero Kanban básico implementado
-- ✅ Navegación integrada entre todas las pantallas
-- ✅ Sistema de mocking de Supabase resuelto
-- ✅ Código completamente limpio (0 warnings, 0 errores)
-- ✅ Testing completo y funcionando
-- ✅ **Sistema de comentarios** completo con BLoC e internacionalización
-- ✅ **Flujo de aprobación** completo con pantallas y navegación
-- ✅ **Pantalla de detalles** para visualización completa de anteproyectos
-- ✅ **Sistema de archivos** completo (subida, gestión y descarga)
-- ✅ **Internacionalización** completa (310 claves traducidas español/inglés)
+Su objetivo principal es modernizar y centralizar la gestión del proceso de TFG, proporcionando una plataforma digital única que facilita la colaboración, el seguimiento y la evaluación de los proyectos académicos entre estudiantes, tutores y la administración del centro.
 
 ---
 
-## 🎯 **DESCRIPCIÓN DEL PROYECTO**
+## 💡 **PROBLEMA QUE RESUELVE**
 
-## 🏗️ **ARQUITECTURA TÉCNICA**
+Tradicionalmente, la gestión de los Trabajos de Fin de Grado (TFG) en centros educativos se enfrenta a varios desafíos:
 
-### **Backend (Supabase Cloud)**
-- **Base de datos**: PostgreSQL con 19 tablas (Cloud)
-- **Autenticación**: Supabase Auth con JWT
-- **APIs**: Edge Functions (REST)
-- **Seguridad**: Row Level Security (RLS)
-- **Realtime**: Suscripciones en tiempo real
-- **Entorno**: Supabase Cloud (https://app.supabase.com)
+1.  **Descentralización de la Información**: La documentación, los avances, las entregas y el *feedback* se dispersan en correos electrónicos, documentos físicos y plataformas variadas, dificultando el seguimiento.
+2.  **Falta de Transparencia en el Proceso**: Los estudiantes a menudo carecen de una visión clara de su progreso y de los hitos esperados, mientras que los tutores invierten tiempo excesivo en tareas administrativas.
+3.  **Ineficiencia en la Evaluación**: El flujo de aprobación de anteproyectos y la revisión de tareas son procesos manuales y lentos, lo que retrasa el inicio del desarrollo.
 
-### **Frontend (Flutter)**
-- **Framework**: Flutter 3.x multiplataforma
-- **Estado**: BLoC pattern
-- **Navegación**: go_router
-- **UI**: Material Design 3
-- **Plataformas**: Web, Android, iOS, Windows, macOS, Linux
+**Este sistema resuelve la problemática** al ofrecer una solución unificada que digitaliza el ciclo de vida completo del TFG, desde la propuesta inicial hasta la entrega final.
 
 ---
 
-## 🚀 **INICIO RÁPIDO**
+## 🚀 **SOLUCIÓN Y CARACTERÍSTICAS CLAVE**
 
-### **Prerrequisitos**
+El Sistema de Seguimiento de Proyectos TFG es una aplicación **multiplataforma** que implementa las mejores prácticas de gestión de proyectos (Kanban) en un entorno académico.
+
+| Característica | Descripción | Beneficio |
+| :--- | :--- | :--- |
+| **Gestión por Roles** | Acceso y permisos diferenciados para **Administradores**, **Tutores** y **Estudiantes**. | Seguridad y personalización de la experiencia según las necesidades del usuario. |
+| **Flujo de Anteproyectos** | Formulario guiado para la propuesta de TFG, con un **flujo de aprobación** formal por parte del tutor. | Estandarización y agilización del proceso de inicio del proyecto. |
+| **Tablero Kanban** | Gestión visual de tareas por estado (`Pendiente`, `En Progreso`, `En Revisión`, `Completada`). | Claridad en el progreso, facilita la priorización y el seguimiento. |
+| **Multiplataforma** | Desarrollado con **Flutter**, la aplicación funciona de forma nativa en **Web**, **Android**, **iOS** y **Escritorio**. | Accesibilidad total desde cualquier dispositivo sin necesidad de desarrollo separado. |
+| **Backend en Tiempo Real** | Utiliza **Supabase** para la base de datos (PostgreSQL), autenticación y suscripciones en tiempo real. | Escalabilidad, seguridad (RLS) y notificaciones instantáneas. |
+
+---
+
+## 🏗️ **ARQUITECTURA TÉCNICA Y TECNOLOGÍAS**
+
+El proyecto sigue una arquitectura moderna y desacoplada, utilizando un *stack* tecnológico robusto:
+
+### **Frontend (Cliente)**
+*   **Framework**: **Flutter 3.x** (Dart)
+*   **Gestión de Estado**: **BLoC** (Business Logic Component) para una lógica de negocio clara y testeable.
+*   **Navegación**: **go_router** para una navegación robusta y compatible con la web.
+*   **Internacionalización**: Soporte completo para Español e Inglés.
+
+### **Backend (Servicios)**
+*   **Plataforma**: **Supabase** (Backend-as-a-Service)
+*   **Base de Datos**: **PostgreSQL** con un modelo de datos relacional completo (19 tablas).
+*   **Seguridad**: **Row Level Security (RLS)** implementada para asegurar que cada usuario solo acceda a sus propios datos.
+*   **Autenticación**: **Supabase Auth** con tokens JWT.
+*   **APIs**: Uso de **Edge Functions** (servicios *serverless*) para lógica de negocio avanzada (ej. flujos de aprobación).
+
+---
+
+## 📚 **DOCUMENTACIÓN Y GUÍAS**
+
+La documentación técnica y de usuario se encuentra en el directorio `docs/`.
+
+| Documento | Descripción |
+| :--- | :--- |
+| `docs/arquitectura/` | Especificaciones funcionales, lógica de roles y flujo de autenticación. |
+| `docs/base_datos/` | Modelo de datos completo y scripts de migración SQL para Supabase. |
+| `docs/desarrollo/` | Guías de configuración del entorno, comandos útiles y *troubleshooting*. |
+| `docs/guias_usuario/` | Manuales de uso específicos para Administradores, Tutores y Estudiantes. |
+
+---
+
+## 🚀 **INICIO RÁPIDO PARA DESARROLLADORES**
+
+Para poner en marcha el proyecto, consulta la guía detallada en `docs/desarrollo/01-configuracion/guia_inicio_frontend_ACTUALIZADA.md`.
+
+**Comandos Esenciales:**
 ```bash
-# Verificar instalaciones
-flutter --version  # Flutter 3.0+
-dart --version     # Dart 3.0+
-```
-
-### **1. Clonar el Repositorio**
-```bash
-git clone https://github.com/tu-usuario/proyecto_flutter_supabase.git
-cd proyecto_flutter_supabase
-```
-
-### **2. Configurar Backend (Supabase Cloud)**
-```bash
-# 1. Crear proyecto en Supabase Cloud
-# Ir a: https://app.supabase.com
-# Crear nuevo proyecto
-
-# 2. Aplicar migraciones
-# Ir a: SQL Editor en Supabase Dashboard
-# Ejecutar migraciones en orden desde: docs/base_datos/migraciones/
-
-# 3. Obtener credenciales del proyecto
-# Ir a: Settings > API
-# Copiar: URL del proyecto y anon key
-```
-
-### **3. Configurar Frontend**
-```bash
-# Navegar al directorio del frontend
-cd frontend
-
-# Configurar variables de entorno
-# Crear archivo .env con:
-# SUPABASE_URL=tu_url_del_proyecto
-# SUPABASE_ANON_KEY=tu_anon_key
+# Clonar el repositorio
+git clone https://github.com/elmosca/proyecto_flutter_supabase.git
+cd proyecto_flutter_supabase/frontend
 
 # Instalar dependencias
 flutter pub get
 
-# Ejecutar en web (más rápido para desarrollo)
-flutter run -d chrome
-```
-
-### **4. Probar la Aplicación**
-```bash
-# Usar credenciales creadas en Supabase Auth:
-# Email: tu_email@ejemplo.com
-# Password: tu_password
-```
-
----
-
-## 📁 **ESTRUCTURA DEL PROYECTO**
-
-```text
-proyecto_flutter_supabase/
-├── docs/
-│   ├── arquitectura/           # Especificaciones técnicas
-│   ├── base_datos/            # Documentación de BD
-│   │   └── migraciones/       # Migraciones SQL para Supabase Cloud
-│   ├── desarrollo/             # Guías de desarrollo
-│   └── despliegue/             # Guías de despliegue
-├── frontend/
-│   ├── lib/
-│   │   ├── models/             # Modelos de datos
-│   │   ├── services/           # Servicios de comunicación
-│   │   ├── blocs/              # Gestión de estado (BLoC)
-│   │   ├── screens/            # Pantallas de la app
-│   │   ├── widgets/            # Widgets reutilizables
-│   │   ├── config/             # Configuración (Supabase Cloud)
-│   │   └── utils/              # Utilidades
-│   ├── test/                   # Tests (unit, widget, integration)
-│   └── pubspec.yaml           # Dependencias
-└── README.md                   # Este archivo
-```
-
-```
-
----
-
-## 🌿 **CONTROL DE VERSIONES Y RAMAS**
-
-El proyecto sigue una estrategia de ramas estructurada para garantizar la estabilidad y el desarrollo continuo:
-
-### **Ramas Activas**
-
-1.  **`main`** (Producción/Estable)
-    *   **Propósito**: Contiene la versión estable y probada del código.
-    *   **Estado**: Sincronizada recientemente con `develop` (Noviembre 2025).
-    *   **Uso**: Despliegues y demostraciones finales.
-
-2.  **`develop`** (Desarrollo)
-    *   **Propósito**: Rama principal de integración para nuevas funcionalidades.
-    *   **Estado**: Fuente de verdad para el trabajo en curso.
-    *   **Flujo**: Las nuevas características se integran aquí antes de pasar a `main`.
-
-3.  **`backup-supabase-local`** (Respaldo)
-    *   **Propósito**: Preservar la configuración local específica de Supabase.
-    *   **Uso**: Referencia para configuraciones de entorno local y migraciones específicas.
-
----
-
-## 🔧 **FUNCIONALIDADES IMPLEMENTADAS**
-
-### **Backend (100% Completado)**
-- ✅ **Modelo de datos completo** con 19 tablas
-- ✅ **Sistema de autenticación** JWT con roles
-- ✅ **APIs REST** para anteproyectos, tareas y aprobación
-- ✅ **Seguridad RLS** con 54 políticas
-- ✅ **Datos de ejemplo** con usuarios y proyectos
-- ✅ **Triggers automáticos** para notificaciones
-- ✅ **Funciones de utilidad** para estadísticas
-
-### **Frontend (32% Completado)**
-- ✅ **Configuración multiplataforma** (Web, Android, Windows)
-- ✅ **Pantalla de login** con validación
-- ✅ **Sistema de autenticación** con Supabase
-- ✅ **Dashboards básicos** por rol
-- ✅ **Internacionalización** (español e inglés)
-- ✅ **Gestión de idiomas** con persistencia
-- ✅ **Modelos de datos** implementados
-- ✅ **Servicios de comunicación** implementados
-- ✅ **Gestión de estado BLoC** implementada
-- ✅ **Formularios de anteproyectos** con validaciones
-- ✅ **Lista de anteproyectos** funcional
-- ✅ **Sistema de mocking de Supabase** resuelto
-
----
-
-## 📊 **PROGRESO POR FASE**
-
-### **Fase 1: Configuración Inicial** ✅ **COMPLETADA**
-- ✅ Backend configurado y funcional
-- ✅ Frontend multiplataforma configurado
-- ✅ Entorno de desarrollo listo
-
-### **Fase 2: Autenticación y Base** 🔄 **EN PROGRESO**
-- ✅ Backend: Autenticación completa
-- ⚠️ Frontend: Autenticación básica (pendiente modelos y servicios)
-
-### **Fase 3: Interfaces Principales** ✅ **COMPLETADA**
-- ✅ Frontend: Dashboards básicos
-- ✅ Frontend: Navegación completa implementada
-
-### **Fase 4: Gestión de Anteproyectos** ✅ **COMPLETADA**
-- ✅ Backend: APIs completas
-- ✅ Frontend: Formularios, listas y pantallas de detalles
-
-### **Fase 5: Gestión de Tareas (Kanban)** ✅ **COMPLETADA**
-- ✅ Backend: APIs completas
-- ✅ Frontend: Tablero Kanban implementado
-
-### **Fase 6: Funcionalidades Avanzadas** 🔄 **EN PROGRESO**
-- ✅ Sistema de comentarios implementado
-- ✅ Flujo de aprobación implementado
-- 🟡 Sistema de archivos (solo frontend pendiente)
-- ⏳ Generación de PDFs (pendiente)
-
-### **Fase 7: Testing y Optimización** 🔄 **EN PROGRESO**
-- ✅ Testing completo y funcionando
-- ✅ Optimización multiplataforma básica
-- ⏳ Despliegue en producción (pendiente)
-
----
-
-## 🛠️ **COMANDOS ÚTILES**
-
-### **Backend (Supabase Cloud)**
-```bash
-# Acceder al Dashboard
-# https://app.supabase.com
-
-# Aplicar migraciones
-# SQL Editor > Ejecutar archivos de: docs/base_datos/migraciones/
-
-# Ver logs en tiempo real
-# Logs > Seleccionar servicio (API, Auth, Storage, etc.)
-
-# Configurar Edge Functions
-# Edge Functions > Deploy desde Dashboard
-```
-
-### **Frontend**
-```bash
-# Ejecutar en web
-cd frontend
-flutter run -d chrome
-
-# Ejecutar en Android
-flutter run -d android
-
-# Ejecutar en Windows
-flutter run -d windows
-
-# Analizar código
-flutter analyze
-
-# Ejecutar tests
-flutter test
-```
-
-### **Desarrollo**
-```bash
-# Generar código JSON
-cd frontend
+# Generar código (modelos JSON, etc.)
 flutter packages pub run build_runner build
 
-# Formatear código
-flutter format .
-
-# Limpiar proyecto
-flutter clean
-```
-
-### **Desarrollo y Despliegue**
-```bash
-# Actualizar repositorio
-git pull origin develop
-
-# Build para producción
-cd frontend
-flutter build web
-
-# Deploy a hosting (ej: Firebase Hosting, Netlify, Vercel)
-# Seguir guías específicas de cada plataforma
-
-# Configurar variables de entorno en producción
-# SUPABASE_URL=https://tu-proyecto.supabase.co
-# SUPABASE_ANON_KEY=tu-anon-key
+# Ejecutar en Web (entorno de desarrollo)
+flutter run -d chrome
 ```
 
 ---
 
-## 📞 **APIs DISPONIBLES**
+## 👥 **ESTADO ACTUAL**
 
-### **Backend APIs (Funcionales)**
-1. **anteprojects-api**: CRUD completo de anteproyectos
-2. **tasks-api**: CRUD completo de tareas
-3. **approval-api**: Gestión de aprobación de anteproyectos
+El **Producto Mínimo Viable (MVP)** está **100% completado** y funcional. El proyecto está listo para ser utilizado en un entorno de pruebas o para su presentación final.
 
-### **Credenciales de Prueba**
-```json
-{
-  "email": "carlos.lopez@alumno.cifpcarlos3.es",
-  "password": "password123",
-  "role": "student"
-}
-```
-
----
-
-## 📚 **DOCUMENTACIÓN**
-
-### **Documentación Técnica**
-- [Especificación Funcional](docs/arquitectura/especificacion_funcional.md)
-- [Modelo de Datos](docs/base_datos/modelo_datos.md)
-- [Migraciones SQL](docs/base_datos/migraciones/README.md)
-- [Lógica de Datos](docs/arquitectura/logica_datos.md)
-
-### **Guías de Desarrollo**
-- [Plan de Implementación](docs/desarrollo/plan_implementacion.md)
-- [Checklist MVP Detallado](docs/desarrollo/checklist_mvp_detallado.md)
-- [Guía de Inicio Frontend](docs/desarrollo/guia_inicio_frontend.md)
-- [Configuración Android](docs/desarrollo/android_setup.md)
-
-### **Configuración de Supabase Cloud**
-- [Migraciones de Base de Datos](docs/base_datos/migraciones/README.md)
-- [Configuración de Variables de Entorno](frontend/lib/config/app_config.dart)
-
----
-
-## 🎯 **PRÓXIMOS PASOS**
-
-### **✅ COMPLETADO (30 agosto - 6 septiembre)**
-1. **✅ Corregir tests de dashboard** (problema de renderizado de imágenes grandes)
----
-
-## 🚨 **ESTADO DE DESARROLLO**
-
-### **✅ Bloqueadores Resueltos**
-- ✅ **Tests de dashboard**: Problema de renderizado de imágenes grandes resuelto
-- ✅ **Tablero Kanban**: Implementado y funcionando
-- ✅ **Flujos de trabajo**: Implementados y funcionando
-
-### **✅ Riesgos Resueltos**
-- ✅ **Integración Frontend-Backend**: Complejidad media (resuelto completamente)
-- ✅ **Gestión de estado compleja**: Complejidad alta (resuelto completamente)
-- ✅ **Testing multiplataforma**: Complejidad alta (resuelto completamente)
-
-### **Mitigaciones**
-- ✅ **Backend funcional**: APIs listas para integración
-- ✅ **Documentación completa**: Guías disponibles
-- ✅ **Estructura sólida**: Base técnica establecida
-- ✅ **Sistema de mocking**: Resuelto para testing
-- ✅ **Formularios implementados**: Base para funcionalidades críticas
-
----
-
-## 🤝 **CONTRIBUCIÓN**
-
-### **Cómo Contribuir**
-1. Fork el repositorio
-2. Crear una rama para tu feature (`git checkout -b feature/nueva-funcionalidad`)
-3. Commit tus cambios (`git commit -am 'Añadir nueva funcionalidad'`)
-4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
-5. Crear un Pull Request
-
-### **Estándares de Código**
-- Seguir las convenciones de Flutter/Dart
-- Mantener código limpio sin warnings
-- Documentar funciones complejas
-- Escribir tests para nuevas funcionalidades
-
----
-
-## 📧 **CONFIGURACIÓN DE CORREOS ELECTRÓNICOS**
-
-### **Subdominio fct.jualas.es**
-
-El proyecto utiliza un subdominio personalizado para el envío de correos electrónicos:
-
-- **Subdominio**: `fct.jualas.es`
-- **Servicio de email**: Resend
-- **Gestión DNS**: Cloudflare
-
-### **Configuración Rápida**
-
-1. **Configurar Cloudflare**:
-   ```bash
-   # Copiar archivo de configuración
-   cp config/cloudflare.env.example .env.cloudflare
-   
-   # Editar con tus credenciales
-   # CLOUDFLARE_API_TOKEN=tu_token_aqui
-   ```
-
-2. **Configurar registros DNS**:
-   ```bash
-   # Configurar automáticamente
-   node scripts/cloudflare-dns.js setup
-   ```
-
-3. **Verificar en Resend**:
-   - Añadir dominio `fct.jualas.es` en [resend.com/domains](https://resend.com/domains)
-   - Seguir las instrucciones de verificación
-
-4. **Probar envío**:
-   ```bash
-   # Enviar correo de prueba
-   RESEND_API_KEY=tu_key node scripts/test-email.js 3850437@alu.murciaeduca.es
-   ```
-
-### **Documentación Completa**
-
-Para una configuración detallada, consulta:
-- 📖 [Guía de configuración de Cloudflare](docs/CLOUDFLARE_SETUP.md)
-
----
-
-## 📄 **LICENCIA**
-
-Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para más detalles.
+**Próximo Paso:** La documentación detallada para el usuario final se está consolidando en la **Wiki del Proyecto**.
 
 ---
 
 ## 📞 **CONTACTO**
 
-- **Proyecto**: Sistema de Seguimiento de Proyectos TFG
-- **Ciclo**: Desarrollo de Aplicaciones Multiplataforma (DAM)
-- **Institución**: CIFP Carlos III de Cartagena
-- **Estado**: En desarrollo activo
-
----
-
-**Fecha de actualización**: 29 de noviembre de 2025
-**Versión**: 1.1.0
-**Estado**: 🟢 **MVP COMPLETADO Y ESTABILIZADO**
+Para cualquier duda o colaboración, contactar con el equipo de desarrollo.
+*   **Estudiante/Autor**: [Nombre del Estudiante]
+*   **Tutor**: [Nombre del Tutor]
+*   **Repositorio**: [URL del Repositorio]
