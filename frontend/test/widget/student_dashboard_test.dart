@@ -22,14 +22,6 @@ void main() {
     late TasksBloc tasksBloc;
     late User testUser;
 
-    setUpAll(() async {
-      await TestSetup.initializeSupabase();
-    });
-
-    tearDownAll(() async {
-      await TestSetup.cleanup();
-    });
-
     setUp(() {
       mockAuthService = MockAuthService();
       mockAnteprojectsService = MockAnteprojectsService();

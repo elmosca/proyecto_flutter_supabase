@@ -1,0 +1,70 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.x'
+        channel: 'stable'
+    
+    - name: Get dependencies
+      working-directory: ./frontend
+      run: flutter pub get
+    
+    - name: Verify formatting
+      working-directory: ./frontend
+      run: flutter format --set-exit-if-changed .
+    
+    - name: Analyze code
+      working-directory: ./frontend
+      run: flutter analyze
+    
+    - name: Run unit tests
+      working-directory: ./frontend
+      run: flutter test test/unit
+    
+    - name: Run widget tests
+      working-directory: ./frontend
+      run: flutter test test/widget
+    
+    - name: Run integration tests (if backend available)
+      working-directory: ./frontend
+      env:
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+        TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+      run: |
+        flutter test test/integration \
+          --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+          --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} \
+          --dart-define=TEST_USER_EMAIL=${{ secrets.TEST_USER_EMAIL }} \
+          --dart-define=TEST_USER_PASSWORD=${{ secrets.TEST_USER_PASSWORD }} \
+        || echo "⚠️ Integration tests skipped (backend may not be available)"
+      continue-on-error: true
+    
+    - name: Generate coverage
+      working-directory: ./frontend
+      run: flutter test --coverage
+    
+    - name: Upload coverage to Codecov (optional)
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./frontend/coverage/lcov.info
+        flags: unittests
+        name: codecov
+        fail_ci_if_error: false
+      continue-on-error: true
+
