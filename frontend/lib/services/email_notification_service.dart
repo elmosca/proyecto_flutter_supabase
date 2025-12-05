@@ -465,6 +465,30 @@ class EmailNotificationService {
     } catch (e, stackTrace) {
       debugPrint('❌ Error en sendStudentWelcomeEmail: $e');
       debugPrint('❌ Stack trace: $stackTrace');
+      
+      // Si el error es "Body already consumed" pero el email podría haberse enviado,
+      // verificar si hay alguna indicación de éxito en el error
+      final errorString = e.toString();
+      if (errorString.contains('Body already consumed')) {
+        debugPrint(
+          '⚠️ Error "Body already consumed" detectado. '
+          'Esto puede ocurrir si el email se envió correctamente pero hubo un problema '
+          'al procesar la respuesta. Verifica manualmente si el email llegó.',
+        );
+        // Si failSilently es false, aún lanzamos el error para que el test pueda verificar
+        // pero con un mensaje más descriptivo
+        if (!failSilently) {
+          await _maybeRethrow(
+            StateError(
+              'Error procesando respuesta de Edge Function (Body already consumed). '
+              'El email puede haberse enviado correctamente. Verifica manualmente.',
+            ),
+            stackTrace,
+          );
+        }
+        return;
+      }
+      
       await _maybeRethrow(e, stackTrace);
     }
   }
