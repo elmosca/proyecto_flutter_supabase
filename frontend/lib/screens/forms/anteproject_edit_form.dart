@@ -35,6 +35,7 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
   late final TextEditingController _objectivesController;
   late final TextEditingController _timelineController;
   late final TextEditingController _tutorIdController;
+  late final TextEditingController _githubRepositoryController;
   late List<Hito> _hitos;
 
   late ProjectType _projectType;
@@ -67,6 +68,9 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
     );
     _tutorIdController = TextEditingController(
       text: widget.anteproject.tutorId.toString(),
+    );
+    _githubRepositoryController = TextEditingController(
+      text: widget.anteproject.githubRepositoryUrl ?? '',
     );
 
     // Convertir expectedResults a lista de hitos
@@ -107,6 +111,7 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
     _objectivesController.dispose();
     _timelineController.dispose();
     _tutorIdController.dispose();
+    _githubRepositoryController.dispose();
     super.dispose();
   }
 
@@ -289,6 +294,9 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
       timeline: timeline, // Solo se actualiza si el tutor lo edita
       status: _status,
       tutorId: tutorId,
+      githubRepositoryUrl: _githubRepositoryController.text.trim().isEmpty
+          ? null
+          : _githubRepositoryController.text.trim(),
       updatedAt: now,
     );
 
@@ -496,6 +504,20 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
                       ),
                       validator: (String? value) =>
                           FormValidators.academicYear(value, context),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Campo de repositorio de GitHub
+                    TextFormField(
+                      controller: _githubRepositoryController,
+                      decoration: const InputDecoration(
+                        labelText: 'URL del Repositorio de GitHub',
+                        hintText: 'https://github.com/usuario/repositorio',
+                        border: OutlineInputBorder(),
+                        helperText: 'Ejemplo: https://github.com/usuario/mi-proyecto',
+                      ),
+                      validator: (String? value) =>
+                          FormValidators.githubRepositoryUrl(value, context),
                     ),
                     const SizedBox(height: 16),
 

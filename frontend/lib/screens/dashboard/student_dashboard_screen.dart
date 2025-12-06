@@ -87,13 +87,25 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
           _isLoading = false;
         });
       }
-    } catch (e) {
-      debugPrint('Error al cargar datos del dashboard: $e');
+    } catch (e, stackTrace) {
+      debugPrint('❌ Error al cargar datos del dashboard: $e');
+      debugPrint('   Stack trace: $stackTrace');
       if (!mounted) return;
 
       final authState = context.read<AuthBloc>().state;
       if (authState is! AuthAuthenticated) {
         return;
+      }
+
+      // Mostrar mensaje de error al usuario
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error al cargar datos: ${e.toString()}'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 5),
+          ),
+        );
       }
 
       setState(() {

@@ -125,6 +125,20 @@ void main() {
           isNotNull,
           reason: 'Anteproyecto debe tener un estado',
         );
+        // Verificar que githubRepositoryUrl puede ser null o una URL válida
+        if (firstAnteproject.githubRepositoryUrl != null) {
+          expect(
+            firstAnteproject.githubRepositoryUrl,
+            isNotEmpty,
+            reason: 'Si githubRepositoryUrl no es null, debe tener contenido',
+          );
+          // Verificar que es una URL válida de GitHub
+          expect(
+            firstAnteproject.githubRepositoryUrl!.contains('github.com'),
+            isTrue,
+            reason: 'githubRepositoryUrl debe ser una URL de GitHub',
+          );
+        }
       }
 
       // Limpiar
@@ -272,6 +286,12 @@ void main() {
           fetchedAnteproject.title,
           equals(firstAnteproject.title),
           reason: 'Título del anteproyecto debe coincidir',
+        );
+        // Verificar que githubRepositoryUrl se recupera correctamente
+        expect(
+          fetchedAnteproject.githubRepositoryUrl,
+          equals(firstAnteproject.githubRepositoryUrl),
+          reason: 'githubRepositoryUrl debe coincidir',
         );
       }
 

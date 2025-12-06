@@ -28,6 +28,14 @@ import '../blocs/tasks_bloc.dart';
 import '../l10n/app_localizations.dart';
 import '../screens/messages/tutor_messages_selector_screen.dart';
 import '../screens/messages/message_project_selector_screen.dart';
+import '../screens/anteprojects/anteproject_detail_screen.dart';
+import '../screens/details/task_detail_screen.dart';
+import '../services/anteprojects_service.dart';
+import '../services/projects_service.dart';
+import '../services/tasks_service.dart';
+import '../models/anteproject.dart';
+import '../models/project.dart';
+import '../models/task.dart';
 
 class AppRouter {
   static final GoRouter _router = GoRouter(
@@ -145,7 +153,7 @@ class AppRouter {
           if (user == null) {
             final authState = context.read<AuthBloc>().state;
             if (authState is AuthAuthenticated) {
-              user = authState.user;
+user = authState.user;
             }
           }
 
@@ -173,6 +181,75 @@ class AppRouter {
             body: body,
           );
         },
+        routes: [
+          GoRoute(
+            path: ':id',
+            name: 'anteproject-detail',
+            builder: (context, state) {
+              final id = int.tryParse(state.pathParameters['id'] ?? '');
+              if (id == null) {
+                debugPrint('❌ Router: ID de anteproyecto inválido');
+                return const Scaffold(
+                  body: Center(child: Text('ID de anteproyecto inválido')),
+                );
+              }
+
+              // Obtener usuario
+              User? user = state.extra as User?;
+              if (user == null) {
+                final authState = context.read<AuthBloc>().state;
+                if (authState is AuthAuthenticated) {
+                  user = authState.user;
+                }
+              }
+
+              if (user == null) {
+                return const LoginScreenBloc();
+              }
+
+              return FutureBuilder<Anteproject?>(
+                future: AnteprojectsService().getAnteproject(id),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return PersistentScaffold(
+                      title: 'Anteproyecto',
+                      titleKey: 'anteprojects',
+                      user: user!,
+                      body: const Center(child: CircularProgressIndicator()),
+                    );
+                  }
+
+                  if (snapshot.hasError || snapshot.data == null) {
+                    return PersistentScaffold(
+                      title: 'Anteproyecto',
+                      titleKey: 'anteprojects',
+                      user: user!,
+                      body: Center(
+                        child: Text('Error al cargar anteproyecto: ${snapshot.error}'),
+                      ),
+                    );
+                  }
+
+                  final anteproject = snapshot.data!;
+                  
+                  // Intentar cargar el proyecto asociado si existe
+                  return FutureBuilder<Project?>(
+                    future: anteproject.projectId != null
+                        ? ProjectsService().getProject(anteproject.projectId!)
+                        : Future.value(null),
+                    builder: (context, projectSnapshot) {
+                      final project = projectSnapshot.data;
+                      return AnteprojectDetailScreen(
+                        anteproject: anteproject,
+                        project: project,
+                      );
+                    },
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
       GoRoute(
         path: '/tasks',
@@ -188,6 +265,62 @@ class AppRouter {
           );
           return _TasksScreenWrapper(user: user);
         },
+        routes: [
+          GoRoute(
+            path: ':id',
+            name: 'task-detail',
+            builder: (context, state) {
+              final id = int.tryParse(state.pathParameters['id'] ?? '');
+              if (id == null) {
+                debugPrint('❌ Router: ID de tarea inválido');
+                return const Scaffold(
+                  body: Center(child: Text('ID de tarea inválido')),
+                );
+              }
+
+              // Obtener usuario
+              User? user = state.extra as User?;
+              if (user == null) {
+                final authState = context.read<AuthBloc>().state;
+                if (authState is AuthAuthenticated) {
+                  user = authState.user;
+                }
+              }
+
+              if (user == null) {
+                return const LoginScreenBloc();
+              }
+
+              return FutureBuilder<Task?>(
+                future: TasksService().getTask(id),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return PersistentScaffold(
+                      title: 'Tarea',
+                      titleKey: 'tasks',
+                      user: user!,
+                      body: const Center(child: CircularProgressIndicator()),
+                    );
+                  }
+
+                  if (snapshot.hasError || snapshot.data == null) {
+                    return PersistentScaffold(
+                      title: 'Tarea',
+                      titleKey: 'tasks',
+                      user: user!,
+                      body: Center(
+                        child: Text('Error al cargar tarea: ${snapshot.error}'),
+                      ),
+                    );
+                  }
+
+                  final task = snapshot.data!;
+                  return TaskDetailScreen(task: task);
+                },
+              );
+            },
+          ),
+        ],
       ),
       GoRoute(
         path: '/notifications',
@@ -245,6 +378,91 @@ class AppRouter {
             body: StudentProjectsList(user: user),
           );
         },
+        routes: [
+          GoRoute(
+            path: ':id',
+            name: 'project-detail',
+            builder: (context, state) {
+              final id = int.tryParse(state.pathParameters['id'] ?? '');
+              if (id == null) {
+                debugPrint('❌ Router: ID de proyecto inválido');
+                return const Scaffold(
+                  body: Center(child: Text('ID de proyecto inválido')),
+                );
+              }
+
+              // Obtener usuario
+              User? user = state.extra as User?;
+              if (user == null) {
+                final authState = context.read<AuthBloc>().state;
+                if (authState is AuthAuthenticated) {
+                  user = authState.user;
+                }
+              }
+
+              if (user == null) {
+                return const LoginScreenBloc();
+              }
+
+              return FutureBuilder<Project?>(
+                future: ProjectsService().getProject(id),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return PersistentScaffold(
+                      title: 'Proyecto',
+                      titleKey: 'projects',
+                      user: user!,
+                      body: const Center(child: CircularProgressIndicator()),
+                    );
+                  }
+
+                  if (snapshot.hasError || snapshot.data == null) {
+                    return PersistentScaffold(
+                      title: 'Proyecto',
+                      titleKey: 'projects',
+                      user: user!,
+                      body: Center(
+                        child: Text('Error al cargar proyecto: ${snapshot.error}'),
+                      ),
+                    );
+                  }
+
+                  final project = snapshot.data!;
+                  
+                  // Cargar el anteproyecto asociado si existe
+                  return FutureBuilder<Anteproject?>(
+                    future: project.anteprojectId != null
+                        ? AnteprojectsService().getAnteproject(project.anteprojectId!)
+                        : Future.value(null),
+                    builder: (context, anteprojectSnapshot) {
+                      final anteproject = anteprojectSnapshot.data;
+                      // Si no hay anteproyecto, crear uno temporal con datos del proyecto
+                      final finalAnteproject = anteproject ?? Anteproject(
+                        id: 0,
+                        title: project.title,
+                        projectType: ProjectType.execution,
+                        description: project.description,
+                        academicYear: project.createdAt.year.toString() + 
+                                     '-' + 
+                                     (project.createdAt.year + 1).toString(),
+                        expectedResults: {},
+                        timeline: {},
+                        status: AnteprojectStatus.approved,
+                        tutorId: project.tutorId,
+                        createdAt: project.createdAt,
+                        updatedAt: project.updatedAt,
+                      );
+                      return AnteprojectDetailScreen(
+                        anteproject: finalAnteproject,
+                        project: project,
+                      );
+                    },
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
       GoRoute(
         path: '/kanban',
