@@ -127,5 +127,55 @@ void main() {
       expect(FormValidators.tutorId('abc', context), isNotNull);
       expect(FormValidators.tutorId('123', context), isNull);
     });
+
+    testWidgets('githubRepositoryUrl validator works correctly', (WidgetTester tester) async {
+      await tester.pumpWidget(const MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: Locale('es', 'ES'),
+        home: Scaffold(body: Text('Test')),
+      ));
+
+      final context = tester.element(find.byType(Scaffold));
+
+      // Test con valor vacío (debe ser válido ya que es opcional)
+      expect(FormValidators.githubRepositoryUrl('', context), isNull);
+      expect(FormValidators.githubRepositoryUrl(null, context), isNull);
+
+      // Test con URLs inválidas
+      expect(FormValidators.githubRepositoryUrl('invalid', context), isNotNull);
+      expect(FormValidators.githubRepositoryUrl('not-a-url', context), isNotNull);
+      expect(FormValidators.githubRepositoryUrl('https://gitlab.com/user/repo', context), isNotNull);
+      expect(FormValidators.githubRepositoryUrl('https://github.com', context), isNotNull);
+      expect(FormValidators.githubRepositoryUrl('https://github.com/user', context), isNotNull);
+      expect(FormValidators.githubRepositoryUrl('https://github.com/user/', context), isNotNull);
+      expect(FormValidators.githubRepositoryUrl('https://example.com/user/repo', context), isNotNull);
+
+      // Test con URLs válidas de GitHub
+      expect(FormValidators.githubRepositoryUrl('https://github.com/user/repo', context), isNull);
+      expect(FormValidators.githubRepositoryUrl('https://github.com/user/repo.git', context), isNull);
+      expect(FormValidators.githubRepositoryUrl('https://www.github.com/user/repo', context), isNull);
+      expect(FormValidators.githubRepositoryUrl('http://github.com/user/repo', context), isNull);
+      expect(FormValidators.githubRepositoryUrl('https://github.com/user-name/repo-name', context), isNull);
+      expect(FormValidators.githubRepositoryUrl('https://github.com/user.name/repo.name', context), isNull);
+      expect(FormValidators.githubRepositoryUrl('https://github.com/user_name/repo_name', context), isNull);
+
+      // Test con caracteres inválidos en usuario o repositorio
+      expect(FormValidators.githubRepositoryUrl('https://github.com/user space/repo', context), isNotNull);
+      expect(FormValidators.githubRepositoryUrl('https://github.com/user@invalid/repo', context), isNotNull);
+
+      // Test con longitudes excesivas
+      final longUsername = 'a' * 40; // 40 caracteres (máximo es 39)
+      expect(
+        FormValidators.githubRepositoryUrl('https://github.com/$longUsername/repo', context),
+        isNotNull,
+      );
+
+      final longRepo = 'a' * 101; // 101 caracteres (máximo es 100)
+      expect(
+        FormValidators.githubRepositoryUrl('https://github.com/user/$longRepo', context),
+        isNotNull,
+      );
+    });
   });
 }

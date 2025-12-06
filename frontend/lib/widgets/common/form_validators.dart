@@ -63,6 +63,77 @@ class FormValidators {
     return null;
   }
 
+  /// Validador específico para URLs de repositorios de GitHub
+  /// Valida que la URL sea de GitHub y tenga el formato correcto
+  static String? githubRepositoryUrl(String? value, BuildContext context) {
+    if (value == null || value.trim().isEmpty) {
+      return null; // URL es opcional
+    }
+
+    final trimmedValue = value.trim();
+
+    // Patrón para URLs de GitHub:
+    // - https://github.com/usuario/repositorio
+    // - https://github.com/usuario/repositorio.git (opcional)
+    // - Puede tener paths adicionales pero validamos el formato base
+    final githubUrlPattern = RegExp(
+      r'^https?://(www\.)?github\.com/[\w\-\.]+/[\w\-\.]+(/.*)?$',
+      caseSensitive: false,
+    );
+
+    if (!githubUrlPattern.hasMatch(trimmedValue)) {
+      return 'La URL debe ser un repositorio válido de GitHub (ej: https://github.com/usuario/repositorio)';
+    }
+
+    // Validar que tenga al menos usuario y repositorio
+    final urlParts = Uri.tryParse(trimmedValue);
+    if (urlParts == null) {
+      return 'URL inválida';
+    }
+
+    // Verificar que sea github.com
+    if (!urlParts.host.toLowerCase().contains('github.com')) {
+      return 'La URL debe ser de GitHub (github.com)';
+    }
+
+    // Extraer usuario y repositorio del path
+    final pathSegments = urlParts.pathSegments;
+    if (pathSegments.isEmpty) {
+      return 'La URL debe incluir el usuario y el nombre del repositorio';
+    }
+
+    // El primer segmento es el usuario, el segundo es el repositorio
+    if (pathSegments.length < 2) {
+      return 'La URL debe incluir el usuario y el nombre del repositorio (ej: https://github.com/usuario/repositorio)';
+    }
+
+    final username = pathSegments[0];
+    final repository = pathSegments[1].replaceAll('.git', ''); // Remover .git si existe
+
+    // Validar formato de usuario y repositorio
+    // GitHub permite: letras, números, guiones y puntos
+    final validNamePattern = RegExp(r'^[a-zA-Z0-9._-]+$');
+    
+    if (!validNamePattern.hasMatch(username)) {
+      return 'El nombre de usuario contiene caracteres inválidos';
+    }
+
+    if (!validNamePattern.hasMatch(repository)) {
+      return 'El nombre del repositorio contiene caracteres inválidos';
+    }
+
+    // Validar longitud (GitHub tiene límites)
+    if (username.length > 39) {
+      return 'El nombre de usuario es demasiado largo (máximo 39 caracteres)';
+    }
+
+    if (repository.length > 100) {
+      return 'El nombre del repositorio es demasiado largo (máximo 100 caracteres)';
+    }
+
+    return null;
+  }
+
   /// Validador para números
   static String? number(String? value, BuildContext context) {
     final l10n = AppLocalizations.of(context)!;

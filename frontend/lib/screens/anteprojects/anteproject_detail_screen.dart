@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/anteproject.dart';
 import '../../models/project.dart';
@@ -399,6 +400,12 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
             _buildInfoRow('Estado', _anteproject.status.displayName),
             if (_anteproject.tutorId != null)
               _buildInfoRow('ID del Tutor', _anteproject.tutorId.toString()),
+            if (_anteproject.githubRepositoryUrl != null)
+              _buildInfoRow(
+                'Repositorio de GitHub',
+                _anteproject.githubRepositoryUrl!,
+                isUrl: true,
+              ),
           ],
         ),
       ),
@@ -1065,7 +1072,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
+  Widget _buildInfoRow(String label, String value, {bool isUrl = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -1078,7 +1085,43 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
               style: const TextStyle(fontWeight: FontWeight.w500),
             ),
           ),
-          Expanded(child: Text(value)),
+          Expanded(
+            child: isUrl
+                ? InkWell(
+                    onTap: () async {
+                      final uri = Uri.parse(value);
+                      if (await canLaunchUrl(uri)) {
+                        await launchUrl(uri, mode: LaunchMode.externalApplication);
+                      } else {
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                AppLocalizations.of(context)!.invalidUrl,
+                              ),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      }
+                    },
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            value,
+                            style: TextStyle(
+                              color: Colors.blue[700],
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                        Icon(Icons.open_in_new, size: 16, color: Colors.blue[700]),
+                      ],
+                    ),
+                  )
+                : Text(value),
+          ),
         ],
       ),
     );
