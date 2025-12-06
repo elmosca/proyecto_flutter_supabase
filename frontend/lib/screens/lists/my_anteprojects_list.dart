@@ -24,6 +24,7 @@ class _MyAnteprojectsListState extends State<MyAnteprojectsList> {
   late Future<List<Anteproject>> _anteprojectsFuture;
   int _refreshKey = 0;
   List<Anteproject>? _cachedAnteprojects; // Cache para actualización optimista
+  bool? _hasApprovedAnteproject; // null = cargando, true/false = resultado
 
   @override
   void initState() {
@@ -54,7 +55,9 @@ class _MyAnteprojectsListState extends State<MyAnteprojectsList> {
         _refreshKey++; // Incrementar key para forzar reconstrucción del FutureBuilder
         _cachedAnteprojects = null; // Limpiar cache al recargar
         _anteprojectsFuture = _anteprojectsService.getStudentAnteprojects();
+        _hasApprovedAnteproject = null; // Resetear estado
       });
+      _checkApprovedAnteproject();
     } else {
       // Fallback al AuthBloc si no se pasa usuario
       final authState = context.read<AuthBloc>().state;
@@ -71,7 +74,9 @@ class _MyAnteprojectsListState extends State<MyAnteprojectsList> {
           _refreshKey++; // Incrementar key para forzar reconstrucción del FutureBuilder
           _cachedAnteprojects = null; // Limpiar cache al recargar
           _anteprojectsFuture = _anteprojectsService.getStudentAnteprojects();
+          _hasApprovedAnteproject = null; // Resetear estado
         });
+        _checkApprovedAnteproject();
       } else {
         debugPrint(
           '❌ MyAnteprojectsList: Usuario NO autenticado, authState: ${authState.runtimeType}',
@@ -80,6 +85,25 @@ class _MyAnteprojectsListState extends State<MyAnteprojectsList> {
           _refreshKey++; // Incrementar key para forzar reconstrucción del FutureBuilder
           _cachedAnteprojects = null; // Limpiar cache al recargar
           _anteprojectsFuture = Future.error('Usuario no autenticado');
+          _hasApprovedAnteproject = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _checkApprovedAnteproject() async {
+    try {
+      final hasApproved = await _anteprojectsService.hasApprovedAnteproject();
+      if (mounted) {
+        setState(() {
+          _hasApprovedAnteproject = hasApproved;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error al verificar anteproyecto aprobado: $e');
+      if (mounted) {
+        setState(() {
+          _hasApprovedAnteproject = false; // En caso de error, permitir crear
         });
       }
     }
@@ -135,15 +159,76 @@ class _MyAnteprojectsListState extends State<MyAnteprojectsList> {
         });
   }
 
-  void _navigateToCreateAnteproject(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const AnteprojectForm(),
-      ),
-    ).then((_) {
-      // Recargar la lista al volver
-      _loadAnteprojects();
-    });
+  Future<void> _navigateToCreateAnteproject(BuildContext context) async {
+    try {
+      // Verificar si el estudiante ya tiene un anteproyecto aprobado
+      final hasApproved = _hasApprovedAnteproject ?? 
+          await _anteprojectsService.hasApprovedAnteproject();
+      
+      if (hasApproved) {
+        final l10n = AppLocalizations.of(context)!;
+        
+        // Buscar el anteproyecto aprobado
+        final anteprojects = _cachedAnteprojects ?? 
+            await _anteprojectsService.getStudentAnteprojects();
+        final approvedAnteproject = anteprojects.firstWhere(
+          (ap) => ap.status == AnteprojectStatus.approved,
+          orElse: () => anteprojects.first,
+        );
+        
+        // Mostrar SnackBar con mensaje
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.cannotCreateAnteprojectWithApproved),
+              duration: const Duration(seconds: 5),
+            ),
+          );
+          
+          // Navegar al proyecto o anteproyecto aprobado
+          if (approvedAnteproject.projectId != null) {
+            Navigator.of(context).pushNamed(
+              '/projects/${approvedAnteproject.projectId}',
+            );
+          } else {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => AnteprojectDetailScreen(
+                  anteproject: approvedAnteproject,
+                  project: null,
+                ),
+              ),
+            );
+          }
+        }
+      } else {
+        // Si no tiene aprobado, navegar normalmente
+        if (mounted) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const AnteprojectForm(),
+            ),
+          ).then((_) {
+            // Recargar la lista al volver
+            _loadAnteprojects();
+          });
+        }
+      }
+    } catch (e) {
+      debugPrint('Error al verificar anteproyecto aprobado: $e');
+      // Si hay error, permitir navegar de todas formas
+      // El servicio lanzará la excepción si realmente hay un aprobado
+      if (mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const AnteprojectForm(),
+          ),
+        ).then((_) {
+          // Recargar la lista al volver
+          _loadAnteprojects();
+        });
+      }
+    }
   }
 
   @override
@@ -205,16 +290,39 @@ class _MyAnteprojectsListState extends State<MyAnteprojectsList> {
                     style: TextStyle(color: Colors.grey.shade600),
                   ),
                   const SizedBox(height: 24),
-                  ElevatedButton.icon(
-                    onPressed: () => _navigateToCreateAnteproject(context),
-                    icon: const Icon(Icons.add),
-                    label: Text(l10n.anteprojectFormTitle),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 16,
-                      ),
-                    ),
+                  FutureBuilder<bool>(
+                    future: _anteprojectsService.hasApprovedAnteproject(),
+                    builder: (context, snapshot) {
+                      final hasApproved = snapshot.data ?? false;
+                      if (hasApproved) {
+                        return Column(
+                          children: [
+                            Icon(
+                              Icons.info_outline,
+                              size: 48,
+                              color: Colors.orange[300],
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              l10n.cannotCreateAnteprojectWithApproved,
+                              style: TextStyle(color: Colors.grey.shade600),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        );
+                      }
+                      return ElevatedButton.icon(
+                        onPressed: () => _navigateToCreateAnteproject(context),
+                        icon: const Icon(Icons.add),
+                        label: Text(l10n.anteprojectFormTitle),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 32,
+                            vertical: 16,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -317,12 +425,14 @@ class _MyAnteprojectsListState extends State<MyAnteprojectsList> {
         );
         },
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _navigateToCreateAnteproject(context),
-        icon: const Icon(Icons.add),
-        label: Text(l10n.anteprojectFormTitle),
-        tooltip: l10n.anteprojectFormTitle,
-      ),
+      floatingActionButton: _hasApprovedAnteproject == true
+          ? null // Ocultar botón si hay anteproyecto aprobado
+          : FloatingActionButton.extended(
+              onPressed: () => _navigateToCreateAnteproject(context),
+              icon: const Icon(Icons.add),
+              label: Text(l10n.anteprojectFormTitle),
+              tooltip: l10n.anteprojectFormTitle,
+            ),
     );
   }
 

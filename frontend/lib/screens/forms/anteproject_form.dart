@@ -12,6 +12,8 @@ import '../../widgets/common/loading_widget.dart';
 import '../../widgets/forms/hitos_list_widget.dart';
 import '../../services/pdf_service.dart';
 import '../../services/auth_service.dart';
+import '../../services/anteprojects_service.dart';
+import '../../services/projects_service.dart';
 import '../../models/user.dart';
 
 class AnteprojectForm extends StatefulWidget {
@@ -24,6 +26,8 @@ class AnteprojectForm extends StatefulWidget {
 class _AnteprojectFormState extends State<AnteprojectForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final AuthService _authService = AuthService();
+  final AnteprojectsService _anteprojectsService = AnteprojectsService();
+  final ProjectsService _projectsService = ProjectsService();
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -38,12 +42,15 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
 
   bool _isSubmitting = false;
   bool _isLoadingUser = true;
+  bool _hasApprovedAnteproject = false;
+  bool _isCheckingApproved = true;
   User? _currentUser; // Usuario actual para obtener año académico del tutor
 
   @override
   void initState() {
     super.initState();
     _loadCurrentUser();
+    _checkIfCanCreateAnteproject();
   }
 
   @override
@@ -79,6 +86,81 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
           _isLoadingUser = false;
           _academicYearController.text = '2025-2026'; // Fallback
         });
+      }
+    }
+  }
+
+  Future<void> _checkIfCanCreateAnteproject() async {
+    try {
+      final hasApproved = await _anteprojectsService.hasApprovedAnteproject();
+      if (mounted) {
+        setState(() {
+          _hasApprovedAnteproject = hasApproved;
+          _isCheckingApproved = false;
+        });
+
+        if (hasApproved) {
+          // Mostrar diálogo informativo
+          final l10n = AppLocalizations.of(context)!;
+          if (mounted) {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text(l10n.cannotCreateAnteprojectWithApprovedTitle),
+                content: Text(l10n.cannotCreateAnteprojectWithApproved),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text(l10n.close),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      // Intentar navegar al proyecto aprobado
+                      try {
+                        final anteprojects =
+                            await _anteprojectsService.getStudentAnteprojects();
+                        final approvedAnteproject = anteprojects.firstWhere(
+                          (ap) => ap.status == AnteprojectStatus.approved,
+                        );
+                        if (approvedAnteproject.projectId != null) {
+                          final project = await _projectsService
+                              .getProject(approvedAnteproject.projectId!);
+                          if (mounted && project != null) {
+                            Navigator.of(context).pushReplacementNamed(
+                              '/projects/${project.id}',
+                            );
+                          }
+                        } else {
+                          // Si no hay proyecto, mostrar el anteproyecto
+                          if (mounted) {
+                            Navigator.of(context).pushReplacementNamed(
+                              '/anteprojects/${approvedAnteproject.id}',
+                            );
+                          }
+                        }
+                      } catch (e) {
+                        // Si hay error, solo cerrar el diálogo
+                        if (mounted) {
+                          Navigator.of(context).pop();
+                        }
+                      }
+                    },
+                    child: Text(l10n.goToProject),
+                  ),
+                ],
+              ),
+            );
+          }
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isCheckingApproved = false;
+        });
+        // No mostrar error, permitir que el usuario intente crear
+        // El servicio lanzará la excepción si realmente hay un aprobado
       }
     }
   }
@@ -343,12 +425,82 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
                 ),
               ],
             ),
-            body: _isLoadingUser
+            body: _isLoadingUser || _isCheckingApproved
                 ? const Center(child: CircularProgressIndicator())
-                : SafeArea(
-                    child: Form(
-                      key: _formKey,
-                      child: ListView(
+                : _hasApprovedAnteproject
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.info_outline,
+                                size: 64,
+                                color: Colors.orange[300],
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                l10n.cannotCreateAnteprojectWithApprovedTitle,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge
+                                    ?.copyWith(fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                l10n.cannotCreateAnteprojectWithApproved,
+                                style: Theme.of(context).textTheme.bodyLarge,
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 24),
+                              ElevatedButton.icon(
+                                onPressed: () async {
+                                  try {
+                                    final anteprojects = await _anteprojectsService
+                                        .getStudentAnteprojects();
+                                    final approvedAnteproject = anteprojects.firstWhere(
+                                      (ap) => ap.status == AnteprojectStatus.approved,
+                                    );
+                                    if (approvedAnteproject.projectId != null) {
+                                      final project = await _projectsService
+                                          .getProject(approvedAnteproject.projectId!);
+                                      if (mounted && project != null) {
+                                        Navigator.of(context).pushReplacementNamed(
+                                          '/projects/${project.id}',
+                                        );
+                                      }
+                                    } else {
+                                      if (mounted) {
+                                        Navigator.of(context).pushReplacementNamed(
+                                          '/anteprojects/${approvedAnteproject.id}',
+                                        );
+                                      }
+                                    }
+                                  } catch (e) {
+                                    if (mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Error: ${e.toString()}',
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  }
+                                },
+                                icon: const Icon(Icons.arrow_forward),
+                                label: Text(l10n.goToProject),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    : SafeArea(
+                        child: Form(
+                          key: _formKey,
+                          child: ListView(
                         padding: const EdgeInsets.all(16),
                         children: <Widget>[
                           // Botones de ayuda

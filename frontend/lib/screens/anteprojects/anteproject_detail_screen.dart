@@ -53,6 +53,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
   User? _currentUser;
   List<AnteprojectComment> _comments = [];
   bool _isLoadingComments = false;
+  bool? _hasApprovedAnteproject; // null = cargando, true/false = resultado
 
   @override
   void initState() {
@@ -64,6 +65,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
     _loadSchedule();
     _loadCurrentUser();
     _loadComments();
+    _checkApprovedAnteproject();
   }
 
   @override
@@ -83,6 +85,24 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
     } catch (e) {
       // Error al cargar usuario, pero no interrumpir el flujo
       debugPrint('Error al cargar usuario actual: $e');
+    }
+  }
+
+  Future<void> _checkApprovedAnteproject() async {
+    try {
+      final hasApproved = await _anteprojectsService.hasApprovedAnteproject();
+      if (mounted) {
+        setState(() {
+          _hasApprovedAnteproject = hasApproved;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error al verificar anteproyecto aprobado: $e');
+      if (mounted) {
+        setState(() {
+          _hasApprovedAnteproject = false; // En caso de error, permitir intentar
+        });
+      }
     }
   }
 
@@ -1371,8 +1391,13 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
   }
 
   Widget _buildSubmitForApprovalCard() {
+    final l10n = AppLocalizations.of(context)!;
+    final hasApproved = _hasApprovedAnteproject ?? false;
+    
     return Card(
-      color: Colors.orange.withValues(alpha: 0.1),
+      color: hasApproved 
+          ? Colors.grey.withValues(alpha: 0.1)
+          : Colors.orange.withValues(alpha: 0.1),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -1380,36 +1405,45 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
           children: [
             Row(
               children: [
-                Icon(Icons.send, color: Colors.orange[700]),
+                Icon(
+                  hasApproved ? Icons.info_outline : Icons.send,
+                  color: hasApproved ? Colors.grey[700] : Colors.orange[700],
+                ),
                 const SizedBox(width: 8),
                 Text(
-                  'Enviar para Aprobación',
+                  hasApproved 
+                      ? l10n.cannotSubmitAnteprojectWithApprovedTitle
+                      : 'Enviar para Aprobación',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.orange[700],
+                    color: hasApproved ? Colors.grey[700] : Colors.orange[700],
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 12),
-            const Text(
-              'Una vez que envíes tu anteproyecto para aprobación, no podrás editarlo hasta que el tutor lo revise.',
-              style: TextStyle(fontSize: 14),
+            Text(
+              hasApproved
+                  ? l10n.cannotSubmitAnteprojectWithApproved
+                  : 'Una vez que envíes tu anteproyecto para aprobación, no podrás editarlo hasta que el tutor lo revise.',
+              style: const TextStyle(fontSize: 14),
             ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: _isLoading ? null : _submitForApproval,
-                icon: const Icon(Icons.send),
-                label: Text(AppLocalizations.of(context)!.sendForApproval),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange[700],
-                  foregroundColor: Colors.white,
+            if (!hasApproved) ...[
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: _isLoading ? null : _submitForApproval,
+                  icon: const Icon(Icons.send),
+                  label: Text(l10n.sendForApproval),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange[700],
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
-            ),
+            ],
           ],
         ),
       ),
@@ -1447,6 +1481,24 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
   }
 
   Future<void> _performSubmitForApproval() async {
+    // Verificar si el estudiante ya tiene un anteproyecto aprobado
+    final hasApproved = _hasApprovedAnteproject ?? 
+        await _anteprojectsService.hasApprovedAnteproject();
+    
+    if (hasApproved) {
+      final l10n = AppLocalizations.of(context)!;
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.cannotSubmitAnteprojectWithApproved),
+            duration: const Duration(seconds: 5),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+      return;
+    }
+
     setState(() {
       _isLoading = true;
     });
@@ -1467,16 +1519,28 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              AppLocalizations.of(
-                context,
-              )!.errorSendingAnteproject(e.toString()),
+        final l10n = AppLocalizations.of(context)!;
+        // Verificar si es el error específico de anteproyecto aprobado
+        if (e.toString().contains('cannot_submit_anteproject_with_approved') ||
+            e.toString().contains('cannotSubmitAnteprojectWithApproved')) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.cannotSubmitAnteprojectWithApproved),
+              backgroundColor: Colors.orange,
             ),
-            backgroundColor: Colors.red,
-          ),
-        );
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                AppLocalizations.of(
+                  context,
+                )!.errorSendingAnteproject(e.toString()),
+              ),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     } finally {
       if (mounted) {
@@ -1504,7 +1568,9 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
           const SizedBox(height: 16),
 
           // Botón de enviar para aprobación (solo para anteproyectos en borrador)
-          if (_anteproject.status == AnteprojectStatus.draft) ...[
+          // Ocultar si hay anteproyecto aprobado o si está cargando la verificación
+          if (_anteproject.status == AnteprojectStatus.draft &&
+              _hasApprovedAnteproject != null) ...[
             _buildSubmitForApprovalCard(),
             const SizedBox(height: 16),
           ],

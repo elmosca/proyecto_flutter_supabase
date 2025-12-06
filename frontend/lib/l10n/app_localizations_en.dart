@@ -987,6 +987,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get anteprojectApprovedSuccess => 'Anteproject approved successfully';
 
   @override
+  String get cannotCreateAnteprojectWithApprovedTitle =>
+      'Cannot create a new anteproject';
+
+  @override
+  String get cannotCreateAnteprojectWithApproved =>
+      'You cannot create a new anteproject because you already have one approved. You must develop the associated project.';
+
+  @override
+  String get goToProject => 'Go to Project';
+
+  @override
+  String get cannotSubmitAnteprojectWithApprovedTitle =>
+      'Cannot submit this anteproject';
+
+  @override
+  String get cannotSubmitAnteprojectWithApproved =>
+      'You cannot submit this anteproject because you already have one approved. You must develop the associated project.';
+
+  @override
   String get anteprojectRejectedSuccess => 'Anteproject rejected';
 
   @override

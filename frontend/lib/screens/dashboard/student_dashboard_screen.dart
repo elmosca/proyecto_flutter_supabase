@@ -783,9 +783,64 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   }
 
   // Navegación
-  void _createAnteproject() {
-    // Navegar a anteproyectos, donde se puede crear uno nuevo
-    context.go('/anteprojects', extra: widget.user);
+  Future<void> _createAnteproject() async {
+    try {
+      // Verificar si el estudiante ya tiene un anteproyecto aprobado
+      final hasApproved = await _anteprojectsService.hasApprovedAnteproject();
+      
+      if (hasApproved) {
+        final l10n = AppLocalizations.of(context)!;
+        
+        // Buscar el anteproyecto aprobado y su proyecto asociado
+        final approvedAnteproject = _anteprojects.firstWhere(
+          (ap) => ap.status == AnteprojectStatus.approved,
+          orElse: () => _anteprojects.first,
+        );
+        
+        // Mostrar SnackBar con mensaje y opción de ir al proyecto
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.cannotCreateAnteprojectWithApproved),
+              duration: const Duration(seconds: 5),
+              action: SnackBarAction(
+                label: l10n.goToProject,
+                onPressed: () async {
+                  try {
+                    if (approvedAnteproject.projectId != null) {
+                      final project = await _projectsService
+                          .getProject(approvedAnteproject.projectId!);
+                      if (mounted && project != null) {
+                        context.go('/projects/${project.id}');
+                      }
+                    } else {
+                      // Si no hay proyecto, mostrar el anteproyecto
+                      if (mounted) {
+                        context.go('/anteprojects/${approvedAnteproject.id}');
+                      }
+                    }
+                  } catch (e) {
+                    debugPrint('Error al navegar al proyecto: $e');
+                  }
+                },
+              ),
+            ),
+          );
+        }
+      } else {
+        // Si no tiene aprobado, navegar normalmente
+        if (mounted) {
+          context.go('/anteprojects', extra: widget.user);
+        }
+      }
+    } catch (e) {
+      debugPrint('Error al verificar anteproyecto aprobado: $e');
+      // Si hay error, permitir navegar de todas formas
+      // El servicio lanzará la excepción si realmente hay un aprobado
+      if (mounted) {
+        context.go('/anteprojects', extra: widget.user);
+      }
+    }
   }
 
   void _createTask() {
