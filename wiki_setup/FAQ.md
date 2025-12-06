@@ -377,6 +377,6 @@ Sí, la aplicación es **responsive** y funciona en:
 
 ---
 
-**📅 Última actualización**: Noviembre 2025  
+**📅 Última actualización**: Diciembre 2025  
 **❓ ¿Falta algo?**: [Sugiere una pregunta](https://github.com/USUARIO/REPO/discussions)
 
