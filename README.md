@@ -99,6 +99,7 @@ El **Producto Mínimo Viable (MVP)** está **100% completado** y funcional. El p
 ## 📞 **CONTACTO**
 
 Para cualquier duda o colaboración, contactar con el equipo de desarrollo.
-*   **Estudiante/Autor**: [Nombre del Estudiante]
-*   **Tutor**: [Nombre del Tutor]
-*   **Repositorio**: [URL del Repositorio]
+
+*   **Autor**: Juan Antonio Francés Pérez
+*   **Email**: jualas@jualas.es
+*   **Repositorio**: https://github.com/elmosca/proyecto_flutter_supabase

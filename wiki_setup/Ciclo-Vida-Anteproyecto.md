@@ -186,7 +186,31 @@ void _saveDraft() {
 - Archivo: `frontend/lib/screens/forms/anteproject_form.dart`
 - Líneas: 200-250 (aproximadamente)
 
-### 4.5. Creación en la Base de Datos
+### 4.5. Validación de Anteproyecto Aprobado
+
+Antes de crear un nuevo anteproyecto, el sistema verifica si el estudiante ya tiene uno aprobado:
+
+```dart
+// Verificar si el estudiante ya tiene un anteproyecto aprobado
+if (userRole == 'student') {
+  final hasApproved = await hasApprovedAnteproject();
+  if (hasApproved) {
+    throw ValidationException(
+      'cannot_create_anteproject_with_approved',
+      technicalMessage:
+          'No puedes crear un nuevo anteproyecto porque ya tienes uno aprobado. Debes desarrollar el proyecto asociado.',
+    );
+  }
+}
+```
+
+**Regla de negocio**: Un estudiante solo puede tener un anteproyecto aprobado a la vez. Si ya tiene uno aprobado, debe trabajar en el proyecto asociado antes de crear un nuevo anteproyecto.
+
+**Referencia de código:**
+- Archivo: `frontend/lib/services/anteprojects_service.dart`
+- Líneas: 447-457
+
+### 4.6. Creación en la Base de Datos
 
 El servicio `AnteprojectsService` crea el anteproyecto en la base de datos:
 
@@ -208,6 +232,18 @@ Future<Anteproject> createAnteproject(Anteproject anteproject) async {
     final userId = userResponse['id'] as int;
     final userRole = userResponse['role'] as String;
     final tutorId = userResponse['tutor_id'] as int?;
+
+    // Verificar si el estudiante ya tiene un anteproyecto aprobado
+    if (userRole == 'student') {
+      final hasApproved = await hasApprovedAnteproject();
+      if (hasApproved) {
+        throw ValidationException(
+          'cannot_create_anteproject_with_approved',
+          technicalMessage:
+              'No puedes crear un nuevo anteproyecto porque ya tienes uno aprobado.',
+        );
+      }
+    }
 
     final data = anteproject.toJson();
     data.remove('id');
@@ -286,7 +322,31 @@ void _submitForReview() {
 - Archivo: `frontend/lib/screens/forms/anteproject_form.dart`
 - Líneas: 250-300 (aproximadamente)
 
-### 5.2. Actualización del Estado
+### 5.2. Validación de Anteproyecto Aprobado
+
+Antes de enviar un anteproyecto para revisión, el sistema verifica si el estudiante ya tiene uno aprobado:
+
+```dart
+// Verificar si el estudiante ya tiene un anteproyecto aprobado
+if (userRole == 'student') {
+  final hasApproved = await hasApprovedAnteproject();
+  if (hasApproved) {
+    throw ValidationException(
+      'cannot_submit_anteproject_with_approved',
+      technicalMessage:
+          'No puedes enviar este anteproyecto porque ya tienes uno aprobado. Debes desarrollar el proyecto asociado.',
+    );
+  }
+}
+```
+
+**Regla de negocio**: Un estudiante no puede enviar un anteproyecto para revisión si ya tiene uno aprobado. Debe completar el proyecto asociado primero.
+
+**Referencia de código:**
+- Archivo: `frontend/lib/services/anteprojects_service.dart`
+- Líneas: 682-692
+
+### 5.3. Actualización del Estado
 
 El servicio actualiza el estado del anteproyecto a `submitted`:
 
@@ -296,6 +356,27 @@ Future<void> submitAnteproject(int id) async {
     final user = _supabase.auth.currentUser;
     if (user == null) {
       throw AuthenticationException('not_authenticated', ...);
+    }
+
+    // Obtener información del usuario actual
+    final userResponse = await _supabase
+        .from('users')
+        .select('id, role')
+        .eq('email', user.email!)
+        .single();
+
+    final userRole = userResponse['role'] as String;
+
+    // Verificar si el estudiante ya tiene un anteproyecto aprobado
+    if (userRole == 'student') {
+      final hasApproved = await hasApprovedAnteproject();
+      if (hasApproved) {
+        throw ValidationException(
+          'cannot_submit_anteproject_with_approved',
+          technicalMessage:
+              'No puedes enviar este anteproyecto porque ya tienes uno aprobado.',
+        );
+      }
     }
 
     await _supabase
@@ -319,7 +400,7 @@ Future<void> submitAnteproject(int id) async {
 - Archivo: `frontend/lib/services/anteprojects_service.dart`
 - Líneas: 636-675
 
-### 5.3. Restricciones de Edición
+### 5.4. Restricciones de Edición
 
 Una vez enviado, el anteproyecto no es editable por el estudiante hasta que el tutor solicite cambios:
 
@@ -845,12 +926,19 @@ if (relationship == null) {
 
 ```
 1. Estudiante crea anteproyecto
+   ↓ Verificación: ¿Tiene anteproyecto aprobado?
+   ├─ SÍ → Error: No puede crear (debe trabajar en proyecto aprobado)
+   └─ NO → Continúa
    ↓ Estado: draft
    ↓
 2. Estudiante completa información
    ↓ Puede guardar como borrador múltiples veces
+   ↓ Incluye: título, descripción, tipo, objetivos, año académico, URL de GitHub, hitos
    ↓
 3. Estudiante envía para revisión
+   ↓ Verificación: ¿Tiene anteproyecto aprobado?
+   ├─ SÍ → Error: No puede enviar (debe trabajar en proyecto aprobado)
+   └─ NO → Continúa
    ↓ Estado: submitted
    ↓ Notificación al tutor
    ↓
@@ -871,10 +959,12 @@ if (relationship == null) {
 - **Asignación automática**: El tutor se asigna automáticamente según el estudiante
 - **Creación de proyecto**: Cuando se aprueba, se crea automáticamente un proyecto
 - **Restricciones de edición**: Solo editable en estados `draft` y `under_review`
+- **Restricción de un solo anteproyecto aprobado**: Un estudiante solo puede tener un anteproyecto aprobado a la vez. Si ya tiene uno aprobado, no puede crear ni enviar nuevos anteproyectos hasta completar el proyecto asociado.
+- **Campo GitHub Repository**: Los estudiantes pueden incluir la URL del repositorio de GitHub al crear o editar un anteproyecto (opcional)
 - **Notificaciones**: Se envían emails al tutor cuando se envía y al estudiante cuando se revisa
 
 ---
 
-**Última actualización**: Noviembre 2025  
-**Versión del documento**: 1.0
+**Última actualización**: Diciembre 2025  
+**Versión del documento**: 1.1
 

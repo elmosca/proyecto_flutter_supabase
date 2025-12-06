@@ -420,7 +420,8 @@ Tu wiki ahora está configurada y lista para usar. Los usuarios podrán acceder 
 
 ---
 
-**📅 Última actualización**: Noviembre 2025  
-**✍️ Autor**: Sistema TFCGS  
+**📅 Última actualización**: Diciembre 2025  
+**✍️ Autor**: Juan Antonio Francés Pérez  
+**📧 Contacto**: jualas@jualas.es  
 **📦 Versión**: 1.0
 

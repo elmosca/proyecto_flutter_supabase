@@ -356,6 +356,6 @@ Ahora que conoces lo básico:
 
 ---
 
-**📅 Última actualización**: Noviembre 2025  
+**📅 Última actualización**: Diciembre 2025  
 **⏱️ Tiempo de lectura**: 5 minutos
 
