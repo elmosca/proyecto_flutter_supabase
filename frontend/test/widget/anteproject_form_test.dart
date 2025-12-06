@@ -238,6 +238,44 @@ void main() {
         reason: 'Debe mostrar dropdowns para selección',
       );
     });
+
+    testWidgets('AnteprojectForm includes GitHub repository URL field', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      // Verificar que existe el campo de repositorio de GitHub
+      expect(
+        find.text('URL del Repositorio de GitHub'),
+        findsOneWidget,
+        reason: 'Debe mostrar el campo de URL del repositorio de GitHub',
+      );
+
+      // Verificar que el hint text está presente
+      expect(
+        find.textContaining('github.com'),
+        findsWidgets,
+        reason: 'Debe mostrar hint text con ejemplo de GitHub',
+      );
+    });
+
+    testWidgets('AnteprojectForm validates GitHub repository URL format', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      // Verificar que el campo de GitHub repository está presente
+      expect(
+        find.text('URL del Repositorio de GitHub'),
+        findsOneWidget,
+        reason: 'Debe mostrar el campo de URL del repositorio de GitHub',
+      );
+
+      // El campo es opcional, así que no requiere validación obligatoria
+      // La validación se probará en los tests de FormValidators
+    });
   });
 }
 

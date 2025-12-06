@@ -205,6 +205,59 @@ copy_technical_docs() {
     echo ""
 }
 
+copy_lifecycle_docs() {
+    print_step "Copiando documentación de ciclos de vida..."
+    
+    cd "$WIKI_DIR"
+    
+    # Ciclo de Vida del Login
+    if [ -f "../wiki_setup/Ciclo-Vida-Login.md" ]; then
+        cp ../wiki_setup/Ciclo-Vida-Login.md Ciclo-Vida-Login.md
+        print_success "✓ Ciclo de Vida del Login copiado"
+    else
+        print_warning "! Ciclo de Vida del Login no encontrado"
+    fi
+    
+    # Ciclo de Vida del Administrador (cuando esté disponible)
+    if [ -f "../wiki_setup/Ciclo-Vida-Administrador.md" ]; then
+        cp ../wiki_setup/Ciclo-Vida-Administrador.md Ciclo-Vida-Administrador.md
+        print_success "✓ Ciclo de Vida del Administrador copiado"
+    fi
+    
+    # Ciclo de Vida del Tutor (cuando esté disponible)
+    if [ -f "../wiki_setup/Ciclo-Vida-Tutor.md" ]; then
+        cp ../wiki_setup/Ciclo-Vida-Tutor.md Ciclo-Vida-Tutor.md
+        print_success "✓ Ciclo de Vida del Tutor copiado"
+    fi
+    
+    # Ciclo de Vida del Estudiante (cuando esté disponible)
+    if [ -f "../wiki_setup/Ciclo-Vida-Estudiante.md" ]; then
+        cp ../wiki_setup/Ciclo-Vida-Estudiante.md Ciclo-Vida-Estudiante.md
+        print_success "✓ Ciclo de Vida del Estudiante copiado"
+    fi
+    
+    # Ciclo de Vida del Anteproyecto (cuando esté disponible)
+    if [ -f "../wiki_setup/Ciclo-Vida-Anteproyecto.md" ]; then
+        cp ../wiki_setup/Ciclo-Vida-Anteproyecto.md Ciclo-Vida-Anteproyecto.md
+        print_success "✓ Ciclo de Vida del Anteproyecto copiado"
+    fi
+    
+    # Ciclo de Vida del Proyecto (cuando esté disponible)
+    if [ -f "../wiki_setup/Ciclo-Vida-Proyecto.md" ]; then
+        cp ../wiki_setup/Ciclo-Vida-Proyecto.md Ciclo-Vida-Proyecto.md
+        print_success "✓ Ciclo de Vida del Proyecto copiado"
+    fi
+    
+    # Ciclo de Vida de la Tarea (cuando esté disponible)
+    if [ -f "../wiki_setup/Ciclo-Vida-Tarea.md" ]; then
+        cp ../wiki_setup/Ciclo-Vida-Tarea.md Ciclo-Vida-Tarea.md
+        print_success "✓ Ciclo de Vida de la Tarea copiado"
+    fi
+    
+    cd ..
+    echo ""
+}
+
 commit_and_push() {
     print_step "Publicando cambios a GitHub..."
     
@@ -254,6 +307,13 @@ show_summary() {
     echo "  - 🔐 Arquitectura de Autenticación"
     echo "  - 📝 Registro de Usuarios"
     echo "  - 🚀 Guía de Despliegue"
+    echo "  - 🔄 Ciclo de Vida del Login"
+    echo "  - 👥 Ciclo de Vida del Administrador"
+    echo "  - 👥 Ciclo de Vida del Tutor"
+    echo "  - 👥 Ciclo de Vida del Estudiante"
+    echo "  - 📋 Ciclo de Vida del Anteproyecto"
+    echo "  - 📋 Ciclo de Vida del Proyecto"
+    echo "  - 📋 Ciclo de Vida de la Tarea"
     echo "  - ❓ FAQ"
     echo "  - 🚀 Guía de Inicio Rápido"
     echo ""
@@ -280,6 +340,8 @@ main() {
     copy_user_guides
     
     copy_technical_docs
+    
+    copy_lifecycle_docs
     
     commit_and_push
     

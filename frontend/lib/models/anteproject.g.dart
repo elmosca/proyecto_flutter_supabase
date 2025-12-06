@@ -25,6 +25,7 @@ Anteproject _$AnteprojectFromJson(Map<String, dynamic> json) => Anteproject(
       : DateTime.parse(json['reviewed_at'] as String),
   projectId: (json['project_id'] as num?)?.toInt(),
   tutorComments: json['tutor_comments'] as String?,
+  githubRepositoryUrl: json['github_repository_url'] as String?,
   createdAt: DateTime.parse(json['created_at'] as String),
   updatedAt: DateTime.parse(json['updated_at'] as String),
 );
@@ -45,6 +46,7 @@ Map<String, dynamic> _$AnteprojectToJson(Anteproject instance) =>
       'reviewed_at': instance.reviewedAt?.toIso8601String(),
       'project_id': instance.projectId,
       'tutor_comments': instance.tutorComments,
+      'github_repository_url': instance.githubRepositoryUrl,
       'created_at': instance.createdAt.toIso8601String(),
       'updated_at': instance.updatedAt.toIso8601String(),
     };

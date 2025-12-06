@@ -28,9 +28,30 @@
 
 ### 🛠️ Documentación Técnica
 
+- [🏗️ Arquitectura del Sistema](01-Arquitectura)
+- [💾 Base de Datos](02-Base-de-Datos)
+- [🔧 Guía de Desarrollo](03-Guia-Desarrollo)
+- [📁 Estructura del Código](04-Estructura-Codigo)
 - [🔐 Autenticación](Arquitectura-Autenticacion)
 - [📝 Registro de Usuarios](Registro-Usuarios)
 - [🚀 Despliegue VPS](Guia-Despliegue)
+
+---
+
+### 🔄 Ciclos de Vida
+
+#### 🔐 Autenticación y Sesión
+- [Ciclo de Vida del Login](Ciclo-Vida-Login)
+
+#### 👥 Roles de Usuario
+- [Ciclo de Vida del Administrador](Ciclo-Vida-Administrador)
+- [Ciclo de Vida del Tutor](Ciclo-Vida-Tutor)
+- [Ciclo de Vida del Estudiante](Ciclo-Vida-Estudiante)
+
+#### 📋 Objetos de Negocio
+- [Ciclo de Vida del Anteproyecto](Ciclo-Vida-Anteproyecto)
+- [Ciclo de Vida del Proyecto](Ciclo-Vida-Proyecto)
+- [Ciclo de Vida de la Tarea](Ciclo-Vida-Tarea)
 
 ---
 
