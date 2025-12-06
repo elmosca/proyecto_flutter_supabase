@@ -29,6 +29,7 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _academicYearController = TextEditingController();
   final TextEditingController _objectivesController = TextEditingController();
+  final TextEditingController _githubRepositoryController = TextEditingController();
   // Eliminado: los tutores se asignan por parte del admin, no por el alumno
   // Eliminado: timeline - lo gestiona el tutor con herramienta de calendario
 
@@ -51,6 +52,7 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
     _descriptionController.dispose();
     _academicYearController.dispose();
     _objectivesController.dispose();
+    _githubRepositoryController.dispose();
     super.dispose();
   }
 
@@ -280,6 +282,9 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
       reviewedAt: null,
       projectId: null,
       tutorComments: null,
+      githubRepositoryUrl: _githubRepositoryController.text.trim().isEmpty
+          ? null
+          : _githubRepositoryController.text.trim(),
       createdAt: now,
       updatedAt: now,
     );
@@ -497,6 +502,19 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
                             ),
                             validator: (String? value) =>
                                 FormValidators.academicYear(value, context),
+                          ),
+                          const SizedBox(height: 16),
+                          // Campo de repositorio de GitHub
+                          TextFormField(
+                            controller: _githubRepositoryController,
+                            decoration: const InputDecoration(
+                              labelText: 'URL del Repositorio de GitHub',
+                              hintText: 'https://github.com/usuario/repositorio',
+                              border: OutlineInputBorder(),
+                              helperText: 'Ejemplo: https://github.com/usuario/mi-proyecto',
+                            ),
+                            validator: (String? value) =>
+                                FormValidators.githubRepositoryUrl(value, context),
                           ),
                           const SizedBox(height: 16),
                           // Widget de lista de hitos en lugar de JSON
