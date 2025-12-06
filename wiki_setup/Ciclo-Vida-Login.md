@@ -1313,5 +1313,6 @@ test('RLS policies prevent unauthorized data access', () async {
 
 **📅 Última actualización**: Diciembre 2025  
 **📦 Versión**: 1.0  
-**✍️ Autor**: Equipo de Desarrollo
+**✍️ Autor**: Juan Antonio Francés Pérez  
+**📧 Contacto**: jualas@jualas.es
 

@@ -1,7 +1,7 @@
 # 📚 Guía Completa para Estudiantes
 
 **Sistema de Seguimiento de Proyectos TFGS**  
-**Última actualización:** Noviembre 2025  
+**Última actualización:** Diciembre 2025  
 **Tiempo de lectura:** 15 minutos
 
 ---
@@ -729,7 +729,7 @@ Ahora que conoces todas las herramientas y mejores prácticas, ¡es momento de c
 
 ---
 
-**📅 Última actualización**: Noviembre 2025  
+**📅 Última actualización**: Diciembre 2025  
 **⏱️ Tiempo de lectura**: 15 minutos  
 **📧 Soporte**: Contacta a tu tutor o administrador del sistema
 

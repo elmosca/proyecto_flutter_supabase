@@ -176,7 +176,7 @@ Documentación detallada de los flujos de trabajo y procesos del sistema:
 ---
 
 **🏫 Centro Educativo**: CIFP Carlos III  
-**📅 Última actualización**: Noviembre 2025  
+**📅 Última actualización**: Diciembre 2025  
 **📦 Versión de la aplicación**: 1.0  
 **⚙️ Tecnologías**: Flutter + Supabase + Debian VPS
 

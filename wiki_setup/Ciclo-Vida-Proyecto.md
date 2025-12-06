@@ -611,6 +611,6 @@ if (relationship == null) {
 
 ---
 
-**Última actualización**: Noviembre 2025  
+**Última actualización**: Diciembre 2025  
 **Versión del documento**: 1.0
 

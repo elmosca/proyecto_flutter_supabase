@@ -315,7 +315,7 @@ PASO 1                    PASO 2                    PASO 3
 
 ---
 
-**📅 Última actualización**: Noviembre 2025  
+**📅 Última actualización**: Diciembre 2025  
 **📦 Versión**: 1.0  
 **🏆 Estado**: Listo para Usar
 

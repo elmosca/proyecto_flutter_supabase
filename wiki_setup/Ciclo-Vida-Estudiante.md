@@ -238,13 +238,53 @@ List<Hito> _hitos = [];
 - Archivo: `frontend/lib/screens/forms/anteproject_form.dart`
 - Líneas: 28-36
 
-### 3.4. Guardado como Borrador
+### 3.4. Validación de Anteproyecto Aprobado
 
-El estudiante puede guardar el anteproyecto como borrador:
+Antes de crear o enviar un anteproyecto, el sistema verifica si el estudiante ya tiene uno aprobado:
+
+```dart
+Future<void> _checkIfCanCreateAnteproject() async {
+  try {
+    final hasApproved = await _anteprojectsService.hasApprovedAnteproject();
+    if (mounted) {
+      setState(() {
+        _hasApprovedAnteproject = hasApproved;
+        _isCheckingApproved = false;
+      });
+    }
+  } catch (e) {
+    if (mounted) {
+      setState(() {
+        _hasApprovedAnteproject = false;
+        _isCheckingApproved = false;
+      });
+    }
+  }
+}
+```
+
+**Regla de negocio importante**: Un estudiante solo puede tener un anteproyecto aprobado a la vez. Si ya tiene uno aprobado:
+- **No puede crear** un nuevo anteproyecto
+- **No puede enviar** otro anteproyecto para revisión
+- **Debe trabajar** en el proyecto asociado al anteproyecto aprobado
+
+**Referencia de código:**
+- Archivo: `frontend/lib/screens/forms/anteproject_form.dart`
+- Líneas: 93-100
+
+### 3.5. Guardado como Borrador
+
+El estudiante puede guardar el anteproyecto como borrador (solo si no tiene un anteproyecto aprobado):
 
 ```dart
 void _saveDraft() {
   if (!_formKey.currentState!.validate()) {
+    return;
+  }
+
+  // Verificar que no tenga un anteproyecto aprobado
+  if (_hasApprovedAnteproject) {
+    // Mostrar mensaje de error
     return;
   }
 
@@ -256,6 +296,9 @@ void _saveDraft() {
     status: AnteprojectStatus.draft,
     academicYear: _academicYearController.text.trim(),
     objectives: _objectivesController.text.trim(),
+    githubRepositoryUrl: _githubRepositoryController.text.trim().isEmpty
+        ? null
+        : _githubRepositoryController.text.trim(),
     hitos: _hitos,
     // ...
   );
@@ -270,13 +313,25 @@ void _saveDraft() {
 - Archivo: `frontend/lib/screens/forms/anteproject_form.dart`
 - Líneas: 200-250 (aproximadamente)
 
-### 3.5. Envío para Revisión
+### 3.6. Envío para Revisión
 
-Cuando el anteproyecto está completo, el estudiante lo envía para revisión:
+Cuando el anteproyecto está completo, el estudiante lo envía para revisión (solo si no tiene un anteproyecto aprobado):
 
 ```dart
 void _submitForReview() {
   if (!_formKey.currentState!.validate()) {
+    return;
+  }
+
+  // Verificar que no tenga un anteproyecto aprobado
+  if (_hasApprovedAnteproject) {
+    // Mostrar mensaje de error indicando que debe trabajar en el proyecto aprobado
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(l10n.cannotSubmitAnteprojectWithApproved),
+        backgroundColor: Colors.red,
+      ),
+    );
     return;
   }
 
@@ -288,6 +343,9 @@ void _submitForReview() {
     status: AnteprojectStatus.submitted, // Cambiar a 'submitted'
     academicYear: _academicYearController.text.trim(),
     objectives: _objectivesController.text.trim(),
+    githubRepositoryUrl: _githubRepositoryController.text.trim().isEmpty
+        ? null
+        : _githubRepositoryController.text.trim(),
     hitos: _hitos,
     submittedAt: DateTime.now(),
     // ...
@@ -303,7 +361,36 @@ void _submitForReview() {
 - Archivo: `frontend/lib/screens/forms/anteproject_form.dart`
 - Líneas: 250-300 (aproximadamente)
 
-### 3.6. Obtención de Anteproyectos del Estudiante
+### 3.7. Flujo con Anteproyecto Aprobado
+
+Cuando un estudiante ya tiene un anteproyecto aprobado:
+
+1. **El botón de crear anteproyecto se deshabilita** o muestra un mensaje indicando que debe trabajar en el proyecto aprobado
+2. **Se muestra el anteproyecto aprobado** de forma destacada en el dashboard
+3. **Se habilita el botón de crear tareas** solo cuando hay un anteproyecto aprobado
+4. **El estudiante puede acceder al proyecto asociado** desde el anteproyecto aprobado
+
+```dart
+// En el dashboard del estudiante
+if (_approvedAnteprojects.isNotEmpty) ...[
+  // Mostrar sección de proyectos
+  _buildProjectsSection(),
+  // Habilitar botón de crear tareas
+  FloatingActionButton(
+    onPressed: _createTask,
+    backgroundColor: ThemeService.instance.currentAccentColor,
+    tooltip: 'Crear Tarea',
+    heroTag: 'create_task',
+    child: const Icon(Icons.task, color: Colors.white),
+  ),
+],
+```
+
+**Referencia de código:**
+- Archivo: `frontend/lib/screens/dashboard/student_dashboard_screen.dart`
+- Líneas: 174-184, 204-207
+
+### 3.8. Obtención de Anteproyectos del Estudiante
 
 El servicio obtiene los anteproyectos del estudiante:
 
@@ -872,6 +959,6 @@ Future<void> updateAnteproject(Anteproject anteproject) async {
 
 ---
 
-**Última actualización**: Noviembre 2025  
+**Última actualización**: Diciembre 2025  
 **Versión del documento**: 1.0
 
