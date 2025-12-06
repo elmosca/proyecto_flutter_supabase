@@ -54,10 +54,31 @@ Selecciona tu rol para acceder a la guía correspondiente:
 
 Para desarrolladores y personal técnico:
 
+### 🏗️ Arquitectura y Desarrollo
+- 🏗️ [**Arquitectura del Sistema**](01-Arquitectura) - Visión técnica general
+- 💾 [**Base de Datos**](02-Base-de-Datos) - Modelo de datos y RLS
+- 🔧 [**Guía de Desarrollo**](03-Guia-Desarrollo) - Configuración del entorno
+- 📁 [**Estructura del Código**](04-Estructura-Codigo) - Organización del proyecto
 - 🔐 [**Arquitectura de Autenticación**](Arquitectura-Autenticacion) - Sistema de login y roles
-- 📝 [**Registro de Usuarios por Roles**](Registro-Usuarios) - Lógica de registro (no implementado)
+- 📝 [**Registro de Usuarios por Roles**](Registro-Usuarios) - Lógica de registro
 - 🚀 [**Guía de Despliegue VPS Debian**](Guia-Despliegue) - Instalación y configuración
-- 🏗️ [**Arquitectura del Sistema**](Arquitectura-Sistema) - Visión técnica general
+
+### 🔄 Ciclos de Vida
+
+Documentación detallada de los flujos de trabajo y procesos del sistema:
+
+#### 🔐 Autenticación y Sesión
+- [**Ciclo de Vida del Login**](Ciclo-Vida-Login) - Proceso completo de autenticación, desde la inicialización hasta el manejo de multisesiones
+
+#### 👥 Roles de Usuario
+- [**Ciclo de Vida del Administrador**](Ciclo-Vida-Administrador) - Flujo de trabajo completo del administrador
+- [**Ciclo de Vida del Tutor**](Ciclo-Vida-Tutor) - Flujo de trabajo completo del tutor
+- [**Ciclo de Vida del Estudiante**](Ciclo-Vida-Estudiante) - Flujo de trabajo completo del estudiante
+
+#### 📋 Objetos de Negocio
+- [**Ciclo de Vida del Anteproyecto**](Ciclo-Vida-Anteproyecto) - Estados y transiciones del anteproyecto
+- [**Ciclo de Vida del Proyecto**](Ciclo-Vida-Proyecto) - Estados y transiciones del proyecto
+- [**Ciclo de Vida de la Tarea**](Ciclo-Vida-Tarea) - Estados y transiciones de la tarea
 
 ---
 

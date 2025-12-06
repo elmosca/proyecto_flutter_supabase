@@ -378,6 +378,12 @@ class AnteprojectsService {
         anteprojectData['timeline'] = <String, dynamic>{};
       }
 
+      // Asegurar que github_repository_url existe (por si la migración no se ha ejecutado aún)
+      if (!anteprojectData.containsKey('github_repository_url')) {
+        anteprojectData['github_repository_url'] = null;
+        debugPrint('⚠️ Campo github_repository_url no encontrado en BD, usando null por defecto');
+      }
+
       // Usar directamente los datos convertidos, ya que Anteproject.fromJson espera snake_case
       // El modelo tiene @JsonKey para mapear automáticamente
       final anteproject = Anteproject.fromJson(anteprojectData);
@@ -545,6 +551,14 @@ class AnteprojectsService {
       // Asegurar que objectives se incluya si existe
       if (anteproject.objectives != null) {
         data['objectives'] = anteproject.objectives;
+      }
+
+      // Manejar github_repository_url: si es null y la columna no existe, no incluirlo
+      // Esto evita errores si la migración no se ha ejecutado aún
+      if (data.containsKey('github_repository_url') && 
+          data['github_repository_url'] == null) {
+        // Mantener el campo null si la columna existe, pero no fallará si no existe
+        // La migración debe ejecutarse para que funcione correctamente
       }
 
       // Asegurar que expected_results se incluya correctamente
@@ -1110,15 +1124,59 @@ class AnteprojectsService {
             final anteprojectData = itemMap['anteprojects'];
             
             // Convertir a Map<String, dynamic> si es necesario
-            final anteprojectMap = anteprojectData is Map<String, dynamic>
-                ? anteprojectData
-                : Map<String, dynamic>.from(anteprojectData as Map);
+            Map<String, dynamic> anteprojectMap;
+            if (anteprojectData is Map<String, dynamic>) {
+              anteprojectMap = anteprojectData;
+            } else if (anteprojectData is Map) {
+              // Convertir objeto minificado a Map<String, dynamic>
+              anteprojectMap = <String, dynamic>{};
+              for (final key in anteprojectData.keys) {
+                anteprojectMap[key.toString()] = anteprojectData[key];
+              }
+            } else {
+              debugPrint('⚠️ anteprojectData no es un Map: ${anteprojectData.runtimeType}');
+              continue;
+            }
+            
+            // Normalizar campos JSON anidados si es necesario
+            if (anteprojectMap.containsKey('expected_results') && 
+                anteprojectMap['expected_results'] is Map) {
+              final expectedResultsRaw = anteprojectMap['expected_results'] as Map;
+              final normalizedExpectedResults = <String, dynamic>{};
+              for (final key in expectedResultsRaw.keys) {
+                final value = expectedResultsRaw[key];
+                if (value is Map) {
+                  final normalizedValue = <String, dynamic>{};
+                  for (final innerKey in value.keys) {
+                    normalizedValue[innerKey.toString()] = value[innerKey];
+                  }
+                  normalizedExpectedResults[key.toString()] = normalizedValue;
+                } else {
+                  normalizedExpectedResults[key.toString()] = value;
+                }
+              }
+              anteprojectMap['expected_results'] = normalizedExpectedResults;
+            }
+            
+            if (anteprojectMap.containsKey('timeline') && 
+                anteprojectMap['timeline'] is Map) {
+              final timelineRaw = anteprojectMap['timeline'] as Map;
+              final normalizedTimeline = <String, dynamic>{};
+              for (final key in timelineRaw.keys) {
+                normalizedTimeline[key.toString()] = timelineRaw[key];
+              }
+              anteprojectMap['timeline'] = normalizedTimeline;
+            }
+            
+            debugPrint('🔍 Parseando anteproyecto: ${anteprojectMap['title']}');
+            debugPrint('🔍 github_repository_url: ${anteprojectMap['github_repository_url']}');
             
             final anteproject = Anteproject.fromJson(anteprojectMap);
             anteprojects.add(anteproject);
           }
-        } catch (e) {
+        } catch (e, stackTrace) {
           debugPrint('❌ Error procesando anteproyecto: $e');
+          debugPrint('   Stack trace: $stackTrace');
           debugPrint('   Tipo del item: ${item.runtimeType}');
           debugPrint('   Datos: $item');
           // Continuar con el siguiente anteproyecto

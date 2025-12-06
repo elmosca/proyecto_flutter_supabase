@@ -170,6 +170,36 @@ function Copy-TechnicalDocs {
     Write-Host ""
 }
 
+# Copiar documentación de ciclos de vida
+function Copy-LifecycleDocs {
+    Write-Step "Copiando documentación de ciclos de vida..."
+    
+    Push-Location $WIKI_DIR
+    
+    # Los archivos están en ..\ (un nivel arriba, que es wiki_setup/)
+    $lifecycleDocs = @(
+        @{Source = "..\Ciclo-Vida-Login.md"; Dest = "Ciclo-Vida-Login.md"},
+        @{Source = "..\Ciclo-Vida-Administrador.md"; Dest = "Ciclo-Vida-Administrador.md"},
+        @{Source = "..\Ciclo-Vida-Tutor.md"; Dest = "Ciclo-Vida-Tutor.md"},
+        @{Source = "..\Ciclo-Vida-Estudiante.md"; Dest = "Ciclo-Vida-Estudiante.md"},
+        @{Source = "..\Ciclo-Vida-Anteproyecto.md"; Dest = "Ciclo-Vida-Anteproyecto.md"},
+        @{Source = "..\Ciclo-Vida-Proyecto.md"; Dest = "Ciclo-Vida-Proyecto.md"},
+        @{Source = "..\Ciclo-Vida-Tarea.md"; Dest = "Ciclo-Vida-Tarea.md"}
+    )
+    
+    foreach ($doc in $lifecycleDocs) {
+        if (Test-Path $doc.Source) {
+            Copy-Item $doc.Source $doc.Dest -Force
+            Write-Success "✓ $($doc.Dest) copiado"
+        } else {
+            Write-Warning "! $($doc.Dest) no encontrado"
+        }
+    }
+    
+    Pop-Location
+    Write-Host ""
+}
+
 # Commit y push
 function Commit-AndPush {
     Write-Step "Publicando cambios a GitHub..."
@@ -224,6 +254,13 @@ function Show-Summary {
     Write-Host "  - 🗄️ Base de Datos (02)" -ForegroundColor White
     Write-Host "  - 🛠️ Guía de Desarrollo (03)" -ForegroundColor White
     Write-Host "  - 📁 Estructura de Código (04)" -ForegroundColor White
+    Write-Host "  - 🔄 Ciclo de Vida del Login" -ForegroundColor White
+    Write-Host "  - 👥 Ciclo de Vida del Administrador" -ForegroundColor White
+    Write-Host "  - 👥 Ciclo de Vida del Tutor" -ForegroundColor White
+    Write-Host "  - 👥 Ciclo de Vida del Estudiante" -ForegroundColor White
+    Write-Host "  - 📋 Ciclo de Vida del Anteproyecto" -ForegroundColor White
+    Write-Host "  - 📋 Ciclo de Vida del Proyecto" -ForegroundColor White
+    Write-Host "  - 📋 Ciclo de Vida de la Tarea" -ForegroundColor White
     Write-Host "  - ❓ FAQ" -ForegroundColor White
     Write-Host "  - 🚀 Guía de Inicio Rápido" -ForegroundColor White
     Write-Host ""
@@ -237,6 +274,7 @@ function Main {
     Copy-WikiStructure
     Copy-UserGuides
     Copy-TechnicalDocs
+    Copy-LifecycleDocs
     Commit-AndPush
     Show-Summary
 }
