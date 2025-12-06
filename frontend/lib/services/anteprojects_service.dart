@@ -444,6 +444,18 @@ class AnteprojectsService {
       final userRole = userResponse['role'] as String;
       final tutorId = userResponse['tutor_id'] as int?;
 
+      // Verificar si el estudiante ya tiene un anteproyecto aprobado
+      if (userRole == 'student') {
+        final hasApproved = await hasApprovedAnteproject();
+        if (hasApproved) {
+          throw ValidationException(
+            'cannot_create_anteproject_with_approved',
+            technicalMessage:
+                'No puedes crear un nuevo anteproyecto porque ya tienes uno aprobado. Debes desarrollar el proyecto asociado.',
+          );
+        }
+      }
+
       // ignore: avoid_print
       print('🔍 Debug - Usuario: ID=$userId, Role=$userRole, TutorID=$tutorId');
 
@@ -656,6 +668,27 @@ class AnteprojectsService {
           'not_authenticated',
           technicalMessage: 'User not authenticated',
         );
+      }
+
+      // Obtener información del usuario actual desde la tabla users
+      final userResponse = await _supabase
+          .from('users')
+          .select('id, role')
+          .eq('email', user.email!)
+          .single();
+
+      final userRole = userResponse['role'] as String;
+
+      // Verificar si el estudiante ya tiene un anteproyecto aprobado
+      if (userRole == 'student') {
+        final hasApproved = await hasApprovedAnteproject();
+        if (hasApproved) {
+          throw ValidationException(
+            'cannot_submit_anteproject_with_approved',
+            technicalMessage:
+                'No puedes enviar este anteproyecto porque ya tienes uno aprobado. Debes desarrollar el proyecto asociado.',
+          );
+        }
       }
 
       await _supabase
@@ -1194,6 +1227,87 @@ class AnteprojectsService {
       debugPrint('❌ Error al obtener anteproyectos del estudiante: $e');
       throw AnteprojectsException(
         'Error al obtener anteproyectos del estudiante: $e',
+      );
+    }
+  }
+
+  /// Verifica si el estudiante actual tiene un anteproyecto aprobado
+  ///
+  /// Retorna `true` si el estudiante tiene al menos un anteproyecto con estado 'approved'.
+  /// Retorna `false` si no tiene ningún anteproyecto aprobado o si el usuario no es estudiante.
+  ///
+  /// Lanza:
+  /// - [AuthenticationException] si no hay usuario autenticado
+  /// - [DatabaseException] si falla la consulta
+  Future<bool> hasApprovedAnteproject() async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
+      }
+
+      // Obtener información del usuario actual desde la tabla users
+      final userResponse = await _supabase
+          .from('users')
+          .select('id, role')
+          .eq('email', user.email!)
+          .single();
+
+      final userId = userResponse['id'] as int;
+      final userRole = userResponse['role'] as String;
+
+      // Solo verificar para estudiantes
+      if (userRole != 'student') {
+        return false;
+      }
+
+      debugPrint('🔍 Verificando si estudiante ID: $userId tiene anteproyecto aprobado');
+
+      // Consultar anteproject_students unido con anteprojects
+      // Filtrar por student_id del usuario actual y status = 'approved'
+      final response = await _supabase
+          .from('anteproject_students')
+          .select('''
+            anteproject_id,
+            anteprojects!inner(
+              id,
+              status
+            )
+          ''')
+          .eq('student_id', userId)
+          .eq('anteprojects.status', 'approved');
+
+      final hasApproved = response.isNotEmpty;
+      debugPrint(
+        '🔍 Estudiante ${hasApproved ? "SÍ" : "NO"} tiene anteproyecto aprobado',
+      );
+
+      return hasApproved;
+    } catch (e) {
+      debugPrint('❌ Error al verificar anteproyecto aprobado: $e');
+      
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      // Si es AuthenticationException, relanzarla
+      if (e is AuthenticationException) {
+        rethrow;
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error checking approved anteproject: $e',
+        originalError: e,
       );
     }
   }

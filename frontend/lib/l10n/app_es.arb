@@ -1351,6 +1351,26 @@
   "@anteprojectApprovedSuccess": {
     "description": "Mensaje de éxito al aprobar anteproyecto"
   },
+  "cannotCreateAnteprojectWithApprovedTitle": "No puedes crear un nuevo anteproyecto",
+  "@cannotCreateAnteprojectWithApprovedTitle": {
+    "description": "Título del diálogo cuando el estudiante intenta crear un anteproyecto con uno ya aprobado"
+  },
+  "cannotCreateAnteprojectWithApproved": "No puedes crear un nuevo anteproyecto porque ya tienes uno aprobado. Debes desarrollar el proyecto asociado.",
+  "@cannotCreateAnteprojectWithApproved": {
+    "description": "Mensaje cuando el estudiante intenta crear un anteproyecto con uno ya aprobado"
+  },
+  "goToProject": "Ir al Proyecto",
+  "@goToProject": {
+    "description": "Botón para navegar al proyecto aprobado"
+  },
+  "cannotSubmitAnteprojectWithApprovedTitle": "No puedes enviar este anteproyecto",
+  "@cannotSubmitAnteprojectWithApprovedTitle": {
+    "description": "Título cuando el estudiante intenta enviar un anteproyecto en borrador con uno ya aprobado"
+  },
+  "cannotSubmitAnteprojectWithApproved": "No puedes enviar este anteproyecto porque ya tienes uno aprobado. Debes desarrollar el proyecto asociado.",
+  "@cannotSubmitAnteprojectWithApproved": {
+    "description": "Mensaje cuando el estudiante intenta enviar un anteproyecto en borrador con uno ya aprobado"
+  },
   "anteprojectRejectedSuccess": "Anteproyecto rechazado",
   "@anteprojectRejectedSuccess": {
     "description": "Mensaje de éxito al rechazar anteproyecto"

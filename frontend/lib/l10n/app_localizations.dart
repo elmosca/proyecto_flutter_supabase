@@ -1952,6 +1952,36 @@ abstract class AppLocalizations {
   /// **'Anteproyecto aprobado exitosamente'**
   String get anteprojectApprovedSuccess;
 
+  /// Título del diálogo cuando el estudiante intenta crear un anteproyecto con uno ya aprobado
+  ///
+  /// In es, this message translates to:
+  /// **'No puedes crear un nuevo anteproyecto'**
+  String get cannotCreateAnteprojectWithApprovedTitle;
+
+  /// Mensaje cuando el estudiante intenta crear un anteproyecto con uno ya aprobado
+  ///
+  /// In es, this message translates to:
+  /// **'No puedes crear un nuevo anteproyecto porque ya tienes uno aprobado. Debes desarrollar el proyecto asociado.'**
+  String get cannotCreateAnteprojectWithApproved;
+
+  /// Botón para navegar al proyecto aprobado
+  ///
+  /// In es, this message translates to:
+  /// **'Ir al Proyecto'**
+  String get goToProject;
+
+  /// Título cuando el estudiante intenta enviar un anteproyecto en borrador con uno ya aprobado
+  ///
+  /// In es, this message translates to:
+  /// **'No puedes enviar este anteproyecto'**
+  String get cannotSubmitAnteprojectWithApprovedTitle;
+
+  /// Mensaje cuando el estudiante intenta enviar un anteproyecto en borrador con uno ya aprobado
+  ///
+  /// In es, this message translates to:
+  /// **'No puedes enviar este anteproyecto porque ya tienes uno aprobado. Debes desarrollar el proyecto asociado.'**
+  String get cannotSubmitAnteprojectWithApproved;
+
   /// Mensaje de éxito al rechazar anteproyecto
   ///
   /// In es, this message translates to:
