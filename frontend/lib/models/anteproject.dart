@@ -65,6 +65,8 @@ class Anteproject {
   final int? projectId;
   @JsonKey(name: 'tutor_comments')
   final String? tutorComments;
+  @JsonKey(name: 'github_repository_url')
+  final String? githubRepositoryUrl;
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
   @JsonKey(name: 'updated_at')
@@ -85,6 +87,7 @@ class Anteproject {
     this.reviewedAt,
     this.projectId,
     this.tutorComments,
+    this.githubRepositoryUrl,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -107,6 +110,7 @@ class Anteproject {
     DateTime? reviewedAt,
     int? projectId,
     String? tutorComments,
+    String? githubRepositoryUrl,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -125,6 +129,7 @@ class Anteproject {
       reviewedAt: reviewedAt ?? this.reviewedAt,
       projectId: projectId ?? this.projectId,
       tutorComments: tutorComments ?? this.tutorComments,
+      githubRepositoryUrl: githubRepositoryUrl ?? this.githubRepositoryUrl,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

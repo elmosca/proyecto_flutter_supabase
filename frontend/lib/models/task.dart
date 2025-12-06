@@ -34,11 +34,10 @@ part 'task.g.dart';
 /// ```
 ///
 /// ## Estados posibles:
-/// - [todo]: Tarea pendiente de iniciar
+/// - [pending]: Tarea pendiente de iniciar
 /// - [in_progress]: Tarea en progreso
-/// - [in_review]: Tarea en revisión
-/// - [done]: Tarea completada
-/// - [blocked]: Tarea bloqueada
+/// - [under_review]: Tarea en revisión
+/// - [completed]: Tarea completada
 ///
 /// Ver también: [TaskStatus], [TaskComplexity]
 @JsonSerializable()

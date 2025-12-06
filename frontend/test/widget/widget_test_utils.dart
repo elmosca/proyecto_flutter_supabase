@@ -85,6 +85,7 @@ class WidgetTestUtils {
     String academicYear = '2024-2025',
     AnteprojectStatus status = AnteprojectStatus.draft,
     int tutorId = 1,
+    String? githubRepositoryUrl,
   }) {
     final now = DateTime.now();
     return Anteproject(
@@ -98,6 +99,7 @@ class WidgetTestUtils {
       timeline: {'phase1': 'Phase 1 description'},
       status: status,
       tutorId: tutorId,
+      githubRepositoryUrl: githubRepositoryUrl,
       createdAt: now,
       updatedAt: now,
     );
