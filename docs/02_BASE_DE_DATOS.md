@@ -27,9 +27,11 @@ El modelo de datos se basa en **PostgreSQL** y está diseñado para soportar la 
 
 Todas las migraciones se encuentran en el directorio `docs/base_datos/migraciones/`.
 
+*   **Archivo principal**: `schema_completo.sql` contiene el estado final consolidado de todas las migraciones. Este es el archivo recomendado para instalación inicial.
 *   **Propósito**: Definir el esquema, triggers, funciones y políticas de seguridad.
-*   **Uso**: Deben ejecutarse en orden cronológico en el **SQL Editor de Supabase Cloud**.
-*   **Contenido**: Incluyen la creación de tablas, la configuración de RLS, la inserción de datos iniciales (`seed data`) y la configuración de autenticación.
+*   **Uso**: Ejecutar `schema_completo.sql` en el **SQL Editor de Supabase Cloud** para crear el esquema completo.
+*   **Contenido**: Incluye la creación de tablas, la configuración de RLS, la inserción de datos iniciales (`seed data`) y la configuración de autenticación.
+*   **Migraciones históricas**: Las migraciones originales se encuentran en `historico/` para referencia y desarrollo.
 
 ## 2.3. Seguridad (Row Level Security - RLS)
 
@@ -41,10 +43,5 @@ La seguridad de los datos es crítica y se implementa mediante **RLS** en Postgr
     *   **Tutores** solo pueden acceder a los proyectos que les han sido asignados.
     *   **Administradores** tienen acceso completo.
 
-## 2.4. Documentación Adicional
-
-*   **Scripts de Migración**: El directorio `docs/base_datos/migraciones/` contiene todos los archivos `.sql` necesarios para replicar la base de datos. Las migraciones deben ejecutarse en orden cronológico según su nombre de archivo.
-*   **Índice de Migraciones**: Consulta `docs/base_datos/migraciones/INDICE_MIGRACIONES.md` para ver el orden de ejecución.
-
 ---
-*Este documento consolida la información de `docs/base_datos/modelo_datos.md` y `docs/base_datos/migraciones/README.md`.*
+*Este documento consolida la información esencial sobre el modelo de datos y las migraciones del sistema.*

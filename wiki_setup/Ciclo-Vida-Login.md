@@ -1046,7 +1046,7 @@ CREATE POLICY "Users can view their own anteprojects" ON anteprojects
 ```
 
 **Referencia de código:**
-- Archivo: `docs/base_datos/migraciones/20240815000004_configure_rls_fixed.sql`
+- Archivo: `docs/base_datos/migraciones/schema_completo.sql` (sección RLS)
 - Líneas: 141-145
 
 #### 11.4.2. Función `user_id()`
@@ -1063,7 +1063,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 ```
 
 **Referencia de código:**
-- Archivo: `docs/base_datos/migraciones/20240815000004_configure_rls_fixed.sql`
+- Archivo: `docs/base_datos/migraciones/schema_completo.sql` (sección RLS)
 - Líneas: 36-41
 
 ### 11.5. Ejemplos de Aislamiento por Rol
@@ -1111,7 +1111,7 @@ CREATE POLICY "Admins can view all anteprojects" ON anteprojects
 ```
 
 **Referencia de código:**
-- Archivo: `docs/base_datos/migraciones/20240815000004_configure_rls_fixed.sql`
+- Archivo: `docs/base_datos/migraciones/schema_completo.sql` (sección RLS)
 - Líneas: 147-148
 
 ### 11.6. Sin Bloqueos de Sesión

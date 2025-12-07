@@ -213,7 +213,7 @@ Consulta el archivo `LICENSE` en la raíz del repositorio.
 
 ## Modelo de datos y migraciones
 - Modelos en `lib/models/` con `@JsonSerializable()`.
-- Coordinación de cambios de esquema con backend (migraciones en `docs/base_datos/migraciones/`).
+- Coordinación de cambios de esquema con backend. El esquema completo consolidado se encuentra en `docs/base_datos/migraciones/schema_completo.sql`.
 
 ## APIs y contratos
 - Servicios en `lib/services/` encapsulan endpoints/Edge Functions.
