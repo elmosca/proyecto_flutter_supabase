@@ -47,7 +47,7 @@ El proyecto sigue una arquitectura moderna y desacoplada, utilizando un *stack* 
 ### **Backend (Servicios)**
 *   **Plataforma**: **Supabase** (Backend-as-a-Service)
 *   **Base de Datos**: **PostgreSQL** con un modelo de datos relacional completo (19 tablas).
-*   **Seguridad**: **Row Level Security (RLS)** implementada para asegurar que cada usuario solo acceda a sus propios datos.
+*   **Seguridad**: **Row Level Security (RLS)** habilitado en todas las tablas sensibles. Las políticas de seguridad están completamente implementadas y configuradas. Consulta `docs/02_BASE_DE_DATOS.md` para más detalles sobre el modelo de datos y seguridad.
 *   **Autenticación**: **Supabase Auth** con tokens JWT.
 *   **APIs**: Uso de **Edge Functions** (servicios *serverless*) para lógica de negocio avanzada (ej. flujos de aprobación).
 
@@ -91,6 +91,9 @@ flutter run -d chrome
 ## 👥 **ESTADO ACTUAL**
 
 El **Producto Mínimo Viable (MVP)** está **100% completado** y funcional. El proyecto está listo para ser utilizado en un entorno de pruebas o para su presentación final.
+
+**Estado del Sistema:**
+*   **Seguridad RLS**: Row Level Security completamente implementado en todas las tablas. Las políticas están definidas y activas. Ver `docs/02_BASE_DE_DATOS.md` para más información.
 
 **Próximo Paso:** La documentación detallada para el usuario final se está consolidando en la **Wiki del Proyecto**.
 

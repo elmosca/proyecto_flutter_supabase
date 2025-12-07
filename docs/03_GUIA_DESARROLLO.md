@@ -70,7 +70,7 @@ El proyecto utiliza **Flutter** y **Supabase**.
 
 ## 3.4. Documentación Adicional
 
-*   **Migraciones de Base de Datos:** Consulta `docs/base_datos/migraciones/` para las migraciones SQL necesarias.
+*   **Migraciones de Base de Datos:** Ejecuta `docs/base_datos/migraciones/schema_completo.sql` para instalar el esquema completo. Las migraciones históricas están en `historico/` para referencia.
 *   **Edge Functions:** Las Edge Functions de Supabase se documentan en el código fuente y en el dashboard de Supabase.
 
 ---

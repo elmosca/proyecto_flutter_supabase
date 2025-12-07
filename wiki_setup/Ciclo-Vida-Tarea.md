@@ -808,7 +808,7 @@ CREATE POLICY "Students can update their assigned tasks" ON tasks
 **Nota sobre tutores**: Aunque las políticas RLS permiten a los tutores ver las tareas de los proyectos que supervisan (para seguimiento y supervisión), las tareas son propiedad y responsabilidad exclusiva del estudiante. El tutor puede visualizar el progreso pero no puede crear, editar o gestionar tareas directamente.
 
 **Referencia de código:**
-- Archivo: `docs/base_datos/migraciones/20240815000004_configure_rls_fixed.sql`
+- Archivo: `docs/base_datos/migraciones/schema_completo.sql` (sección RLS)
 - Líneas: 250-300 (aproximadamente)
 
 ### 10.2. Verificación de Propiedad

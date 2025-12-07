@@ -869,7 +869,7 @@ CREATE POLICY "Students can view their own anteprojects" ON anteprojects
 ```
 
 **Referencia de código:**
-- Archivo: `docs/base_datos/migraciones/20240815000004_configure_rls_fixed.sql`
+- Archivo: `docs/base_datos/migraciones/schema_completo.sql` (sección RLS)
 - Líneas: 141-145
 
 ### 9.3. Restricción de Edición

@@ -23,11 +23,13 @@ La documentación está organizada en 4 guías principales que cubren todos los 
 
 Todas las migraciones SQL se encuentran en el directorio `base_datos/migraciones/`:
 
-- **40+ archivos SQL** con el esquema completo de la base de datos
-- **Scripts de rollback** para revertir cambios si es necesario
-- **Índice de migraciones** en `base_datos/migraciones/INDICE_MIGRACIONES.md`
+- **`schema_completo.sql`**: Archivo único consolidado con el estado final del esquema (recomendado para instalación)
+- **`historico/`**: Migraciones originales organizadas cronológicamente (para referencia)
+- **Scripts de rollback y utilidades**: En subdirectorios correspondientes
 
-**Importante**: Las migraciones deben ejecutarse en orden cronológico en el SQL Editor de Supabase Cloud.
+**Importante**: Para instalación inicial, ejecuta `schema_completo.sql` en el SQL Editor de Supabase Cloud.
+
+**Nota**: Este directorio contiene documentación técnica para desarrolladores. Para información conceptual sobre el modelo de datos, consulta [`02_BASE_DE_DATOS.md`](02_BASE_DE_DATOS.md).
 
 ---
 
@@ -35,7 +37,7 @@ Todas las migraciones SQL se encuentran en el directorio `base_datos/migraciones
 
 1. **Leer** `01_ARQUITECTURA.md` para entender el sistema
 2. **Configurar** el entorno siguiendo `03_GUIA_DESARROLLO.md`
-3. **Aplicar** las migraciones desde `base_datos/migraciones/`
+3. **Aplicar** el esquema ejecutando `base_datos/migraciones/schema_completo.sql`
 4. **Explorar** la estructura del código en `04_ESTRUCTURA_CODIGO.md`
 5. **Consultar** `02_BASE_DE_DATOS.md` cuando trabajes con la base de datos
 
@@ -52,9 +54,10 @@ docs/
 ├── 04_ESTRUCTURA_CODIGO.md     # Estructura del código
 └── base_datos/
     └── migraciones/             # Todas las migraciones SQL
-        ├── *.sql               # Archivos de migración
-        ├── INDICE_MIGRACIONES.md
-        └── README_RLS_MIGRATIONS.md
+        ├── schema_completo.sql  # Archivo principal consolidado
+        ├── README.md            # Documentación técnica para desarrolladores
+        ├── historico/           # Migraciones originales (referencia)
+        └── utilidades/          # Scripts auxiliares
 ```
 
 ---
@@ -80,7 +83,7 @@ docs/
 ## ✅ Estado de la Documentación
 
 - ✅ **4 guías principales** completas y actualizadas
-- ✅ **40+ migraciones SQL** documentadas y listas para usar
+- ✅ **Schema completo consolidado** (`schema_completo.sql`) listo para instalación
 - ✅ **Estructura limpia** y fácil de navegar
 - ✅ **Lista para wiki** y nuevos desarrolladores
 

@@ -633,7 +633,7 @@ CREATE POLICY "Admins can view all users" ON users
 ```
 
 **Referencia de código:**
-- Archivo: `docs/base_datos/migraciones/20240815000004_configure_rls_fixed.sql`
+- Archivo: `docs/base_datos/migraciones/schema_completo.sql` (sección RLS)
 - Líneas: 200-250 (aproximadamente)
 
 ### 8.3. Funciones RPC Protegidas
@@ -661,7 +661,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 ```
 
 **Referencia de código:**
-- Archivo: `docs/base_datos/migraciones/` (función RPC)
+- Archivo: `docs/base_datos/migraciones/schema_completo.sql` (funciones RPC)
 - Función: `create_tutor`
 
 ---
