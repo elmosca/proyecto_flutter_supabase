@@ -547,7 +547,7 @@ CREATE POLICY "Tutors can view their own projects" ON projects
 ```
 
 **Referencia de código:**
-- Archivo: `docs/base_datos/migraciones/20240815000004_configure_rls_fixed.sql`
+- Archivo: `docs/base_datos/migraciones/schema_completo.sql` (sección RLS)
 - Líneas: 200-250 (aproximadamente)
 
 ### 9.2. Verificación de Propiedad
