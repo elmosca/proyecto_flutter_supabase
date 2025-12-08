@@ -347,7 +347,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
                   ),
                   const Spacer(),
                   ElevatedButton.icon(
-                    onPressed: _editAnteproject,
+                    onPressed: (_hasApprovedAnteproject == true) ? null : _editAnteproject,
                     icon: const Icon(Icons.edit, size: 18),
                     label: Text(AppLocalizations.of(context)!.editAnteproject),
                     style: ElevatedButton.styleFrom(
@@ -377,7 +377,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
                   ),
                   const Spacer(),
                   ElevatedButton.icon(
-                    onPressed: _isLoading ? null : _deleteAnteproject,
+                    onPressed: (_isLoading || _hasApprovedAnteproject == true) ? null : _deleteAnteproject,
                     icon: const Icon(Icons.delete, size: 18),
                     label: Text(
                       AppLocalizations.of(context)!.anteprojectDeleteButton,
@@ -1162,6 +1162,18 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
   }
 
   void _editAnteproject() {
+    // Verificar si hay anteproyecto aprobado antes de permitir editar
+    if (_hasApprovedAnteproject == true) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.cannotEditAnteprojectWithApproved),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+    
     Navigator.of(context)
         .push(
           MaterialPageRoute(
@@ -1176,6 +1188,18 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
   }
 
   void _deleteAnteproject() {
+    // Verificar si hay anteproyecto aprobado antes de permitir eliminar
+    if (_hasApprovedAnteproject == true) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.cannotDeleteAnteprojectWithApproved),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+    
     final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,

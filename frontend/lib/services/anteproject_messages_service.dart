@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/anteproject_message.dart';
 import 'email_notification_service.dart';
+import 'anteprojects_service.dart';
+import '../utils/app_exception.dart';
 
 class AnteprojectMessagesService {
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -108,14 +110,29 @@ class AnteprojectMessagesService {
         throw Exception('Usuario no autenticado');
       }
 
-      // Obtener el ID del usuario actual
+      // Obtener el ID del usuario actual y su rol
       final userResponse = await _supabase
           .from('users')
-          .select('id')
+          .select('id, role')
           .eq('email', currentUser.email!)
           .single();
 
       final authorId = userResponse['id'] as int;
+      final userRole = userResponse['role'] as String;
+
+      // Verificar si el estudiante ya tiene un anteproyecto aprobado
+      if (userRole == 'student') {
+        // Importar el servicio de anteproyectos para verificar
+        final anteprojectsService = AnteprojectsService();
+        final hasApproved = await anteprojectsService.hasApprovedAnteproject();
+        if (hasApproved) {
+          throw ValidationException(
+            'cannot_send_message_with_approved_anteproject',
+            technicalMessage:
+                'No puedes enviar mensajes sobre anteproyectos porque ya tienes uno aprobado. Debes comunicarte a través del proyecto asociado.',
+          );
+        }
+      }
 
       final insertData = {
         'anteproject_id': anteprojectId,

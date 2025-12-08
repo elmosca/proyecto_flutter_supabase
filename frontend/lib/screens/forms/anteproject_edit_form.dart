@@ -43,6 +43,7 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
 
   bool _isSubmitting = false;
   bool _isLoading = true;
+  bool? _hasApprovedAnteproject; // null = cargando, true/false = resultado
   User? _currentUser;
 
   @override
@@ -50,6 +51,43 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
     super.initState();
     _initializeControllers();
     _loadCurrentUser();
+    _checkApprovedAnteproject();
+  }
+
+  Future<void> _checkApprovedAnteproject() async {
+    try {
+      final hasApproved = await _anteprojectsService.hasApprovedAnteproject();
+      if (mounted) {
+        setState(() {
+          _hasApprovedAnteproject = hasApproved;
+        });
+        if (hasApproved) {
+          final l10n = AppLocalizations.of(context)!;
+          // Mostrar diálogo informativo
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => AlertDialog(
+              title: Text(l10n.cannotEditAnteprojectWithApprovedTitle),
+              content: Text(l10n.cannotEditAnteprojectWithApproved),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(l10n.close),
+                ),
+              ],
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('Error al verificar anteproyecto aprobado: $e');
+      if (mounted) {
+        setState(() {
+          _hasApprovedAnteproject = false; // En caso de error, permitir intentar
+        });
+      }
+    }
   }
 
   void _initializeControllers() {
@@ -256,6 +294,18 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
   }
 
   void _submit() {
+    // Verificar si hay anteproyecto aprobado antes de permitir enviar
+    if (_hasApprovedAnteproject == true) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.cannotEditAnteprojectWithApproved),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
     if (!_formKey.currentState!.validate()) return;
 
     // Convertir hitos a formato JSON para el backend
@@ -652,7 +702,7 @@ class _AnteprojectEditFormState extends State<AnteprojectEditForm> {
                             height: 48,
                             child: LoadingButton(
                               text: l10n.anteprojectUpdateButton,
-                              onPressed: _submit,
+                              onPressed: (_hasApprovedAnteproject == true) ? null : _submit,
                               isLoading: _isSubmitting,
                               style: FilledButton.styleFrom(
                                 minimumSize: const Size(double.infinity, 48),

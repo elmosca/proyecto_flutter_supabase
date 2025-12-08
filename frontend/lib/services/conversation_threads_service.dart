@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/conversation_thread.dart';
+import 'anteprojects_service.dart';
+import '../utils/app_exception.dart';
 
 /// Servicio para gestionar hilos/temas de conversación
 class ConversationThreadsService {
@@ -90,14 +92,28 @@ class ConversationThreadsService {
         throw Exception('Usuario no autenticado');
       }
 
-      // Obtener el ID del usuario actual
+      // Obtener el ID del usuario actual y su rol
       final userResponse = await _supabase
           .from('users')
-          .select('id')
+          .select('id, role')
           .eq('email', currentUser.email!)
           .single();
 
       final userId = userResponse['id'] as int;
+      final userRole = userResponse['role'] as String;
+
+      // Verificar si se intenta crear un hilo sobre un anteproyecto y el estudiante tiene uno aprobado
+      if (anteprojectId != null && userRole == 'student') {
+        final anteprojectsService = AnteprojectsService();
+        final hasApproved = await anteprojectsService.hasApprovedAnteproject();
+        if (hasApproved) {
+          throw ValidationException(
+            'cannot_create_thread_with_approved_anteproject',
+            technicalMessage:
+                'No puedes crear hilos de conversación sobre anteproyectos porque ya tienes uno aprobado. Debes comunicarte a través del proyecto asociado.',
+          );
+        }
+      }
 
       debugPrint('🔍 Creando nuevo hilo: $title');
 

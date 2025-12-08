@@ -1018,6 +1018,26 @@ class AppLocalizationsEs extends AppLocalizations {
       'No puedes enviar este anteproyecto porque ya tienes uno aprobado. Debes desarrollar el proyecto asociado.';
 
   @override
+  String get cannotSendMessageWithApprovedAnteproject =>
+      'No puedes enviar mensajes sobre anteproyectos porque ya tienes uno aprobado. Debes comunicarte a través del proyecto asociado.';
+
+  @override
+  String get cannotEditAnteprojectWithApprovedTitle =>
+      'No puedes editar este anteproyecto';
+
+  @override
+  String get cannotEditAnteprojectWithApproved =>
+      'No puedes editar anteproyectos porque ya tienes uno aprobado. Todos tus anteproyectos están congelados y solo se pueden ver. Debes desarrollar el proyecto asociado.';
+
+  @override
+  String get cannotDeleteAnteprojectWithApproved =>
+      'No puedes eliminar anteproyectos porque ya tienes uno aprobado. Todos tus anteproyectos están congelados y solo se pueden ver. Debes desarrollar el proyecto asociado.';
+
+  @override
+  String get cannotCreateThreadWithApprovedAnteproject =>
+      'No puedes crear hilos de conversación sobre anteproyectos porque ya tienes uno aprobado. Debes comunicarte a través del proyecto asociado.';
+
+  @override
   String get anteprojectRejectedSuccess => 'Anteproyecto rechazado';
 
   @override

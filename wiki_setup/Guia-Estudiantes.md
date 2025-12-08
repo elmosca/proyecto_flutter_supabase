@@ -75,8 +75,10 @@ Una vez aprobado tu anteproyecto:
    ↓
 4. Actualizas el estado de tus tareas
    ↓
-5. Tu tutor supervisa tu progreso
+5. Gestionas tu proyecto de forma autónoma
 ```
+
+**Importante:** El tutor **NO supervisa proyectos**. El tutor solo revisa y aprueba/rechaza anteproyectos. Una vez que tu anteproyecto está aprobado, eres tú quien gestiona tu proyecto de forma autónoma, creando y completando tus propias tareas.
 
 ---
 
@@ -94,8 +96,10 @@ Pendiente → En Progreso → En Revisión → Completada
 1. **Crear tareas**: Define tu propio plan de trabajo
 2. **Cambiar estado**: Mantén actualizado el estado de cada tarea
 3. **Enviar a revisión**: Cuando termines, marca como "En Revisión"
-4. **Actualizar progreso**: Informa a tu tutor regularmente
-5. **Atender feedback**: Si se requieren cambios, ajusta y vuelve a enviar
+4. **Gestionar tu trabajo**: Organiza y completa tus tareas de forma autónoma
+5. **Comunicarte con tu tutor**: Usa el chat 💬 si necesitas orientación o tienes dudas sobre tu proyecto
+
+**Importante:** El tutor **NO interviene en los proyectos**. El tutor solo revisa anteproyectos. Una vez aprobado tu anteproyecto, tú eres responsable de gestionar tu proyecto y completar tus tareas. Puedes comunicarte con tu tutor mediante el chat 💬 si necesitas orientación, pero el trabajo y la gestión de tareas es tu responsabilidad.
 
 ---
 
@@ -111,20 +115,45 @@ Tu vista inicial que te da la bienvenida y te orienta sobre los siguientes pasos
    - **Izquierda**: Ícono de menú hamburguesa (☰) + Ícono de graduación + Título "Dashboard Estudiante"
    - **Derecha**: 
      - 🌐 **Idioma** (ícono de globo) - Cambiar entre español/inglés
+     - 💬 **Mensajes** (ícono de chat) - Acceso rápido al chat con tu tutor
      - 🔔 **Notificaciones** (ícono de campana)
      - 🚪 **Cerrar sesión** (ícono de salida)
 
-2. **Tarjeta de información del usuario (azul):**
+2. **Tarjeta de información del usuario:**
    - Tu nombre completo
    - Tu email
-   - Tu rol (Estudiante)
+   - Tu especialidad (si está asignada)
+   - Tu año académico
 
-3. **Sección "Comenzar" (blanca):**
-   - 📋 **Guía rápida de uso** con información sobre:
-     - **Menú principal**: Cómo navegar entre Anteproyectos, Proyectos, Tareas y Tablero Kanban desde el menú hamburguesa
-     - **Barra superior**: Uso del ícono de idioma y el ícono de campana para notificaciones
-     - **Flujo básico**: Pasos para crear anteproyecto, trabajar en proyectos y gestionar tareas
-     - **Consejos**: Recomendaciones para mantener tareas actualizadas y comunicarte con tu tutor
+3. **Sección de Estadísticas (3 tarjetas):**
+   - 📋 **Anteproyectos Pendientes**: Cuántos anteproyectos tienes esperando revisión
+   - 📁 **Proyectos Activos**: Cuántos proyectos aprobados tienes
+   - ✅ **Tareas Pendientes**: Cuántas tareas tienes por hacer
+
+4. **Acciones Rápidas:**
+   - ➕ **Crear Anteproyecto**: Acceso rápido para crear un nuevo anteproyecto
+   - ✅ **Crear Tarea**: Acceso rápido para crear una nueva tarea (solo visible si tienes un anteproyecto aprobado)
+   - 📊 **Tablero Kanban**: Acceso directo al tablero visual de tareas
+
+5. **Sección "Anteproyectos Pendientes de Revisión"** (si tienes anteproyectos enviados):
+   - Muestra hasta 3 anteproyectos que están esperando revisión del tutor
+   - Incluye el estado y una vista previa de la descripción
+
+6. **Sección "Proyectos Activos"** (si tienes anteproyectos aprobados):
+   - Muestra hasta 3 proyectos activos
+   - Acceso directo a cada proyecto
+
+7. **Sección "Tareas Próximas (7 días)"** (si tienes tareas con fecha límite próxima):
+   - Muestra hasta 5 tareas que vencen en los próximos 7 días
+   - Ordenadas por fecha de vencimiento
+
+8. **Sección "Mis Anteproyectos":**
+   - Lista completa de todos tus anteproyectos (hasta 5)
+   - Si no tienes anteproyectos, muestra un mensaje y botón para crear el primero
+
+9. **Sección "Mis Tareas":**
+   - Lista completa de todas tus tareas (hasta 5)
+   - Si no tienes tareas, muestra un mensaje y botón para crear la primera (solo si tienes anteproyecto aprobado)
 
 **Menú hamburguesa (Drawer):**
 

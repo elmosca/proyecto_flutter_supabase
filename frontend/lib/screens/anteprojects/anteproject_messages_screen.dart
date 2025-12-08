@@ -5,6 +5,8 @@ import '../../models/anteproject.dart';
 import '../../models/anteproject_message.dart';
 import '../../models/user.dart';
 import '../../services/anteproject_messages_service.dart';
+import '../../services/anteprojects_service.dart';
+import '../../l10n/app_localizations.dart';
 
 class AnteprojectMessagesScreen extends StatefulWidget {
   final Anteproject anteproject;
@@ -17,12 +19,14 @@ class AnteprojectMessagesScreen extends StatefulWidget {
 
 class _AnteprojectMessagesScreenState extends State<AnteprojectMessagesScreen> {
   final AnteprojectMessagesService _messagesService = AnteprojectMessagesService();
+  final AnteprojectsService _anteprojectsService = AnteprojectsService();
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   
   List<AnteprojectMessage> _messages = [];
   bool _isLoading = true;
   bool _isSubmitting = false;
+  bool? _hasApprovedAnteproject; // null = cargando, true/false = resultado
   User? _currentUser;
 
   @override
@@ -30,6 +34,7 @@ class _AnteprojectMessagesScreenState extends State<AnteprojectMessagesScreen> {
     super.initState();
     _loadCurrentUser();
     _loadMessages();
+    _checkApprovedAnteproject();
   }
 
   @override
@@ -45,6 +50,24 @@ class _AnteprojectMessagesScreenState extends State<AnteprojectMessagesScreen> {
       setState(() {
         _currentUser = authState.user;
       });
+    }
+  }
+
+  Future<void> _checkApprovedAnteproject() async {
+    try {
+      final hasApproved = await _anteprojectsService.hasApprovedAnteproject();
+      if (mounted) {
+        setState(() {
+          _hasApprovedAnteproject = hasApproved;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error al verificar anteproyecto aprobado: $e');
+      if (mounted) {
+        setState(() {
+          _hasApprovedAnteproject = false; // En caso de error, permitir intentar
+        });
+      }
     }
   }
 
@@ -117,6 +140,24 @@ class _AnteprojectMessagesScreenState extends State<AnteprojectMessagesScreen> {
       return;
     }
 
+    // Verificar si el estudiante ya tiene un anteproyecto aprobado
+    final hasApproved = _hasApprovedAnteproject ?? 
+        await _anteprojectsService.hasApprovedAnteproject();
+    
+    if (hasApproved) {
+      final l10n = AppLocalizations.of(context)!;
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.cannotSendMessageWithApprovedAnteproject),
+            duration: const Duration(seconds: 5),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+      return;
+    }
+
     try {
       setState(() {
         _isSubmitting = true;
@@ -157,12 +198,24 @@ class _AnteprojectMessagesScreenState extends State<AnteprojectMessagesScreen> {
         setState(() {
           _isSubmitting = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error al enviar mensaje: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        final l10n = AppLocalizations.of(context)!;
+        // Verificar si es el error específico de anteproyecto aprobado
+        if (e.toString().contains('cannot_send_message_with_approved_anteproject') ||
+            e.toString().contains('cannotSendMessageWithApprovedAnteproject')) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.cannotSendMessageWithApprovedAnteproject),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error al enviar mensaje: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     }
   }
@@ -377,6 +430,40 @@ class _AnteprojectMessagesScreenState extends State<AnteprojectMessagesScreen> {
   }
 
   Widget _buildMessageForm() {
+    final l10n = AppLocalizations.of(context)!;
+    final hasApproved = _hasApprovedAnteproject ?? false;
+    
+    if (hasApproved) {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.orange.shade50,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.shade300,
+              blurRadius: 4,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.info_outline, color: Colors.orange[700]),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                l10n.cannotSendMessageWithApprovedAnteproject,
+                style: TextStyle(
+                  color: Colors.orange[900],
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -394,6 +481,7 @@ class _AnteprojectMessagesScreenState extends State<AnteprojectMessagesScreen> {
           Expanded(
             child: TextField(
               controller: _messageController,
+              enabled: !hasApproved,
               decoration: InputDecoration(
                 hintText: 'Escribe tu mensaje...',
                 border: OutlineInputBorder(
@@ -411,7 +499,7 @@ class _AnteprojectMessagesScreenState extends State<AnteprojectMessagesScreen> {
           ),
           const SizedBox(width: 8),
           FloatingActionButton(
-            onPressed: _isSubmitting ? null : _submitMessage,
+            onPressed: (_isSubmitting || hasApproved) ? null : _submitMessage,
             backgroundColor: Colors.blue,
             mini: true,
             child: _isSubmitting

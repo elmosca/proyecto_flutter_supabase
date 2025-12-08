@@ -6,8 +6,10 @@ import '../../models/anteproject.dart';
 import '../../models/conversation_thread.dart';
 import '../../models/user.dart';
 import '../../services/conversation_threads_service.dart';
+import '../../services/anteprojects_service.dart';
 import '../../widgets/navigation/app_bar_actions.dart';
 import '../../l10n/app_localizations.dart';
+import '../../utils/app_exception.dart';
 import 'thread_messages_screen.dart';
 import 'create_thread_dialog.dart';
 
@@ -37,17 +39,44 @@ class ConversationThreadsScreen extends StatefulWidget {
 class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
   final ConversationThreadsService _threadsService =
       ConversationThreadsService();
+  final AnteprojectsService _anteprojectsService = AnteprojectsService();
 
   List<ConversationThread> _threads = [];
   bool _isLoading = true;
   String? _errorMessage;
   User? _currentUser;
+  bool? _hasApprovedAnteproject; // null = cargando, true/false = resultado
 
   @override
   void initState() {
     super.initState();
     _loadCurrentUser();
     _loadThreads();
+    _checkApprovedAnteproject();
+  }
+
+  Future<void> _checkApprovedAnteproject() async {
+    // Solo verificar si es un anteproyecto
+    if (widget.anteproject != null) {
+      try {
+        final hasApproved = await _anteprojectsService.hasApprovedAnteproject();
+        if (mounted) {
+          setState(() {
+            _hasApprovedAnteproject = hasApproved;
+          });
+        }
+      } catch (e) {
+        debugPrint('Error al verificar anteproyecto aprobado: $e');
+        if (mounted) {
+          setState(() {
+            _hasApprovedAnteproject = false; // En caso de error, permitir intentar
+          });
+        }
+      }
+    } else {
+      // Si es un proyecto, no hay restricción
+      _hasApprovedAnteproject = false;
+    }
   }
 
   Future<void> _loadCurrentUser() async {
@@ -94,6 +123,18 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
   }
 
   Future<void> _createNewThread() async {
+    // Verificar si hay anteproyecto aprobado antes de permitir crear hilo
+    if (widget.anteproject != null && (_hasApprovedAnteproject ?? false)) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.cannotCreateThreadWithApprovedAnteproject),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
     final title = await showDialog<String>(
       context: context,
       builder: (context) => const CreateThreadDialog(),
@@ -118,12 +159,24 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
       } catch (e) {
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.errorLoadingConversations(e.toString())),
-              backgroundColor: Colors.red,
-            ),
-          );
+          // Verificar si es el error específico de anteproyecto aprobado
+          if (e is ValidationException && 
+              (e.code == 'cannot_create_thread_with_approved_anteproject' ||
+               e.toString().contains('cannot_create_thread_with_approved_anteproject'))) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(l10n.cannotCreateThreadWithApprovedAnteproject),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(l10n.errorLoadingConversations(e.toString())),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
           setState(() => _isLoading = false);
         }
       }
@@ -181,7 +234,9 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
             bottom: 16,
             right: 16,
             child: FloatingActionButton.extended(
-              onPressed: _createNewThread,
+              onPressed: (widget.anteproject != null && (_hasApprovedAnteproject ?? false)) 
+                  ? null 
+                  : _createNewThread,
               backgroundColor: color,
               foregroundColor: Colors.white,
               icon: const Icon(Icons.add),

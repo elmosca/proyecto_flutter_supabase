@@ -1371,6 +1371,26 @@
   "@cannotSubmitAnteprojectWithApproved": {
     "description": "Mensaje cuando el estudiante intenta enviar un anteproyecto en borrador con uno ya aprobado"
   },
+  "cannotSendMessageWithApprovedAnteproject": "No puedes enviar mensajes sobre anteproyectos porque ya tienes uno aprobado. Debes comunicarte a través del proyecto asociado.",
+  "@cannotSendMessageWithApprovedAnteproject": {
+    "description": "Mensaje cuando el estudiante intenta enviar mensajes sobre anteproyectos con uno ya aprobado"
+  },
+  "cannotEditAnteprojectWithApprovedTitle": "No puedes editar este anteproyecto",
+  "@cannotEditAnteprojectWithApprovedTitle": {
+    "description": "Título del mensaje cuando el estudiante intenta editar un anteproyecto con uno ya aprobado"
+  },
+  "cannotEditAnteprojectWithApproved": "No puedes editar anteproyectos porque ya tienes uno aprobado. Todos tus anteproyectos están congelados y solo se pueden ver. Debes desarrollar el proyecto asociado.",
+  "@cannotEditAnteprojectWithApproved": {
+    "description": "Mensaje cuando el estudiante intenta editar un anteproyecto con uno ya aprobado"
+  },
+  "cannotDeleteAnteprojectWithApproved": "No puedes eliminar anteproyectos porque ya tienes uno aprobado. Todos tus anteproyectos están congelados y solo se pueden ver. Debes desarrollar el proyecto asociado.",
+  "@cannotDeleteAnteprojectWithApproved": {
+    "description": "Mensaje cuando el estudiante intenta eliminar un anteproyecto con uno ya aprobado"
+  },
+  "cannotCreateThreadWithApprovedAnteproject": "No puedes crear hilos de conversación sobre anteproyectos porque ya tienes uno aprobado. Debes comunicarte a través del proyecto asociado.",
+  "@cannotCreateThreadWithApprovedAnteproject": {
+    "description": "Mensaje cuando el estudiante intenta crear un hilo de conversación sobre anteproyectos con uno ya aprobado"
+  },
   "anteprojectRejectedSuccess": "Anteproyecto rechazado",
   "@anteprojectRejectedSuccess": {
     "description": "Mensaje de éxito al rechazar anteproyecto"

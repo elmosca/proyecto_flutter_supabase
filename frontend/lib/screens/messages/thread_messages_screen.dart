@@ -9,6 +9,7 @@ import '../../models/anteproject_message.dart';
 import '../../models/user.dart';
 import '../../services/project_messages_service.dart';
 import '../../services/anteproject_messages_service.dart';
+import '../../services/anteprojects_service.dart';
 import '../../widgets/navigation/app_bar_actions.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -40,17 +41,44 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
       ProjectMessagesService();
   final AnteprojectMessagesService _anteprojectMessagesService =
       AnteprojectMessagesService();
+  final AnteprojectsService _anteprojectsService = AnteprojectsService();
 
   List<dynamic> _messages = []; // Puede ser ProjectMessage o AnteprojectMessage
   bool _isLoading = true;
   bool _isSending = false;
   String? _errorMessage;
   User? _currentUser;
+  bool? _hasApprovedAnteproject; // null = cargando, true/false = resultado
 
   @override
   void initState() {
     super.initState();
     _loadMessages();
+    _checkApprovedAnteproject();
+  }
+
+  Future<void> _checkApprovedAnteproject() async {
+    // Solo verificar si es un hilo de anteproyecto
+    if (!widget.thread.isProjectThread && widget.thread.anteprojectId != null) {
+      try {
+        final hasApproved = await _anteprojectsService.hasApprovedAnteproject();
+        if (mounted) {
+          setState(() {
+            _hasApprovedAnteproject = hasApproved;
+          });
+        }
+      } catch (e) {
+        debugPrint('Error al verificar anteproyecto aprobado: $e');
+        if (mounted) {
+          setState(() {
+            _hasApprovedAnteproject = false; // En caso de error, permitir intentar
+          });
+        }
+      }
+    } else {
+      // Si es un hilo de proyecto, no hay restricción
+      _hasApprovedAnteproject = false;
+    }
   }
 
   @override
@@ -402,6 +430,41 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
   }
 
   Widget _buildMessageInput(Color color) {
+    final l10n = AppLocalizations.of(context)!;
+    final isAnteprojectThread = !widget.thread.isProjectThread;
+    final hasApproved = isAnteprojectThread ? (_hasApprovedAnteproject ?? false) : false;
+    
+    if (isAnteprojectThread && hasApproved) {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.orange.shade50,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.shade300,
+              blurRadius: 10,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.info_outline, color: Colors.orange[700]),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                l10n.cannotSendMessageWithApprovedAnteproject,
+                style: TextStyle(
+                  color: Colors.orange[900],
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -419,10 +482,11 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
           Expanded(
             child: TextField(
               controller: _messageController,
+              enabled: !hasApproved,
               maxLines: null,
               textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(
-                hintText: AppLocalizations.of(context)!.writeMessage,
+                hintText: l10n.writeMessage,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
                 ),
@@ -431,7 +495,7 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
                   vertical: 12,
                 ),
               ),
-              onSubmitted: (_) => _sendMessage(),
+              onSubmitted: hasApproved ? null : (_) => _sendMessage(),
             ),
           ),
           const SizedBox(width: 8),
@@ -448,7 +512,7 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
                       ),
                     )
                   : const Icon(Icons.send, color: Colors.white),
-              onPressed: _isSending ? null : _sendMessage,
+              onPressed: (_isSending || hasApproved) ? null : _sendMessage,
             ),
           ),
         ],

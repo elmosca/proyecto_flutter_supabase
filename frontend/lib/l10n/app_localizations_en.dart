@@ -1006,6 +1006,26 @@ class AppLocalizationsEn extends AppLocalizations {
       'You cannot submit this anteproject because you already have one approved. You must develop the associated project.';
 
   @override
+  String get cannotSendMessageWithApprovedAnteproject =>
+      'You cannot send messages about anteprojects because you already have one approved. You must communicate through the associated project.';
+
+  @override
+  String get cannotEditAnteprojectWithApprovedTitle =>
+      'Cannot edit this anteproject';
+
+  @override
+  String get cannotEditAnteprojectWithApproved =>
+      'You cannot edit anteprojects because you already have one approved. All your anteprojects are frozen and can only be viewed. You must develop the associated project.';
+
+  @override
+  String get cannotDeleteAnteprojectWithApproved =>
+      'You cannot delete anteprojects because you already have one approved. All your anteprojects are frozen and can only be viewed. You must develop the associated project.';
+
+  @override
+  String get cannotCreateThreadWithApprovedAnteproject =>
+      'You cannot create conversation threads about anteprojects because you already have one approved. You must communicate through the associated project.';
+
+  @override
   String get anteprojectRejectedSuccess => 'Anteproject rejected';
 
   @override

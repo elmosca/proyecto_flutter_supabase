@@ -554,6 +554,26 @@ class AnteprojectsService {
         );
       }
 
+      // Obtener el rol del usuario
+      final userResponse = await _supabase
+          .from('users')
+          .select('role')
+          .eq('email', user.email!)
+          .single();
+      final userRole = userResponse['role'] as String;
+
+      // Verificar si el estudiante ya tiene un anteproyecto aprobado
+      if (userRole == 'student') {
+        final hasApproved = await hasApprovedAnteproject();
+        if (hasApproved) {
+          throw ValidationException(
+            'cannot_edit_anteproject_with_approved',
+            technicalMessage:
+                'No puedes editar anteproyectos porque ya tienes uno aprobado. Debes desarrollar el proyecto asociado.',
+          );
+        }
+      }
+
       final data = anteproject.toJson();
       // Remover campos que no se pueden actualizar
       data.remove('id');
@@ -1427,6 +1447,16 @@ class AnteprojectsService {
       if (userRole != 'student') {
         throw const AnteprojectsException(
           'Solo los estudiantes pueden eliminar anteproyectos',
+        );
+      }
+
+      // Verificar si el estudiante ya tiene un anteproyecto aprobado
+      final hasApproved = await hasApprovedAnteproject();
+      if (hasApproved) {
+        throw ValidationException(
+          'cannot_delete_anteproject_with_approved',
+          technicalMessage:
+              'No puedes eliminar anteproyectos porque ya tienes uno aprobado. Debes desarrollar el proyecto asociado.',
         );
       }
 

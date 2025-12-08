@@ -1982,6 +1982,36 @@ abstract class AppLocalizations {
   /// **'No puedes enviar este anteproyecto porque ya tienes uno aprobado. Debes desarrollar el proyecto asociado.'**
   String get cannotSubmitAnteprojectWithApproved;
 
+  /// Mensaje cuando el estudiante intenta enviar mensajes sobre anteproyectos con uno ya aprobado
+  ///
+  /// In es, this message translates to:
+  /// **'No puedes enviar mensajes sobre anteproyectos porque ya tienes uno aprobado. Debes comunicarte a través del proyecto asociado.'**
+  String get cannotSendMessageWithApprovedAnteproject;
+
+  /// Título del mensaje cuando el estudiante intenta editar un anteproyecto con uno ya aprobado
+  ///
+  /// In es, this message translates to:
+  /// **'No puedes editar este anteproyecto'**
+  String get cannotEditAnteprojectWithApprovedTitle;
+
+  /// Mensaje cuando el estudiante intenta editar un anteproyecto con uno ya aprobado
+  ///
+  /// In es, this message translates to:
+  /// **'No puedes editar anteproyectos porque ya tienes uno aprobado. Todos tus anteproyectos están congelados y solo se pueden ver. Debes desarrollar el proyecto asociado.'**
+  String get cannotEditAnteprojectWithApproved;
+
+  /// Mensaje cuando el estudiante intenta eliminar un anteproyecto con uno ya aprobado
+  ///
+  /// In es, this message translates to:
+  /// **'No puedes eliminar anteproyectos porque ya tienes uno aprobado. Todos tus anteproyectos están congelados y solo se pueden ver. Debes desarrollar el proyecto asociado.'**
+  String get cannotDeleteAnteprojectWithApproved;
+
+  /// Mensaje cuando el estudiante intenta crear un hilo de conversación sobre anteproyectos con uno ya aprobado
+  ///
+  /// In es, this message translates to:
+  /// **'No puedes crear hilos de conversación sobre anteproyectos porque ya tienes uno aprobado. Debes comunicarte a través del proyecto asociado.'**
+  String get cannotCreateThreadWithApprovedAnteproject;
+
   /// Mensaje de éxito al rechazar anteproyecto
   ///
   /// In es, this message translates to:
