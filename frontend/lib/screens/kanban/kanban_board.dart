@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../blocs/auth_bloc.dart';
 import '../../blocs/tasks_bloc.dart';
@@ -9,6 +10,7 @@ import '../../models/user.dart';
 import '../../services/logging_service.dart';
 import '../../widgets/navigation/app_bar_actions.dart';
 import '../forms/task_form.dart';
+import '../details/task_detail_screen.dart';
 
 class KanbanBoard extends StatefulWidget {
   final int? projectId;
@@ -392,7 +394,7 @@ class _KanbanBoardState extends State<KanbanBoard> {
         margin: const EdgeInsets.only(bottom: 8),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: InkWell(
-          onTap: () => _editTask(task),
+          onTap: () => _showTaskOptions(task),
           child: Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
@@ -740,6 +742,44 @@ class _KanbanBoardState extends State<KanbanBoard> {
     });
   }
 
+  Future<void> _showTaskOptions(Task task) async {
+    final l10n = AppLocalizations.of(context)!;
+    
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(task.title),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.edit, color: Colors.blue),
+              title: Text(l10n.edit),
+              onTap: () {
+                Navigator.of(context).pop();
+                _editTask(task);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.info_outline, color: Colors.green),
+              title: Text(l10n.viewDetails),
+              onTap: () {
+                Navigator.of(context).pop();
+                _viewTaskDetails(task);
+              },
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.cancel),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _editTask(Task task) async {
     await showDialog(
       context: context,
@@ -750,6 +790,19 @@ class _KanbanBoardState extends State<KanbanBoard> {
         ),
       ),
     );
+  }
+
+  void _viewTaskDetails(Task task) {
+    if (_currentUser != null) {
+      context.go('/tasks/${task.id}', extra: _currentUser);
+    } else {
+      // Fallback: usar Navigator si no hay usuario en el contexto
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => TaskDetailScreen(task: task),
+        ),
+      );
+    }
   }
 
   Future<void> _createTask() async {
