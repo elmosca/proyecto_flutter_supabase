@@ -3,19 +3,27 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import '../../models/models.dart';
 import '../../l10n/app_localizations.dart';
-import '../../blocs/comments_bloc.dart';
 import '../../blocs/auth_bloc.dart';
 import '../../services/tasks_service.dart';
-import '../../services/comments_service.dart';
-import '../../widgets/comments/comments_widget.dart';
+import '../../services/theme_service.dart';
 import '../../widgets/files/file_list_widget.dart';
-import '../../widgets/navigation/app_bar_actions.dart';
+import '../../widgets/navigation/persistent_scaffold.dart';
 import '../../utils/task_localizations.dart';
+import '../kanban/kanban_board.dart';
+import '../lists/tasks_list.dart';
+import '../../blocs/tasks_bloc.dart';
 
 class TaskDetailScreen extends StatefulWidget {
   final Task task;
+  final User? user;
+  final bool useOwnScaffold;
 
-  const TaskDetailScreen({super.key, required this.task});
+  const TaskDetailScreen({
+    super.key,
+    required this.task,
+    this.user,
+    this.useOwnScaffold = false, // Por defecto usar PersistentScaffold
+  });
 
   @override
   State<TaskDetailScreen> createState() => _TaskDetailScreenState();
@@ -32,7 +40,9 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    // 2 pestañas: Detalles, Archivos
+    // (Tareas, Kanban y Lista de Tareas ahora están en el AppBar, sin Comentarios porque las tareas pertenecen a proyectos que usan mensajes)
+    _tabController = TabController(length: 2, vsync: this);
     _currentTask = widget.task;
     _descriptionController = TextEditingController(
       text: _currentTask.description,
@@ -41,6 +51,12 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
   }
 
   Future<void> _loadCurrentUser() async {
+    if (widget.user != null) {
+      setState(() {
+        _currentUser = widget.user;
+      });
+      return;
+    }
     final authState = context.read<AuthBloc>().state;
     if (authState is AuthAuthenticated) {
       setState(() {
@@ -75,41 +91,61 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
+    // TabBar sin Tareas y Kanban (ahora están en el AppBar)
+    final tabBar = TabBar(
+      controller: _tabController,
+      indicatorColor: theme.colorScheme.onPrimary,
+      labelColor: theme.colorScheme.onPrimary,
+      unselectedLabelColor: theme.colorScheme.onPrimary.withValues(
+        alpha: 0.7,
+      ),
+      tabs: [
+        Tab(text: l10n.details),
+        Tab(text: l10n.filesAttached),
+      ],
+    );
+
+    final body = TabBarView(
+      controller: _tabController,
+      children: [
+        // Tab de Detalles
+        _buildDetailsTab(context),
+
+        // Tab de Archivos
+        _buildFilesTab(context),
+      ],
+    );
+
+    // Siempre usar PersistentScaffold para mantener la navegación consistente
+    if (_currentUser != null) {
+      return PersistentScaffold(
+        title: l10n.taskDetails,
+        titleKey: 'tasks',
+        user: _currentUser!,
+        // TabBar se muestra en el body, no en el AppBar
+        body: Column(
+          children: [
+            // TabBar como parte del contenido
+            Container(
+              color: ThemeService.instance.currentPrimaryColor,
+              child: tabBar,
+            ),
+            // Contenido de las pestañas
+            Expanded(child: body),
+          ],
+        ),
+      );
+    }
+
+    // Fallback solo si no hay usuario (no debería pasar en uso normal)
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.taskDetails),
         backgroundColor: theme.colorScheme.primary,
         foregroundColor: theme.colorScheme.onPrimary,
-        actions: _currentUser != null
-            ? AppBarActions.standard(context, _currentUser!)
-            : null,
-        bottom: TabBar(
-          controller: _tabController,
-          indicatorColor: theme.colorScheme.onPrimary,
-          labelColor: theme.colorScheme.onPrimary,
-          unselectedLabelColor: theme.colorScheme.onPrimary.withValues(
-            alpha: 0.7,
-          ),
-          tabs: [
-            Tab(text: l10n.details),
-            Tab(text: l10n.comments),
-            Tab(text: l10n.filesAttached),
-          ],
-        ),
+        bottom: tabBar,
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          // Tab de Detalles
-          _buildDetailsTab(context),
-
-          // Tab de Comentarios
-          _buildCommentsTab(context),
-
-          // Tab de Archivos
-          _buildFilesTab(context),
-        ],
-      ),
+      body: body,
     );
   }
 
@@ -315,30 +351,6 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
     );
   }
 
-  Widget _buildCommentsTab(BuildContext context) {
-    final authState = context.read<AuthBloc>().state;
-
-    if (authState is! AuthAuthenticated) {
-      return Center(
-        child: Text(AppLocalizations.of(context)!.mustLoginToViewComments),
-      );
-    }
-
-    return BlocProvider<CommentsBloc>(
-      create: (_) => CommentsBloc(
-        commentsService: CommentsService(),
-        currentUser: authState.user,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: CommentsWidget(
-          taskId: _currentTask.id,
-          currentUser: authState.user,
-        ),
-      ),
-    );
-  }
-
   Widget _buildFilesTab(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -519,5 +531,69 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
         );
       }
     }
+  }
+
+  Widget _buildKanbanTab() {
+    final l10n = AppLocalizations.of(context)!;
+    
+    if (_currentTask.projectId == null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.info_outline, size: 64, color: Colors.grey.shade400),
+              const SizedBox(height: 16),
+              Text(
+                l10n.kanbanOnlyForProjects,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return KanbanBoard(
+      projectId: _currentTask.projectId,
+      isEmbedded: true,
+    );
+  }
+
+  Widget _buildTasksListTab() {
+    final l10n = AppLocalizations.of(context)!;
+    
+    if (_currentTask.projectId == null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.info_outline, size: 64, color: Colors.grey.shade400),
+              const SizedBox(height: 16),
+              Text(
+                l10n.kanbanOnlyForProjects,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // Envolver con BlocProvider para TasksBloc
+    return BlocProvider<TasksBloc>(
+      create: (context) =>
+          TasksBloc(tasksService: TasksService())
+            ..add(TasksLoadRequested(projectId: _currentTask.projectId)),
+      child: TasksList(
+        projectId: _currentTask.projectId,
+        isEmbedded: true,
+      ),
+    );
   }
 }

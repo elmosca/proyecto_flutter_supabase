@@ -74,18 +74,29 @@ abstract class CommentsState extends Equatable {
   List<Object?> get props => [];
 }
 
+/// Estado base para todos los estados que contienen comentarios y usuario actual
+abstract class CommentsStateWithData extends CommentsState {
+  final List<Comment> comments;
+  final User currentUser;
+
+  const CommentsStateWithData({
+    required this.comments,
+    required this.currentUser,
+  });
+
+  @override
+  List<Object> get props => [comments, currentUser];
+}
+
 class CommentsInitial extends CommentsState {}
 
 class CommentsLoading extends CommentsState {}
 
-class CommentsLoaded extends CommentsState {
-  final List<Comment> comments;
-  final User currentUser;
-
-  const CommentsLoaded({required this.comments, required this.currentUser});
-
-  @override
-  List<Object> get props => [comments, currentUser];
+class CommentsLoaded extends CommentsStateWithData {
+  const CommentsLoaded({
+    required super.comments,
+    required super.currentUser,
+  });
 }
 
 class CommentsError extends CommentsState {
@@ -97,64 +108,46 @@ class CommentsError extends CommentsState {
   List<Object> get props => [message];
 }
 
-class CommentAdding extends CommentsState {
-  final List<Comment> comments;
-  final User currentUser;
-
-  const CommentAdding({required this.comments, required this.currentUser});
-
-  @override
-  List<Object> get props => [comments, currentUser];
+class CommentAdding extends CommentsStateWithData {
+  const CommentAdding({
+    required super.comments,
+    required super.currentUser,
+  });
 }
 
-class CommentAdded extends CommentsState {
-  final List<Comment> comments;
-  final User currentUser;
-
-  const CommentAdded({required this.comments, required this.currentUser});
-
-  @override
-  List<Object> get props => [comments, currentUser];
+class CommentAdded extends CommentsStateWithData {
+  const CommentAdded({
+    required super.comments,
+    required super.currentUser,
+  });
 }
 
-class CommentUpdating extends CommentsState {
-  final List<Comment> comments;
-  final User currentUser;
-
-  const CommentUpdating({required this.comments, required this.currentUser});
-
-  @override
-  List<Object> get props => [comments, currentUser];
+class CommentUpdating extends CommentsStateWithData {
+  const CommentUpdating({
+    required super.comments,
+    required super.currentUser,
+  });
 }
 
-class CommentUpdated extends CommentsState {
-  final List<Comment> comments;
-  final User currentUser;
-
-  const CommentUpdated({required this.comments, required this.currentUser});
-
-  @override
-  List<Object> get props => [comments, currentUser];
+class CommentUpdated extends CommentsStateWithData {
+  const CommentUpdated({
+    required super.comments,
+    required super.currentUser,
+  });
 }
 
-class CommentDeleting extends CommentsState {
-  final List<Comment> comments;
-  final User currentUser;
-
-  const CommentDeleting({required this.comments, required this.currentUser});
-
-  @override
-  List<Object> get props => [comments, currentUser];
+class CommentDeleting extends CommentsStateWithData {
+  const CommentDeleting({
+    required super.comments,
+    required super.currentUser,
+  });
 }
 
-class CommentDeleted extends CommentsState {
-  final List<Comment> comments;
-  final User currentUser;
-
-  const CommentDeleted({required this.comments, required this.currentUser});
-
-  @override
-  List<Object> get props => [comments, currentUser];
+class CommentDeleted extends CommentsStateWithData {
+  const CommentDeleted({
+    required super.comments,
+    required super.currentUser,
+  });
 }
 
 // BLoC
@@ -199,8 +192,8 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
     CommentAddRequested event,
     Emitter<CommentsState> emit,
   ) async {
-    if (state is CommentsLoaded) {
-      final currentState = state as CommentsLoaded;
+    final currentState = _getStateWithComments();
+    if (currentState != null) {
       emit(
         CommentAdding(
           comments: currentState.comments,
@@ -235,8 +228,8 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
     CommentUpdateRequested event,
     Emitter<CommentsState> emit,
   ) async {
-    if (state is CommentsLoaded) {
-      final currentState = state as CommentsLoaded;
+    final currentState = _getStateWithComments();
+    if (currentState != null) {
       emit(
         CommentUpdating(
           comments: currentState.comments,
@@ -270,8 +263,8 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
     CommentDeleteRequested event,
     Emitter<CommentsState> emit,
   ) async {
-    if (state is CommentsLoaded) {
-      final currentState = state as CommentsLoaded;
+    final currentState = _getStateWithComments();
+    if (currentState != null) {
       emit(
         CommentDeleting(
           comments: currentState.comments,
@@ -302,8 +295,8 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
     CommentsRefreshRequested event,
     Emitter<CommentsState> emit,
   ) async {
-    if (state is CommentsLoaded) {
-      final currentState = state as CommentsLoaded;
+    final currentState = _getStateWithComments();
+    if (currentState != null) {
       // Buscar el taskId del primer comentario o usar un valor por defecto
       final taskId = currentState.comments.isNotEmpty
           ? currentState.comments.first.taskId
@@ -311,5 +304,13 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
 
       add(CommentsLoadRequested(taskId));
     }
+  }
+
+  /// Obtiene el estado actual si contiene comentarios, independientemente del tipo de estado
+  CommentsStateWithData? _getStateWithComments() {
+    if (state is CommentsStateWithData) {
+      return state as CommentsStateWithData;
+    }
+    return null;
   }
 }

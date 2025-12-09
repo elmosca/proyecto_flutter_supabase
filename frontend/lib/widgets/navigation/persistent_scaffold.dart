@@ -12,6 +12,7 @@ class PersistentScaffold extends StatelessWidget {
   final Widget body;
   final List<Widget>? actions;
   final PreferredSizeWidget? bottom;
+  final TabBar? tabBar; // TabBar opcional para incluir en el AppBar
   final Widget? floatingActionButton;
   final Color? backgroundColor;
 
@@ -23,6 +24,7 @@ class PersistentScaffold extends StatelessWidget {
     required this.body,
     this.actions,
     this.bottom,
+    this.tabBar,
     this.floatingActionButton,
     this.backgroundColor,
   });
@@ -35,6 +37,7 @@ class PersistentScaffold extends StatelessWidget {
         titleKey: titleKey,
         actions: actions,
         bottom: bottom,
+        tabBar: tabBar,
       ),
       drawer: AppSideDrawer(user: user),
       body: body,

@@ -10,7 +10,6 @@ import '../../models/user.dart';
 import '../../services/logging_service.dart';
 import '../../widgets/navigation/app_bar_actions.dart';
 import '../forms/task_form.dart';
-import '../details/task_detail_screen.dart';
 
 class KanbanBoard extends StatefulWidget {
   final int? projectId;
@@ -796,12 +795,18 @@ class _KanbanBoardState extends State<KanbanBoard> {
     if (_currentUser != null) {
       context.go('/tasks/${task.id}', extra: _currentUser);
     } else {
-      // Fallback: usar Navigator si no hay usuario en el contexto
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => TaskDetailScreen(task: task),
-        ),
-      );
+      // Cargar usuario si no está disponible
+      final authState = context.read<AuthBloc>().state;
+      if (authState is AuthAuthenticated) {
+        context.go('/tasks/${task.id}', extra: authState.user);
+      } else {
+        // Fallback: intentar obtener usuario del AuthBloc
+        final authState = context.read<AuthBloc>().state;
+        if (authState is AuthAuthenticated) {
+          context.go('/tasks/${task.id}', extra: authState.user);
+        }
+        // Si no hay usuario autenticado, no navegar (no debería pasar)
+      }
     }
   }
 

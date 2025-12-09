@@ -122,8 +122,14 @@ class _CommentsWidgetState extends State<CommentsWidget> {
                   );
                 }
                 
-                if (state is CommentsLoaded) {
-                  if (state.comments.isEmpty) {
+                // Estados finales con comentarios cargados
+                if (state is CommentsLoaded ||
+                    state is CommentAdded ||
+                    state is CommentUpdated ||
+                    state is CommentDeleted) {
+                  final currentState = state as dynamic;
+                  
+                  if (currentState.comments.isEmpty) {
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -156,14 +162,14 @@ class _CommentsWidgetState extends State<CommentsWidget> {
                   
                   return ListView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: state.comments.length,
+                    itemCount: currentState.comments.length,
                     itemBuilder: (context, index) {
-                      final comment = state.comments[index];
+                      final comment = currentState.comments[index];
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 12),
                         child: CommentCard(
                           comment: comment,
-                          currentUser: state.currentUser,
+                          currentUser: currentState.currentUser,
                           onEdit: (content) {
                             context.read<CommentsBloc>().add(
                               CommentUpdateRequested(
@@ -181,7 +187,7 @@ class _CommentsWidgetState extends State<CommentsWidget> {
                   );
                 }
                 
-                // Estados de operaciones (adding, updating, deleting)
+                // Estados de operaciones en progreso (adding, updating, deleting)
                 if (state is CommentAdding ||
                     state is CommentUpdating ||
                     state is CommentDeleting) {

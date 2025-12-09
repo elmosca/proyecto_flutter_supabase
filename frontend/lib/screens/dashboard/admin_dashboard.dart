@@ -14,11 +14,13 @@ import '../../widgets/navigation/app_side_drawer.dart';
 class AdminDashboard extends StatefulWidget {
   final User user;
   final AdminStatsRepository statsService;
+  final bool useOwnScaffold;
 
   AdminDashboard({
     super.key,
     required this.user,
     AdminStatsRepository? statsService,
+    this.useOwnScaffold = true,
   }) : statsService = statsService ?? AdminStatsService();
 
   @override
@@ -72,13 +74,18 @@ class _AdminDashboardState extends State<AdminDashboard> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final body = _isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : _buildDashboardContent();
+
+    if (!widget.useOwnScaffold) {
+      return body;
+    }
 
     return Scaffold(
       appBar: AppTopBar(user: widget.user, titleKey: 'dashboardAdmin'),
       drawer: AppSideDrawer(user: widget.user),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _buildDashboardContent(),
+      body: body,
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../blocs/auth_bloc.dart';
 import '../../l10n/app_localizations.dart';
@@ -9,7 +10,6 @@ import '../../blocs/tasks_bloc.dart';
 import '../../utils/task_localizations.dart';
 import '../../widgets/navigation/app_bar_actions.dart';
 import '../forms/task_form.dart';
-import '../details/task_detail_screen.dart';
 
 class TasksList extends StatefulWidget {
   final int? projectId;
@@ -103,6 +103,9 @@ class _TasksListState extends State<TasksList> {
               );
             }
 
+            // Agrupar tareas por estado
+            final tasksByStatus = _groupTasksByStatus(tasks);
+
             return RefreshIndicator(
               onRefresh: () async {
                 context.read<TasksBloc>().add(
@@ -111,10 +114,9 @@ class _TasksListState extends State<TasksList> {
               },
               child: ListView.builder(
                 padding: const EdgeInsets.all(16),
-                itemCount: tasks.length,
+                itemCount: _getTotalSections(tasksByStatus),
                 itemBuilder: (context, index) {
-                  final task = tasks[index];
-                  return _buildTaskCard(task, l10n);
+                  return _buildSectionByIndex(index, tasksByStatus, l10n);
                 },
               ),
             );
@@ -335,9 +337,22 @@ class _TasksListState extends State<TasksList> {
   }
 
   void _viewTaskDetails(Task task) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => TaskDetailScreen(task: task)),
-    );
+    if (_currentUser != null) {
+      context.go('/tasks/${task.id}', extra: _currentUser);
+    } else {
+      // Cargar usuario si no está disponible
+      final authState = context.read<AuthBloc>().state;
+      if (authState is AuthAuthenticated) {
+        context.go('/tasks/${task.id}', extra: authState.user);
+      } else {
+        // Fallback: intentar obtener usuario del AuthBloc
+        final authState = context.read<AuthBloc>().state;
+        if (authState is AuthAuthenticated) {
+          context.go('/tasks/${task.id}', extra: authState.user);
+        }
+        // Si no hay usuario autenticado, no navegar (no debería pasar)
+      }
+    }
   }
 
   void _handleTaskAction(String action, Task task) {
@@ -373,6 +388,149 @@ class _TasksListState extends State<TasksList> {
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
             child: Text(l10n.delete),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Agrupa las tareas por estado
+  Map<TaskStatus, List<Task>> _groupTasksByStatus(List<Task> tasks) {
+    final Map<TaskStatus, List<Task>> grouped = {
+      TaskStatus.pending: [],
+      TaskStatus.inProgress: [],
+      TaskStatus.underReview: [],
+      TaskStatus.completed: [],
+    };
+
+    for (final task in tasks) {
+      grouped[task.status]?.add(task);
+    }
+
+    return grouped;
+  }
+
+  /// Obtiene el número total de secciones (encabezados + tareas)
+  int _getTotalSections(Map<TaskStatus, List<Task>> tasksByStatus) {
+    int count = 0;
+    for (final tasks in tasksByStatus.values) {
+      if (tasks.isNotEmpty) {
+        count += 1 + tasks.length; // 1 para el encabezado + tareas
+      }
+    }
+    return count;
+  }
+
+  /// Construye una sección o tarea según el índice
+  Widget _buildSectionByIndex(
+    int index,
+    Map<TaskStatus, List<Task>> tasksByStatus,
+    AppLocalizations l10n,
+  ) {
+    int currentIndex = 0;
+    
+    // Orden de estados: Pendiente, En Progreso, En Revisión, Completada
+    final statusOrder = [
+      TaskStatus.pending,
+      TaskStatus.inProgress,
+      TaskStatus.underReview,
+      TaskStatus.completed,
+    ];
+
+    for (final status in statusOrder) {
+      final tasks = tasksByStatus[status] ?? [];
+      if (tasks.isEmpty) continue;
+
+      // Encabezado de sección
+      if (index == currentIndex) {
+        return _buildStatusHeader(status, tasks.length, l10n);
+      }
+      currentIndex++;
+
+      // Tareas de esta sección
+      for (final task in tasks) {
+        if (index == currentIndex) {
+          return _buildTaskCard(task, l10n);
+        }
+        currentIndex++;
+      }
+    }
+
+    return const SizedBox.shrink();
+  }
+
+  /// Construye el encabezado de una sección de estado
+  Widget _buildStatusHeader(
+    TaskStatus status,
+    int taskCount,
+    AppLocalizations l10n,
+  ) {
+    String title;
+    Color backgroundColor;
+    Color textColor;
+    IconData icon;
+
+    switch (status) {
+      case TaskStatus.pending:
+        title = TaskLocalizations.getTaskStatusDisplayName(status, l10n);
+        backgroundColor = Colors.orange[100]!;
+        textColor = Colors.orange[800]!;
+        icon = Icons.schedule;
+        break;
+      case TaskStatus.inProgress:
+        title = TaskLocalizations.getTaskStatusDisplayName(status, l10n);
+        backgroundColor = Colors.blue[100]!;
+        textColor = Colors.blue[800]!;
+        icon = Icons.play_circle_outline;
+        break;
+      case TaskStatus.underReview:
+        title = TaskLocalizations.getTaskStatusDisplayName(status, l10n);
+        backgroundColor = Colors.purple[100]!;
+        textColor = Colors.purple[800]!;
+        icon = Icons.rate_review;
+        break;
+      case TaskStatus.completed:
+        title = TaskLocalizations.getTaskStatusDisplayName(status, l10n);
+        backgroundColor = Colors.green[100]!;
+        textColor = Colors.green[800]!;
+        icon = Icons.check_circle;
+        break;
+    }
+
+    return Container(
+      margin: const EdgeInsets.only(top: 16, bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: textColor),
+          const SizedBox(width: 8),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: textColor,
+            ),
+          ),
+          const Spacer(),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: textColor.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              '$taskCount',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
+            ),
           ),
         ],
       ),

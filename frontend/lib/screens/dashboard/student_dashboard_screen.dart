@@ -20,8 +20,13 @@ import '../../widgets/navigation/app_side_drawer.dart';
 
 class StudentDashboardScreen extends StatefulWidget {
   final User user;
+  final bool useOwnScaffold;
 
-  const StudentDashboardScreen({super.key, required this.user});
+  const StudentDashboardScreen({
+    super.key,
+    required this.user,
+    this.useOwnScaffold = true,
+  });
 
   @override
   State<StudentDashboardScreen> createState() => _StudentDashboardScreenState();
@@ -155,12 +160,18 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final body = _isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : _buildDashboardContent();
+
+    if (!widget.useOwnScaffold) {
+      return body;
+    }
+
     return Scaffold(
       appBar: AppTopBar(user: widget.user, titleKey: 'dashboardStudent'),
       drawer: AppSideDrawer(user: widget.user),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _buildDashboardContent(),
+      body: body,
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

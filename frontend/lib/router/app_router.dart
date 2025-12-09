@@ -114,7 +114,7 @@ class AppRouter {
           debugPrint(
             '✅ Router: Navegando a StudentDashboardScreen para usuario: ${user.fullName}',
           );
-          return StudentDashboardScreen(user: user);
+          return _StudentDashboardWrapper(user: user);
         },
       ),
       GoRoute(
@@ -125,7 +125,7 @@ class AppRouter {
           if (user == null) {
             return const LoginScreenBloc();
           }
-          return TutorDashboard(user: user);
+          return _TutorDashboardWrapper(user: user);
         },
       ),
       GoRoute(
@@ -140,7 +140,7 @@ class AppRouter {
           debugPrint(
             '✅ Router: Navegando a AdminDashboard para usuario: ${user.fullName}',
           );
-          return AdminDashboard(user: user);
+          return _AdminDashboardWrapper(user: user);
         },
       ),
       // Rutas adicionales para el menú lateral
@@ -189,8 +189,21 @@ user = authState.user;
               final id = int.tryParse(state.pathParameters['id'] ?? '');
               if (id == null) {
                 debugPrint('❌ Router: ID de anteproyecto inválido');
-                return const Scaffold(
-                  body: Center(child: Text('ID de anteproyecto inválido')),
+                User? user = state.extra as User?;
+                if (user == null) {
+                  final authState = context.read<AuthBloc>().state;
+                  if (authState is AuthAuthenticated) {
+                    user = authState.user;
+                  }
+                }
+                if (user == null) {
+                  return const LoginScreenBloc();
+                }
+                return PersistentScaffold(
+                  title: 'Error',
+                  titleKey: 'anteprojects',
+                  user: user,
+                  body: const Center(child: Text('ID de anteproyecto inválido')),
                 );
               }
 
@@ -273,8 +286,21 @@ user = authState.user;
               final id = int.tryParse(state.pathParameters['id'] ?? '');
               if (id == null) {
                 debugPrint('❌ Router: ID de tarea inválido');
-                return const Scaffold(
-                  body: Center(child: Text('ID de tarea inválido')),
+                User? user = state.extra as User?;
+                if (user == null) {
+                  final authState = context.read<AuthBloc>().state;
+                  if (authState is AuthAuthenticated) {
+                    user = authState.user;
+                  }
+                }
+                if (user == null) {
+                  return const LoginScreenBloc();
+                }
+                return PersistentScaffold(
+                  title: 'Error',
+                  titleKey: 'tasks',
+                  user: user,
+                  body: const Center(child: Text('ID de tarea inválido')),
                 );
               }
 
@@ -315,7 +341,7 @@ user = authState.user;
                   }
 
                   final task = snapshot.data!;
-                  return TaskDetailScreen(task: task);
+                  return _TaskDetailScreenWrapper(task: task, user: user!);
                 },
               );
             },
@@ -386,8 +412,21 @@ user = authState.user;
               final id = int.tryParse(state.pathParameters['id'] ?? '');
               if (id == null) {
                 debugPrint('❌ Router: ID de proyecto inválido');
-                return const Scaffold(
-                  body: Center(child: Text('ID de proyecto inválido')),
+                User? user = state.extra as User?;
+                if (user == null) {
+                  final authState = context.read<AuthBloc>().state;
+                  if (authState is AuthAuthenticated) {
+                    user = authState.user;
+                  }
+                }
+                if (user == null) {
+                  return const LoginScreenBloc();
+                }
+                return PersistentScaffold(
+                  title: 'Error',
+                  titleKey: 'projects',
+                  user: user,
+                  body: const Center(child: Text('ID de proyecto inválido')),
                 );
               }
 
@@ -595,7 +634,7 @@ user = authState.user;
           debugPrint(
             '✅ Router: Navegando a Seleccionar Tutor para Flujo de Aprobación',
           );
-          return TutorSelectorForApprovalScreen(adminUser: user);
+          return _TutorSelectorWrapper(adminUser: user);
         },
       ),
       GoRoute(
@@ -778,26 +817,31 @@ class _KanbanScreenWrapperState extends State<_KanbanScreenWrapper> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return PersistentScaffold(
-      title: 'Kanban',
-      titleKey: 'kanban',
-      user: widget.user,
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.refresh),
-          onPressed: () {
-            context.read<TasksBloc>().add(
-              const TasksLoadRequested(projectId: null),
-            );
-          },
-          tooltip: l10n.tasksListRefresh,
+    return BlocProvider<TasksBloc>(
+      create: (context) =>
+          TasksBloc(tasksService: TasksService())
+            ..add(const TasksLoadRequested(projectId: null)),
+      child: PersistentScaffold(
+        title: 'Kanban',
+        titleKey: 'kanban',
+        user: widget.user,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              context.read<TasksBloc>().add(
+                const TasksLoadRequested(projectId: null),
+              );
+            },
+            tooltip: l10n.tasksListRefresh,
+          ),
+        ],
+        floatingActionButton: FloatingActionButton(
+          onPressed: _createTask,
+          child: const Icon(Icons.add),
         ),
-      ],
-      floatingActionButton: FloatingActionButton(
-        onPressed: _createTask,
-        child: const Icon(Icons.add),
+        body: const KanbanBoard(projectId: null, isEmbedded: true),
       ),
-      body: const KanbanBoard(projectId: null, isEmbedded: true),
     );
   }
 }
@@ -851,5 +895,105 @@ class _TasksScreenWrapperState extends State<_TasksScreenWrapper> {
       ),
       body: const TasksList(projectId: null, isEmbedded: true),
     );
+  }
+}
+
+/// Widget wrapper para StudentDashboardScreen con PersistentScaffold
+class _StudentDashboardWrapper extends StatefulWidget {
+  final User user;
+
+  const _StudentDashboardWrapper({required this.user});
+
+  @override
+  State<_StudentDashboardWrapper> createState() => _StudentDashboardWrapperState();
+}
+
+class _StudentDashboardWrapperState extends State<_StudentDashboardWrapper> {
+  @override
+  Widget build(BuildContext context) {
+    return PersistentScaffold(
+      title: 'Panel Principal',
+      titleKey: 'dashboardStudent',
+      user: widget.user,
+      body: StudentDashboardScreen(user: widget.user, useOwnScaffold: false),
+    );
+  }
+}
+
+/// Widget wrapper para TutorDashboard con PersistentScaffold
+class _TutorDashboardWrapper extends StatefulWidget {
+  final User user;
+
+  const _TutorDashboardWrapper({required this.user});
+
+  @override
+  State<_TutorDashboardWrapper> createState() => _TutorDashboardWrapperState();
+}
+
+class _TutorDashboardWrapperState extends State<_TutorDashboardWrapper> {
+  @override
+  Widget build(BuildContext context) {
+    return PersistentScaffold(
+      title: 'Panel Principal',
+      titleKey: 'dashboardTutor',
+      user: widget.user,
+      body: TutorDashboard(user: widget.user, useOwnScaffold: false),
+    );
+  }
+}
+
+/// Widget wrapper para AdminDashboard con PersistentScaffold
+class _AdminDashboardWrapper extends StatefulWidget {
+  final User user;
+
+  const _AdminDashboardWrapper({required this.user});
+
+  @override
+  State<_AdminDashboardWrapper> createState() => _AdminDashboardWrapperState();
+}
+
+class _AdminDashboardWrapperState extends State<_AdminDashboardWrapper> {
+  @override
+  Widget build(BuildContext context) {
+    return PersistentScaffold(
+      title: 'Panel Principal',
+      titleKey: 'dashboardAdmin',
+      user: widget.user,
+      body: AdminDashboard(user: widget.user, useOwnScaffold: false),
+    );
+  }
+}
+
+/// Widget wrapper para TaskDetailScreen con PersistentScaffold
+class _TaskDetailScreenWrapper extends StatefulWidget {
+  final Task task;
+  final User user;
+
+  const _TaskDetailScreenWrapper({required this.task, required this.user});
+
+  @override
+  State<_TaskDetailScreenWrapper> createState() => _TaskDetailScreenWrapperState();
+}
+
+class _TaskDetailScreenWrapperState extends State<_TaskDetailScreenWrapper> {
+  @override
+  Widget build(BuildContext context) {
+    return TaskDetailScreen(
+      task: widget.task,
+      user: widget.user,
+      useOwnScaffold: false,
+    );
+  }
+}
+
+/// Widget wrapper para TutorSelectorForApprovalScreen con PersistentScaffold
+class _TutorSelectorWrapper extends StatelessWidget {
+  final User adminUser;
+
+  const _TutorSelectorWrapper({required this.adminUser});
+
+  @override
+  Widget build(BuildContext context) {
+    return TutorSelectorForApprovalScreen(adminUser: adminUser);
   }
 }

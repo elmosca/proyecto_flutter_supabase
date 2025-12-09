@@ -18,8 +18,13 @@ import '../../widgets/navigation/app_side_drawer.dart';
 
 class TutorDashboard extends StatefulWidget {
   final User user;
+  final bool useOwnScaffold;
 
-  const TutorDashboard({super.key, required this.user});
+  const TutorDashboard({
+    super.key,
+    required this.user,
+    this.useOwnScaffold = true,
+  });
 
   @override
   State<TutorDashboard> createState() => _TutorDashboardState();
@@ -338,13 +343,18 @@ class _TutorDashboardState extends State<TutorDashboard> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final body = _isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : _buildDashboardContent();
+
+    if (!widget.useOwnScaffold) {
+      return body;
+    }
 
     return Scaffold(
       appBar: AppTopBar(user: widget.user, titleKey: 'dashboardTutor'),
       drawer: AppSideDrawer(user: widget.user),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _buildDashboardContent(),
+      body: body,
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

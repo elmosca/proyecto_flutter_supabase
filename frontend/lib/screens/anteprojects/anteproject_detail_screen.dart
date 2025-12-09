@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:go_router/go_router.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/anteproject.dart';
 import '../../models/project.dart';
@@ -15,10 +16,11 @@ import '../schedule/schedule_management_screen.dart';
 import '../forms/anteproject_edit_form.dart';
 import '../kanban/kanban_board.dart';
 import '../forms/task_form.dart';
-import '../details/task_detail_screen.dart';
 import '../../models/task.dart';
 import '../../blocs/tasks_bloc.dart';
+import '../../blocs/auth_bloc.dart';
 import '../../services/tasks_service.dart';
+import '../../services/theme_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../widgets/navigation/persistent_scaffold.dart';
 import '../../widgets/files/file_list_widget.dart';
@@ -59,7 +61,9 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
   void initState() {
     super.initState();
     if (widget.project != null) {
-      _tabController = TabController(length: 5, vsync: this); // NUEVO
+      // 2 pestañas para proyectos: Detalles, Archivos
+      // (Tareas y Kanban ahora están en el AppBar, sin Comentarios porque los proyectos usan mensajes)
+      _tabController = TabController(length: 2, vsync: this);
     }
     _anteproject = widget.anteproject;
     _loadSchedule();
@@ -242,7 +246,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
           ]
         : const [];
 
-    final PreferredSizeWidget? bottom = isProjectMode
+    final TabBar? tabBar = isProjectMode
         ? TabBar(
             controller: _tabController!,
             labelColor: Colors.white,
@@ -251,10 +255,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
             indicatorWeight: 3,
             tabs: [
               Tab(text: l10n.details),
-              Tab(text: l10n.comments),
               Tab(text: l10n.attachedFiles),
-              Tab(text: l10n.kanbanBoard),
-              Tab(text: l10n.tasksList),
             ],
           )
         : null;
@@ -266,10 +267,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
             controller: _tabController!,
             children: [
               _buildDetailsTab(),
-              _buildCommentsTab(),
               _buildFilesTab(),
-              _buildKanbanTab(),
-              _buildTasksListTab(),
             ],
           )
         : _buildAnteprojectDetails();
@@ -279,8 +277,19 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
       titleKey: isProjectMode ? 'projects' : 'anteprojects',
       user: _currentUser!,
       actions: topBarActions,
-      bottom: bottom,
-      body: bodyContent,
+      body: tabBar != null
+          ? Column(
+              children: [
+                // TabBar como parte del contenido
+                Container(
+                  color: ThemeService.instance.currentPrimaryColor,
+                  child: tabBar,
+                ),
+                // Contenido de las pestañas
+                Expanded(child: bodyContent),
+              ],
+            )
+          : bodyContent,
     );
   }
 
@@ -1992,9 +2001,22 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
   }
 
   void _viewTaskDetails(Task task) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => TaskDetailScreen(task: task)),
-    );
+    if (_currentUser != null) {
+      context.go('/tasks/${task.id}', extra: _currentUser);
+    } else {
+      // Cargar usuario si no está disponible
+      final authState = context.read<AuthBloc>().state;
+      if (authState is AuthAuthenticated) {
+        context.go('/tasks/${task.id}', extra: authState.user);
+      } else {
+        // Fallback: intentar obtener usuario del AuthBloc
+        final authState = context.read<AuthBloc>().state;
+        if (authState is AuthAuthenticated) {
+          context.go('/tasks/${task.id}', extra: authState.user);
+        }
+        // Si no hay usuario autenticado, no navegar (no debería pasar)
+      }
+    }
   }
 
   void _handleTaskAction(String action, Task task) {
