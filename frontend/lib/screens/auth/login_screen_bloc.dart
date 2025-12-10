@@ -188,30 +188,35 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        const Icon(
-                          Icons.school,
-                          size: 48,
-                          color: Color(AppConfig.platformColor),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Sistema TFG',
-                          style: Theme.of(context).textTheme.headlineSmall,
-                        ),
-                        Text(
-                          'CIFP Carlos III - DAM',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                      ],
-                    ),
-                  ),
+                const SizedBox(height: 40),
+                // Logo del CIFP
+                Image.asset(
+                  'assets/logos/cifp_logo_complete.png',
+                  height: 120,
+                  errorBuilder: (context, error, stackTrace) {
+                    debugPrint('Error cargando logo: $error');
+                    return const Icon(
+                      Icons.school,
+                      size: 120,
+                      color: Color(AppConfig.platformColor),
+                    );
+                  },
                 ),
                 const SizedBox(height: 16),
+                // Título de la aplicación
+                Text(
+                  'Sistema TFG',
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'CIFP Carlos III',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Colors.grey[600],
+                  ),
+                ),
                 const SizedBox(height: 32),
 
                 // Email

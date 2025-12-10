@@ -18,6 +18,7 @@ Selecciona tu rol para acceder a la guía correspondiente:
 - 🎯 [Cómo crear un anteproyecto](Guia-Estudiantes#-fase-1-creación-del-anteproyecto)
 - ✅ [Gestionar mis tareas](Guia-Estudiantes#-fase-3-gestión-de-tareas)
 - 📊 [Usar el Tablero Kanban](Guia-Estudiantes#-tablero-kanban)
+- 📱 **Navegación**: Acceso desde el menú hamburguesa a Panel Principal, Notificaciones, Mensajes, Anteproyectos, Proyectos, Tareas y Kanban
 - 💡 [Mejores prácticas](Guia-Estudiantes#-mejores-prácticas)
 - 🔧 [Solución de problemas](Guia-Estudiantes#-solución-de-problemas-comunes)
 
@@ -32,6 +33,7 @@ Selecciona tu rol para acceder a la guía correspondiente:
 - 👥 [Gestionar estudiantes](Guia-Tutores#-fase-2-gestión-de-estudiantes)
 - ✅ [Asignar y revisar tareas](Guia-Tutores#-fase-3-asignación-y-seguimiento-de-tareas)
 - ⚖️ [Flujo de aprobación](Guia-Tutores#-flujo-de-aprobación)
+- 📱 **Navegación**: Acceso desde el menú hamburguesa a Panel Principal, Mis Estudiantes, Notificaciones, Mensajes, Anteproyectos por revisar y Flujo de Aprobación
 - 📊 [Mejores prácticas](Guia-Tutores#-mejores-prácticas)
 - 📚 [Plantillas útiles](Guia-Tutores#-plantillas-útiles)
 
@@ -45,6 +47,7 @@ Selecciona tu rol para acceder a la guía correspondiente:
 - 👥 [Gestión de usuarios](Guia-Administradores#-gestión-de-usuarios)
 - 📊 [Supervisión del sistema](Guia-Administradores#-fase-2-supervisión-del-sistema)
 - ⚙️ [Configuración](Guia-Administradores#-configuración-del-sistema)
+- 📱 **Navegación**: Acceso desde el menú hamburguesa a Panel Principal, Notificaciones, Gestionar Usuarios, Flujo de Aprobación y Configuración del Sistema
 - 🔐 [Seguridad y cumplimiento](Guia-Administradores#-seguridad-y-cumplimiento)
 - 🔧 [Resolución de problemas](Guia-Administradores#-resolución-de-problemas-comunes)
 

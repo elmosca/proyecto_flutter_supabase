@@ -12,6 +12,20 @@ El Dashboard del Tutor está optimizado para la supervisión y muestra:
 *   **Notificaciones**: Alertas sobre nuevas entregas de archivos o comentarios de los estudiantes.
 *   **Mensajes**: Acceso rápido al sistema de mensajería con tus estudiantes (ícono 💬 en la barra superior).
 
+### 1.1. Navegación con Menú Hamburguesa
+
+La aplicación cuenta con un **menú hamburguesa persistente** (ícono ☰ en la esquina superior izquierda) que proporciona acceso rápido a todas las secciones principales:
+
+*   **Panel Principal**: Dashboard con resumen de tus estudiantes y proyectos
+*   **Mis Estudiantes**: Lista de estudiantes asignados
+*   **Notificaciones**: Alertas y notificaciones del sistema
+*   **Mensajes**: Sistema de mensajería con tus estudiantes
+*   **Anteproyectos**: Anteproyectos pendientes de revisión
+*   **Flujo de Aprobación**: Gestión del flujo de aprobación de anteproyectos
+*   **Ayuda**: Guía de uso del sistema
+
+El menú está siempre disponible en todas las pantallas de la aplicación, proporcionando navegación consistente y rápida.
+
 ## 2. Revisión y Aprobación de Anteproyectos
 
 El Tutor es el responsable de validar la viabilidad de las propuestas de TFG.
@@ -19,7 +33,7 @@ El Tutor es el responsable de validar la viabilidad de las propuestas de TFG.
 ### 2.1. Flujo de Revisión
 
 1.  **Notificación**: Recibirá una notificación cuando un Estudiante envíe un Anteproyecto.
-2.  **Acceso al Detalle**: Navegue a la sección **"Anteproyectos"** y seleccione la propuesta con estado `Enviado` o `En Revisión`.
+2.  **Acceso al Detalle**: Navegue a la sección **"Anteproyectos"** desde el menú hamburguesa y seleccione la propuesta con estado `Enviado`, `En Revisión` o `Blocked`.
 3.  **Análisis**:
     *   Revise el **Título**, **Descripción** y **Tipo de Proyecto**.
     *   Verifique la alineación de los **Objetivos** con las competencias DAM.

@@ -58,6 +58,30 @@ class AppConfig {
   static const String githubGuidesBaseUrl =
       'https://raw.githubusercontent.com/elmosca/proyecto_flutter_supabase/develop/docs/guias_usuario';
 
+  // URL base de la wiki de GitHub (para abrir en navegador)
+  static const String githubWikiBaseUrl =
+      'https://github.com/elmosca/proyecto_flutter_supabase/wiki';
+
+  // URL base para contenido raw de la wiki (para embeber en la app)
+  static const String githubWikiRawBaseUrl =
+      'https://raw.githubusercontent.com/wiki/elmosca/proyecto_flutter_supabase';
+
+  // URLs específicas de las guías en la wiki de GitHub (para abrir en navegador)
+  static String get githubWikiStudentGuide =>
+      '$githubWikiBaseUrl/Guia-Estudiantes';
+  static String get githubWikiTutorGuide =>
+      '$githubWikiBaseUrl/Guia-Tutores';
+  static String get githubWikiAdminGuide =>
+      '$githubWikiBaseUrl/Guia-Administradores';
+
+  // URLs raw de las guías en la wiki (para embeber en la app)
+  static String get githubWikiRawStudentGuide =>
+      '$githubWikiRawBaseUrl/Guia-Estudiantes.md';
+  static String get githubWikiRawTutorGuide =>
+      '$githubWikiRawBaseUrl/Guia-Tutores.md';
+  static String get githubWikiRawAdminGuide =>
+      '$githubWikiRawBaseUrl/Guia-Administradores.md';
+
   // Credenciales de prueba - Solo del dominio jualas.es
   static const Map<String, String> testCredentials = {
     'student': 'laura.sanchez@jualas.es',

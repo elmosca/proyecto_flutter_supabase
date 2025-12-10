@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../models/user.dart';
 import '../../widgets/navigation/persistent_scaffold.dart';
 import '../../config/app_config.dart';
@@ -25,28 +26,49 @@ class _HelpScreenState extends State<HelpScreen> {
     _loadGuide();
   }
 
-  Future<void> _loadGuide() async {
-    final locale = Localizations.localeOf(context).languageCode;
-    String fileName;
-    
+  String _getWikiUrl() {
     switch (widget.user.role) {
       case UserRole.student:
-        fileName = locale == 'en'
-            ? 'guia_estudiante.md'
-            : 'guia_estudiante.md';
-        break;
+        return AppConfig.githubWikiStudentGuide;
       case UserRole.tutor:
-        fileName = 'guia_tutor.md';
-        break;
+        return AppConfig.githubWikiTutorGuide;
       case UserRole.admin:
-        fileName = 'guia_administrador.md';
-        break;
+        return AppConfig.githubWikiAdminGuide;
     }
+  }
 
-    // Construir URL de GitHub raw content
-    final url = '${AppConfig.githubGuidesBaseUrl}/$fileName';
+  Future<void> _openWikiInBrowser() async {
+    final url = Uri.parse(_getWikiUrl());
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('No se pudo abrir la wiki: ${url.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  String _getWikiRawUrl() {
+    switch (widget.user.role) {
+      case UserRole.student:
+        return AppConfig.githubWikiRawStudentGuide;
+      case UserRole.tutor:
+        return AppConfig.githubWikiRawTutorGuide;
+      case UserRole.admin:
+        return AppConfig.githubWikiRawAdminGuide;
+    }
+  }
+
+  Future<void> _loadGuide() async {
+    // Cargar directamente desde la wiki de GitHub (raw content)
+    final url = _getWikiRawUrl();
     
-    debugPrint('📥 Cargando guía desde: $url');
+    debugPrint('📥 Cargando guía desde la wiki de GitHub: $url');
 
     try {
       final response = await http
@@ -128,7 +150,9 @@ class _HelpScreenState extends State<HelpScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildHeader(context),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 16),
+                      _buildWikiLinkCard(context),
+                      const SizedBox(height: 16),
                       _buildMarkdownContent(context),
                     ],
                   ),
@@ -160,6 +184,16 @@ class _HelpScreenState extends State<HelpScreen> {
               onPressed: () => _loadGuide(),
               icon: const Icon(Icons.refresh),
               label: const Text('Reintentar'),
+            ),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: _openWikiInBrowser,
+              icon: const Icon(Icons.open_in_new),
+              label: const Text('Abrir Guía en la Wiki de GitHub'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.blue[700],
+                side: BorderSide(color: Colors.blue[300]!),
+              ),
             ),
           ],
         ),
@@ -259,6 +293,46 @@ class _HelpScreenState extends State<HelpScreen> {
                     ),
                   ),
                 ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWikiLinkCard(BuildContext context) {
+    return Card(
+      elevation: 1,
+      color: Colors.blue[50],
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            Icon(
+              Icons.info_outline,
+              color: Colors.blue[700],
+              size: 20,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Esta guía se carga directamente desde la wiki oficial de GitHub',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.blue[700],
+                ),
+              ),
+            ),
+            TextButton.icon(
+              onPressed: _openWikiInBrowser,
+              icon: const Icon(Icons.open_in_new, size: 16),
+              label: const Text('Abrir en GitHub'),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.blue[700],
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
             ),
           ],

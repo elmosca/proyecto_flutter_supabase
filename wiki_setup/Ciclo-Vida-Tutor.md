@@ -644,7 +644,35 @@ class TutorMessagesSelectorScreen extends StatefulWidget {
 
 ## 7. Navegación y Rutas
 
-### 7.1. Rutas Específicas del Tutor
+### 7.1. Menú Hamburguesa Persistente
+
+La aplicación utiliza un **menú hamburguesa persistente** (`PersistentScaffold`) que mantiene el AppBar y el drawer consistentes en todas las rutas. Esto proporciona una experiencia de navegación uniforme y accesible.
+
+**Opciones del menú para tutores:**
+- **Panel Principal**: Dashboard con resumen de estudiantes y proyectos
+- **Mis Estudiantes**: Lista de estudiantes asignados
+- **Notificaciones**: Alertas y notificaciones del sistema
+- **Mensajes**: Sistema de mensajería con estudiantes
+- **Anteproyectos**: Anteproyectos pendientes de revisión
+- **Flujo de Aprobación**: Gestión del flujo de aprobación
+- **Ayuda**: Guía de uso del sistema
+
+```dart
+// PersistentScaffold mantiene el menú en todas las pantallas
+return PersistentScaffold(
+  title: 'Mis Estudiantes',
+  titleKey: 'students',
+  user: user,
+  body: body,
+);
+```
+
+**Referencia de código:**
+- Archivo: `frontend/lib/widgets/navigation/persistent_scaffold.dart`
+- Archivo: `frontend/lib/widgets/navigation/app_side_drawer.dart`
+- Líneas: 131-156 (menú específico para tutores)
+
+### 7.2. Rutas Específicas del Tutor
 
 El router define rutas específicas para el tutor:
 
@@ -672,7 +700,7 @@ GoRoute(
 - Archivo: `frontend/lib/router/app_router.dart`
 - Líneas: 320-340 (aproximadamente)
 
-### 7.2. Filtrado por Año Académico
+### 7.3. Filtrado por Año Académico
 
 El dashboard del tutor permite filtrar estudiantes y anteproyectos por año académico:
 

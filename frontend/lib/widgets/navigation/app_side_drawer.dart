@@ -65,14 +65,41 @@ class AppSideDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(AppLocalizations l10n) => DrawerHeader(
-    decoration: const BoxDecoration(),
-    child: Align(
-      alignment: Alignment.bottomLeft,
-      child: Text(
-        l10n.dashboard,
-        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+  Widget _buildHeader(AppLocalizations l10n) => const DrawerHeader(
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          Color(0xFF2D5573), // Azul CIFP
+          Color(0xFF1E3A52),
+        ],
       ),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // Nombre de la aplicación
+        Text(
+          'Sistema TFG',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 4),
+        // Nombre del centro
+        Text(
+          'CIFP CARLOS III',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 14,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+      ],
     ),
   );
 

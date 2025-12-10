@@ -536,7 +536,34 @@ GoRoute(
 
 ## 7. Navegación y Rutas
 
-### 7.1. Rutas Específicas del Administrador
+### 7.1. Menú Hamburguesa Persistente
+
+La aplicación utiliza un **menú hamburguesa persistente** (`PersistentScaffold`) que mantiene el AppBar y el drawer consistentes en todas las rutas. Esto proporciona una experiencia de navegación uniforme y accesible.
+
+**Opciones del menú para administradores:**
+- **Panel Principal**: Dashboard con estadísticas globales
+- **Notificaciones**: Alertas y notificaciones del sistema
+- **Gestionar Usuarios**: Administración de usuarios y roles
+- **Flujo de Aprobación**: Gestión del flujo de aprobación
+- **Configuración del Sistema**: Configuración global
+- **Ayuda**: Guía de uso del sistema
+
+```dart
+// PersistentScaffold mantiene el menú en todas las pantallas
+return PersistentScaffold(
+  title: 'Gestionar Usuarios',
+  titleKey: 'admin-users',
+  user: user,
+  body: body,
+);
+```
+
+**Referencia de código:**
+- Archivo: `frontend/lib/widgets/navigation/persistent_scaffold.dart`
+- Archivo: `frontend/lib/widgets/navigation/app_side_drawer.dart`
+- Líneas: 157-177 (menú específico para administradores)
+
+### 7.2. Rutas Específicas del Administrador
 
 El router define rutas específicas para el administrador:
 
@@ -566,7 +593,7 @@ GoRoute(
 - Archivo: `frontend/lib/router/app_router.dart`
 - Líneas: 401-422
 
-### 7.2. Protección de Rutas
+### 7.3. Protección de Rutas
 
 Las rutas administrativas verifican el rol del usuario:
 

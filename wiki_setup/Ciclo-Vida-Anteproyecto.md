@@ -134,7 +134,7 @@ El formulario incluye los siguientes campos:
 - **Tipo de Proyecto**: Ejecución, Investigación, Bibliográfico, Gestión
 - **Objetivos**: Objetivos específicos del proyecto
 - **Año Académico**: Año académico del proyecto
-- **URL del Repositorio de GitHub**: URL del repositorio de GitHub asociado al anteproyecto (opcional, formato: `https://github.com/usuario/repositorio`)
+- **Repositorio GitHub** (opcional): URL del repositorio de GitHub asociado al anteproyecto (campo `github_repository_url`, formato: `https://github.com/usuario/repositorio`)
 - **Hitos**: Resultados esperados con fechas
 
 ```dart
@@ -148,6 +148,12 @@ List<Hito> _hitos = [];
 ```
 
 **Referencia de código:**
+- Archivo: `frontend/lib/screens/forms/anteproject_form.dart`
+- Líneas: 28-36
+
+**Referencia de código:**
+- Archivo: `frontend/lib/models/anteproject.dart`
+- Líneas: 68-69 (campo `githubRepositoryUrl`)
 - Archivo: `frontend/lib/screens/forms/anteproject_form.dart`
 - Líneas: 28-36
 

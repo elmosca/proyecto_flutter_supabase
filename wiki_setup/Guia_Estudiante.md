@@ -11,19 +11,35 @@ Al iniciar sesión, el Estudiante accede a un **Dashboard** personalizado que mu
 *   **Notificaciones**: Alertas sobre nuevos comentarios, cambios de estado de tareas o la aprobación/rechazo del anteproyecto.
 *   **Mensajes**: Acceso rápido al sistema de mensajería con tu tutor (ícono 💬 en la barra superior).
 
+### 1.1. Navegación con Menú Hamburguesa
+
+La aplicación cuenta con un **menú hamburguesa persistente** (ícono ☰ en la esquina superior izquierda) que proporciona acceso rápido a todas las secciones principales:
+
+*   **Panel Principal**: Dashboard con resumen de tu proyecto
+*   **Notificaciones**: Alertas y notificaciones del sistema
+*   **Mensajes**: Sistema de mensajería con tu tutor
+*   **Anteproyectos**: Gestión de tus anteproyectos
+*   **Proyectos**: Lista de proyectos aprobados
+*   **Tareas**: Gestión de tareas del proyecto
+*   **Kanban**: Tablero Kanban visual
+*   **Ayuda**: Guía de uso del sistema
+
+El menú está siempre disponible en todas las pantallas de la aplicación, proporcionando navegación consistente y rápida.
+
 ## 2. Gestión del Anteproyecto
 
 El ciclo de vida del TFG comienza con la propuesta del Anteproyecto.
 
 ### 2.1. Creación de la Propuesta
 
-1.  Navegue a la sección **"Anteproyectos"**.
+1.  Navegue a la sección **"Anteproyectos"** desde el menú hamburguesa.
 2.  Haga clic en **"Crear Nuevo Anteproyecto"**.
 3.  Complete el formulario con la siguiente información:
     *   **Título** y **Descripción/Justificación** del proyecto.
     *   **Tipo de Proyecto** (ej. `Ejecución`, `Investigación`).
     *   **Objetivos**: Seleccione los objetivos académicos que cubre el proyecto (basados en las competencias DAM).
     *   **Resultados Esperados (Hitos)**: Defina los puntos de control clave y las fechas estimadas.
+    *   **Repositorio GitHub** (opcional): URL del repositorio de GitHub asociado al proyecto.
 4.  El sistema generará automáticamente un borrador en formato PDF.
 
 ### 2.2. Envío para Revisión
@@ -62,6 +78,7 @@ El tablero está dividido en columnas que representan el estado de la tarea:
 | **Pendiente** | Tareas planificadas pero no iniciadas. | Mover a `En Progreso` al comenzar. |
 | **En Progreso** | Tareas en las que se está trabajando activamente. | Mantener actualizada la descripción y el progreso. |
 | **En Revisión** | Tareas completadas y listas para la revisión del Tutor. | Mover a `Completada` si el Tutor aprueba. |
+| **Blocked** | Tareas bloqueadas que requieren atención o dependencias. | Resolver el bloqueo antes de continuar. |
 | **Completada** | Tareas finalizadas y aprobadas. | No requiere más acción. |
 
 **Para cambiar el estado**, simplemente arrastre la tarjeta de la tarea a la columna correspondiente.

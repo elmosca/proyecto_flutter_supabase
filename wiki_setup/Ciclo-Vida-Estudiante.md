@@ -767,7 +767,36 @@ class MessageProjectSelectorScreen extends StatefulWidget {
 
 ## 8. Navegación y Rutas
 
-### 8.1. Rutas Específicas del Estudiante
+### 8.1. Menú Hamburguesa Persistente
+
+La aplicación utiliza un **menú hamburguesa persistente** (`PersistentScaffold`) que mantiene el AppBar y el drawer consistentes en todas las rutas. Esto proporciona una experiencia de navegación uniforme y accesible.
+
+**Opciones del menú para estudiantes:**
+- **Panel Principal**: Dashboard con resumen del proyecto
+- **Notificaciones**: Alertas y notificaciones del sistema
+- **Mensajes**: Sistema de mensajería con el tutor
+- **Anteproyectos**: Gestión de anteproyectos
+- **Proyectos**: Lista de proyectos aprobados
+- **Tareas**: Gestión de tareas del proyecto
+- **Kanban**: Tablero Kanban visual
+- **Ayuda**: Guía de uso del sistema
+
+```dart
+// PersistentScaffold mantiene el menú en todas las pantallas
+return PersistentScaffold(
+  title: 'Anteproyectos',
+  titleKey: 'anteprojects',
+  user: user,
+  body: body,
+);
+```
+
+**Referencia de código:**
+- Archivo: `frontend/lib/widgets/navigation/persistent_scaffold.dart`
+- Archivo: `frontend/lib/widgets/navigation/app_side_drawer.dart`
+- Líneas: 79-130 (menú específico para estudiantes)
+
+### 8.2. Rutas Específicas del Estudiante
 
 El router define rutas específicas para el estudiante:
 

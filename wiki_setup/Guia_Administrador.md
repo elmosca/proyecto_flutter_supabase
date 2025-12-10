@@ -10,13 +10,26 @@ El Dashboard del Administrador proporciona una visión global del sistema:
 *   **Filtro de Proyectos**: Acceso a un listado completo de **todos** los proyectos, con opciones de filtrado por Tutor, Estudiante, Estado y Año Académico.
 *   **Alertas del Sistema**: Notificaciones sobre posibles problemas de configuración o *logs* de errores.
 
+### 1.1. Navegación con Menú Hamburguesa
+
+La aplicación cuenta con un **menú hamburguesa persistente** (ícono ☰ en la esquina superior izquierda) que proporciona acceso rápido a todas las secciones principales:
+
+*   **Panel Principal**: Dashboard con estadísticas globales del sistema
+*   **Notificaciones**: Alertas y notificaciones del sistema
+*   **Gestionar Usuarios**: Administración de usuarios y roles
+*   **Flujo de Aprobación**: Gestión del flujo de aprobación de anteproyectos
+*   **Configuración del Sistema**: Configuración global del sistema
+*   **Ayuda**: Guía de uso del sistema
+
+El menú está siempre disponible en todas las pantallas de la aplicación, proporcionando navegación consistente y rápida.
+
 ## 2. Gestión de Usuarios y Roles
 
 El Administrador es el único rol con capacidad para gestionar la base de usuarios.
 
 ### 2.1. Creación de Usuarios
 
-1.  Navegue a la sección **"Gestión de Usuarios"**.
+1.  Navegue a la sección **"Gestionar Usuarios"** desde el menú hamburguesa.
 2.  Haga clic en **"Crear Nuevo Usuario"**.
 3.  Complete los campos obligatorios:
     *   **Nombre Completo** y **Email**.

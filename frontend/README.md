@@ -7,8 +7,12 @@ Aplicación Flutter para Web, Android y Escritorio. Este README está orientado 
 ## Características
 - Arquitectura basada en BLoC y servicios.
 - Internacionalización (ES/EN).
-- Navegación con GoRouter.
+- Navegación con GoRouter y menú hamburguesa persistente.
 - UI responsive (Web/Escritorio/Móvil).
+- Navegación personalizada por rol de usuario:
+  - **Estudiantes**: Panel Principal, Notificaciones, Mensajes, Anteproyectos, Proyectos, Tareas, Kanban
+  - **Tutores**: Panel Principal, Mis Estudiantes, Notificaciones, Mensajes, Anteproyectos, Flujo de Aprobación
+  - **Administradores**: Panel Principal, Notificaciones, Gestionar Usuarios, Flujo de Aprobación, Configuración del Sistema
 
 ---
 
@@ -176,6 +180,8 @@ Consulta el archivo `LICENSE` en la raíz del repositorio.
 ## Arquitectura y decisiones clave
 - Capas: `blocs` (estado), `services` (lógica/acceso a datos), `models` (DTOs/serialización), `screens`/`widgets` (UI), `utils` (errores/i18n/helpers).
 - Navegación con `GoRouter` y rutas por rol.
+- **Scaffold persistente**: `PersistentScaffold` mantiene el AppBar y drawer consistentes en todas las rutas.
+- **Menú lateral**: `AppSideDrawer` proporciona navegación específica por rol con menú hamburguesa.
 - BLoC para aislar UI de lógica de negocio.
 - Trade‑offs: simplicidad de testing en servicios y blocs; serialización con `json_serializable` para tipado estricto.
 
