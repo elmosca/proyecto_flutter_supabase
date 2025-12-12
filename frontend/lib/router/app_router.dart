@@ -273,10 +273,67 @@ user = authState.user;
             debugPrint('❌ Router: Usuario nulo en /tasks');
             return const LoginScreenBloc();
           }
-          debugPrint(
-            '✅ Router: Navegando a TasksList para usuario: ${user.fullName}',
+
+          // Verificar que solo estudiantes con proyectos aprobados puedan acceder
+          if (user.role != UserRole.student) {
+            debugPrint('❌ Router: Acceso denegado a /tasks para rol: ${user.role}');
+            final l10n = AppLocalizations.of(context)!;
+            return PersistentScaffold(
+              title: 'Acceso denegado',
+              titleKey: 'tasks',
+              user: user,
+              body: Center(
+                child: Text(l10n.kanbanOnlyForProjects),
+              ),
+            );
+          }
+
+          // Verificar que el estudiante tenga proyectos aprobados
+          return FutureBuilder<List<Project>>(
+            future: ProjectsService().getStudentProjects(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return PersistentScaffold(
+                  title: 'Tareas',
+                  titleKey: 'tasks',
+                  user: user,
+                  body: const Center(child: CircularProgressIndicator()),
+                );
+              }
+
+              if (snapshot.hasError || snapshot.data == null || snapshot.data!.isEmpty) {
+                debugPrint('❌ Router: Estudiante sin proyectos aprobados intentando acceder a /tasks');
+                final l10n = AppLocalizations.of(context)!;
+                return PersistentScaffold(
+                  title: 'Tareas',
+                  titleKey: 'tasks',
+                  user: user,
+                  body: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.info_outline, size: 64, color: Colors.grey[400]),
+                          const SizedBox(height: 16),
+                          Text(
+                            l10n.kanbanOnlyForProjects,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }
+
+              debugPrint(
+                '✅ Router: Navegando a TasksList para usuario: ${user.fullName}',
+              );
+              return _TasksScreenWrapper(user: user);
+            },
           );
-          return _TasksScreenWrapper(user: user);
         },
         routes: [
           GoRoute(
@@ -512,10 +569,67 @@ user = authState.user;
             debugPrint('❌ Router: Usuario nulo en /kanban');
             return const LoginScreenBloc();
           }
-          debugPrint(
-            '✅ Router: Navegando a Kanban para usuario: ${user.fullName}',
+
+          // Verificar que solo estudiantes con proyectos aprobados puedan acceder
+          if (user.role != UserRole.student) {
+            debugPrint('❌ Router: Acceso denegado a /kanban para rol: ${user.role}');
+            final l10n = AppLocalizations.of(context)!;
+            return PersistentScaffold(
+              title: 'Acceso denegado',
+              titleKey: 'kanban',
+              user: user,
+              body: Center(
+                child: Text(l10n.kanbanOnlyForProjects),
+              ),
+            );
+          }
+
+          // Verificar que el estudiante tenga proyectos aprobados
+          return FutureBuilder<List<Project>>(
+            future: ProjectsService().getStudentProjects(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return PersistentScaffold(
+                  title: 'Kanban',
+                  titleKey: 'kanban',
+                  user: user,
+                  body: const Center(child: CircularProgressIndicator()),
+                );
+              }
+
+              if (snapshot.hasError || snapshot.data == null || snapshot.data!.isEmpty) {
+                debugPrint('❌ Router: Estudiante sin proyectos aprobados intentando acceder a /kanban');
+                final l10n = AppLocalizations.of(context)!;
+                return PersistentScaffold(
+                  title: 'Kanban',
+                  titleKey: 'kanban',
+                  user: user,
+                  body: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.info_outline, size: 64, color: Colors.grey[400]),
+                          const SizedBox(height: 16),
+                          Text(
+                            l10n.kanbanOnlyForProjects,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }
+
+              debugPrint(
+                '✅ Router: Navegando a Kanban para usuario: ${user.fullName}',
+              );
+              return _KanbanScreenWrapper(user: user);
+            },
           );
-          return _KanbanScreenWrapper(user: user);
         },
       ),
       // Rutas adicionales para tutores y admin

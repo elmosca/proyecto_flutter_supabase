@@ -4,22 +4,65 @@ import 'package:go_router/go_router.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/user.dart';
 import '../../router/app_router.dart';
+import '../../services/projects_service.dart';
 
-class AppSideDrawer extends StatelessWidget {
+class AppSideDrawer extends StatefulWidget {
   final User user;
 
   const AppSideDrawer({super.key, required this.user});
 
   @override
+  State<AppSideDrawer> createState() => _AppSideDrawerState();
+}
+
+class _AppSideDrawerState extends State<AppSideDrawer> {
+  bool _hasApprovedProject = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkApprovedProject();
+  }
+
+  Future<void> _checkApprovedProject() async {
+    // Solo verificar para estudiantes
+    if (widget.user.role != UserRole.student) {
+      setState(() {
+        _hasApprovedProject = false;
+      });
+      return;
+    }
+
+    try {
+      final projectsService = ProjectsService();
+      final projects = await projectsService.getStudentProjects();
+
+      if (mounted) {
+        setState(() {
+          _hasApprovedProject = projects.isNotEmpty;
+        });
+      }
+    } catch (e) {
+      debugPrint('❌ Error al verificar proyectos en drawer: $e');
+      if (mounted) {
+        setState(() {
+          _hasApprovedProject = false;
+        });
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final items = _menuItemsForRole(l10n, user.role);
+    final items = _menuItemsForRole(l10n, widget.user.role, _hasApprovedProject);
 
     // Debug: Verificar que se está construyendo el AppSideDrawer - NUEVO DRAWER
     debugPrint(
-      '📱 AppSideDrawer: Construyendo Drawer para usuario: ${user.fullName}',
+      '📱 AppSideDrawer: Construyendo Drawer para usuario: ${widget.user.fullName}',
     );
-    debugPrint('📱 AppSideDrawer: Rol del usuario: ${user.role}');
+    debugPrint('📱 AppSideDrawer: Rol del usuario: ${widget.user.role}');
+    debugPrint('📱 AppSideDrawer: Tiene proyecto aprobado: $_hasApprovedProject');
     debugPrint('📱 AppSideDrawer: Número de items del menú: ${items.length}');
 
     return Drawer(
@@ -48,14 +91,14 @@ class AppSideDrawer extends StatelessWidget {
                     // Pequeño delay para asegurar que las pantallas se cierren
                     Future.delayed(const Duration(milliseconds: 100), () {
                       if (context.mounted) {
-                        item.onTap(context, user);
+                        item.onTap(context, widget.user);
                       }
                     });
                     return;
                   }
 
                   // Si no hay pantallas modales, navegar directamente
-                  item.onTap(context, user);
+                  item.onTap(context, widget.user);
                 },
               ),
             ),
@@ -65,8 +108,8 @@ class AppSideDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(AppLocalizations l10n) => const DrawerHeader(
-    decoration: BoxDecoration(
+  Widget _buildHeader(AppLocalizations l10n) => DrawerHeader(
+    decoration: const BoxDecoration(
       gradient: LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
@@ -80,18 +123,30 @@ class AppSideDrawer extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        // Logo del CIFP - Solo símbolo (sin flechas ni texto)
+        Image.asset(
+          'assets/logos/cifp_logo_symbol.png',
+          height: 70,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('❌ Error cargando logo del drawer: $error');
+            // Fallback: mostrar solo texto
+            return const SizedBox.shrink();
+          },
+        ),
+        const SizedBox(height: 12),
         // Nombre de la aplicación
-        Text(
+        const Text(
           'Sistema TFG',
           style: TextStyle(
             color: Colors.white,
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 4),
+        const SizedBox(height: 4),
         // Nombre del centro
-        Text(
+        const Text(
           'CIFP CARLOS III',
           style: TextStyle(
             color: Colors.white,
@@ -103,7 +158,7 @@ class AppSideDrawer extends StatelessWidget {
     ),
   );
 
-  List<_DrawerItem> _menuItemsForRole(AppLocalizations l10n, UserRole role) {
+  List<_DrawerItem> _menuItemsForRole(AppLocalizations l10n, UserRole role, bool hasApprovedProject) {
     final common = <_DrawerItem>[
       _DrawerItem(
         icon: Icons.dashboard,
@@ -126,7 +181,7 @@ class AppSideDrawer extends StatelessWidget {
 
     switch (role) {
       case UserRole.student:
-        return [
+        final studentItems = <_DrawerItem>[
           ...common,
           _DrawerItem(
             icon: Icons.message,
@@ -143,18 +198,26 @@ class AppSideDrawer extends StatelessWidget {
             label: l10n.projects,
             onTap: (ctx, user) => ctx.go('/projects', extra: user),
           ),
-          _DrawerItem(
-            icon: Icons.task_alt,
-            label: l10n.tasks,
-            onTap: (ctx, user) => ctx.go('/tasks', extra: user),
-          ),
-          _DrawerItem(
-            icon: Icons.view_kanban,
-            label: l10n.kanbanBoard,
-            onTap: (ctx, user) => ctx.go('/kanban', extra: user),
-          ),
-          helpItem, // Agregar guía de uso para estudiantes
         ];
+
+        // Solo agregar Tareas y Kanban si el estudiante tiene un proyecto aprobado
+        if (hasApprovedProject) {
+          studentItems.addAll([
+            _DrawerItem(
+              icon: Icons.task_alt,
+              label: l10n.tasks,
+              onTap: (ctx, user) => ctx.go('/tasks', extra: user),
+            ),
+            _DrawerItem(
+              icon: Icons.view_kanban,
+              label: l10n.kanbanBoard,
+              onTap: (ctx, user) => ctx.go('/kanban', extra: user),
+            ),
+          ]);
+        }
+
+        studentItems.add(helpItem); // Agregar guía de uso para estudiantes
+        return studentItems;
       case UserRole.tutor:
         return [
           common[0], // Panel Principal

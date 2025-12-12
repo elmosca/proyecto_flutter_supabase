@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import '../../models/user.dart';
 import '../../services/anteprojects_service.dart';
 import '../../services/projects_service.dart';
-import '../../screens/messages/message_project_selector_screen.dart';
 import '../../l10n/app_localizations.dart';
 
 /// Botón de mensajes que se muestra:
@@ -77,11 +76,7 @@ class _MessagesButtonState extends State<MessagesButton> {
 
   void _openMessagesSelector() {
     if (widget.user.role == UserRole.student) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => const MessageProjectSelectorScreen(),
-        ),
-      );
+      context.go('/student/messages', extra: widget.user);
     } else if (widget.user.role == UserRole.tutor) {
       context.go('/tutor/messages', extra: widget.user);
     }

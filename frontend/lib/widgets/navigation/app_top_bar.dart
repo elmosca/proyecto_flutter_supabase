@@ -9,6 +9,7 @@ import '../common/language_selector.dart';
 import '../../router/app_router.dart';
 import '../../themes/role_themes.dart';
 import 'messages_button.dart';
+import 'tasks_kanban_buttons.dart';
 
 class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
   final User user;
@@ -96,21 +97,8 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       leadingWidth: 56, // Ancho estándar con padding adicional
       actions: [
-        // Botones de navegación rápida: Tareas y Kanban
-        IconButton(
-          icon: const Icon(Icons.task_alt),
-          tooltip: l10n.tasks,
-          onPressed: () {
-            context.go('/tasks', extra: user);
-          },
-        ),
-        IconButton(
-          icon: const Icon(Icons.view_kanban),
-          tooltip: l10n.kanbanBoard,
-          onPressed: () {
-            context.go('/kanban', extra: user);
-          },
-        ),
+        // Botones de navegación rápida: Tareas y Kanban (solo para estudiantes con proyectos aprobados)
+        TasksKanbanButtons(user: user),
         const LanguageSelectorAppBar(),
         if (showNotifications) NotificationsBell(user: user),
         MessagesButton(user: user),
