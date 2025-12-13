@@ -87,14 +87,6 @@ class _LoginScreenBlocState extends State<LoginScreenBloc> {
       color: Colors.blue,
       icon: Icons.school,
     ),
-    TestUser(
-      email: 'pablo.jimenez@jualas.es',
-      password: 'knCOcimmcPWR',
-      name: 'Pablo Jiménez Sánchez',
-      role: 'Estudiante',
-      color: Colors.blue,
-      icon: Icons.school,
-    ),
   ];
 
   @override

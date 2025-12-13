@@ -143,31 +143,69 @@ class _AdminDashboardState extends State<AdminDashboard> {
             ),
           ),
           const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.user.email,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.user.email,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                Text(
-                  'ID: ${widget.user.id}',
-                  style: const TextStyle(color: Colors.grey, fontSize: 12),
-                ),
-                const Text(
-                  'Rol: Administrador',
-                  style: TextStyle(
-                    color: Color(AppConfig.platformColor),
-                    fontWeight: FontWeight.w500,
+                  Text(
+                    'ID: ${widget.user.id}',
+                    style: const TextStyle(color: Colors.grey, fontSize: 12),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 4,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: const Color(AppConfig.platformColor).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(
+                            color: const Color(AppConfig.platformColor).withOpacity(0.5),
+                          ),
+                        ),
+                        child: const Text(
+                          'Administrador',
+                          style: TextStyle(
+                            color: Color(AppConfig.platformColor),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      if (widget.user.academicYear != null &&
+                          widget.user.academicYear!.isNotEmpty)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(
+                              color: Colors.blue.withOpacity(0.5),
+                            ),
+                          ),
+                          child: Text(
+                            'Curso ${widget.user.academicYear}',
+                            style: const TextStyle(
+                              color: Colors.blue,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
         ],
       ),
     ),

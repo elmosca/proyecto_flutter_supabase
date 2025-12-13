@@ -70,7 +70,7 @@ class _AppSideDrawerState extends State<AppSideDrawer> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            _buildHeader(l10n),
+            _buildHeader(l10n, widget.user),
             ...items.map(
               (item) => ListTile(
                 leading: Icon(item.icon),
@@ -108,7 +108,7 @@ class _AppSideDrawerState extends State<AppSideDrawer> {
     );
   }
 
-  Widget _buildHeader(AppLocalizations l10n) => DrawerHeader(
+  Widget _buildHeader(AppLocalizations l10n, User user) => DrawerHeader(
     decoration: const BoxDecoration(
       gradient: LinearGradient(
         begin: Alignment.topLeft,
@@ -123,36 +123,83 @@ class _AppSideDrawerState extends State<AppSideDrawer> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Logo del CIFP - Solo símbolo (sin flechas ni texto)
-        Image.asset(
-          'assets/logos/cifp_logo_symbol.png',
-          height: 70,
-          fit: BoxFit.contain,
-          errorBuilder: (context, error, stackTrace) {
-            debugPrint('❌ Error cargando logo del drawer: $error');
-            // Fallback: mostrar solo texto
-            return const SizedBox.shrink();
-          },
+        Row(
+          children: [
+            // Logo del CIFP - Solo símbolo
+            Image.asset(
+              'assets/logos/cifp_logo_symbol.png',
+              height: 50,
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) {
+                return const Icon(Icons.school, color: Colors.white, size: 40);
+              },
+            ),
+            const SizedBox(width: 12),
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Sistema TFG',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    'CIFP CARLOS III',
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 12),
-        // Nombre de la aplicación
-        const Text(
-          'Sistema TFG',
-          style: TextStyle(
+        const Spacer(),
+        // Información del usuario
+        Text(
+          user.fullName,
+          style: const TextStyle(
             color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
           ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 4),
-        // Nombre del centro
-        const Text(
-          'CIFP CARLOS III',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.normal,
-          ),
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text(
+                user.role.displayName,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 11,
+                ),
+              ),
+            ),
+            if (user.academicYear != null && user.academicYear!.isNotEmpty) ...[
+              const SizedBox(width: 8),
+              Text(
+                'Curso ${user.academicYear}',
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ],
         ),
       ],
     ),

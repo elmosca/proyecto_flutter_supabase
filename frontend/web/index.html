@@ -90,6 +90,75 @@
       right: 0;
     }
   </style>
+  <script>
+    // Aplicar estilos de posicionamiento al drawer (flutter-view)
+    function applyDrawerStyles() {
+      const flutterViews = document.querySelectorAll('flutter-view[style*="position: absolute"]');
+      flutterViews.forEach(view => {
+        const style = view.getAttribute('style') || '';
+        // Verificar si tiene las dimensiones del drawer (228px width, 547px height)
+        if (style.includes('width: 228px') && style.includes('height: 547px')) {
+          // Aplicar los ajustes de posicionamiento: top -3px, left 3px
+          const currentStyle = view.style.cssText;
+          let newStyle = currentStyle;
+          
+          // Manejar la propiedad inset (formato: top right bottom left)
+          if (newStyle.includes('inset:')) {
+            newStyle = newStyle.replace(/inset:\s*([^;]+)/, (match, insetValue) => {
+              // Parsear inset (formato: top right bottom left)
+              const parts = insetValue.trim().split(/\s+/);
+              if (parts.length === 4) {
+                // Formato: top right bottom left - aplicar cambios: top -3px, left 3px
+                return `inset: -3px ${parts[1]} ${parts[2]} 3px`;
+              } else if (parts.length === 3) {
+                // Formato: top right bottom (left implícito = right) - aplicar cambios: top -3px, left 3px
+                return `inset: -3px ${parts[1]} ${parts[2]} 3px`;
+              } else if (parts.length === 2) {
+                // Formato: top/bottom left/right - aplicar cambios: top -3px, left 3px
+                return `inset: -3px 3px`;
+              } else if (parts.length === 1) {
+                // Formato: all - aplicar cambios
+                return `inset: -3px 3px`;
+              }
+              return match;
+            });
+          } else {
+            // Si no usa inset, manejar top y left por separado
+            if (newStyle.includes('top:')) {
+              newStyle = newStyle.replace(/top:\s*[^;]+/, 'top: -3px');
+            } else {
+              newStyle += ' top: -3px;';
+            }
+            
+            if (newStyle.includes('left:')) {
+              newStyle = newStyle.replace(/left:\s*[^;]+/, 'left: 3px');
+            } else {
+              newStyle += ' left: 3px;';
+            }
+          }
+          
+          view.style.cssText = newStyle;
+        }
+      });
+    }
+    
+    // Ejecutar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', applyDrawerStyles);
+    } else {
+      applyDrawerStyles();
+    }
+    
+    // Observar cambios dinámicos en el DOM para aplicar estilos cuando Flutter renderice elementos
+    const observer = new MutationObserver(applyDrawerStyles);
+    if (document.body) {
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
+    } else {
+      document.addEventListener('DOMContentLoaded', () => {
+        observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
+      });
+    }
+  </script>
   <script id="splash-screen-script">
     function removeSplashFromWeb() {
       document.getElementById("splash")?.remove();

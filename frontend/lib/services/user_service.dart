@@ -199,34 +199,41 @@ class UserService {
           .from('users')
           .select()
           .eq('id', userId)
-          .single();
+          .maybeSingle();
 
-      // La respuesta exitosa no es una excepción
+      if (response == null) {
+        debugPrint('⚠️ Usuario con ID $userId no encontrado');
+        return null;
+      }
 
       // Mapear los nombres de columnas de la base de datos a los nombres del modelo
-      final userData = {
-        'id': response['id'] is String
-            ? int.parse(response['id'])
-            : response['id'],
-        'fullName': response['full_name'],
-        'email': response['email'],
+      final userData = <String, dynamic>{
+        'id': response['id'] is String 
+            ? int.tryParse(response['id'].toString()) ?? userId
+            : (response['id'] is int ? response['id'] : userId),
+        'full_name': response['full_name'] ?? '',
+        'email': response['email'] ?? '',
         'nre': response['nre'],
-        'role': response['role'],
+        'role': response['role'] ?? 'student',
         'phone': response['phone'],
         'biography': response['biography'],
-        'status': response['status'],
+        'status': response['status'] ?? 'active',
         'specialty': response['specialty'],
-        'tutor_id': response['tutor_id'] is String
-            ? int.tryParse(response['tutor_id'])
-            : response['tutor_id'],
+        'tutor_id': response['tutor_id'] == null
+            ? null
+            : (response['tutor_id'] is String
+                ? int.tryParse(response['tutor_id'])
+                : (response['tutor_id'] is int ? response['tutor_id'] : null)),
         'academic_year': response['academic_year'],
-        'createdAt': response['created_at'],
-        'updatedAt': response['updated_at'],
+        'created_at': response['created_at'] ?? DateTime.now().toIso8601String(),
+        'updated_at': response['updated_at'] ?? DateTime.now().toIso8601String(),
       };
 
       return app_user.User.fromJson(userData);
-    } catch (e) {
-      throw Exception('Error al obtener usuario: $e');
+    } catch (e, stackTrace) {
+      debugPrint('❌ Error al obtener usuario $userId: $e');
+      debugPrint('   Stack trace: $stackTrace');
+      rethrow;
     }
   }
 

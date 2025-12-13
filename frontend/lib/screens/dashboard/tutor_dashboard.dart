@@ -445,12 +445,50 @@ class _TutorDashboardState extends State<TutorDashboard> {
                     'ID: ${widget.user.id}',
                     style: const TextStyle(color: Colors.grey, fontSize: 12),
                   ),
-                  Text(
-                    '${l10n.tutorRole}: ${l10n.tutor}',
-                    style: const TextStyle(
-                      color: Color(AppConfig.platformColor),
-                      fontWeight: FontWeight.w500,
-                    ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 4,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: const Color(AppConfig.platformColor).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(
+                            color: const Color(AppConfig.platformColor).withOpacity(0.5),
+                          ),
+                        ),
+                        child: Text(
+                          l10n.tutor,
+                          style: const TextStyle(
+                            color: Color(AppConfig.platformColor),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      if (widget.user.academicYear != null &&
+                          widget.user.academicYear!.isNotEmpty)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(
+                              color: Colors.blue.withOpacity(0.5),
+                            ),
+                          ),
+                          child: Text(
+                            'Curso ${widget.user.academicYear}',
+                            style: const TextStyle(
+                              color: Colors.blue,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ],
               ),

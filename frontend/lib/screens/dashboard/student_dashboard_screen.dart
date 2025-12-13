@@ -12,6 +12,7 @@ import '../../models/task.dart';
 import '../../models/project.dart';
 import '../../blocs/auth_bloc.dart';
 import '../../services/theme_service.dart';
+import '../../services/user_service.dart';
 import '../../services/anteprojects_service.dart';
 import '../../services/projects_service.dart';
 import '../../services/tasks_service.dart';
@@ -44,10 +45,17 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   final AnteprojectsService _anteprojectsService = AnteprojectsService();
   final ProjectsService _projectsService = ProjectsService();
   final TasksService _tasksService = TasksService();
+  final UserService _userService = UserService();
+  
+  String? _tutorName;
+  // Estado local del usuario para mostrar información actualizada
+  User? _currentUser; 
 
   @override
   void initState() {
     super.initState();
+    // Inicializar con el usuario recibido
+    _currentUser = widget.user;
     _loadData();
   }
 
@@ -71,30 +79,67 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
         return;
       }
 
-      // Cargar datos en paralelo
-      final futures = await Future.wait([
-        _anteprojectsService.getStudentAnteprojects(),
-        _projectsService.getStudentProjects(),
-        _tasksService.getTasks(),
-      ]);
+      // Inicializar con el usuario actual como fallback
+      User? refreshedUser;
+      List<Anteproject> anteprojects = [];
+      List<Project> projects = [];
+      List<Task> tasks = [];
+
+      // Cargar datos principales en paralelo (sin el usuario para evitar errores)
+      try {
+        final mainFutures = await Future.wait([
+          _anteprojectsService.getStudentAnteprojects(),
+          _projectsService.getStudentProjects(),
+          _tasksService.getTasks(),
+        ]);
+
+        anteprojects = mainFutures[0] as List<Anteproject>;
+        projects = mainFutures[1] as List<Project>;
+        tasks = mainFutures[2] as List<Task>;
+      } catch (e) {
+        debugPrint('⚠️ Error al cargar datos principales: $e');
+        // Continuar con listas vacías
+      }
+
+      // Intentar recargar el usuario por separado para obtener datos frescos
+      try {
+        refreshedUser = await _userService.getUserById(widget.user.id);
+      } catch (e) {
+        debugPrint('⚠️ Error al recargar usuario, usando datos originales: $e');
+        // Usar el usuario original como fallback
+        refreshedUser = null;
+      }
 
       if (!mounted) return;
 
-      final anteprojects = futures[0] as List<Anteproject>;
-      final projects = futures[1] as List<Project>;
-      final tasks = futures[2] as List<Task>;
+      // Cargar información del tutor si existe
+      String? tutorName;
+      final userToCheck = refreshedUser ?? widget.user;
+      if (userToCheck.tutorId != null) {
+        try {
+          final tutor = await _userService.getUserById(userToCheck.tutorId!);
+          tutorName = tutor?.fullName;
+        } catch (e) {
+          debugPrint('⚠️ Error al cargar tutor: $e');
+          // Continuar sin tutor
+        }
+      }
 
       if (mounted) {
         setState(() {
           _anteprojects = anteprojects;
           _projects = projects;
           _tasks = tasks;
+          // Usar usuario refrescado si está disponible, sino el original
+          _currentUser = refreshedUser ?? widget.user;
+          _tutorName = tutorName;
           _isLoading = false;
         });
       }
     } catch (e, stackTrace) {
-      debugPrint('❌ Error al cargar datos del dashboard: $e');
+      debugPrint('❌ Error crítico al cargar datos del dashboard: $e');
       debugPrint('   Stack trace: $stackTrace');
+      
       if (!mounted) return;
 
       final authState = context.read<AuthBloc>().state;
@@ -102,20 +147,21 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
         return;
       }
 
-      // Mostrar mensaje de error al usuario
+      // En caso de error crítico, al menos mostrar el usuario original
       if (mounted) {
+        setState(() {
+          _currentUser = widget.user;
+          _isLoading = false;
+        });
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error al cargar datos: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            content: Text('Error al cargar algunos datos: ${e.toString()}'),
+            backgroundColor: Colors.orange,
             duration: const Duration(seconds: 5),
           ),
         );
       }
-
-      setState(() {
-        _isLoading = false;
-      });
     }
   }
 
@@ -229,6 +275,8 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
 
   Widget _buildUserInfo() {
     final l10n = AppLocalizations.of(context)!;
+    // Usar _currentUser en lugar de widget.user para asegurar datos frescos
+    final user = _currentUser ?? widget.user;
 
     return Card(
       child: Padding(
@@ -239,7 +287,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
               radius: 30,
               backgroundColor: const Color(AppConfig.platformColor),
               child: Text(
-                widget.user.fullName.substring(0, 1).toUpperCase(),
+                (user.fullName.isNotEmpty ? user.fullName[0] : '?').toUpperCase(),
                 style: const TextStyle(fontSize: 24, color: Colors.white),
               ),
             ),
@@ -249,31 +297,113 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.user.fullName,
+                    user.fullName,
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    widget.user.email,
+                    user.email,
                     style: const TextStyle(color: Colors.grey, fontSize: 14),
                   ),
-                  if (widget.user.specialty != null &&
-                      widget.user.specialty!.isNotEmpty)
+                  if (user.nre != null && user.nre!.isNotEmpty)
                     Text(
-                      widget.user.specialty!,
-                      style: const TextStyle(
-                        color: Color(AppConfig.platformColor),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  if (widget.user.academicYear != null &&
-                      widget.user.academicYear!.isNotEmpty)
-                    Text(
-                      '${l10n.academicYear}: ${widget.user.academicYear}',
+                      'NRE: ${user.nre}',
                       style: const TextStyle(color: Colors.grey, fontSize: 12),
                     ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 4,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: const Color(AppConfig.platformColor).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(
+                            color: const Color(AppConfig.platformColor).withOpacity(0.5),
+                          ),
+                        ),
+                        child: Text(
+                          user.role.displayName,
+                          style: const TextStyle(
+                            color: Color(AppConfig.platformColor),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      if (user.academicYear != null &&
+                          user.academicYear!.isNotEmpty)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(
+                              color: Colors.blue.withOpacity(0.5),
+                            ),
+                          ),
+                          child: Text(
+                            '${l10n.academicYear}: ${user.academicYear}',
+                            style: const TextStyle(
+                              color: Colors.blue,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      if (user.specialty != null &&
+                          user.specialty!.isNotEmpty)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.orange.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(
+                              color: Colors.orange.withOpacity(0.5),
+                            ),
+                          ),
+                          child: Text(
+                            user.specialty!,
+                            style: const TextStyle(
+                              color: Colors.orange,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        
+                      if (_tutorName != null)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.purple.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(
+                              color: Colors.purple.withOpacity(0.5),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.school, size: 12, color: Colors.purple),
+                              const SizedBox(width: 4),
+                              Text(
+                                '${l10n.tutor}: $_tutorName',
+                                style: const TextStyle(
+                                  color: Colors.purple,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
                 ],
               ),
             ),

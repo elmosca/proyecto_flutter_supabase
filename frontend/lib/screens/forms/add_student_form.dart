@@ -26,15 +26,12 @@ class _AddStudentFormState extends State<AddStudentForm> {
   final _nreController = TextEditingController();
   final _phoneController = TextEditingController();
   final _biographyController = TextEditingController();
-  final _passwordController = TextEditingController();
   final _academicYearController = TextEditingController();
 
   String _selectedSpecialty = 'DAM';
 
   bool _isLoading = false;
   bool _isLoadingYear = true;
-  bool _generatePasswordAuto = true;
-  bool _obscurePassword = true;
 
   final List<String> _specialties = [
     'DAM',
@@ -48,10 +45,6 @@ class _AddStudentFormState extends State<AddStudentForm> {
   @override
   void initState() {
     super.initState();
-    // Generar contraseña inicial si está en modo automático
-    if (_generatePasswordAuto) {
-      _generateAndSetPassword();
-    }
     _loadAcademicYear();
   }
 
@@ -98,16 +91,8 @@ class _AddStudentFormState extends State<AddStudentForm> {
     _nreController.dispose();
     _phoneController.dispose();
     _biographyController.dispose();
-    _passwordController.dispose();
     _academicYearController.dispose();
     super.dispose();
-  }
-
-  void _generateAndSetPassword() {
-    final generatedPassword = _generateTempPassword();
-    setState(() {
-      _passwordController.text = generatedPassword;
-    });
   }
 
   Future<void> _submitForm() async {
@@ -118,12 +103,8 @@ class _AddStudentFormState extends State<AddStudentForm> {
     });
 
     try {
-      // Obtener la contraseña: la del formulario o generar una automática
-      final password = _generatePasswordAuto
-          ? _passwordController.text.trim()
-          : (_passwordController.text.trim().isEmpty
-                ? _generateTempPassword()
-                : _passwordController.text.trim());
+      // Generar una contraseña temporal segura internamente
+      final password = _generateTempPassword();
 
       // Usar UserManagementService.createStudent que crea el usuario en Auth
       // y envía el email de verificación automáticamente
@@ -146,8 +127,13 @@ class _AddStudentFormState extends State<AddStudentForm> {
       );
 
       if (mounted) {
-        // Mostrar diálogo con la contraseña para que el tutor la vea
-        await _showPasswordDialog(password);
+        final l10n = AppLocalizations.of(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n?.studentCreatedSuccess ?? 'Estudiante creado exitosamente'),
+            backgroundColor: Colors.green,
+          ),
+        );
         Navigator.of(context).pop(true); // Retornar true para indicar éxito
       }
     } catch (e) {
@@ -237,108 +223,6 @@ class _AddStudentFormState extends State<AddStudentForm> {
     return password.toString();
   }
 
-  /// Muestra un diálogo con la contraseña del estudiante creado
-  Future<void> _showPasswordDialog(String password) async {
-    final l10n = AppLocalizations.of(context);
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            l10n?.studentCreatedSuccess ?? 'Alumno creado exitosamente',
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n?.studentCreatedWithPassword ??
-                      'El estudiante ha sido creado con la contraseña establecida. Puede iniciar sesión inmediatamente.',
-                  style: const TextStyle(fontSize: 14),
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Contraseña del estudiante:',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: SelectableText(
-                          password,
-                          style: const TextStyle(
-                            fontFamily: 'monospace',
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.copy),
-                        tooltip: 'Copiar contraseña',
-                        onPressed: () {
-                          Clipboard.setData(ClipboardData(text: password));
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Contraseña copiada al portapapeles',
-                              ),
-                              duration: Duration(seconds: 2),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.orange.shade50,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.orange.shade200),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.info_outline, color: Colors.orange.shade700),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          'Guarda esta contraseña de forma segura. El estudiante la necesitará para iniciar sesión.',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.orange.shade900,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(l10n?.close ?? 'Cerrar'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -390,132 +274,6 @@ class _AddStudentFormState extends State<AddStudentForm> {
                   return null;
                 },
               ),
-              const SizedBox(height: 16),
-              // Campo de contraseña con opción de generar automáticamente
-              Row(
-                children: [
-                  Checkbox(
-                    value: _generatePasswordAuto,
-                    onChanged: (value) {
-                      setState(() {
-                        _generatePasswordAuto = value ?? true;
-                        if (_generatePasswordAuto) {
-                          _generateAndSetPassword();
-                        } else {
-                          _passwordController.clear();
-                        }
-                      });
-                    },
-                  ),
-                  Expanded(
-                    child: Text(
-                      AppLocalizations.of(
-                        context,
-                      )!.generatePasswordAutomatically,
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                  ),
-                  if (_generatePasswordAuto)
-                    IconButton(
-                      icon: const Icon(Icons.refresh),
-                      tooltip: AppLocalizations.of(context)!.regeneratePassword,
-                      onPressed: _generateAndSetPassword,
-                    ),
-                ],
-              ),
-              if (!_generatePasswordAuto) ...[
-                const SizedBox(height: 8),
-                TextFormField(
-                  controller: _passwordController,
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.password,
-                    border: const OutlineInputBorder(),
-                    prefixIcon: const Icon(Icons.lock),
-                    suffixIcon: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: Icon(
-                            _obscurePassword
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _obscurePassword = !_obscurePassword;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  obscureText: _obscurePassword,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return AppLocalizations.of(context)!.passwordRequired;
-                    }
-                    if (value.length < 6) {
-                      return AppLocalizations.of(context)!.passwordTooShort;
-                    }
-                    return null;
-                  },
-                ),
-              ],
-              if (_generatePasswordAuto) ...[
-                const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.blue.shade50,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.blue.shade200),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Contraseña generada:',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            SelectableText(
-                              _passwordController.text,
-                              style: const TextStyle(
-                                fontFamily: 'monospace',
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.copy),
-                        tooltip: 'Copiar contraseña',
-                        onPressed: () {
-                          Clipboard.setData(
-                            ClipboardData(text: _passwordController.text),
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Contraseña copiada al portapapeles',
-                              ),
-                              duration: Duration(seconds: 2),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
               const SizedBox(height: 16),
               _buildFormField(
                 controller: _phoneController,

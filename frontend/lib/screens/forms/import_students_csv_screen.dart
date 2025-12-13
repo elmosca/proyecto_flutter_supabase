@@ -528,7 +528,7 @@ class _ImportStudentsCSVScreenState extends State<ImportStudentsCSVScreen> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                'Cada estudiante recibirá un email de bienvenida con su información de acceso. Las contraseñas mostradas abajo son temporales y se pueden usar para el primer acceso.',
+                                'Cada estudiante recibirá un email de bienvenida con su información de acceso.',
                                 style: TextStyle(
                                   fontSize: 11,
                                   color: Colors.blue.shade900,
@@ -590,63 +590,7 @@ class _ImportStudentsCSVScreenState extends State<ImportStudentsCSVScreen> {
                                       ),
                                     ),
                                     if (isSuccess &&
-                                        result['password'] != null) ...[
-                                      const SizedBox(height: 4),
-                                      Container(
-                                        padding: const EdgeInsets.all(8),
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey.shade100,
-                                          borderRadius: BorderRadius.circular(
-                                            4,
-                                          ),
-                                          border: Border.all(
-                                            color: Colors.grey.shade300,
-                                          ),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                'Contraseña: ${result['password']}',
-                                                style: const TextStyle(
-                                                  fontFamily: 'monospace',
-                                                  fontSize: 11,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                            IconButton(
-                                              icon: const Icon(
-                                                Icons.copy,
-                                                size: 16,
-                                              ),
-                                              padding: EdgeInsets.zero,
-                                              constraints:
-                                                  const BoxConstraints(),
-                                              tooltip: 'Copiar contraseña',
-                                              onPressed: () {
-                                                Clipboard.setData(
-                                                  ClipboardData(
-                                                    text: result['password'],
-                                                  ),
-                                                );
-                                                ScaffoldMessenger.of(
-                                                  context,
-                                                ).showSnackBar(
-                                                  const SnackBar(
-                                                    content: Text(
-                                                      'Contraseña copiada',
-                                                    ),
-                                                    duration: Duration(
-                                                      seconds: 2,
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                        result['message'] != null) ...[
                                       const SizedBox(height: 4),
                                       Text(
                                         result['message'] ??

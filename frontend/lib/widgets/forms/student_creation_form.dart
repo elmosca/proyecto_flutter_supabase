@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../models/user.dart';
 import '../../services/user_management_service.dart';
@@ -20,7 +21,7 @@ class _StudentCreationFormState extends State<StudentCreationForm> {
   final _settingsService = SettingsService();
 
   final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  // _passwordController eliminado ya que se genera automáticamente
   final _fullNameController = TextEditingController();
   final _specialtyController = TextEditingController();
   final _nreController = TextEditingController();
@@ -41,6 +42,20 @@ class _StudentCreationFormState extends State<StudentCreationForm> {
     _loadDefaultAcademicYear();
   }
 
+  /// Genera una contraseña temporal segura
+  String _generateTempPassword() {
+    // Generar una contraseña temporal aleatoria de 16 caracteres
+    // que cumpla con los requisitos mínimos de Supabase (mínimo 6 caracteres)
+    const chars =
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#\$%^&*';
+    final random = Random.secure(); // Requiere import 'dart:math';
+    final password = StringBuffer();
+    for (int i = 0; i < 16; i++) {
+      password.write(chars[random.nextInt(chars.length)]);
+    }
+    return password.toString();
+  }
+
   Future<void> _loadDefaultAcademicYear() async {
     try {
       final year = await _settingsService.getStringSetting('academic_year');
@@ -57,7 +72,7 @@ class _StudentCreationFormState extends State<StudentCreationForm> {
   @override
   void dispose() {
     _emailController.dispose();
-    _passwordController.dispose();
+    // _passwordController.dispose();
     _fullNameController.dispose();
     _specialtyController.dispose();
     _nreController.dispose();
@@ -118,27 +133,6 @@ class _StudentCreationFormState extends State<StudentCreationForm> {
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (value) =>
                     Validators.email(value, 'El email es obligatorio'),
-              ),
-
-              const SizedBox(height: 16),
-
-              // Contraseña
-              TextFormField(
-                controller: _passwordController,
-                decoration: const InputDecoration(
-                  labelText: 'Contraseña',
-                  border: OutlineInputBorder(),
-                ),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'La contraseña es obligatoria';
-                  }
-                  if (value.length < 6) {
-                    return 'La contraseña debe tener al menos 6 caracteres';
-                  }
-                  return null;
-                },
               ),
 
               const SizedBox(height: 16),
@@ -319,9 +313,13 @@ class _StudentCreationFormState extends State<StudentCreationForm> {
     });
 
     try {
+      // Generar contraseña temporal automáticamente
+      // No se muestra al administrador ya que se envía por email
+      final password = _generateTempPassword();
+
       final student = await _userManagementService.createStudent(
         email: _emailController.text.trim(),
-        password: _passwordController.text,
+        password: password,
         fullName: _fullNameController.text.trim(),
         specialty: _specialtyController.text.trim().isEmpty
             ? null
@@ -356,24 +354,11 @@ class _StudentCreationFormState extends State<StudentCreationForm> {
         final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n?.studentCreatedSuccess ?? 'Alumno creado exitosamente',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  l10n?.studentCreatedWithPassword ??
-                      'El estudiante ha sido creado con la contraseña establecida. Puede iniciar sesión inmediatamente.',
-                  style: const TextStyle(fontSize: 12),
-                ),
-              ],
+            content: Text(
+              l10n?.studentCreatedSuccess ?? 'Alumno creado exitosamente',
             ),
             backgroundColor: Colors.green,
-            duration: const Duration(seconds: 8),
+            duration: const Duration(seconds: 4),
           ),
         );
         Navigator.of(context).pop(); // Cerrar diálogo si se abre como diálogo
@@ -386,3 +371,4 @@ class _StudentCreationFormState extends State<StudentCreationForm> {
     }
   }
 }
+

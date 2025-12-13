@@ -113,17 +113,6 @@ class TestCredentialsWidget extends StatelessWidget {
               color: Colors.blue,
               icon: Icons.school,
             ),
-
-            const SizedBox(height: 12),
-
-            _buildCredentialCard(
-              context,
-              title: 'Estudiante - Pablo Jiménez Sánchez',
-              email: 'pablo.jimenez@jualas.es',
-              password: 'knCOcimmcPWR',
-              color: Colors.blue,
-              icon: Icons.school,
-            ),
           ],
         ),
       ),

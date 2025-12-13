@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/user.dart' as app_user;
 import '../../services/user_service.dart';
+import '../../services/settings_service.dart';
 import '../forms/edit_student_form.dart';
 import '../../widgets/dialogs/reset_password_dialog.dart';
 import '../../widgets/dialogs/add_students_dialog.dart';
@@ -23,6 +24,11 @@ class _StudentListScreenState extends State<StudentListScreen> {
   bool _isLoading = true;
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
+  
+  // Filtro de año académico
+  final SettingsService _settingsService = SettingsService();
+  String _selectedAcademicYear = 'all';
+  List<String> _academicYears = [];
 
   @override
   void initState() {
@@ -40,10 +46,30 @@ class _StudentListScreenState extends State<StudentListScreen> {
     try {
       final userService = UserService();
       final students = await userService.getStudentsByTutor(widget.tutorId);
+      
+      // Extraer años académicos disponibles
+      final years = <String>{};
+      for (final student in students) {
+        if (student.academicYear != null && student.academicYear!.isNotEmpty) {
+          years.add(student.academicYear!);
+        }
+      }
+      
+      // Ordenar años (más reciente primero)
+      final sortedYears = years.toList()..sort((a, b) => b.compareTo(a));
 
       if (mounted) {
         setState(() {
           _students = students;
+          _academicYears = sortedYears;
+          
+          // Si _selectedAcademicYear es 'all', intentar establecer el año actual del sistema por defecto
+          // solo si no se ha seleccionado uno explícitamente antes (aunque aquí se resetea al cargar, 
+          // podríamos querer persistir la selección, pero por ahora reseteamos o mantenemos 'all')
+          if (_selectedAcademicYear == 'all' && _academicYears.isNotEmpty) {
+             _loadDefaultYear();
+          }
+          
           _isLoading = false;
         });
       }
@@ -64,10 +90,35 @@ class _StudentListScreenState extends State<StudentListScreen> {
     }
   }
 
-  List<app_user.User> get _filteredStudents {
-    if (_searchQuery.isEmpty) return _students;
+  Future<void> _loadDefaultYear() async {
+    try {
+      final systemYear = await _settingsService.getStringSetting('academic_year');
+      if (systemYear != null && 
+          systemYear.isNotEmpty && 
+          _academicYears.contains(systemYear) &&
+          mounted) {
+        setState(() {
+          _selectedAcademicYear = systemYear;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading system academic year: $e');
+    }
+  }
 
-    return _students.where((student) {
+  List<app_user.User> get _filteredStudents {
+    var filtered = _students;
+
+    // Filtrar por año académico
+    if (_selectedAcademicYear != 'all') {
+      filtered = filtered.where((student) => 
+        student.academicYear == _selectedAcademicYear
+      ).toList();
+    }
+
+    if (_searchQuery.isEmpty) return filtered;
+
+    return filtered.where((student) {
       return student.fullName.toLowerCase().contains(
             _searchQuery.toLowerCase(),
           ) ||
@@ -111,23 +162,69 @@ class _StudentListScreenState extends State<StudentListScreen> {
             ),
           ),
           
-          // Barra de búsqueda
+          // Barra de búsqueda y filtro
           Padding(
             padding: const EdgeInsets.all(16),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: l10n.searchStudents,
-                prefixIcon: const Icon(Icons.search),
-                border: const OutlineInputBorder(),
-                filled: true,
-                fillColor: Colors.grey.shade50,
-              ),
-              onChanged: (value) {
-                setState(() {
-                  _searchQuery = value;
-                });
-              },
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _searchController,
+                        decoration: InputDecoration(
+                          hintText: l10n.searchStudents,
+                          prefixIcon: const Icon(Icons.search),
+                          border: const OutlineInputBorder(),
+                          filled: true,
+                          fillColor: Colors.grey.shade50,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            _searchQuery = value;
+                          });
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    // Dropdown de Año Académico
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade50,
+                        border: Border.all(color: Colors.grey.shade400),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          value: _selectedAcademicYear,
+                          icon: const Icon(Icons.filter_list),
+                          onChanged: (String? newValue) {
+                            if (newValue != null) {
+                              setState(() {
+                                _selectedAcademicYear = newValue;
+                              });
+                            }
+                          },
+                          items: [
+                            DropdownMenuItem<String>(
+                              value: 'all',
+                              child: Text(l10n.all),
+                            ),
+                            ..._academicYears.map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
 
@@ -151,6 +248,8 @@ class _StudentListScreenState extends State<StudentListScreen> {
   }
 
   Widget _buildEmptyState() {
+    final isFiltering = _searchQuery.isNotEmpty || _selectedAcademicYear != 'all';
+    
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -158,12 +257,12 @@ class _StudentListScreenState extends State<StudentListScreen> {
           Icon(Icons.people_outline, size: 64, color: Colors.grey.shade400),
           const SizedBox(height: 16),
           Text(
-            _searchQuery.isEmpty
+            !isFiltering
                 ? AppLocalizations.of(context)!.noStudentsAssigned
                 : AppLocalizations.of(context)!.noStudentsFound,
             style: TextStyle(fontSize: 18, color: Colors.grey.shade600),
           ),
-          if (_searchQuery.isEmpty) ...[
+          if (!isFiltering) ...[
             const SizedBox(height: 8),
             Text(
               AppLocalizations.of(context)!.useDashboardButtons,
