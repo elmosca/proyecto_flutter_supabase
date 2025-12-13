@@ -22,8 +22,11 @@ class _StudentCreationFormState extends State<StudentCreationForm> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _fullNameController = TextEditingController();
+  final _specialtyController = TextEditingController();
+  final _nreController = TextEditingController();
   final _academicYearController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _biographyController = TextEditingController();
 
   User? _selectedTutor;
   List<User> _tutors = [];
@@ -56,8 +59,11 @@ class _StudentCreationFormState extends State<StudentCreationForm> {
     _emailController.dispose();
     _passwordController.dispose();
     _fullNameController.dispose();
+    _specialtyController.dispose();
+    _nreController.dispose();
     _academicYearController.dispose();
     _phoneController.dispose();
+    _biographyController.dispose();
     super.dispose();
   }
 
@@ -155,6 +161,31 @@ class _StudentCreationFormState extends State<StudentCreationForm> {
 
               const SizedBox(height: 16),
 
+              // Especialidad
+              TextFormField(
+                controller: _specialtyController,
+                decoration: const InputDecoration(
+                  labelText: 'Especialidad (opcional)',
+                  hintText: 'DAM, ASIR, DAW, etc.',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // NRE (Número de Registro de Estudiante)
+              TextFormField(
+                controller: _nreController,
+                decoration: const InputDecoration(
+                  labelText: 'NRE (opcional)',
+                  hintText: 'Número de Registro de Estudiante',
+                  border: OutlineInputBorder(),
+                  helperText: 'Número único de registro del estudiante',
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
               // Año académico
               TextFormField(
                 controller: _academicYearController,
@@ -201,6 +232,19 @@ class _StudentCreationFormState extends State<StudentCreationForm> {
                   border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.phone,
+              ),
+
+              const SizedBox(height: 16),
+
+              // Biografía
+              TextFormField(
+                controller: _biographyController,
+                decoration: const InputDecoration(
+                  labelText: 'Biografía (opcional)',
+                  hintText: 'Información adicional sobre el estudiante',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 3,
               ),
 
               if (_errorMessage != null) ...[
@@ -279,6 +323,12 @@ class _StudentCreationFormState extends State<StudentCreationForm> {
         email: _emailController.text.trim(),
         password: _passwordController.text,
         fullName: _fullNameController.text.trim(),
+        specialty: _specialtyController.text.trim().isEmpty
+            ? null
+            : _specialtyController.text.trim(),
+        nre: _nreController.text.trim().isEmpty
+            ? null
+            : _nreController.text.trim(),
         academicYear: _academicYearController.text.trim().isEmpty
             ? null
             : _academicYearController.text.trim(),
@@ -286,6 +336,9 @@ class _StudentCreationFormState extends State<StudentCreationForm> {
         phone: _phoneController.text.trim().isEmpty
             ? null
             : _phoneController.text.trim(),
+        biography: _biographyController.text.trim().isEmpty
+            ? null
+            : _biographyController.text.trim(),
       );
 
       widget.onStudentCreated(student);
@@ -295,6 +348,8 @@ class _StudentCreationFormState extends State<StudentCreationForm> {
       setState(() {
         _selectedTutor = null;
         _isCreating = false;
+        // Recargar año académico por defecto después de limpiar
+        _loadDefaultAcademicYear();
       });
 
       if (mounted) {
