@@ -749,10 +749,6 @@
   "@taskStatusInProgress": {
     "description": "Estado de tarea en progreso"
   },
-  "taskStatusUnderReview": "En Revisión",
-  "@taskStatusUnderReview": {
-    "description": "Estado de tarea en revisión"
-  },
   "taskStatusCompleted": "Completada",
   "@taskStatusCompleted": {
     "description": "Estado de tarea completada"
@@ -792,10 +788,6 @@
   "kanbanColumnInProgress": "En Progreso",
   "@kanbanColumnInProgress": {
     "description": "Columna de tareas en progreso en Kanban"
-  },
-  "kanbanColumnUnderReview": "En Revisión",
-  "@kanbanColumnUnderReview": {
-    "description": "Columna de tareas en revisión en Kanban"
   },
   "kanbanColumnCompleted": "Completadas",
   "@kanbanColumnCompleted": {

@@ -36,7 +36,6 @@ part 'task.g.dart';
 /// ## Estados posibles:
 /// - [pending]: Tarea pendiente de iniciar
 /// - [in_progress]: Tarea en progreso
-/// - [under_review]: Tarea en revisión
 /// - [completed]: Tarea completada
 ///
 /// Ver también: [TaskStatus], [TaskComplexity]
@@ -164,10 +163,6 @@ enum TaskStatus {
   @JsonValue('in_progress')
   inProgress,
 
-  /// Tarea en revisión o testing.
-  @JsonValue('under_review')
-  underReview,
-
   /// Tarea completada y finalizada.
   @JsonValue('completed')
   completed,
@@ -195,7 +190,6 @@ extension TaskStatusExtension on TaskStatus {
   bool get isCompleted => this == TaskStatus.completed;
   bool get isInProgress => this == TaskStatus.inProgress;
   bool get isPending => this == TaskStatus.pending;
-  bool get isUnderReview => this == TaskStatus.underReview;
 
   /// Convierte el enum a su valor de base de datos (snake_case)
   String get dbValue {
@@ -204,8 +198,6 @@ extension TaskStatusExtension on TaskStatus {
         return 'pending';
       case TaskStatus.inProgress:
         return 'in_progress';
-      case TaskStatus.underReview:
-        return 'under_review';
       case TaskStatus.completed:
         return 'completed';
     }

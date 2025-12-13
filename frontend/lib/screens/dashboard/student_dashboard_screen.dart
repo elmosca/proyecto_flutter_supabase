@@ -730,10 +730,6 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
         statusColor = Colors.blue;
         statusIcon = Icons.play_circle;
         break;
-      case TaskStatus.underReview:
-        statusColor = Colors.orange;
-        statusIcon = Icons.reviews;
-        break;
       case TaskStatus.completed:
         statusColor = Colors.green;
         statusIcon = Icons.check_circle;
@@ -786,8 +782,6 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
         return 'Pendiente';
       case TaskStatus.inProgress:
         return 'En Progreso';
-      case TaskStatus.underReview:
-        return 'En Revisión';
       case TaskStatus.completed:
         return 'Completada';
     }

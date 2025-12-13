@@ -1,22 +1,22 @@
 # Guía del Tutor
 
-Esta guía detalla las funcionalidades y el flujo de trabajo dentro del Sistema de Seguimiento de Proyectos TFG para el rol de **Tutor**. Su función principal es la supervisión, el *feedback* y la gestión de la aprobación académica.
+Esta guía detalla las funcionalidades y el flujo de trabajo dentro del Sistema de Seguimiento de Proyectos TFG para el rol de **Tutor**. Su función principal es la supervisión de anteproyectos, el *feedback* y la gestión de la aprobación académica.
 
 ## 1. Acceso y Dashboard
 
 El Dashboard del Tutor está optimizado para la supervisión y muestra:
 
-*   **Proyectos Asignados**: Listado de todos los proyectos de TFG bajo su tutela.
+*   **Estudiantes Asignados**: Listado de todos los estudiantes bajo su tutela.
 *   **Anteproyectos Pendientes**: Alertas sobre nuevas propuestas de Anteproyecto que requieren su revisión.
-*   **Tareas en Revisión**: Tareas que los estudiantes han marcado como completadas y esperan su aprobación.
-*   **Notificaciones**: Alertas sobre nuevas entregas de archivos o comentarios de los estudiantes.
+*   **Proyectos Activos**: Proyectos de estudiantes cuyo anteproyecto fue aprobado.
+*   **Notificaciones**: Alertas sobre nuevos anteproyectos o comentarios de los estudiantes.
 *   **Mensajes**: Acceso rápido al sistema de mensajería con tus estudiantes (ícono 💬 en la barra superior).
 
 ### 1.1. Navegación con Menú Hamburguesa
 
 La aplicación cuenta con un **menú hamburguesa persistente** (ícono ☰ en la esquina superior izquierda) que proporciona acceso rápido a todas las secciones principales:
 
-*   **Panel Principal**: Dashboard con resumen de tus estudiantes y proyectos
+*   **Panel Principal**: Dashboard con resumen de tus estudiantes y anteproyectos
 *   **Mis Estudiantes**: Lista de estudiantes asignados
 *   **Notificaciones**: Alertas y notificaciones del sistema
 *   **Mensajes**: Sistema de mensajería con tus estudiantes
@@ -33,7 +33,7 @@ El Tutor es el responsable de validar la viabilidad de las propuestas de TFG.
 ### 2.1. Flujo de Revisión
 
 1.  **Notificación**: Recibirá una notificación cuando un Estudiante envíe un Anteproyecto.
-2.  **Acceso al Detalle**: Navegue a la sección **"Anteproyectos"** desde el menú hamburguesa y seleccione la propuesta con estado `Enviado`, `En Revisión` o `Blocked`.
+2.  **Acceso al Detalle**: Navegue a la sección **"Anteproyectos"** desde el menú hamburguesa y seleccione la propuesta con estado `Enviado` o `En Revisión`.
 3.  **Análisis**:
     *   Revise el **Título**, **Descripción** y **Tipo de Proyecto**.
     *   Verifique la alineación de los **Objetivos** con las competencias DAM.
@@ -48,30 +48,32 @@ Utilice el formulario de evaluación para tomar una decisión:
 | :--- | :--- | :--- |
 | **Aprobar** | Marque la propuesta como `Aprobada`. | El sistema crea el **Proyecto** activo y notifica al Estudiante para que comience el desarrollo. |
 | **Rechazar** | Marque la propuesta como `Rechazada`. | El Estudiante recibe los comentarios y puede editar y reenviar la propuesta mejorada. |
+| **Pedir cambios** | Marque como `En Revisión`. | El Estudiante puede editar el anteproyecto y reenviarlo. |
 
-## 3. Seguimiento de Proyectos (Kanban)
+## 3. Gestión de Estudiantes
 
-Una vez que el proyecto está activo, el Tutor utiliza el tablero Kanban para el seguimiento.
+### 3.1. Lista de Estudiantes
 
-### 3.1. Supervisión de Tareas
+Desde la sección **"Mis Estudiantes"** puede ver todos los estudiantes asignados con:
 
-*   **Tareas en Revisión**: Preste especial atención a la columna **"En Revisión"**. Estas tareas requieren su *feedback* o aprobación final.
-*   **Comentarios**: Utilice la sección de comentarios de cada tarea para proporcionar *feedback* constructivo y solicitar aclaraciones.
-*   **Archivos**: Revise los archivos de entrega subidos por el Estudiante.
-*   **Mensajes**: Utilice el sistema de mensajes (ícono 💬 en la barra superior) para mantener conversaciones organizadas por tema con cada estudiante. Puede crear hilos de conversación específicos para diferentes aspectos del proyecto.
+*   Nombre y datos de contacto
+*   Estado de su anteproyecto (si tiene)
+*   Estado de su proyecto (si fue aprobado)
 
-### 3.2. Gestión de Hitos
+### 3.2. Comunicación
 
-*   **Hitos**: La sección de Hitos muestra los puntos de control clave del proyecto.
-*   **Evaluación**: Al llegar a la fecha de un Hito, el Tutor debe evaluar el progreso general y marcar el Hito como `Completado` o `Retrasado`, dejando comentarios de revisión.
+*   **Comentarios**: Utilice los comentarios en los anteproyectos para proporcionar *feedback* constructivo.
+*   **Mensajes**: Utilice el sistema de mensajes (ícono 💬 en la barra superior) para mantener conversaciones organizadas por tema con cada estudiante.
 
 ## 4. Finalización del Proyecto
 
-Cuando el Estudiante ha completado todas las tareas y el proyecto está listo para la defensa final:
+Cuando el Estudiante ha completado su proyecto y está listo para la defensa final:
 
-1.  Verifique que todos los **Hitos** y **Tareas** estén marcados como `Completados`.
-2.  Marque el **Proyecto** como `Finalizado` en la sección de detalles del proyecto.
+1.  Verifique que el proyecto esté en estado `Completado`.
+2.  Revise la documentación final entregada por el estudiante.
 3.  El sistema registrará la fecha de finalización para el expediente académico.
+
+**Nota importante:** Las tareas y el tablero Kanban son herramientas de organización personal del estudiante. El tutor no tiene acceso a las tareas ni al tablero Kanban. El estudiante gestiona su propio trabajo de forma autónoma una vez aprobado su anteproyecto.
 
 ---
 *Esta guía se basa en la Especificación Funcional del proyecto TFG.*

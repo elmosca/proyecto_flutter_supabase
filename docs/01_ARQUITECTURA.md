@@ -35,8 +35,8 @@ Las entidades clave del sistema definen la lógica de negocio y la estructura de
 2.  **Revisión y Aprobación**: El Tutor revisa el `Anteproyecto`.
     *   Si es **Aprobado**, se crea automáticamente un `Proyecto` activo.
     *   Si es **Rechazado** o requiere cambios, se notifica al estudiante.
-3.  **Desarrollo**: El estudiante gestiona el `Proyecto` a través del tablero **Kanban** de `Tareas` con estados: `pending`, `in_progress`, `under_review`, `completed`.
-4.  **Seguimiento**: El Tutor realiza el seguimiento del progreso, comenta las `Tareas` y evalúa los `Hitos`.
+3.  **Desarrollo**: El estudiante gestiona el `Proyecto` de forma autónoma a través del tablero **Kanban** de `Tareas` con estados: `pending`, `in_progress`, `completed`.
+4.  **Gestión Autónoma**: El estudiante organiza y completa sus propias tareas. El tablero Kanban es una herramienta personal del estudiante (el tutor no tiene acceso).
 5.  **Finalización**: El proyecto se marca como `completed` tras la entrega final.
 
 ## 1.5. Arquitectura Técnica

@@ -7,8 +7,8 @@ Esta guía detalla las funcionalidades y el flujo de trabajo dentro del Sistema 
 Al iniciar sesión, el Estudiante accede a un **Dashboard** personalizado que muestra:
 
 *   **Resumen del Proyecto**: Título, tutor asignado y estado general (ej. `En Desarrollo`).
-*   **Tareas Pendientes**: Un listado rápido de las tareas asignadas con la fecha límite más próxima.
-*   **Notificaciones**: Alertas sobre nuevos comentarios, cambios de estado de tareas o la aprobación/rechazo del anteproyecto.
+*   **Tareas Pendientes**: Un listado rápido de las tareas que has creado con la fecha límite más próxima.
+*   **Notificaciones**: Alertas sobre comentarios en anteproyectos o aprobación/rechazo del anteproyecto.
 *   **Mensajes**: Acceso rápido al sistema de mensajería con tu tutor (ícono 💬 en la barra superior).
 
 ### 1.1. Navegación con Menú Hamburguesa
@@ -55,19 +55,23 @@ El Tutor puede:
 
 | Resultado | Acción | Consecuencia |
 | :--- | :--- | :--- |
-| **Aprobado** | El sistema crea automáticamente el **Proyecto** activo. | El Estudiante puede comenzar a gestionar tareas en el tablero Kanban. |
+| **Aprobado** | El sistema crea automáticamente el **Proyecto** activo. | El Estudiante puede comenzar a crear y gestionar sus tareas en el tablero Kanban. |
 | **Rechazado** | El Tutor proporciona una justificación y comentarios. | El Estudiante debe modificar la propuesta y reenviarla. |
 
 ## 3. Gestión de Tareas (Tablero Kanban)
 
-Una vez que el Anteproyecto es aprobado, el Estudiante gestiona el desarrollo a través del **Tablero Kanban** del Proyecto.
+Una vez que el Anteproyecto es aprobado, el Estudiante gestiona el desarrollo de forma autónoma a través del **Tablero Kanban** del Proyecto.
+
+**Importante:** Las tareas son una herramienta de organización personal. El tutor **NO tiene acceso** a las tareas ni al tablero Kanban. Es el estudiante quien crea, gestiona y completa sus propias tareas.
 
 ### 3.1. Creación de Tareas
 
-Las tareas pueden crearse de dos formas:
+El Estudiante define las tareas necesarias para alcanzar los hitos de su proyecto:
 
-1.  **Manual**: El Estudiante define las tareas necesarias para alcanzar los hitos.
-2.  **Automática**: El sistema puede generar tareas a partir de plantillas o, si está integrado, a través del **MCP Server** (IA).
+1.  Ve a la sección **"Tareas"** o al **"Tablero Kanban"**
+2.  Haz clic en **"Crear Nueva Tarea"**
+3.  Completa el título, descripción, fecha límite y prioridad
+4.  La tarea se añade automáticamente a la columna "Pendiente"
 
 ### 3.2. Flujo de Trabajo Kanban
 
@@ -77,9 +81,7 @@ El tablero está dividido en columnas que representan el estado de la tarea:
 | :--- | :--- | :--- |
 | **Pendiente** | Tareas planificadas pero no iniciadas. | Mover a `En Progreso` al comenzar. |
 | **En Progreso** | Tareas en las que se está trabajando activamente. | Mantener actualizada la descripción y el progreso. |
-| **En Revisión** | Tareas completadas y listas para la revisión del Tutor. | Mover a `Completada` si el Tutor aprueba. |
-| **Blocked** | Tareas bloqueadas que requieren atención o dependencias. | Resolver el bloqueo antes de continuar. |
-| **Completada** | Tareas finalizadas y aprobadas. | No requiere más acción. |
+| **Completada** | Tareas finalizadas. | No requiere más acción. |
 
 **Para cambiar el estado**, simplemente arrastre la tarjeta de la tarea a la columna correspondiente.
 
@@ -87,18 +89,18 @@ El tablero está dividido en columnas que representan el estado de la tarea:
 
 Al hacer clic en una tarea, el Estudiante puede:
 
-*   **Comentar**: Dejar preguntas o notas para el Tutor.
-*   **Subir Archivos**: Adjuntar entregas, código o documentos de apoyo.
+*   **Editar**: Modificar título, descripción o fecha límite.
+*   **Añadir notas**: Dejar notas personales sobre el progreso.
 *   **Historial**: Ver el registro de actividad y cambios de estado.
 
-**Nota**: También puedes comunicarte con tu tutor mediante el sistema de mensajes (ícono 💬 en la barra superior), que permite crear hilos de conversación organizados por tema dentro de cada proyecto.
+**Nota**: Para comunicarte con tu tutor, utiliza el sistema de mensajes (ícono 💬 en la barra superior), que permite crear hilos de conversación organizados por tema dentro de cada proyecto.
 
 ## 4. Seguimiento y Finalización
 
 El Estudiante debe monitorear el progreso del proyecto y el cumplimiento de los hitos.
 
 *   **Hitos**: Consulte la sección de Hitos para asegurarse de que las tareas se alinean con las fechas de entrega clave.
-*   **Entrega Final**: Una vez que todas las tareas y hitos estén completados, el Tutor puede marcar el Proyecto como **Finalizado**.
+*   **Entrega Final**: Una vez que todas las tareas y hitos estén completados, el proyecto pasa a estado **Completado**.
 
 ---
 *Esta guía se basa en la Especificación Funcional del proyecto TFG.*

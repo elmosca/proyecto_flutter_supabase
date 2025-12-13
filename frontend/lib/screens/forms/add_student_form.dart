@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/user_management_service.dart';
 import '../../services/theme_service.dart';
+import '../../services/settings_service.dart';
 import '../../utils/app_exception.dart';
 import '../../utils/validators.dart';
 
@@ -19,17 +20,19 @@ class AddStudentForm extends StatefulWidget {
 class _AddStudentFormState extends State<AddStudentForm> {
   final _formKey = GlobalKey<FormState>();
   final _userManagementService = UserManagementService();
+  final _settingsService = SettingsService();
   final _fullNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _nreController = TextEditingController();
   final _phoneController = TextEditingController();
   final _biographyController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _academicYearController = TextEditingController();
 
   String _selectedSpecialty = 'DAM';
-  String _selectedAcademicYear = '2024-2025';
 
   bool _isLoading = false;
+  bool _isLoadingYear = true;
   bool _generatePasswordAuto = true;
   bool _obscurePassword = true;
 
@@ -42,8 +45,6 @@ class _AddStudentFormState extends State<AddStudentForm> {
     'Desarrollo de Aplicaciones Web',
   ];
 
-  final List<String> _academicYears = ['2024-2025', '2025-2026', '2026-2027'];
-
   @override
   void initState() {
     super.initState();
@@ -51,6 +52,43 @@ class _AddStudentFormState extends State<AddStudentForm> {
     if (_generatePasswordAuto) {
       _generateAndSetPassword();
     }
+    _loadAcademicYear();
+  }
+
+  Future<void> _loadAcademicYear() async {
+    try {
+      final year = await _settingsService.getStringSetting('academic_year');
+      if (year != null && year.isNotEmpty && mounted) {
+        setState(() {
+          _academicYearController.text = year;
+          _isLoadingYear = false;
+        });
+      } else {
+        _setFallbackYear();
+      }
+    } catch (e) {
+      debugPrint('Error loading academic year: $e');
+      _setFallbackYear();
+    }
+  }
+
+  void _setFallbackYear() {
+    if (!mounted) return;
+    final now = DateTime.now();
+    final currentYear = now.year;
+    // Si estamos después de agosto (mes > 8), el curso empieza este año.
+    // Si estamos antes de septiembre (mes <= 8), el curso empezó el año anterior.
+    // Aunque la lógica del usuario era "tome como primera cifra el año actual", asumo que se refiere al inicio de curso.
+    // Simplificación para cumplir "1 de septiembre y tome el año actual":
+    // Si es septiembre o después, inicio = año actual.
+    // Si es antes, inicio = año anterior.
+    // Pero la instrucción decía "tome como primera cifra el año actual del sistema".
+    // Seguiré la lógica simple: año actual + año siguiente.
+    final year = '$currentYear-${currentYear + 1}';
+    setState(() {
+      _academicYearController.text = year;
+      _isLoadingYear = false;
+    });
   }
 
   @override
@@ -61,6 +99,7 @@ class _AddStudentFormState extends State<AddStudentForm> {
     _phoneController.dispose();
     _biographyController.dispose();
     _passwordController.dispose();
+    _academicYearController.dispose();
     super.dispose();
   }
 
@@ -92,7 +131,7 @@ class _AddStudentFormState extends State<AddStudentForm> {
         email: _emailController.text.trim(),
         password: password,
         fullName: _fullNameController.text.trim(),
-        academicYear: _selectedAcademicYear,
+        academicYear: _academicYearController.text, // Usar valor automatizado
         tutorId: widget.tutorId,
         phone: _phoneController.text.trim().isEmpty
             ? null
@@ -496,15 +535,23 @@ class _AddStudentFormState extends State<AddStudentForm> {
                 },
               ),
               const SizedBox(height: 16),
-              _buildDropdownField(
-                label: AppLocalizations.of(context)!.academicYear,
-                value: _selectedAcademicYear,
-                items: _academicYears,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedAcademicYear = value!;
-                  });
-                },
+              // Campo de año académico automatizado (solo lectura)
+              TextFormField(
+                controller: _academicYearController,
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.academicYear,
+                  prefixIcon: const Icon(Icons.calendar_today),
+                  border: const OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Colors.grey.shade200, // Visualmente deshabilitado
+                  suffixIcon: _isLoadingYear 
+                      ? const Padding(
+                          padding: EdgeInsets.all(12.0),
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : null,
+                ),
               ),
               const SizedBox(height: 16),
               _buildFormField(

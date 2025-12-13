@@ -9,8 +9,6 @@ class NotificationLocalizations {
         return 'Pendiente';
       case 'in_progress':
         return 'En Progreso';
-      case 'under_review':
-        return 'En Revisión';
       case 'completed':
         return 'Completada';
       default:
@@ -25,8 +23,6 @@ class NotificationLocalizations {
         return 'Pending';
       case 'in_progress':
         return 'In Progress';
-      case 'under_review':
-        return 'Under Review';
       case 'completed':
         return 'Completed';
       default:

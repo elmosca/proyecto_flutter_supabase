@@ -1,8 +1,7 @@
-full_name,email,nre,phone,biography,specialty,academic_year
-Laura Sánchez Pérez,laura.sanchez@jualas.es,3456789C,+34 600 333 444,"Estudiante de DAW con experiencia en frontend",DAW,2025-2026
-Miguel Torres García,miguel.torres@jualas.es,4567890D,+34 600 444 555,"Estudiante de DAM especializado en desarrollo móvil con Flutter",DAM,2025-2026
-Sofía Ramírez López,sofia.ramirez@jualas.es,5678901E,+34 600 555 666,"Estudiante de ASIR con interés en seguridad informática y redes",ASIR,2025-2026
-Diego Fernández Martínez,diego.fernandez@jualas.es,6789012F,+34 600 666 777,"Estudiante de DAW con experiencia en backend y bases de datos",DAW,2025-2026
-Elena Moreno Ruiz,elena.moreno@jualas.es,7890123G,+34 600 777 888,"Estudiante de DAM con conocimientos en diseño UI/UX",DAM,2025-2026
-Pablo Jiménez Sánchez,pablo.jimenez@jualas.es,8901234H,+34 600 888 999,"Estudiante de ASIR especializado en virtualización y cloud computing",ASIR,2025-2026
-
+full_name,email,nre,phone,biography,specialty
+Laura Sánchez Pérez,laura.sanchez@jualas.es,3456789C,+34 600 333 444,"Estudiante de DAW con experiencia en frontend",DAW
+Miguel Torres García,miguel.torres@jualas.es,4567890D,+34 600 444 555,"Estudiante de DAM especializado en desarrollo móvil con Flutter",DAM
+Sofía Ramírez López,sofia.ramirez@jualas.es,5678901E,+34 600 555 666,"Estudiante de ASIR con interés en seguridad informática y redes",ASIR
+Diego Fernández Martínez,diego.fernandez@jualas.es,6789012F,+34 600 666 777,"Estudiante de DAW con experiencia en backend y bases de datos",DAW
+Elena Moreno Ruiz,elena.moreno@jualas.es,7890123G,+34 600 777 888,"Estudiante de DAM con conocimientos en diseño UI/UX",DAM
+Pablo Jiménez Sánchez,pablo.jimenez@jualas.es,8901234H,+34 600 888 999,"Estudiante de ASIR especializado en virtualización y cloud computing",ASIR

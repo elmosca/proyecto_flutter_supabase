@@ -256,10 +256,6 @@ class _TasksListState extends State<TasksList> {
         backgroundColor = Colors.blue[100]!;
         textColor = Colors.blue[800]!;
         break;
-      case TaskStatus.underReview:
-        backgroundColor = Colors.purple[100]!;
-        textColor = Colors.purple[800]!;
-        break;
       case TaskStatus.completed:
         backgroundColor = Colors.green[100]!;
         textColor = Colors.green[800]!;
@@ -399,7 +395,6 @@ class _TasksListState extends State<TasksList> {
     final Map<TaskStatus, List<Task>> grouped = {
       TaskStatus.pending: [],
       TaskStatus.inProgress: [],
-      TaskStatus.underReview: [],
       TaskStatus.completed: [],
     };
 
@@ -429,11 +424,10 @@ class _TasksListState extends State<TasksList> {
   ) {
     int currentIndex = 0;
     
-    // Orden de estados: Pendiente, En Progreso, En Revisión, Completada
+    // Orden de estados: Pendiente, En Progreso, Completada
     final statusOrder = [
       TaskStatus.pending,
       TaskStatus.inProgress,
-      TaskStatus.underReview,
       TaskStatus.completed,
     ];
 
@@ -482,12 +476,6 @@ class _TasksListState extends State<TasksList> {
         backgroundColor = Colors.blue[100]!;
         textColor = Colors.blue[800]!;
         icon = Icons.play_circle_outline;
-        break;
-      case TaskStatus.underReview:
-        title = TaskLocalizations.getTaskStatusDisplayName(status, l10n);
-        backgroundColor = Colors.purple[100]!;
-        textColor = Colors.purple[800]!;
-        icon = Icons.rate_review;
         break;
       case TaskStatus.completed:
         title = TaskLocalizations.getTaskStatusDisplayName(status, l10n);

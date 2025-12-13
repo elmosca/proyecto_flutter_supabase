@@ -10,7 +10,7 @@ $ErrorActionPreference = "Stop"
 # Colores para output
 function Write-Header {
     Write-Host "================================================" -ForegroundColor Cyan
-    Write-Host "  📚 Publicador de Wiki de GitHub" -ForegroundColor Cyan
+    Write-Host "  Publicador de Wiki de GitHub" -ForegroundColor Cyan
     Write-Host "  Sistema de Seguimiento de Proyectos TFG" -ForegroundColor Cyan
     Write-Host "================================================" -ForegroundColor Cyan
     Write-Host ""
@@ -18,25 +18,25 @@ function Write-Header {
 
 function Write-Step {
     param([string]$Message)
-    Write-Host "➤ $Message" -ForegroundColor Green
+    Write-Host "> $Message" -ForegroundColor Green
 }
 
 function Write-Success {
     param([string]$Message)
-    Write-Host "✔ $Message" -ForegroundColor Green
+    Write-Host "[OK] $Message" -ForegroundColor Green
 }
 
-function Write-Warning {
+function Write-Warn {
     param([string]$Message)
-    Write-Host "⚠ $Message" -ForegroundColor Yellow
+    Write-Host "[!] $Message" -ForegroundColor Yellow
 }
 
-function Write-Error {
+function Write-Err {
     param([string]$Message)
-    Write-Host "✖ $Message" -ForegroundColor Red
+    Write-Host "[X] $Message" -ForegroundColor Red
 }
 
-# Configuración
+# Configuracion
 $REPO_USER = "elmosca"
 $REPO_NAME = "proyecto_flutter_supabase"
 $REPO_WIKI_URL = "https://github.com/${REPO_USER}/${REPO_NAME}.wiki.git"
@@ -48,7 +48,7 @@ function Check-Prerequisites {
     Write-Step "Verificando prerequisitos..."
     
     if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
-        Write-Error "Git no está instalado. Por favor instala Git primero."
+        Write-Err "Git no esta instalado. Por favor instala Git primero."
         exit 1
     }
     
@@ -61,12 +61,12 @@ function Clone-OrUpdateWiki {
     Write-Step "Clonando o actualizando wiki..."
     
     if (Test-Path $WIKI_DIR) {
-        Write-Warning "Directorio wiki_temp ya existe. Actualizando..."
+        Write-Warn "Directorio wiki_temp ya existe. Actualizando..."
         Push-Location $WIKI_DIR
         try {
             git pull origin master
         } catch {
-            Write-Error "Error al actualizar wiki. ¿Tienes cambios sin guardar?"
+            Write-Err "Error al actualizar wiki."
             Pop-Location
             exit 1
         }
@@ -76,10 +76,10 @@ function Clone-OrUpdateWiki {
         try {
             git clone $REPO_WIKI_URL $WIKI_DIR
         } catch {
-            Write-Error "Error al clonar wiki. Verifica:"
+            Write-Err "Error al clonar wiki. Verifica:"
             Write-Host "  1. La URL del repositorio es correcta" -ForegroundColor Gray
             Write-Host "  2. Tienes permisos para acceder al repositorio" -ForegroundColor Gray
-            Write-Host "  3. La wiki está habilitada en GitHub (Settings > Features > Wikis)" -ForegroundColor Gray
+            Write-Host "  3. La wiki esta habilitada en GitHub (Settings > Features > Wikis)" -ForegroundColor Gray
             exit 1
         }
     }
@@ -95,17 +95,17 @@ function Copy-WikiStructure {
     Push-Location $WIKI_DIR
     
     $files = @(
-        @{Source = "..\..\wiki_setup\Home.md"; Dest = "Home.md"},
-        @{Source = "..\..\wiki_setup\_Sidebar.md"; Dest = "_Sidebar.md"},
-        @{Source = "..\..\wiki_setup\_Footer.md"; Dest = "_Footer.md"},
-        @{Source = "..\..\wiki_setup\FAQ.md"; Dest = "FAQ.md"},
-        @{Source = "..\..\wiki_setup\Guia-Inicio-Rapido.md"; Dest = "Guia-Inicio-Rapido.md"}
+        @{Source = "..\Home.md"; Dest = "Home.md"},
+        @{Source = "..\_Sidebar.md"; Dest = "_Sidebar.md"},
+        @{Source = "..\_Footer.md"; Dest = "_Footer.md"},
+        @{Source = "..\FAQ.md"; Dest = "FAQ.md"},
+        @{Source = "..\Guia-Inicio-Rapido.md"; Dest = "Guia-Inicio-Rapido.md"}
     )
     
     foreach ($file in $files) {
         if (Test-Path $file.Source) {
             Copy-Item $file.Source $file.Dest -Force
-            Write-Success "✓ $($file.Dest) copiado"
+            Write-Success "$($file.Dest) copiado"
         }
     }
     
@@ -113,14 +113,13 @@ function Copy-WikiStructure {
     Write-Host ""
 }
 
-# Copiar guías de usuario
+# Copiar guias de usuario
 function Copy-UserGuides {
-    Write-Step "Copiando guías de usuario..."
+    Write-Step "Copiando guias de usuario..."
     
     Push-Location $WIKI_DIR
     
-    # Copiar las guías completas (versiones largas) si existen, sino las cortas
-    # Desde wiki_temp/, los archivos están en ..\ (un nivel arriba, que es wiki_setup/)
+    # Copiar las guias completas (versiones largas) si existen, sino las cortas
     $guides = @(
         @{Source = "..\Guia-Estudiantes.md"; Dest = "Guia-Estudiantes.md"; AltSource = "..\Guia_Estudiante.md"},
         @{Source = "..\Guia-Tutores.md"; Dest = "Guia-Tutores.md"; AltSource = "..\Guia_Tutor.md"},
@@ -130,12 +129,12 @@ function Copy-UserGuides {
     foreach ($guide in $guides) {
         if (Test-Path $guide.Source) {
             Copy-Item $guide.Source $guide.Dest -Force
-            Write-Success "✓ $($guide.Dest) copiado (versión completa)"
+            Write-Success "$($guide.Dest) copiado (version completa)"
         } elseif ($guide.AltSource -and (Test-Path $guide.AltSource)) {
             Copy-Item $guide.AltSource $guide.Dest -Force
-            Write-Success "✓ $($guide.Dest) copiado (versión corta)"
+            Write-Success "$($guide.Dest) copiado (version corta)"
         } else {
-            Write-Warning "! $($guide.Dest) no encontrado ni en versión completa ni corta"
+            Write-Warn "$($guide.Dest) no encontrado"
         }
     }
     
@@ -143,13 +142,13 @@ function Copy-UserGuides {
     Write-Host ""
 }
 
-# Copiar documentación técnica
+# Copiar documentacion tecnica
 function Copy-TechnicalDocs {
-    Write-Step "Copiando documentación técnica..."
+    Write-Step "Copiando documentacion tecnica..."
     
     Push-Location $WIKI_DIR
     
-    # Las rutas son relativas desde wiki_temp/, necesitamos subir dos niveles
+    # Las rutas son relativas desde wiki_temp/
     $docs = @(
         @{Source = "..\..\docs\01_ARQUITECTURA.md"; Dest = "01-Arquitectura.md"},
         @{Source = "..\..\docs\02_BASE_DE_DATOS.md"; Dest = "02-Base-de-Datos.md"},
@@ -160,9 +159,9 @@ function Copy-TechnicalDocs {
     foreach ($doc in $docs) {
         if (Test-Path $doc.Source) {
             Copy-Item $doc.Source $doc.Dest -Force
-            Write-Success "✓ $($doc.Dest) copiado"
+            Write-Success "$($doc.Dest) copiado"
         } else {
-            Write-Warning "! $($doc.Dest) no encontrado en $($doc.Source)"
+            Write-Warn "$($doc.Dest) no encontrado en $($doc.Source)"
         }
     }
     
@@ -170,13 +169,13 @@ function Copy-TechnicalDocs {
     Write-Host ""
 }
 
-# Copiar documentación de ciclos de vida
+# Copiar documentacion de ciclos de vida
 function Copy-LifecycleDocs {
-    Write-Step "Copiando documentación de ciclos de vida..."
+    Write-Step "Copiando documentacion de ciclos de vida..."
     
     Push-Location $WIKI_DIR
     
-    # Los archivos están en ..\ (un nivel arriba, que es wiki_setup/)
+    # Los archivos estan en ..\ (un nivel arriba, que es wiki_setup/)
     $lifecycleDocs = @(
         @{Source = "..\Ciclo-Vida-Login.md"; Dest = "Ciclo-Vida-Login.md"},
         @{Source = "..\Ciclo-Vida-Administrador.md"; Dest = "Ciclo-Vida-Administrador.md"},
@@ -190,9 +189,9 @@ function Copy-LifecycleDocs {
     foreach ($doc in $lifecycleDocs) {
         if (Test-Path $doc.Source) {
             Copy-Item $doc.Source $doc.Dest -Force
-            Write-Success "✓ $($doc.Dest) copiado"
+            Write-Success "$($doc.Dest) copiado"
         } else {
-            Write-Warning "! $($doc.Dest) no encontrado"
+            Write-Warn "$($doc.Dest) no encontrado"
         }
     }
     
@@ -209,7 +208,7 @@ function Commit-AndPush {
     # Verificar si hay cambios
     $status = git status --porcelain
     if ([string]::IsNullOrWhiteSpace($status)) {
-        Write-Warning "No hay cambios para publicar"
+        Write-Warn "No hay cambios para publicar"
         Pop-Location
         return
     }
@@ -219,14 +218,14 @@ function Commit-AndPush {
     
     # Commit con timestamp
     $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    git commit -m "📚 Actualizar documentación - $timestamp"
+    git commit -m "Actualizar documentacion - $timestamp"
     
     # Push a GitHub
     try {
         git push origin master
-        Write-Success "¡Cambios publicados exitosamente!"
+        Write-Success "Cambios publicados exitosamente!"
     } catch {
-        Write-Error "Error al publicar. Verifica tu conexión y permisos."
+        Write-Err "Error al publicar. Verifica tu conexion y permisos."
         Pop-Location
         exit 1
     }
@@ -239,30 +238,30 @@ function Commit-AndPush {
 function Show-Summary {
     Write-Host ""
     Write-Host "================================================" -ForegroundColor Green
-    Write-Host "  ✅ Wiki Actualizada Exitosamente" -ForegroundColor Green
+    Write-Host "  Wiki Actualizada Exitosamente" -ForegroundColor Green
     Write-Host "================================================" -ForegroundColor Green
     Write-Host ""
-    Write-Host "📚 Tu wiki está disponible en:" -ForegroundColor Cyan
+    Write-Host "Tu wiki esta disponible en:" -ForegroundColor Cyan
     Write-Host "https://github.com/${REPO_USER}/${REPO_NAME}/wiki" -ForegroundColor Blue
     Write-Host ""
-    Write-Host "📖 Páginas publicadas:" -ForegroundColor Cyan
-    Write-Host "  - 🏠 Home (página principal)" -ForegroundColor White
-    Write-Host "  - 🔵 Guía de Estudiantes" -ForegroundColor White
-    Write-Host "  - 🟢 Guía de Tutores" -ForegroundColor White
-    Write-Host "  - 🔴 Guía de Administradores" -ForegroundColor White
-    Write-Host "  - 🏗️ Arquitectura (01)" -ForegroundColor White
-    Write-Host "  - 🗄️ Base de Datos (02)" -ForegroundColor White
-    Write-Host "  - 🛠️ Guía de Desarrollo (03)" -ForegroundColor White
-    Write-Host "  - 📁 Estructura de Código (04)" -ForegroundColor White
-    Write-Host "  - 🔄 Ciclo de Vida del Login" -ForegroundColor White
-    Write-Host "  - 👥 Ciclo de Vida del Administrador" -ForegroundColor White
-    Write-Host "  - 👥 Ciclo de Vida del Tutor" -ForegroundColor White
-    Write-Host "  - 👥 Ciclo de Vida del Estudiante" -ForegroundColor White
-    Write-Host "  - 📋 Ciclo de Vida del Anteproyecto" -ForegroundColor White
-    Write-Host "  - 📋 Ciclo de Vida del Proyecto" -ForegroundColor White
-    Write-Host "  - 📋 Ciclo de Vida de la Tarea" -ForegroundColor White
-    Write-Host "  - ❓ FAQ" -ForegroundColor White
-    Write-Host "  - 🚀 Guía de Inicio Rápido" -ForegroundColor White
+    Write-Host "Paginas publicadas:" -ForegroundColor Cyan
+    Write-Host "  - Home (pagina principal)" -ForegroundColor White
+    Write-Host "  - Guia de Estudiantes" -ForegroundColor White
+    Write-Host "  - Guia de Tutores" -ForegroundColor White
+    Write-Host "  - Guia de Administradores" -ForegroundColor White
+    Write-Host "  - Arquitectura (01)" -ForegroundColor White
+    Write-Host "  - Base de Datos (02)" -ForegroundColor White
+    Write-Host "  - Guia de Desarrollo (03)" -ForegroundColor White
+    Write-Host "  - Estructura de Codigo (04)" -ForegroundColor White
+    Write-Host "  - Ciclo de Vida del Login" -ForegroundColor White
+    Write-Host "  - Ciclo de Vida del Administrador" -ForegroundColor White
+    Write-Host "  - Ciclo de Vida del Tutor" -ForegroundColor White
+    Write-Host "  - Ciclo de Vida del Estudiante" -ForegroundColor White
+    Write-Host "  - Ciclo de Vida del Anteproyecto" -ForegroundColor White
+    Write-Host "  - Ciclo de Vida del Proyecto" -ForegroundColor White
+    Write-Host "  - Ciclo de Vida de la Tarea" -ForegroundColor White
+    Write-Host "  - FAQ" -ForegroundColor White
+    Write-Host "  - Guia de Inicio Rapido" -ForegroundColor White
     Write-Host ""
 }
 
@@ -281,4 +280,3 @@ function Main {
 
 # Ejecutar
 Main
-

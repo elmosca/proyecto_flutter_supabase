@@ -35,10 +35,9 @@ void main() {
 
     test('TaskStatus enum has correct values', () {
       // Verificar valores de TaskStatus
-      expect(TaskStatus.values.length, equals(4));
+      expect(TaskStatus.values.length, equals(3));
       expect(TaskStatus.values.contains(TaskStatus.pending), isTrue);
       expect(TaskStatus.values.contains(TaskStatus.inProgress), isTrue);
-      expect(TaskStatus.values.contains(TaskStatus.underReview), isTrue);
       expect(TaskStatus.values.contains(TaskStatus.completed), isTrue);
 
       debugPrint('✅ TaskStatus enum tiene los valores correctos');
@@ -146,7 +145,6 @@ void main() {
       expect(TaskStatus.pending.isPending, isTrue);
       expect(TaskStatus.inProgress.isInProgress, isTrue);
       expect(TaskStatus.completed.isCompleted, isTrue);
-      expect(TaskStatus.underReview.isUnderReview, isTrue);
 
       // Verificar métodos de utilidad de TaskComplexity
       expect(TaskComplexity.simple.estimatedHours, equals(2));

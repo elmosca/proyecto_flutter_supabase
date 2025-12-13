@@ -86,7 +86,6 @@ Verás el **Dashboard de Estudiante** con:
 Verás el **Dashboard de Tutor** con:
 - 👥 Lista de tus estudiantes
 - 📝 Anteproyectos pendientes de revisión
-- ✅ Tareas en revisión
 - 📊 Resumen de actividad
 
 **➡️ [Ve a la guía completa para tutores](Guia-Tutores)**
@@ -187,7 +186,6 @@ Haz clic en el **ícono del menú** (☰) en la esquina superior izquierda para 
 2. Verás tus tareas organizadas por columnas:
    - 📥 Pendiente
    - 🔄 En Progreso
-   - 👀 En Revisión
    - ✅ Completada
 3. Arrastra tareas entre columnas para cambiar su estado
 
@@ -218,9 +216,8 @@ Haz clic en el **ícono del menú** (☰) en la esquina superior izquierda para 
 1. Ve a **"Mis Estudiantes"** en el menú
 2. Verás la lista de estudiantes asignados
 3. Haz clic en un estudiante para ver:
-   - Su proyecto actual
-   - Estado de sus tareas
-   - Progreso general
+   - Su anteproyecto/proyecto actual
+   - Estado general de su progreso
 
 ⏱️ **Tiempo estimado**: 5 minutos  
 📖 [Guía detallada](Guia-Tutores#-mis-estudiantes)
@@ -281,8 +278,7 @@ Haz clic para ver detalles.
 
 **Tipos de notificaciones comunes:**
 - ✅ Anteproyecto aprobado/rechazado
-- 📝 Nueva tarea asignada
-- 💬 Comentario en tarea
+- 💬 Comentario en anteproyecto
 - ⏰ Fecha límite próxima
 
 ---
@@ -294,14 +290,14 @@ Haz clic para ver detalles.
 - 📖 **Lee la guía de tu rol** completamente
 - 🔔 **Revisa notificaciones** diariamente
 - 💬 **Comunícate** con tu tutor/estudiantes
-- 🔄 **Actualiza el estado** de tus tareas regularmente
+- 🔄 **Actualiza el estado** de tus tareas regularmente (estudiantes)
 - 📱 **Añade la app a favoritos** para acceso rápido
 
 ### ❌ Evita
 
 - ❌ Compartir tu contraseña
 - ❌ Ignorar las notificaciones
-- ❌ Dejar tareas sin actualizar por días
+- ❌ Dejar tareas sin actualizar por días (estudiantes)
 - ❌ Enviar anteproyectos sin revisar
 - ❌ Esperar al último momento
 
@@ -322,7 +318,7 @@ Si tienes problemas o preguntas:
 
 4. 💬 **Contacta a tu tutor/administrador**
 
-5. 🐛 **Reporta problemas técnicos** en [Issues](https://github.com/USUARIO/REPO/issues)
+5. 🐛 **Reporta problemas técnicos** contactando al administrador del sistema
 
 ---
 
@@ -358,4 +354,3 @@ Ahora que conoces lo básico:
 
 **📅 Última actualización**: Diciembre 2025  
 **⏱️ Tiempo de lectura**: 5 minutos
-

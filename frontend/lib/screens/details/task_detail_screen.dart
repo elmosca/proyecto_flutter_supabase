@@ -382,11 +382,6 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
         textColor = Colors.blue.shade800;
         icon = Icons.play_circle_outline;
         break;
-      case TaskStatus.underReview:
-        backgroundColor = Colors.purple.shade100;
-        textColor = Colors.purple.shade800;
-        icon = Icons.rate_review;
-        break;
       case TaskStatus.completed:
         backgroundColor = Colors.green.shade100;
         textColor = Colors.green.shade800;

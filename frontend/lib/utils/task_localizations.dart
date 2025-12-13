@@ -9,8 +9,6 @@ class TaskLocalizations {
         return l10n.taskStatusPending;
       case TaskStatus.inProgress:
         return l10n.taskStatusInProgress;
-      case TaskStatus.underReview:
-        return l10n.taskStatusUnderReview;
       case TaskStatus.completed:
         return l10n.taskStatusCompleted;
     }

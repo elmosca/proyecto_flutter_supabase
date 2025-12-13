@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/user.dart';
 import '../../services/user_management_service.dart';
+import '../../services/settings_service.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/validators.dart';
 
@@ -16,6 +17,7 @@ class StudentCreationForm extends StatefulWidget {
 class _StudentCreationFormState extends State<StudentCreationForm> {
   final _formKey = GlobalKey<FormState>();
   final _userManagementService = UserManagementService();
+  final _settingsService = SettingsService();
 
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -33,6 +35,20 @@ class _StudentCreationFormState extends State<StudentCreationForm> {
   void initState() {
     super.initState();
     _loadTutors();
+    _loadDefaultAcademicYear();
+  }
+
+  Future<void> _loadDefaultAcademicYear() async {
+    try {
+      final year = await _settingsService.getStringSetting('academic_year');
+      if (year != null && year.isNotEmpty && mounted) {
+        setState(() {
+          _academicYearController.text = year;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error cargando año académico por defecto: $e');
+    }
   }
 
   @override

@@ -79,10 +79,9 @@ void main() {
       expect(AnteprojectStatus.values.contains(AnteprojectStatus.rejected), isTrue);
       
       // Verificar valores de TaskStatus
-      expect(TaskStatus.values.length, equals(4));
+      expect(TaskStatus.values.length, equals(3));
       expect(TaskStatus.values.contains(TaskStatus.pending), isTrue);
       expect(TaskStatus.values.contains(TaskStatus.inProgress), isTrue);
-      expect(TaskStatus.values.contains(TaskStatus.underReview), isTrue);
       expect(TaskStatus.values.contains(TaskStatus.completed), isTrue);
       
       // Verificar valores de TaskComplexity

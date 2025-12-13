@@ -14,6 +14,7 @@ import '../../services/pdf_service.dart';
 import '../../services/auth_service.dart';
 import '../../services/anteprojects_service.dart';
 import '../../services/projects_service.dart';
+import '../../services/settings_service.dart';
 import '../../models/user.dart';
 
 class AnteprojectForm extends StatefulWidget {
@@ -28,6 +29,7 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
   final AuthService _authService = AuthService();
   final AnteprojectsService _anteprojectsService = AnteprojectsService();
   final ProjectsService _projectsService = ProjectsService();
+  final SettingsService _settingsService = SettingsService();
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -76,7 +78,7 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
             _academicYearController.text = user!.academicYear!;
           } else {
             // Fallback si no tiene año académico asignado
-            _academicYearController.text = '2025-2026';
+            _loadSystemAcademicYear();
           }
         });
       }
@@ -84,9 +86,33 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
       if (mounted) {
         setState(() {
           _isLoadingUser = false;
-          _academicYearController.text = '2025-2026'; // Fallback
+          _loadSystemAcademicYear(); // Fallback
         });
       }
+    }
+  }
+
+  Future<void> _loadSystemAcademicYear() async {
+    try {
+      final year = await _settingsService.getStringSetting('academic_year');
+      if (year != null && year.isNotEmpty && mounted) {
+        // Solo actualizar si el campo está vacío para no sobrescribir entradas manuales previas si las hubiera
+        if (_academicYearController.text.isEmpty) {
+          setState(() {
+            _academicYearController.text = year;
+          });
+        }
+      } else if (mounted && _academicYearController.text.isEmpty) {
+        // Último recurso si no hay configuración
+        final now = DateTime.now();
+        final currentYear = now.year;
+        final nextYear = currentYear + 1;
+        setState(() {
+          _academicYearController.text = '$currentYear-$nextYear';
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading system academic year: $e');
     }
   }
 

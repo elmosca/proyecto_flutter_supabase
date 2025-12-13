@@ -33,6 +33,8 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
   List<Map<String, dynamic>> _filteredAnteprojects = [];
   bool _isLoading = true;
   String _selectedStatus = 'all';
+  String _selectedAcademicYear = 'all';
+  List<String> _academicYears = [];
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
   User? _currentUser;
@@ -123,6 +125,7 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
           _anteprojects = anteprojects;
           _isLoading = false;
         });
+        _extractAcademicYears();
         // Aplicar filtros después de cargar los datos
         _filterAnteprojects();
       }
@@ -152,6 +155,27 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
         ),
       );
     }
+  }
+
+  void _extractAcademicYears() {
+    final years = <String>{};
+    for (final anteprojectData in _anteprojects) {
+      if (anteprojectData.containsKey('academic_year')) {
+        final year = anteprojectData['academic_year']?.toString();
+        if (year != null && year.isNotEmpty) {
+          years.add(year);
+        }
+      }
+    }
+
+    setState(() {
+      _academicYears = years.toList()..sort((a, b) => b.compareTo(a));
+      // Si el año seleccionado no está en la lista (y no es 'all'), resetear a 'all'
+      if (_selectedAcademicYear != 'all' &&
+          !_academicYears.contains(_selectedAcademicYear)) {
+        _selectedAcademicYear = 'all';
+      }
+    });
   }
 
   void _filterAnteprojects() {
@@ -238,6 +262,12 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
               final studentName = studentInfo?['full_name'] ?? '';
               final studentEmail = studentInfo?['email'] ?? '';
 
+              // Filtro por año académico
+              if (_selectedAcademicYear != 'all' &&
+                  anteproject.academicYear != _selectedAcademicYear) {
+                return false;
+              }
+
               // Filtro por estado
               bool statusMatch;
               if (_selectedStatus == 'all') {
@@ -283,6 +313,15 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
           })
           .toList();
     });
+  }
+
+  void _onAcademicYearChanged(String? value) {
+    if (value != null) {
+      setState(() {
+        _selectedAcademicYear = value;
+      });
+      _filterAnteprojects();
+    }
   }
 
   void _onStatusFilterChanged(String? value) {
@@ -426,6 +465,33 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
                 onChanged: _onSearchChanged,
               ),
               const SizedBox(height: 12),
+              // Filtro por año académico
+              Row(
+                children: [
+                  Text(l10n.year),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: DropdownButton<String>(
+                      value: _selectedAcademicYear,
+                      isExpanded: true,
+                      items: [
+                        DropdownMenuItem<String>(
+                          value: 'all',
+                          child: Text(l10n.all),
+                        ),
+                        ..._academicYears.map((year) {
+                          return DropdownMenuItem<String>(
+                            value: year,
+                            child: Text(year),
+                          );
+                        }),
+                      ],
+                      onChanged: _onAcademicYearChanged,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
               // Filtro por estado
               Row(
                 children: [
@@ -504,7 +570,7 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
             style: TextStyle(fontSize: 18, color: Colors.grey.shade600),
             textAlign: TextAlign.center,
           ),
-          if (_searchQuery.isNotEmpty || _selectedStatus != 'all') ...[
+          if (_searchQuery.isNotEmpty || _selectedStatus != 'all' || _selectedAcademicYear != 'all') ...[
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
@@ -512,6 +578,7 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
                 setState(() {
                   _searchQuery = '';
                   _selectedStatus = 'all';
+                  _selectedAcademicYear = 'all';
                 });
                 _filterAnteprojects();
               },

@@ -572,9 +572,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get taskStatusInProgress => 'In Progress';
 
   @override
-  String get taskStatusUnderReview => 'Under Review';
-
-  @override
   String get taskStatusCompleted => 'Completed';
 
   @override
@@ -603,9 +600,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get kanbanColumnInProgress => 'In Progress';
-
-  @override
-  String get kanbanColumnUnderReview => 'Under Review';
 
   @override
   String get kanbanColumnCompleted => 'Completed';

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 import '../../services/user_management_service.dart';
+import '../../services/settings_service.dart';
 import '../../utils/validators.dart';
 
 // No necesitamos dart:io porque usamos bytes directamente desde file_picker
@@ -36,11 +37,40 @@ class _CsvRowValidation {
 }
 
 class _ImportStudentsCSVScreenState extends State<ImportStudentsCSVScreen> {
+  final _settingsService = SettingsService();
   bool _isLoading = false;
   String? _selectedFileName;
   List<Map<String, dynamic>> _csvData = [];
   List<String> _errors = [];
   List<_CsvRowValidation> _rowValidations = [];
+  String? _systemAcademicYear;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSystemAcademicYear();
+  }
+
+  Future<void> _loadSystemAcademicYear() async {
+    try {
+      final year = await _settingsService.getStringSetting('academic_year');
+      if (year != null && year.isNotEmpty && mounted) {
+        setState(() {
+          _systemAcademicYear = year;
+        });
+      } else {
+        // Fallback
+        if (mounted) {
+          final now = DateTime.now();
+          setState(() {
+            _systemAcademicYear = '${now.year}-${now.year + 1}';
+          });
+        }
+      }
+    } catch (e) {
+      debugPrint('Error loading system academic year: $e');
+    }
+  }
 
   Future<void> _pickCSVFile() async {
     try {
@@ -279,7 +309,12 @@ class _ImportStudentsCSVScreenState extends State<ImportStudentsCSVScreen> {
         final generatedPassword = _generateTempPassword();
         generatedPasswords[email] = generatedPassword;
 
+        // Usar año académico del sistema si no viene en el CSV (que ya no debería venir)
         final academicYearStr = row['academic_year']?.toString().trim();
+        final finalAcademicYear = (academicYearStr != null && academicYearStr.isNotEmpty) 
+            ? academicYearStr 
+            : _systemAcademicYear;
+
         final phoneStr = row['phone']?.toString().trim();
         final nreStr = row['nre']?.toString().trim();
         final specialtyStr = row['specialty']?.toString().trim();
@@ -289,9 +324,7 @@ class _ImportStudentsCSVScreenState extends State<ImportStudentsCSVScreen> {
           'email': email,
           'password': generatedPassword,
           'full_name': row['full_name']?.toString().trim() ?? '',
-          'academic_year': (academicYearStr == null || academicYearStr.isEmpty)
-              ? null
-              : academicYearStr,
+          'academic_year': finalAcademicYear,
           'phone': (phoneStr == null || phoneStr.isEmpty) ? null : phoneStr,
           'nre': (nreStr == null || nreStr.isEmpty) ? null : nreStr,
           'specialty': (specialtyStr == null || specialtyStr.isEmpty)
@@ -707,7 +740,7 @@ class _ImportStudentsCSVScreenState extends State<ImportStudentsCSVScreen> {
                     const Text('• phone (opcional)'),
                     const Text('• biography (opcional)'),
                     const Text('• specialty (opcional)'),
-                    const Text('• academic_year (opcional)'),
+                    // const Text('• academic_year (opcional)'), // Eliminado del CSV requerido
                     if (widget.tutorId == null) ...[
                       const SizedBox(height: 8),
                       Text(

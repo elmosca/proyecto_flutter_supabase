@@ -11,6 +11,7 @@ import '../../blocs/auth_bloc.dart';
 import '../../services/theme_service.dart';
 import '../../services/user_service.dart';
 import '../../services/anteprojects_service.dart';
+import '../../services/settings_service.dart';
 import '../../models/anteproject.dart';
 import '../../widgets/dialogs/add_students_dialog.dart';
 import '../../widgets/navigation/app_top_bar.dart';
@@ -35,9 +36,10 @@ class _TutorDashboardState extends State<TutorDashboard> {
   Timer? _loadingTimer;
   List<User> _students = [];
   List<Map<String, dynamic>> _anteprojectsData = [];
-  String _selectedAcademicYear = '2024-2025';
+  String _selectedAcademicYear = ''; // Se cargará dinámicamente
   final UserService _userService = UserService();
   final AnteprojectsService _anteprojectsService = AnteprojectsService();
+  final SettingsService _settingsService = SettingsService();
 
   @override
   void initState() {
@@ -66,6 +68,25 @@ class _TutorDashboardState extends State<TutorDashboard> {
           });
         }
         return;
+      }
+
+      // Intentar cargar el año académico del sistema primero si no está establecido
+      if (_selectedAcademicYear.isEmpty) {
+        try {
+          final systemYear = await _settingsService.getStringSetting('academic_year');
+          if (systemYear != null && systemYear.isNotEmpty) {
+            _selectedAcademicYear = systemYear;
+          } else {
+            // Fallback
+            final now = DateTime.now();
+            _selectedAcademicYear = '${now.year}-${now.year + 1}';
+          }
+        } catch (e) {
+          debugPrint('Error loading system academic year: $e');
+          // Fallback silencioso
+          final now = DateTime.now();
+          _selectedAcademicYear = '${now.year}-${now.year + 1}';
+        }
       }
 
       // Cargar estudiantes y anteproyectos del tutor en paralelo

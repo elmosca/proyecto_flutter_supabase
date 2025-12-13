@@ -26,12 +26,11 @@ Selecciona tu rol para acceder a la guía correspondiente:
 
 ### 🟢 Tutores
 
-¿Eres tutor? Aprende cómo supervisar estudiantes y gestionar proyectos:
+¿Eres tutor? Aprende cómo supervisar estudiantes y revisar anteproyectos:
 
 - 📖 **[Guía Completa para Tutores](Guia-Tutores)** ← Empieza aquí
 - 📝 [Revisar anteproyectos](Guia-Tutores#-fase-1-revisión-de-anteproyectos)
 - 👥 [Gestionar estudiantes](Guia-Tutores#-fase-2-gestión-de-estudiantes)
-- ✅ [Asignar y revisar tareas](Guia-Tutores#-fase-3-asignación-y-seguimiento-de-tareas)
 - ⚖️ [Flujo de aprobación](Guia-Tutores#-flujo-de-aprobación)
 - 📱 **Navegación**: Acceso desde el menú hamburguesa a Panel Principal, Mis Estudiantes, Notificaciones, Mensajes, Anteproyectos por revisar y Flujo de Aprobación
 - 📊 [Mejores prácticas](Guia-Tutores#-mejores-prácticas)
@@ -93,7 +92,7 @@ Documentación detallada de los flujos de trabajo y procesos del sistema:
 2. Consulta las **[Preguntas Frecuentes (FAQ)](FAQ)**
 3. Revisa la **[Guía de Inicio Rápido](Guia-Inicio-Rapido)**
 4. Contacta a tu **tutor o administrador**
-5. Reporta un problema en **[Issues](https://github.com/USUARIO/REPO/issues)**
+5. Contacta al administrador del sistema
 
 ### 📞 Canales de Soporte
 
@@ -108,8 +107,8 @@ Documentación detallada de los flujos de trabajo y procesos del sistema:
 ### Versión 1.0 - Noviembre 2025
 - ✅ Sistema de autenticación por roles
 - ✅ Gestión de anteproyectos
-- ✅ Sistema de tareas y seguimiento
-- ✅ Tablero Kanban
+- ✅ Sistema de tareas y seguimiento (para estudiantes)
+- ✅ Tablero Kanban (para estudiantes)
 - ✅ Sistema de notificaciones
 - ✅ Flujo de aprobación
 
@@ -119,9 +118,9 @@ Documentación detallada de los flujos de trabajo y procesos del sistema:
 
 - **Anteproyecto**: Propuesta inicial de proyecto que debe ser aprobada
 - **Proyecto**: Anteproyecto aprobado en fase de desarrollo
-- **Tarea**: Unidad de trabajo específica asignada a un estudiante
-- **Tablero Kanban**: Visualización ágil del estado de las tareas
-- **Tutor**: Profesor que supervisa proyectos de estudiantes
+- **Tarea**: Unidad de trabajo que el estudiante crea y gestiona de forma autónoma
+- **Tablero Kanban**: Visualización ágil del estado de las tareas (solo para estudiantes)
+- **Tutor**: Profesor que revisa anteproyectos de estudiantes
 - **ROL**: Categoría de usuario (estudiante, tutor, admin)
 
 ---
@@ -173,7 +172,7 @@ Documentación detallada de los flujos de trabajo y procesos del sistema:
 
 ¿Encontraste útil esta documentación? ¿Tienes sugerencias de mejora?
 
-- Deja tus comentarios en [Issues](https://github.com/USUARIO/REPO/issues)
+- Visita el [repositorio del proyecto](https://github.com/elmosca/proyecto_flutter_supabase)
 - Contacta al equipo de desarrollo
 
 ---
@@ -186,4 +185,3 @@ Documentación detallada de los flujos de trabajo y procesos del sistema:
 ---
 
 > 💡 **Consejo**: Marca esta página como favorita para acceso rápido a la documentación.
-

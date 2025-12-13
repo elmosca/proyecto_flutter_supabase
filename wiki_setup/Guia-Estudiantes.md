@@ -87,19 +87,17 @@ Una vez aprobado tu anteproyecto:
 **Ciclo de vida de una tarea:**
 
 ```
-Pendiente → En Progreso → En Revisión → Completada
-              ↑              ↓
-              ←─ Requiere Cambios
+Pendiente → En Progreso → Completada
 ```
 
 **Tus responsabilidades:**
 1. **Crear tareas**: Define tu propio plan de trabajo
 2. **Cambiar estado**: Mantén actualizado el estado de cada tarea
-3. **Enviar a revisión**: Cuando termines, marca como "En Revisión"
+3. **Completar tareas**: Cuando termines, muévelas a "Completada"
 4. **Gestionar tu trabajo**: Organiza y completa tus tareas de forma autónoma
-5. **Comunicarte con tu tutor**: Usa el chat 💬 si necesitas orientación o tienes dudas sobre tu proyecto
+5. **Comunicarte con tu tutor**: Usa el chat 💬 si necesitas orientación o tienes dudas sobre tu anteproyecto
 
-**Importante:** El tutor **NO interviene en los proyectos**. El tutor solo revisa anteproyectos. Una vez aprobado tu anteproyecto, tú eres responsable de gestionar tu proyecto y completar tus tareas. Puedes comunicarte con tu tutor mediante el chat 💬 si necesitas orientación, pero el trabajo y la gestión de tareas es tu responsabilidad.
+**Importante:** El tutor **NO tiene acceso a tus tareas ni al tablero Kanban**. Las tareas son una herramienta de organización personal. El tutor solo revisa anteproyectos. Una vez aprobado tu anteproyecto, tú eres responsable de gestionar tu proyecto y completar tus tareas de forma autónoma.
 
 ---
 
@@ -251,10 +249,9 @@ Crea y gestiona todas tus tareas del proyecto.
 1. **Ver detalle**: Haz clic en una tarea para ver toda la información
 2. **Cambiar estado**: 
    - Pendiente → En Progreso (cuando empieces)
-   - En Progreso → En Revisión (cuando termines)
-   - En Revisión → Completada (cuando tu tutor apruebe)
+   - En Progreso → Completada (cuando termines)
 3. **Editar**: Modifica el título, descripción o fecha límite
-4. **Agregar comentarios**: Comunícate con tu tutor sobre la tarea
+4. **Agregar notas**: Añade notas personales sobre el progreso
 5. **Eliminar**: Borra tareas que ya no son necesarias
 
 #### **Buenas prácticas:**
@@ -273,20 +270,20 @@ Visualización ágil de tus tareas con método Kanban.
 #### **Columnas del tablero:**
 - 📥 **Pendiente**: Tareas por empezar
 - 🔄 **En Progreso**: Tareas en las que estás trabajando activamente
-- 👀 **En Revisión**: Tareas esperando feedback del tutor
-- ✅ **Completada**: Tareas finalizadas y aprobadas
+- ✅ **Completada**: Tareas terminadas
+
+**Nota:** Las tareas son tu herramienta de organización personal. El tutor NO tiene acceso a ellas.
 
 #### **¿Cómo usarlo?**
 
 1. **Arrastra tareas** entre columnas para cambiar su estado
 2. **Visualiza tu carga de trabajo** de un vistazo
 3. **Prioriza** qué tareas abordar primero
-4. **Identifica cuellos de botella** (demasiadas tareas en revisión)
+4. **Identifica cuellos de botella** (demasiadas tareas en progreso)
 5. **Planifica tu semana** viendo todas tus tareas
 
 #### **Límites recomendados:**
 - 🔄 **En Progreso**: Máximo 2-3 tareas simultáneas
-- 👀 **En Revisión**: Envía en lotes para facilitar la revisión
 
 **Buena práctica:**  
 Revisa tu tablero Kanban al inicio de cada sesión de trabajo para planificar tu día.
@@ -390,11 +387,11 @@ Mantente informado de todos los eventos importantes.
 #### **Tipos de notificaciones:**
 - ✅ **Anteproyecto aprobado**: Tu propuesta fue aceptada
 - ❌ **Anteproyecto rechazado**: Revisa los comentarios del tutor
-- 💬 **Comentario en tarea**: Tu tutor comentó en una de tus tareas
+- 💬 **Comentario en anteproyecto**: Tu tutor comentó en tu anteproyecto
 - 📨 **Nuevo mensaje**: Tu tutor te ha enviado un mensaje
 - ⏰ **Fecha límite próxima**: Una tarea está por vencer (24-48h)
-- 🏆 **Tarea completada**: Tu tutor aprobó una tarea
-- 🔄 **Requiere cambios**: Tu tutor solicita modificaciones en una tarea
+- 🏆 **Anteproyecto aprobado**: Tu tutor aprobó tu anteproyecto
+- 🔄 **Requiere cambios**: Tu tutor solicita modificaciones en tu anteproyecto
 
 #### **¿Cómo gestionar notificaciones?**
 
@@ -606,7 +603,7 @@ Para problemas técnicos del sistema:
 
 **¿Cómo obtener soporte?**
 - Contacta al administrador del sistema
-- Reporta en [Issues del proyecto](https://github.com/USUARIO/REPO/issues)
+- Contacta al administrador del sistema
 
 ---
 
@@ -686,10 +683,9 @@ Para problemas técnicos del sistema:
 **Estado de tarea**: Fase actual en la que se encuentra una tarea:
 - **Pendiente**: Por hacer
 - **En Progreso**: Trabajando activamente
-- **En Revisión**: Esperando feedback del tutor
-- **Completada**: Terminada y aprobada
+- **Completada**: Terminada
 
-**Tutor**: Profesor asignado que supervisa tu proyecto, revisa tu trabajo y te proporciona feedback.
+**Tutor**: Profesor asignado que revisa y aprueba/rechaza tu anteproyecto. Una vez aprobado, tú gestionas tu proyecto de forma autónoma.
 
 **Notificación**: Alerta del sistema sobre eventos importantes (aprobaciones, comentarios, fechas límite).
 

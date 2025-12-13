@@ -32,10 +32,9 @@ void main() {
 
     testWidgets('Task enums have correct values', (WidgetTester tester) async {
       // Verificar que los enums de tarea tienen los valores correctos
-      expect(TaskStatus.values.length, equals(4));
+      expect(TaskStatus.values.length, equals(3));
       expect(TaskStatus.pending, isA<TaskStatus>());
       expect(TaskStatus.inProgress, isA<TaskStatus>());
-      expect(TaskStatus.underReview, isA<TaskStatus>());
       expect(TaskStatus.completed, isA<TaskStatus>());
 
       expect(TaskComplexity.values.length, equals(3));

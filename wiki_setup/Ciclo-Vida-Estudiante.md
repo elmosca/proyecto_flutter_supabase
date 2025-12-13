@@ -1,26 +1,24 @@
-# Ciclo de Vida del Rol Estudiante - Documentación Técnica
+# Ciclo de Vida del Estudiante
 
-Este documento explica detalladamente el funcionamiento completo del ciclo de vida del rol **Estudiante** en la aplicación, basado en el código fuente real del proyecto.
+En este documento explico cómo funciona el flujo de trabajo de un estudiante en la aplicación. Desde que hace login hasta que gestiona sus tareas y anteproyectos.
 
-## Tabla de Contenidos
+> Si necesitas más contexto sobre la arquitectura, echa un vistazo a [Arquitectura del Sistema](01-Arquitectura).
 
-1. [Acceso al Dashboard](#1-acceso-al-dashboard)
-2. [Inicialización del Dashboard](#2-inicialización-del-dashboard)
-3. [Creación de Anteproyectos](#3-creación-de-anteproyectos)
-4. [Gestión de Proyectos](#4-gestión-de-proyectos)
-5. [Gestión de Tareas](#5-gestión-de-tareas)
-6. [Tablero Kanban](#6-tablero-kanban)
-7. [Comunicación con el Tutor](#7-comunicación-con-el-tutor)
-8. [Navegación y Rutas](#8-navegación-y-rutas)
-9. [Permisos y Seguridad](#9-permisos-y-seguridad)
+## Índice
+
+1.  Dashboard del estudiante
+2.  Crear y gestionar anteproyectos
+3.  Gestión de proyectos
+4.  Tareas y tablero Kanban
+5.  Comunicación con el tutor
 
 ---
 
-## 1. Acceso al Dashboard
+## 1. Dashboard del Estudiante
 
-### 1.1. Navegación Post-Login
+### Cómo llega el estudiante a su dashboard
 
-Después de un login exitoso, el sistema redirige al estudiante a su dashboard específico:
+Cuando un estudiante hace login correctamente, la app lo redirige automáticamente a su dashboard. Esto se hace en `app_router.dart` con la función `goToDashboard()`:
 
 ```dart
 static void goToDashboard(BuildContext context, User user) {
@@ -28,23 +26,13 @@ static void goToDashboard(BuildContext context, User user) {
   // Para estudiante: '/dashboard/student'
   context.go(route, extra: user);
 }
-
-static String _getDashboardRoute(UserRole role) {
-  switch (role) {
-    case UserRole.student:
-      return '/dashboard/student';
-    // ...
-  }
-}
 ```
 
-**Referencia de código:**
-- Archivo: `frontend/lib/router/app_router.dart`
-- Líneas: 449-469
+La función `_getDashboardRoute()` comprueba el rol del usuario y devuelve la ruta correcta. En el caso de los estudiantes, es `/dashboard/student`.
 
-### 1.2. Construcción del Dashboard
+### Construcción del dashboard
 
-El dashboard del estudiante se construye con el usuario autenticado:
+El dashboard se define como una ruta en el router (ver `app_router.dart`):
 
 ```dart
 GoRoute(
@@ -60,934 +48,191 @@ GoRoute(
 ),
 ```
 
-**Referencia de código:**
-- Archivo: `frontend/lib/router/app_router.dart`
-- Líneas: 95-111
+Si por alguna razón no hay un usuario en el estado (por ejemplo, si alguien intenta acceder directamente a la URL sin estar logueado), la app lo redirige a la pantalla de login.
+
+### Carga de datos iniciales
+
+Cuando se monta el widget `StudentDashboardScreen`, se ejecuta el método `_loadData()` que carga tres cosas en paralelo:
+
+- Los anteproyectos del estudiante
+- Los proyectos activos
+- Las tareas pendientes
+
+Esto lo hace con `Future.wait()` para que sea más rápido:
+
+```dart
+final futures = await Future.wait([
+  _anteprojectsService.getStudentAnteprojects(),
+  _projectsService.getStudentProjects(),
+  _tasksService.getTasks(),
+]);
+```
+
+Una vez cargados los datos, el dashboard muestra tres tarjetas con las estadísticas principales:
+- **Anteproyectos Pendientes:** Cuántos anteproyectos tiene el estudiante en revisión.
+- **Proyectos Activos:** Cuántos proyectos aprobados tiene en desarrollo.
+- **Tareas Pendientes:** Cuántas tareas tiene sin completar.
 
 ---
 
-## 2. Inicialización del Dashboard
+## 2. Crear y Gestionar Anteproyectos
 
-### 2.1. Componente Principal
+### ¿Qué es un anteproyecto?
 
-El dashboard del estudiante es un `StatefulWidget` que carga datos al inicializarse:
+Un anteproyecto es la propuesta inicial que hace el estudiante para su TFG. Tiene que incluir el título, descripción, objetivos, tipo de proyecto y los hitos que espera cumplir.
 
-```dart
-class StudentDashboardScreen extends StatefulWidget {
-  final User user;
+El tutor tiene que revisar y aprobar el anteproyecto antes de que el estudiante pueda empezar a trabajar en el proyecto real.
 
-  const StudentDashboardScreen({super.key, required this.user});
-}
-```
+### Crear un anteproyecto
 
-**Referencia de código:**
-- Archivo: `frontend/lib/screens/dashboard/student_dashboard_screen.dart`
-- Líneas: 21-28
+Desde el dashboard, el estudiante puede hacer clic en "Crear Anteproyecto" para abrir el formulario. El formulario está en `anteproject_form.dart` e incluye estos campos:
 
-### 2.2. Carga de Datos Iniciales
+- **Título:** El nombre del proyecto.
+- **Descripción:** Una explicación detallada de qué va el proyecto (mínimo 200 palabras).
+- **Tipo de Proyecto:** Puede ser de ejecución, investigación, bibliográfico o de gestión.
+- **Objetivos:** Los objetivos específicos que quiere conseguir.
+- **Año Académico:** El año en el que se va a hacer el proyecto.
+- **Hitos:** Los resultados esperados con sus fechas.
 
-Al montar el widget, se cargan anteproyectos, proyectos y tareas del estudiante:
+### Guardar como borrador
 
-```dart
-Future<void> _loadData() async {
-  if (!mounted) return;
-
-  try {
-    final authState = context.read<AuthBloc>().state;
-    if (authState is! AuthAuthenticated) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-      return;
-    }
-
-    // Cargar datos en paralelo
-    final futures = await Future.wait([
-      _anteprojectsService.getStudentAnteprojects(),
-      _projectsService.getStudentProjects(),
-      _tasksService.getTasks(),
-    ]);
-
-    if (!mounted) return;
-
-    final anteprojects = futures[0] as List<Anteproject>;
-    final projects = futures[1] as List<Project>;
-    final tasks = futures[2] as List<Task>;
-
-    if (mounted) {
-      setState(() {
-        _anteprojects = anteprojects;
-        _projects = projects;
-        _tasks = tasks;
-        _isLoading = false;
-      });
-    }
-  } catch (e) {
-    // Manejo de errores
-  }
-}
-```
-
-**Referencia de código:**
-- Archivo: `frontend/lib/screens/dashboard/student_dashboard_screen.dart`
-- Líneas: 55-103
-
-### 2.3. Estadísticas del Dashboard
-
-El dashboard muestra métricas clave:
-
-- **Anteproyectos Pendientes**: Anteproyectos en revisión
-- **Proyectos Activos**: Proyectos aprobados en desarrollo
-- **Tareas Pendientes**: Tareas que requieren atención
+Si el estudiante todavía no tiene todo listo, puede guardar el anteproyecto como borrador. Esto lo hace con el botón "Guardar Borrador", que crea el anteproyecto con el estado `draft`:
 
 ```dart
-Widget _buildStatistics() {
-  return Row(
-    children: [
-      Expanded(
-        child: _buildStatCard(
-          title: 'Anteproyectos Pendientes',
-          value: _pendingAnteprojects.length.toString(),
-          icon: Icons.pending_actions,
-          color: Colors.orange,
-          onTap: _viewAnteprojects,
-        ),
-      ),
-      Expanded(
-        child: _buildStatCard(
-          title: 'Proyectos Activos',
-          value: _projects.length.toString(),
-          icon: Icons.work,
-          color: Colors.green,
-          onTap: _viewProjects,
-        ),
-      ),
-      Expanded(
-        child: _buildStatCard(
-          title: 'Tareas Pendientes',
-          value: _pendingTasks.length.toString(),
-          icon: Icons.task_alt,
-          color: Colors.blue,
-          onTap: _viewTasks,
-        ),
-      ),
-    ],
-  );
-}
-```
-
-**Referencia de código:**
-- Archivo: `frontend/lib/screens/dashboard/student_dashboard_screen.dart`
-- Líneas: 263-297
-
----
-
-## 3. Creación de Anteproyectos
-
-### 3.1. Acceso al Formulario
-
-El estudiante puede crear un anteproyecto desde el dashboard:
-
-```dart
-void _createAnteproject() {
-  context.go('/anteprojects', extra: widget.user);
-}
-```
-
-**Referencia de código:**
-- Archivo: `frontend/lib/screens/dashboard/student_dashboard_screen.dart`
-- Líneas: 774-777
-
-### 3.2. Formulario de Anteproyecto
-
-El formulario `AnteprojectForm` permite crear un nuevo anteproyecto:
-
-```dart
-class AnteprojectForm extends StatefulWidget {
-  const AnteprojectForm({super.key});
-}
-```
-
-**Referencia de código:**
-- Archivo: `frontend/lib/screens/forms/anteproject_form.dart`
-- Líneas: 17-22
-
-### 3.3. Campos del Formulario
-
-El formulario incluye los siguientes campos:
-
-- **Título**: Título del proyecto
-- **Descripción**: Descripción detallada (mínimo 200 palabras)
-- **Tipo de Proyecto**: Ejecución, Investigación, etc.
-- **Objetivos**: Objetivos específicos del proyecto
-- **Año Académico**: Año académico del proyecto
-- **Hitos**: Resultados esperados con fechas
-
-```dart
-final TextEditingController _titleController = TextEditingController();
-final TextEditingController _descriptionController = TextEditingController();
-final TextEditingController _academicYearController = TextEditingController();
-final TextEditingController _objectivesController = TextEditingController();
-ProjectType? _projectType = ProjectType.execution;
-List<Hito> _hitos = [];
-```
-
-**Referencia de código:**
-- Archivo: `frontend/lib/screens/forms/anteproject_form.dart`
-- Líneas: 28-36
-
-### 3.4. Validación de Anteproyecto Aprobado
-
-Antes de crear o enviar un anteproyecto, el sistema verifica si el estudiante ya tiene uno aprobado:
-
-```dart
-Future<void> _checkIfCanCreateAnteproject() async {
-  try {
-    final hasApproved = await _anteprojectsService.hasApprovedAnteproject();
-    if (mounted) {
-      setState(() {
-        _hasApprovedAnteproject = hasApproved;
-        _isCheckingApproved = false;
-      });
-    }
-  } catch (e) {
-    if (mounted) {
-      setState(() {
-        _hasApprovedAnteproject = false;
-        _isCheckingApproved = false;
-      });
-    }
-  }
-}
-```
-
-**Regla de negocio importante**: Un estudiante solo puede tener un anteproyecto aprobado a la vez. Si ya tiene uno aprobado:
-- **No puede crear** un nuevo anteproyecto
-- **No puede enviar** otro anteproyecto para revisión
-- **Debe trabajar** en el proyecto asociado al anteproyecto aprobado
-
-**Referencia de código:**
-- Archivo: `frontend/lib/screens/forms/anteproject_form.dart`
-- Líneas: 93-100
-
-### 3.5. Guardado como Borrador
-
-El estudiante puede guardar el anteproyecto como borrador (solo si no tiene un anteproyecto aprobado):
-
-```dart
-void _saveDraft() {
-  if (!_formKey.currentState!.validate()) {
-    return;
-  }
-
-  // Verificar que no tenga un anteproyecto aprobado
-  if (_hasApprovedAnteproject) {
-    // Mostrar mensaje de error
-    return;
-  }
-
-  final anteproject = Anteproject(
-    id: 0, // Nuevo anteproyecto
-    title: _titleController.text.trim(),
-    description: _descriptionController.text.trim(),
-    projectType: _projectType!,
-    status: AnteprojectStatus.draft,
-    academicYear: _academicYearController.text.trim(),
-    objectives: _objectivesController.text.trim(),
-    githubRepositoryUrl: _githubRepositoryController.text.trim().isEmpty
-        ? null
-        : _githubRepositoryController.text.trim(),
-    hitos: _hitos,
-    // ...
-  );
-
-  context.read<AnteprojectsBloc>().add(
-    AnteprojectCreateRequested(anteproject),
-  );
-}
-```
-
-**Referencia de código:**
-- Archivo: `frontend/lib/screens/forms/anteproject_form.dart`
-- Líneas: 200-250 (aproximadamente)
-
-### 3.6. Envío para Revisión
-
-Cuando el anteproyecto está completo, el estudiante lo envía para revisión (solo si no tiene un anteproyecto aprobado):
-
-```dart
-void _submitForReview() {
-  if (!_formKey.currentState!.validate()) {
-    return;
-  }
-
-  // Verificar que no tenga un anteproyecto aprobado
-  if (_hasApprovedAnteproject) {
-    // Mostrar mensaje de error indicando que debe trabajar en el proyecto aprobado
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.cannotSubmitAnteprojectWithApproved),
-        backgroundColor: Colors.red,
-      ),
-    );
-    return;
-  }
-
-  final anteproject = Anteproject(
-    id: 0,
-    title: _titleController.text.trim(),
-    description: _descriptionController.text.trim(),
-    projectType: _projectType!,
-    status: AnteprojectStatus.submitted, // Cambiar a 'submitted'
-    academicYear: _academicYearController.text.trim(),
-    objectives: _objectivesController.text.trim(),
-    githubRepositoryUrl: _githubRepositoryController.text.trim().isEmpty
-        ? null
-        : _githubRepositoryController.text.trim(),
-    hitos: _hitos,
-    submittedAt: DateTime.now(),
-    // ...
-  );
-
-  context.read<AnteprojectsBloc>().add(
-    AnteprojectCreateRequested(anteproject),
-  );
-}
-```
-
-**Referencia de código:**
-- Archivo: `frontend/lib/screens/forms/anteproject_form.dart`
-- Líneas: 250-300 (aproximadamente)
-
-### 3.7. Flujo con Anteproyecto Aprobado
-
-Cuando un estudiante ya tiene un anteproyecto aprobado:
-
-1. **El botón de crear anteproyecto se deshabilita** o muestra un mensaje indicando que debe trabajar en el proyecto aprobado
-2. **Se muestra el anteproyecto aprobado** de forma destacada en el dashboard
-3. **Se habilita el botón de crear tareas** solo cuando hay un anteproyecto aprobado
-4. **El estudiante puede acceder al proyecto asociado** desde el anteproyecto aprobado
-
-```dart
-// En el dashboard del estudiante
-if (_approvedAnteprojects.isNotEmpty) ...[
-  // Mostrar sección de proyectos
-  _buildProjectsSection(),
-  // Habilitar botón de crear tareas
-  FloatingActionButton(
-    onPressed: _createTask,
-    backgroundColor: ThemeService.instance.currentAccentColor,
-    tooltip: 'Crear Tarea',
-    heroTag: 'create_task',
-    child: const Icon(Icons.task, color: Colors.white),
-  ),
-],
-```
-
-**Referencia de código:**
-- Archivo: `frontend/lib/screens/dashboard/student_dashboard_screen.dart`
-- Líneas: 174-184, 204-207
-
-### 3.8. Obtención de Anteproyectos del Estudiante
-
-El servicio obtiene los anteproyectos del estudiante:
-
-```dart
-Future<List<Anteproject>> getStudentAnteprojects() async {
-  try {
-    final user = _supabase.auth.currentUser;
-    if (user == null) {
-      throw AuthenticationException('not_authenticated', ...);
-    }
-
-    // Obtener el ID del estudiante desde la tabla users
-    final userResponse = await _supabase
-        .from('users')
-        .select('id')
-        .eq('email', user.email!)
-        .single();
-
-    final studentId = userResponse['id'] as int;
-
-    // Obtener anteproyectos del estudiante
-    final response = await _supabase
-        .from('anteproject_students')
-        .select('anteproject_id, anteprojects!inner(*)')
-        .eq('student_id', studentId);
-
-    final anteprojects = response.map((row) {
-      return Anteproject.fromJson(row['anteprojects'] as Map<String, dynamic>);
-    }).toList();
-
-    return anteprojects;
-  } catch (e) {
-    throw AnteprojectsException('Error al obtener anteproyectos: $e');
-  }
-}
-```
-
-**Referencia de código:**
-- Archivo: `frontend/lib/services/anteprojects_service.dart`
-- Líneas: 1093-1120 (aproximadamente)
-
----
-
-## 4. Gestión de Proyectos
-
-### 4.1. Acceso a Proyectos
-
-El estudiante puede acceder a sus proyectos activos:
-
-```dart
-void _viewProjects() {
-  context.go('/projects', extra: widget.user);
-}
-```
-
-**Referencia de código:**
-- Archivo: `frontend/lib/screens/dashboard/student_dashboard_screen.dart`
-- Líneas: 788-790
-
-### 4.2. Obtención de Proyectos
-
-El servicio obtiene los proyectos del estudiante:
-
-```dart
-Future<List<Project>> getStudentProjects() async {
-  try {
-    final user = _supabase.auth.currentUser;
-    if (user == null) {
-      throw AuthenticationException('not_authenticated', ...);
-    }
-
-    // Obtener el ID del estudiante
-    final userResponse = await _supabase
-        .from('users')
-        .select('id')
-        .eq('email', user.email!)
-        .single();
-
-    final studentId = userResponse['id'] as int;
-
-    // Obtener proyectos del estudiante a través de anteproyectos
-    final response = await _supabase
-        .from('projects')
-        .select('''
-          *,
-          anteprojects!inner(
-            id,
-            anteproject_students!inner(
-              student_id
-            )
-          )
-        ''')
-        .eq('anteprojects.anteproject_students.student_id', studentId);
-
-    final projects = response.map((row) {
-      return Project.fromJson(row as Map<String, dynamic>);
-    }).toList();
-
-    return projects;
-  } catch (e) {
-    throw DatabaseException('Error al obtener proyectos: $e', ...);
-  }
-}
-```
-
-**Referencia de código:**
-- Archivo: `frontend/lib/services/projects_service.dart`
-- Líneas: 200-250 (aproximadamente)
-
-### 4.3. Creación Automática de Proyecto
-
-Cuando un anteproyecto es aprobado, el sistema crea automáticamente un proyecto:
-
-```dart
-// En el servicio de aprobación
-Future<void> approveAnteproject(int anteprojectId, String comments) async {
-  // Aprobar anteproyecto
-  await _supabase
-      .from('anteprojects')
-      .update({
-        'status': 'approved',
-        'reviewed_at': DateTime.now().toIso8601String(),
-        'review_comments': comments,
-      })
-      .eq('id', anteprojectId);
-
-  // Crear proyecto automáticamente
-  final anteproject = await _supabase
-      .from('anteprojects')
-      .select('*')
-      .eq('id', anteprojectId)
-      .single();
-
-  await _supabase.from('projects').insert({
-    'anteproject_id': anteprojectId,
-    'title': anteproject['title'],
-    'status': 'planning',
-    'tutor_id': anteproject['tutor_id'],
-    'created_at': DateTime.now().toIso8601String(),
-  });
-}
-```
-
-**Referencia de código:**
-- Archivo: `frontend/lib/services/anteprojects_service.dart`
-- Líneas: 600-700 (aproximadamente)
-
----
-
-## 5. Gestión de Tareas
-
-### 5.1. Acceso a Tareas
-
-El estudiante puede acceder a sus tareas:
-
-```dart
-void _viewTasks() {
-  context.go('/tasks', extra: widget.user);
-}
-```
-
-**Referencia de código:**
-- Archivo: `frontend/lib/screens/dashboard/student_dashboard_screen.dart`
-- Líneas: 792-794
-
-### 5.2. Creación de Tareas
-
-El estudiante puede crear tareas para sus proyectos:
-
-```dart
-void _createTask() {
-  context.go('/tasks', extra: widget.user);
-}
-```
-
-**Referencia de código:**
-- Archivo: `frontend/lib/screens/dashboard/student_dashboard_screen.dart`
-- Líneas: 779-782
-
-### 5.3. Formulario de Tarea
-
-El formulario `TaskForm` permite crear y editar tareas:
-
-```dart
-class TaskForm extends StatefulWidget {
-  final int? projectId;
-  final Task? task;
-
-  const TaskForm({
-    super.key,
-    this.projectId,
-    this.task,
-  });
-}
-```
-
-**Referencia de código:**
-- Archivo: `frontend/lib/screens/forms/task_form.dart`
-- Líneas: 1-50 (aproximadamente)
-
-### 5.4. Estados de Tareas
-
-Las tareas pueden tener los siguientes estados:
-
-- **pending**: Pendiente
-- **in_progress**: En progreso
-- **in_review**: En revisión
-- **completed**: Completada
-
-```dart
-enum TaskStatus {
-  pending,
-  inProgress,
-  underReview,
-  completed,
-}
-```
-
-**Referencia de código:**
-- Archivo: `frontend/lib/models/task.dart`
-- Líneas: 1-50 (aproximadamente)
-
-### 5.5. Obtención de Tareas
-
-El servicio obtiene las tareas del estudiante:
-
-```dart
-Future<List<Task>> getTasks({int? projectId}) async {
-  try {
-    final user = _supabase.auth.currentUser;
-    if (user == null) {
-      throw AuthenticationException('not_authenticated', ...);
-    }
-
-    // Obtener el ID del estudiante
-    final userResponse = await _supabase
-        .from('users')
-        .select('id')
-        .eq('email', user.email!)
-        .single();
-
-    final studentId = userResponse['id'] as int;
-
-    // Obtener tareas del estudiante
-    var query = _supabase
-        .from('tasks')
-        .select('*')
-        .eq('assigned_to', studentId);
-
-    if (projectId != null) {
-      query = query.eq('project_id', projectId);
-    }
-
-    final response = await query.order('created_at', ascending: false);
-
-    final tasks = response.map((row) {
-      return Task.fromJson(row as Map<String, dynamic>);
-    }).toList();
-
-    return tasks;
-  } catch (e) {
-    throw DatabaseException('Error al obtener tareas: $e', ...);
-  }
-}
-```
-
-**Referencia de código:**
-- Archivo: `frontend/lib/services/tasks_service.dart`
-- Líneas: 100-200 (aproximadamente)
-
----
-
-## 6. Tablero Kanban
-
-### 6.1. Acceso al Kanban
-
-El estudiante puede acceder al tablero Kanban para gestionar tareas visualmente:
-
-```dart
-void _viewKanban() {
-  context.go('/kanban', extra: widget.user);
-}
-```
-
-**Referencia de código:**
-- Archivo: `frontend/lib/screens/dashboard/student_dashboard_screen.dart`
-- Líneas: 796-798
-
-### 6.2. Componente Kanban
-
-El componente `KanbanBoard` muestra las tareas organizadas por columnas:
-
-```dart
-class KanbanBoard extends StatefulWidget {
-  final int? projectId;
-  final bool isEmbedded;
-
-  const KanbanBoard({
-    super.key,
-    this.projectId,
-    this.isEmbedded = false,
-  });
-}
-```
-
-**Referencia de código:**
-- Archivo: `frontend/lib/screens/kanban/kanban_board.dart`
-- Líneas: 1-50 (aproximadamente)
-
-### 6.3. Drag and Drop
-
-El estudiante puede mover tareas entre columnas mediante drag and drop:
-
-```dart
-void _handleTaskDrop(Task task, TaskStatus newStatus, int targetIndex) {
-  // Enviar el evento al BLoC
-  context.read<TasksBloc>().add(
-    TaskReorderRequested(
-      taskId: task.id,
-      newStatus: newStatus,
-      newPosition: targetIndex.toDouble(),
-    ),
-  );
-}
-```
-
-**Referencia de código:**
-- Archivo: `frontend/lib/screens/kanban/kanban_board.dart`
-- Líneas: 400-450 (aproximadamente)
-
----
-
-## 7. Comunicación con el Tutor
-
-### 7.1. Sistema de Mensajería
-
-El estudiante puede comunicarse con su tutor mediante el sistema de mensajería:
-
-```dart
-GoRoute(
-  path: '/messages',
-  name: 'messages',
-  builder: (context, state) {
-    final user = state.extra as User?;
-    if (user == null) {
-      return const LoginScreenBloc();
-    }
-    return MessageProjectSelectorScreen(user: user);
-  },
-),
-```
-
-**Referencia de código:**
-- Archivo: `frontend/lib/router/app_router.dart`
-- Líneas: 280-290 (aproximadamente)
-
-### 7.2. Selección de Proyecto/Anteproyecto
-
-El estudiante selecciona un proyecto o anteproyecto para enviar mensajes:
-
-```dart
-class MessageProjectSelectorScreen extends StatefulWidget {
-  final User user;
-
-  const MessageProjectSelectorScreen({super.key, required this.user});
-}
-```
-
-**Referencia de código:**
-- Archivo: `frontend/lib/screens/messages/message_project_selector_screen.dart`
-- Líneas: 1-50 (aproximadamente)
-
----
-
-## 8. Navegación y Rutas
-
-### 8.1. Menú Hamburguesa Persistente
-
-La aplicación utiliza un **menú hamburguesa persistente** (`PersistentScaffold`) que mantiene el AppBar y el drawer consistentes en todas las rutas. Esto proporciona una experiencia de navegación uniforme y accesible.
-
-**Opciones del menú para estudiantes:**
-- **Panel Principal**: Dashboard con resumen del proyecto
-- **Notificaciones**: Alertas y notificaciones del sistema
-- **Mensajes**: Sistema de mensajería con el tutor
-- **Anteproyectos**: Gestión de anteproyectos
-- **Proyectos**: Lista de proyectos aprobados
-- **Tareas**: Gestión de tareas del proyecto
-- **Kanban**: Tablero Kanban visual
-- **Ayuda**: Guía de uso del sistema
-
-```dart
-// PersistentScaffold mantiene el menú en todas las pantallas
-return PersistentScaffold(
-  title: 'Anteproyectos',
-  titleKey: 'anteprojects',
-  user: user,
-  body: body,
+final anteproject = Anteproject(
+  id: 0,
+  title: _titleController.text.trim(),
+  description: _descriptionController.text.trim(),
+  projectType: _projectType!,
+  status: AnteprojectStatus.draft, // Estado borrador
+  // ...
 );
 ```
 
-**Referencia de código:**
-- Archivo: `frontend/lib/widgets/navigation/persistent_scaffold.dart`
-- Archivo: `frontend/lib/widgets/navigation/app_side_drawer.dart`
-- Líneas: 79-130 (menú específico para estudiantes)
+El borrador se guarda en la base de datos y el estudiante puede volver a editarlo más tarde.
 
-### 8.2. Rutas Específicas del Estudiante
+### Enviar para revisión
 
-El router define rutas específicas para el estudiante:
+Cuando el anteproyecto está completo, el estudiante lo envía para que el tutor lo revise. Esto cambia el estado a `submitted`:
 
 ```dart
-// Lista de anteproyectos
-GoRoute(
-  path: '/anteprojects',
-  name: 'anteprojects',
-  builder: (context, state) {
-    User? user = state.extra as User?;
-    if (user == null) {
-      final authState = context.read<AuthBloc>().state;
-      if (authState is AuthAuthenticated) {
-        user = authState.user;
-      }
-    }
-
-    if (user == null) {
-      return const LoginScreenBloc();
-    }
-
-    // Para estudiantes - usar MyAnteprojectsList
-    Widget body;
-    if (user.role == UserRole.student) {
-      body = MyAnteprojectsList(user: user);
-    } else {
-      body = const AnteprojectsReviewScreen();
-    }
-
-    return PersistentScaffold(
-      title: 'Anteproyectos',
-      titleKey: 'anteprojects',
-      user: user,
-      body: body,
-    );
-  },
-),
+status: AnteprojectStatus.submitted, // Cambiar a 'submitted'
+submittedAt: DateTime.now(),
 ```
 
-**Referencia de código:**
-- Archivo: `frontend/lib/router/app_router.dart`
-- Líneas: 139-176
+Una vez enviado, el estudiante **no puede editarlo**. Tiene que esperar a que el tutor lo revise.
+
+### Estados del anteproyecto
+
+Un anteproyecto puede tener estos estados:
+
+- **`draft`:** Borrador. El estudiante lo está creando o editando.
+- **`submitted`:** Enviado para revisión. El tutor tiene que revisarlo.
+- **`under_review`:** En revisión. El tutor está revisándolo o ha pedido cambios.
+- **`approved`:** Aprobado. El tutor lo ha aprobado y se crea automáticamente un proyecto.
+- **`rejected`:** Rechazado. El tutor lo ha rechazado y el estudiante tiene que crear uno nuevo.
 
 ---
 
-## 9. Permisos y Seguridad
+## 3. Gestión de Proyectos
 
-### 9.1. Verificación de Rol
+### ¿Qué es un proyecto?
 
-El sistema verifica el rol del estudiante antes de permitir acciones:
+Un proyecto es el TFG en sí. Se crea automáticamente cuando el tutor aprueba un anteproyecto. A partir de ese momento, el estudiante puede empezar a trabajar en él.
 
-```dart
-// En el servicio de anteproyectos
-Future<List<Anteproject>> getStudentAnteprojects() async {
-  final user = _supabase.auth.currentUser;
-  if (user == null) {
-    throw AuthenticationException('not_authenticated', ...);
-  }
+### Cómo se crea un proyecto
 
-  // Obtener el ID del estudiante
-  final userResponse = await _supabase
-      .from('users')
-      .select('id')
-      .eq('email', user.email!)
-      .single();
+Cuando el tutor aprueba un anteproyecto, el sistema crea automáticamente un proyecto asociado. Esto se hace en el método `_createProjectFromAnteproject()` del servicio `AnteprojectsService`.
 
-  final studentId = userResponse['id'] as int;
-
-  // Solo obtener anteproyectos del estudiante
-  final response = await _supabase
-      .from('anteproject_students')
-      .select('anteproject_id, anteprojects!inner(*)')
-      .eq('student_id', studentId);
-
-  return response.map((row) {
-    return Anteproject.fromJson(row['anteprojects'] as Map<String, dynamic>);
-  }).toList();
-}
-```
-
-**Referencia de código:**
-- Archivo: `frontend/lib/services/anteprojects_service.dart`
-- Líneas: 1093-1120 (aproximadamente)
-
-### 9.2. Row Level Security (RLS)
-
-Las políticas RLS en la base de datos aseguran que los estudiantes solo vean sus propios datos:
-
-```sql
--- Política para que estudiantes vean solo sus anteproyectos
-CREATE POLICY "Students can view their own anteprojects" ON anteprojects
-    FOR SELECT USING (
-        EXISTS (
-            SELECT 1 FROM anteproject_students
-            WHERE anteproject_id = anteprojects.id
-            AND student_id = public.user_id()
-        )
-    );
-```
-
-**Referencia de código:**
-- Archivo: `docs/base_datos/migraciones/schema_completo.sql` (sección RLS)
-- Líneas: 141-145
-
-### 9.3. Restricción de Edición
-
-Los estudiantes solo pueden editar sus propios anteproyectos cuando están en estado `draft` o `changes_requested`:
+El proyecto se crea con el estado `planning` (planificación) y se vincula al anteproyecto:
 
 ```dart
-// En el servicio de anteproyectos
-Future<void> updateAnteproject(Anteproject anteproject) async {
-  // Verificar que el estudiante es el dueño
-  final user = _supabase.auth.currentUser;
-  final userResponse = await _supabase
-      .from('users')
-      .select('id')
-      .eq('email', user!.email!)
-      .single();
-
-  final studentId = userResponse['id'] as int;
-
-  // Verificar que el anteproyecto pertenece al estudiante
-  final relationship = await _supabase
-      .from('anteproject_students')
-      .select('*')
-      .eq('anteproject_id', anteproject.id)
-      .eq('student_id', studentId)
-      .single();
-
-  if (relationship == null) {
-    throw AuthenticationException('unauthorized', ...);
-  }
-
-  // Verificar que el estado permite edición
-  if (anteproject.status != AnteprojectStatus.draft &&
-      anteproject.status != AnteprojectStatus.changesRequested) {
-    throw ValidationException('anteproject_not_editable', ...);
-  }
-
-  // Actualizar anteproyecto
+final projectData = {
+  'title': title,
+  'description': description,
+  'tutor_id': tutorId,
+  'anteproject_id': anteprojectId,
+  'status': 'planning', // Estado inicial
   // ...
-}
+};
 ```
 
-**Referencia de código:**
-- Archivo: `frontend/lib/services/anteprojects_service.dart`
-- Líneas: 400-500 (aproximadamente)
+### Estados del proyecto
+
+Un proyecto puede tener estos estados:
+
+- **`planning`:** Planificación. El estudiante define las tareas y los hitos.
+- **`development`:** Desarrollo. El estudiante está trabajando en el proyecto.
+- **`completed`:** Completado. El proyecto está terminado y entregado.
+
+### Ver los proyectos
+
+El estudiante puede ver sus proyectos desde el dashboard o desde la sección "Proyectos". La app carga los proyectos con el método `getStudentProjects()` del servicio `ProjectsService`.
 
 ---
 
-## Resumen del Flujo del Estudiante
+## 4. Tareas y Tablero Kanban
 
-### Flujo Principal
+### ¿Qué son las tareas?
 
+Las tareas son las unidades de trabajo más pequeñas del proyecto. El estudiante divide el proyecto en tareas para hacer un seguimiento más detallado del progreso.
+
+**Importante:** Las tareas son una herramienta de organización personal. El estudiante las gestiona de forma autónoma, sin intervención del tutor. El tutor no tiene acceso a las tareas ni al tablero Kanban.
+
+### Crear una tarea
+
+Desde el dashboard o desde la sección "Tareas", el estudiante puede crear una nueva tarea. El formulario incluye:
+
+- **Título:** Nombre de la tarea.
+- **Descripción:** Qué hay que hacer.
+- **Proyecto:** A qué proyecto pertenece.
+- **Fecha de vencimiento:** Cuándo tiene que estar lista (opcional).
+- **Complejidad:** Simple, media o compleja.
+- **Horas estimadas:** Cuánto tiempo va a llevar.
+
+Cuando se crea una tarea, su estado inicial es `pending` (pendiente).
+
+### Tablero Kanban
+
+El tablero Kanban es una forma visual de organizar las tareas. Tiene tres columnas:
+
+- **Pendiente (`pending`):** Tareas que todavía no se han empezado.
+- **En Progreso (`in_progress`):** Tareas en las que se está trabajando.
+- **Completada (`completed`):** Tareas terminadas.
+
+El estudiante puede arrastrar y soltar las tareas entre columnas para cambiar su estado. Esto se hace con drag and drop, y cuando se suelta una tarea en otra columna, se actualiza su estado en la base de datos.
+
+### Mover tareas
+
+Cuando el estudiante arrastra una tarea a otra columna, se ejecuta el método `_onTaskMoved()` que actualiza el estado de la tarea:
+
+```dart
+await _tasksService.updateTask(
+  task.copyWith(
+    status: newStatus,
+    kanbanPosition: newPosition,
+  ),
+);
 ```
-1. Login exitoso
-   ↓
-2. Redirección a /dashboard/student
-   ↓
-3. Carga de datos:
-   - Anteproyectos (pendientes, aprobados, rechazados)
-   - Proyectos activos
-   - Tareas (pendientes, en progreso, completadas)
-   ↓
-4. Dashboard muestra:
-   - Estadísticas (anteproyectos, proyectos, tareas)
-   - Acciones rápidas
-   - Anteproyectos pendientes
-   - Proyectos activos
-   - Tareas próximas
-   ↓
-5. Acciones disponibles:
-   - Crear anteproyecto
-   - Enviar anteproyecto para revisión
-   - Gestionar tareas
-   - Usar tablero Kanban
-   - Comunicarse con tutor
-   - Ver proyectos activos
-```
 
-### Puntos Clave
-
-- **Autonomía**: El estudiante gestiona su propio trabajo de manera autónoma
-- **Creación de anteproyectos**: Puede crear y enviar anteproyectos para revisión
-- **Gestión de tareas**: Puede crear y gestionar sus propias tareas
-- **Tablero Kanban**: Visualización ágil del estado de las tareas
-- **Comunicación**: Puede comunicarse con su tutor mediante mensajería
-- **Seguridad**: Las políticas RLS aseguran que solo vea sus propios datos
+El campo `kanban_position` guarda la posición de la tarea dentro de su columna para mantener el orden.
 
 ---
 
-**Última actualización**: Diciembre 2025  
-**Versión del documento**: 1.0
+## 5. Comunicación con el Tutor
 
+### Comentarios en anteproyectos
+
+El tutor puede dejar comentarios en los anteproyectos cuando los revisa. El estudiante puede ver estos comentarios en la pantalla de detalle del anteproyecto.
+
+Si el tutor pide cambios, el anteproyecto pasa al estado `under_review` y el estudiante puede editarlo de nuevo. Una vez hechos los cambios, lo vuelve a enviar (`submitted`).
+
+### Notificaciones
+
+Cuando el tutor deja un comentario o cambia el estado de un anteproyecto, el estudiante recibe una notificación. Las notificaciones se muestran en el icono de la campana en la barra superior.
+
+---
+
+## Conclusión
+
+Este es el flujo completo de un estudiante en la aplicación. Desde que hace login hasta que gestiona sus anteproyectos, proyectos y tareas. Las tareas son una herramienta personal de organización que el estudiante gestiona de forma autónoma.

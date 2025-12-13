@@ -1178,12 +1178,6 @@ abstract class AppLocalizations {
   /// **'En Progreso'**
   String get taskStatusInProgress;
 
-  /// Estado de tarea en revisión
-  ///
-  /// In es, this message translates to:
-  /// **'En Revisión'**
-  String get taskStatusUnderReview;
-
   /// Estado de tarea completada
   ///
   /// In es, this message translates to:
@@ -1243,12 +1237,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'En Progreso'**
   String get kanbanColumnInProgress;
-
-  /// Columna de tareas en revisión en Kanban
-  ///
-  /// In es, this message translates to:
-  /// **'En Revisión'**
-  String get kanbanColumnUnderReview;
 
   /// Columna de tareas completadas en Kanban
   ///

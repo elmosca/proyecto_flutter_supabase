@@ -15,7 +15,6 @@
 #### 🟢 [Tutores](Guia-Tutores)
 - [Revisar Anteproyectos](Guia-Tutores#-fase-1-revisión-de-anteproyectos)
 - [Gestionar Estudiantes](Guia-Tutores#-mis-estudiantes)
-- [Asignar Tareas](Guia-Tutores#-fase-3-asignación-y-seguimiento-de-tareas)
 - [Flujo de Aprobación](Guia-Tutores#-flujo-de-aprobación)
 
 #### 🔴 [Administradores](Guia-Administradores)
@@ -65,11 +64,8 @@
 
 ### 🔗 Enlaces
 
-- [🐛 Reportar Issue](https://github.com/USUARIO/REPO/issues)
-- [💬 Discusiones](https://github.com/USUARIO/REPO/discussions)
-- [📦 Repositorio](https://github.com/USUARIO/REPO)
+- [📦 Repositorio](https://github.com/elmosca/proyecto_flutter_supabase)
 
 ---
 
-<small>📅 Actualizado: Nov 2025</small>
-
+<small>📅 Actualizado: Dic 2025</small>

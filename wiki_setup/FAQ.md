@@ -76,11 +76,18 @@ Si pasa más de 3 días sin respuesta, contacta a tu tutor directamente.
 
 - 📥 **Pendiente**: No has empezado aún
 - 🔄 **En Progreso**: Estás trabajando en ella
-- 👀 **En Revisión**: Completada y enviada al tutor
-- ✅ **Completada**: Aprobada por el tutor
-- 🔧 **Requiere Cambios**: El tutor pidió modificaciones
+- ✅ **Completada**: Has terminado la tarea
 
 📖 [Ciclo de vida de tareas](Guia-Estudiantes#fase-3-gestión-de-tareas)
+</details>
+
+<details>
+<summary><strong>¿Mi tutor puede ver mis tareas?</strong></summary>
+
+**No.** Las tareas son una herramienta de organización personal del estudiante. El tutor no tiene acceso a las tareas ni al tablero Kanban.
+
+El tutor solo revisa y aprueba anteproyectos. Una vez aprobado tu anteproyecto, tú gestionas tu proyecto y tareas de forma autónoma.
+
 </details>
 
 <details>
@@ -167,40 +174,26 @@ Evalúa estos aspectos:
 ### 👥 Gestión de Estudiantes
 
 <details>
-<summary><strong>¿Cómo asigno tareas a un estudiante?</strong></summary>
+<summary><strong>¿Puedo ver las tareas de mis estudiantes?</strong></summary>
 
-1. Ve a **"Mis Estudiantes"**
-2. Selecciona el estudiante
-3. Haz clic en **"Crear Tarea"**
-4. Completa el formulario:
-   - Título claro
-   - Descripción detallada
-   - Criterios de aceptación
-   - Fecha límite
-   - Prioridad
-5. Guarda y asigna
+**No.** Las tareas y el tablero Kanban son herramientas de organización personal del estudiante. El tutor no tiene acceso a ellas.
 
-📖 [Guía de asignación de tareas](Guia-Tutores#-fase-3-asignación-y-seguimiento-de-tareas)
+Tu rol como tutor es:
+- Revisar y aprobar/rechazar anteproyectos
+- Proporcionar feedback sobre los anteproyectos
+- Comunicarte con los estudiantes mediante el sistema de mensajes
+
+Una vez aprobado el anteproyecto, el estudiante gestiona su proyecto de forma autónoma.
+
 </details>
 
 <details>
-<summary><strong>¿Cómo defino buenos criterios de aceptación?</strong></summary>
+<summary><strong>¿Cómo me comunico con mis estudiantes?</strong></summary>
 
-**Mal ejemplo:**
-> "Hacer el login"
+Usa el sistema de mensajes (ícono 💬 en la barra superior) para mantener conversaciones organizadas por tema con cada estudiante.
 
-**Buen ejemplo:**
-> **Título**: Implementar pantalla de login con validación
-> 
-> **Criterios de aceptación**:
-> - [ ] Interfaz con campos email y contraseña
-> - [ ] Validación de formato de email
-> - [ ] Conexión con Supabase Auth
-> - [ ] Mensajes de error apropiados
-> - [ ] Opción "Recuperar contraseña"
-> - [ ] UI responsive
+También puedes dejar comentarios en los anteproyectos cuando los revisas.
 
-📖 [Plantilla de tareas](Guia-Tutores#plantilla-tarea-bien-definida)
 </details>
 
 ---
@@ -331,7 +324,7 @@ Sí, la aplicación es **responsive** y funciona en:
 <details>
 <summary><strong>¿Dónde puedo reportar un bug?</strong></summary>
 
-1. Ve a [GitHub Issues](https://github.com/USUARIO/REPO/issues)
+1. Contacta al administrador del sistema
 2. Haz clic en **"New Issue"**
 3. Describe el problema:
    - ¿Qué estabas haciendo?
@@ -347,8 +340,8 @@ Sí, la aplicación es **responsive** y funciona en:
 
 **Opciones:**
 
-1. **Reporta bugs**: [GitHub Issues](https://github.com/USUARIO/REPO/issues)
-2. **Sugiere mejoras**: [GitHub Discussions](https://github.com/USUARIO/REPO/discussions)
+1. **Contacta al administrador**: Para reportar bugs o sugerir mejoras
+2. **Visita el repositorio**: [GitHub](https://github.com/elmosca/proyecto_flutter_supabase)
 3. **Contribuye código**: Fork + Pull Request
 4. **Mejora documentación**: Edita la wiki
 
@@ -363,7 +356,7 @@ Sí, la aplicación es **responsive** y funciona en:
 
 1. 🔎 **Busca en la wiki** (arriba a la derecha)
 2. 📖 **Lee la guía** de tu rol específico
-3. 💬 **Pregunta en [Discussions](https://github.com/USUARIO/REPO/discussions)**
+3. 💬 **Contacta a tu tutor/administrador**
 4. 📧 **Contacta a tu tutor/administrador**
 
 ---
@@ -378,5 +371,4 @@ Sí, la aplicación es **responsive** y funciona en:
 ---
 
 **📅 Última actualización**: Diciembre 2025  
-**❓ ¿Falta algo?**: [Sugiere una pregunta](https://github.com/USUARIO/REPO/discussions)
-
+**❓ ¿Falta algo?**: Contacta al administrador del sistema

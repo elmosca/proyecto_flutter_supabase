@@ -37,7 +37,6 @@ void main() {
       // Verificar que los enums tienen los valores correctos
       expect(TaskStatus.values, contains(TaskStatus.pending));
       expect(TaskStatus.values, contains(TaskStatus.inProgress));
-      expect(TaskStatus.values, contains(TaskStatus.underReview));
       expect(TaskStatus.values, contains(TaskStatus.completed));
 
       expect(TaskComplexity.values, contains(TaskComplexity.simple));

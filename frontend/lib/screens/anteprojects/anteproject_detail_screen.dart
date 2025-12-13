@@ -1941,10 +1941,6 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
         color = Colors.blue;
         statusText = l10n.taskStatusInProgress;
         break;
-      case TaskStatus.underReview:
-        color = Colors.purple;
-        statusText = l10n.taskStatusUnderReview;
-        break;
       case TaskStatus.completed:
         color = Colors.green;
         statusText = l10n.taskStatusCompleted;
