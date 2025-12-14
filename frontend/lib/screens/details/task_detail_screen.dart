@@ -6,6 +6,7 @@ import '../../l10n/app_localizations.dart';
 import '../../blocs/auth_bloc.dart';
 import '../../services/tasks_service.dart';
 import '../../services/theme_service.dart';
+import '../../services/academic_permissions_service.dart';
 import '../../widgets/files/file_list_widget.dart';
 import '../../widgets/navigation/persistent_scaffold.dart';
 import '../../utils/task_localizations.dart';
@@ -36,6 +37,8 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
   bool _isEditingDescription = false;
   late TextEditingController _descriptionController;
   User? _currentUser;
+  bool _isReadOnly = false;
+  final AcademicPermissionsService _academicPermissionsService = AcademicPermissionsService();
 
   @override
   void initState() {
@@ -51,17 +54,25 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
   }
 
   Future<void> _loadCurrentUser() async {
+    User? user;
     if (widget.user != null) {
-      setState(() {
-        _currentUser = widget.user;
-      });
-      return;
-    }
+      user = widget.user;
+    } else {
     final authState = context.read<AuthBloc>().state;
     if (authState is AuthAuthenticated) {
+        user = authState.user;
+      }
+    }
+    
+    if (user != null) {
+      // Verificar modo solo lectura
+      final isReadOnly = await _academicPermissionsService.isReadOnly(user);
+      if (mounted) {
       setState(() {
-        _currentUser = authState.user;
+          _currentUser = user;
+          _isReadOnly = isReadOnly;
       });
+      }
     }
   }
 

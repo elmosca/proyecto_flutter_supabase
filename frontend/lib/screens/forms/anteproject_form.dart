@@ -45,7 +45,9 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
   bool _isSubmitting = false;
   bool _isLoadingUser = true;
   bool _hasApprovedAnteproject = false;
-  bool _isCheckingApproved = true;
+  bool _hasDraftAnteproject = false;
+  bool _isWrongAcademicYear = false;
+  bool _isCheckingRestrictions = true;
   User? _currentUser; // Usuario actual para obtener año académico del tutor
 
   @override
@@ -118,16 +120,57 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
 
   Future<void> _checkIfCanCreateAnteproject() async {
     try {
-      final hasApproved = await _anteprojectsService.hasApprovedAnteproject();
+      // Verificar restricciones en paralelo
+      final results = await Future.wait([
+        _anteprojectsService.hasApprovedAnteproject(),
+        _anteprojectsService.hasDraftAnteproject(),
+        _settingsService.getStringSetting('academic_year'),
+      ]);
+      
+      final hasApproved = results[0] as bool;
+      final hasDraft = results[1] as bool;
+      final activeAcademicYear = results[2] as String?;
+      
+      // Verificar año académico
+      bool wrongAcademicYear = false;
+      if (activeAcademicYear != null && 
+          activeAcademicYear.isNotEmpty &&
+          _currentUser?.academicYear != activeAcademicYear) {
+        wrongAcademicYear = true;
+      }
+      
       if (mounted) {
         setState(() {
           _hasApprovedAnteproject = hasApproved;
-          _isCheckingApproved = false;
+          _hasDraftAnteproject = hasDraft;
+          _isWrongAcademicYear = wrongAcademicYear;
+          _isCheckingRestrictions = false;
         });
 
-        if (hasApproved) {
-          // Mostrar diálogo informativo
           final l10n = AppLocalizations.of(context)!;
+
+        if (wrongAcademicYear) {
+          // Mostrar diálogo informativo para año académico incorrecto
+          if (mounted) {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text(l10n.cannotCreateAnteprojectWrongAcademicYearTitle),
+                content: Text(l10n.cannotCreateAnteprojectWrongAcademicYear),
+                actions: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop(); // Volver a la pantalla anterior
+                    },
+                    child: Text(l10n.close),
+                  ),
+                ],
+              ),
+            );
+          }
+        } else if (hasApproved) {
+          // Mostrar diálogo informativo para anteproyecto aprobado
           if (mounted) {
             showDialog(
               context: context,
@@ -178,15 +221,56 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
               ),
             );
           }
+        } else if (hasDraft) {
+          // Mostrar diálogo informativo para borrador existente
+          if (mounted) {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text(l10n.cannotCreateAnteprojectWithDraftTitle),
+                content: Text(l10n.cannotCreateAnteprojectWithDraft),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text(l10n.close),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      // Navegar al borrador existente
+                      try {
+                        final anteprojects =
+                            await _anteprojectsService.getStudentAnteprojects();
+                        final draftAnteproject = anteprojects.firstWhere(
+                          (ap) => ap.status == AnteprojectStatus.draft,
+                        );
+                        if (mounted) {
+                          Navigator.of(context).pushReplacementNamed(
+                            '/anteprojects/${draftAnteproject.id}',
+                          );
+                        }
+                      } catch (e) {
+                        // Si hay error, solo cerrar el diálogo
+                        if (mounted) {
+                          Navigator.of(context).pop();
+                        }
+                      }
+                    },
+                    child: Text(l10n.goToDraft),
+                  ),
+                ],
+              ),
+            );
+          }
         }
       }
     } catch (e) {
       if (mounted) {
         setState(() {
-          _isCheckingApproved = false;
+          _isCheckingRestrictions = false;
         });
         // No mostrar error, permitir que el usuario intente crear
-        // El servicio lanzará la excepción si realmente hay un aprobado
+        // El servicio lanzará la excepción si realmente hay restricciones
       }
     }
   }
@@ -451,8 +535,45 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
                 ),
               ],
             ),
-            body: _isLoadingUser || _isCheckingApproved
+            body: _isLoadingUser || _isCheckingRestrictions
                 ? const Center(child: CircularProgressIndicator())
+                : _isWrongAcademicYear
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.calendar_today,
+                                size: 64,
+                                color: Colors.red[300],
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                l10n.cannotCreateAnteprojectWrongAcademicYearTitle,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge
+                                    ?.copyWith(fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                l10n.cannotCreateAnteprojectWrongAcademicYear,
+                                style: Theme.of(context).textTheme.bodyLarge,
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 24),
+                              ElevatedButton.icon(
+                                onPressed: () => Navigator.of(context).pop(),
+                                icon: const Icon(Icons.arrow_back),
+                                label: Text(l10n.goBack),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
                 : _hasApprovedAnteproject
                     ? Center(
                         child: Padding(
@@ -523,6 +644,66 @@ class _AnteprojectFormState extends State<AnteprojectForm> {
                           ),
                         ),
                       )
+                        : _hasDraftAnteproject
+                        ? Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(24.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.edit_note,
+                                    size: 64,
+                                    color: Colors.blue[300],
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    l10n.cannotCreateAnteprojectWithDraftTitle,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    l10n.cannotCreateAnteprojectWithDraft,
+                                    style: Theme.of(context).textTheme.bodyLarge,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: 24),
+                                  ElevatedButton.icon(
+                                    onPressed: () async {
+                                      try {
+                                        final anteprojects = await _anteprojectsService
+                                            .getStudentAnteprojects();
+                                        final draftAnteproject = anteprojects.firstWhere(
+                                          (ap) => ap.status == AnteprojectStatus.draft,
+                                        );
+                                        if (mounted) {
+                                          Navigator.of(context).pushReplacementNamed(
+                                            '/anteprojects/${draftAnteproject.id}',
+                                          );
+                                        }
+                                      } catch (e) {
+                                        if (mounted) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Error: ${e.toString()}',
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      }
+                                    },
+                                    icon: const Icon(Icons.arrow_forward),
+                                    label: Text(l10n.goToDraft),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
                     : SafeArea(
                         child: Form(
                           key: _formKey,

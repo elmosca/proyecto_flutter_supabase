@@ -3,10 +3,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/project_message.dart';
 import '../models/user.dart' as app_user;
 import 'email_notification_service.dart';
+import 'academic_permissions_service.dart';
+import '../utils/app_exception.dart';
 
 /// Servicio para gestionar mensajes bidireccionales en proyectos aprobados
 class ProjectMessagesService {
   final SupabaseClient _supabase = Supabase.instance.client;
+  final AcademicPermissionsService _academicPermissionsService = AcademicPermissionsService();
 
   /// Convierte objetos minificados de Supabase a Map<String, dynamic>
   Map<String, dynamic> _safeConvertMap(dynamic data) {
@@ -105,7 +108,7 @@ class ProjectMessagesService {
       // Obtener el ID del usuario actual
       final userResponseRaw = await _supabase
           .from('users')
-          .select('id, full_name, email, role')
+          .select('id, full_name, email, role, academic_year')
           .eq('email', currentUser.email!)
           .single();
 
@@ -117,6 +120,19 @@ class ProjectMessagesService {
         (e) => e.toString().split('.').last == userResponse['role'],
         orElse: () => app_user.UserRole.student,
       );
+      final studentAcademicYear = userResponse['academic_year'] as String?;
+
+      // Verificar permisos de escritura para estudiantes
+      if (authorRole == app_user.UserRole.student) {
+        final canWrite = await _academicPermissionsService.canWriteByAcademicYear(studentAcademicYear);
+        if (!canWrite) {
+          throw ValidationException(
+            'read_only_mode',
+            technicalMessage:
+                'No puedes enviar mensajes porque tu año académico ya no está activo.',
+          );
+        }
+      }
 
       // Insertar el mensaje
       final insertData = {

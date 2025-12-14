@@ -10,6 +10,7 @@ import '../../models/user.dart';
 import '../../services/project_messages_service.dart';
 import '../../services/anteproject_messages_service.dart';
 import '../../services/anteprojects_service.dart';
+import '../../services/academic_permissions_service.dart';
 import '../../widgets/navigation/app_bar_actions.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -20,6 +21,9 @@ class ThreadMessagesScreen extends StatefulWidget {
   final Anteproject? anteproject;
   /// Si es false, no usa Scaffold propio (para usar con PersistentScaffold)
   final bool useOwnScaffold;
+  /// Si es true, indica que el tutor está viendo datos históricos (año académico pasado)
+  /// y no puede enviar mensajes
+  final bool isHistoricalView;
 
   const ThreadMessagesScreen({
     super.key,
@@ -27,6 +31,7 @@ class ThreadMessagesScreen extends StatefulWidget {
     this.project,
     this.anteproject,
     this.useOwnScaffold = true,
+    this.isHistoricalView = false,
   });
 
   @override
@@ -42,6 +47,8 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
   final AnteprojectMessagesService _anteprojectMessagesService =
       AnteprojectMessagesService();
   final AnteprojectsService _anteprojectsService = AnteprojectsService();
+  final AcademicPermissionsService _academicPermissionsService =
+      AcademicPermissionsService();
 
   List<dynamic> _messages = []; // Puede ser ProjectMessage o AnteprojectMessage
   bool _isLoading = true;
@@ -49,6 +56,7 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
   String? _errorMessage;
   User? _currentUser;
   bool? _hasApprovedAnteproject; // null = cargando, true/false = resultado
+  bool? _isReadOnly; // null = verificando, true/false = resultado
 
   @override
   void initState() {
@@ -87,6 +95,17 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
     final authState = context.read<AuthBloc>().state;
     if (authState is AuthAuthenticated) {
       _currentUser = authState.user;
+      // Verificar modo solo lectura
+      _checkReadOnlyMode(authState.user);
+    }
+  }
+
+  Future<void> _checkReadOnlyMode(User user) async {
+    final isReadOnly = await _academicPermissionsService.isReadOnly(user);
+    if (mounted) {
+      setState(() {
+        _isReadOnly = isReadOnly;
+      });
     }
   }
 
@@ -433,8 +452,21 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
     final l10n = AppLocalizations.of(context)!;
     final isAnteprojectThread = !widget.thread.isProjectThread;
     final hasApproved = isAnteprojectThread ? (_hasApprovedAnteproject ?? false) : false;
+    // Bloquear envío si tiene anteproyecto aprobado, está en modo solo lectura, o es vista histórica
+    // También bloquear si es estudiante y aún se está verificando (_isReadOnly == null)
+    final isStudentPendingCheck = _currentUser?.role == UserRole.student && _isReadOnly == null;
+    final isBlocked = hasApproved || (_isReadOnly == true) || isStudentPendingCheck || widget.isHistoricalView;
     
-    if (isAnteprojectThread && hasApproved) {
+    // Mostrar mensaje informativo si está bloqueado
+    if (isBlocked) {
+      final message = widget.isHistoricalView
+          ? l10n.cannotPerformActionReadOnly
+          : (_isReadOnly == true)
+              ? l10n.cannotPerformActionReadOnly
+              : hasApproved
+                  ? l10n.cannotSendMessageWithApprovedAnteproject
+                  : l10n.loading; // Mientras se verifica
+      
       return Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -453,7 +485,7 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                l10n.cannotSendMessageWithApprovedAnteproject,
+                message,
                 style: TextStyle(
                   color: Colors.orange[900],
                   fontSize: 14,
@@ -482,7 +514,6 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
           Expanded(
             child: TextField(
               controller: _messageController,
-              enabled: !hasApproved,
               maxLines: null,
               textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(
@@ -495,7 +526,7 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
                   vertical: 12,
                 ),
               ),
-              onSubmitted: hasApproved ? null : (_) => _sendMessage(),
+              onSubmitted: (_) => _sendMessage(),
             ),
           ),
           const SizedBox(width: 8),
@@ -512,7 +543,7 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
                       ),
                     )
                   : const Icon(Icons.send, color: Colors.white),
-              onPressed: (_isSending || hasApproved) ? null : _sendMessage,
+              onPressed: _isSending ? null : _sendMessage,
             ),
           ),
         ],

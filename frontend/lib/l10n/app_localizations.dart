@@ -692,6 +692,24 @@ abstract class AppLocalizations {
   /// **'Anteproyectos Pendientes'**
   String get pendingAnteprojects;
 
+  /// Título de sección para anteproyectos activos (draft, submitted, underReview)
+  ///
+  /// In es, this message translates to:
+  /// **'Anteproyectos Activos'**
+  String get activeAnteprojects;
+
+  /// Mensaje cuando no hay anteproyectos activos
+  ///
+  /// In es, this message translates to:
+  /// **'No hay anteproyectos activos en este momento'**
+  String get noActiveAnteprojects;
+
+  /// Mensaje cuando no hay activos pero hay aprobados
+  ///
+  /// In es, this message translates to:
+  /// **'No hay anteproyectos activos, pero tienes {count} anteproyecto{plural} aprobado{plural}'**
+  String noActiveButApproved(int count, String plural);
+
   /// Título de sección para estudiantes asignados
   ///
   /// In es, this message translates to:
@@ -1652,11 +1670,11 @@ abstract class AppLocalizations {
   /// **'Tutor'**
   String get tutorRole;
 
-  /// Etiqueta para fecha de revisión
+  /// Título de sección para elementos revisados
   ///
   /// In es, this message translates to:
-  /// **'Revisado:'**
-  String get reviewed;
+  /// **'Revisados'**
+  String get reviewedPlural;
 
   /// Botón para añadir estudiantes
   ///
@@ -1872,13 +1890,31 @@ abstract class AppLocalizations {
   ///
   /// In es, this message translates to:
   /// **'Enviado:'**
-  String get submitted;
+  String get submittedLabel;
+
+  /// Estado de anteproyecto enviado
+  ///
+  /// In es, this message translates to:
+  /// **'Enviado'**
+  String get statusSubmitted;
 
   /// Etiqueta para fecha de última actualización
   ///
   /// In es, this message translates to:
   /// **'Última actualización:'**
   String get lastUpdate;
+
+  /// Etiqueta para fecha de revisión
+  ///
+  /// In es, this message translates to:
+  /// **'Revisado:'**
+  String get reviewedLabel;
+
+  /// Estado de anteproyecto revisado
+  ///
+  /// In es, this message translates to:
+  /// **'Revisado'**
+  String get statusReviewed;
 
   /// Título de la sección de fechas
   ///
@@ -1957,6 +1993,66 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ir al Proyecto'**
   String get goToProject;
+
+  /// Botón para navegar al borrador existente
+  ///
+  /// In es, this message translates to:
+  /// **'Ir al Borrador'**
+  String get goToDraft;
+
+  /// Botón para volver a la pantalla anterior
+  ///
+  /// In es, this message translates to:
+  /// **'Volver'**
+  String get goBack;
+
+  /// Título del banner de modo solo lectura
+  ///
+  /// In es, this message translates to:
+  /// **'Modo solo lectura'**
+  String get readOnlyModeTitle;
+
+  /// Mensaje del banner de modo solo lectura
+  ///
+  /// In es, this message translates to:
+  /// **'Tu año académico ({year}) ya no está activo. Solo puedes consultar tus datos históricos.'**
+  String readOnlyModeMessage(String year);
+
+  /// Mensaje de error cuando se intenta una acción en modo solo lectura
+  ///
+  /// In es, this message translates to:
+  /// **'No puedes realizar esta acción porque tu año académico ya no está activo.'**
+  String get cannotPerformActionReadOnly;
+
+  /// Título del diálogo cuando el estudiante intenta crear un anteproyecto con un borrador existente
+  ///
+  /// In es, this message translates to:
+  /// **'Ya tienes un borrador'**
+  String get cannotCreateAnteprojectWithDraftTitle;
+
+  /// Mensaje cuando el estudiante intenta crear un anteproyecto con un borrador existente
+  ///
+  /// In es, this message translates to:
+  /// **'Ya tienes un borrador de anteproyecto. Complétalo o elimínalo antes de crear otro.'**
+  String get cannotCreateAnteprojectWithDraft;
+
+  /// Mensaje cuando el estudiante intenta enviar un anteproyecto pero ya tiene uno en proceso
+  ///
+  /// In es, this message translates to:
+  /// **'Ya tienes un anteproyecto en revisión. Espera a que se complete su ciclo antes de enviar otro.'**
+  String get cannotSubmitAnteprojectWithActive;
+
+  /// Título del diálogo cuando el estudiante no está en el año académico activo
+  ///
+  /// In es, this message translates to:
+  /// **'Año académico incorrecto'**
+  String get cannotCreateAnteprojectWrongAcademicYearTitle;
+
+  /// Mensaje cuando el estudiante no está en el año académico activo
+  ///
+  /// In es, this message translates to:
+  /// **'Solo los estudiantes matriculados en el año académico activo pueden crear anteproyectos. Contacta con tu tutor o administrador.'**
+  String get cannotCreateAnteprojectWrongAcademicYear;
 
   /// Título cuando el estudiante intenta enviar un anteproyecto en borrador con uno ya aprobado
   ///

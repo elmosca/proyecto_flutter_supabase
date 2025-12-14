@@ -7,7 +7,9 @@ import '../../models/conversation_thread.dart';
 import '../../models/user.dart';
 import '../../services/conversation_threads_service.dart';
 import '../../services/anteprojects_service.dart';
+import '../../services/academic_permissions_service.dart';
 import '../../widgets/navigation/app_bar_actions.dart';
+import '../../widgets/common/read_only_banner.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/app_exception.dart';
 import 'thread_messages_screen.dart';
@@ -20,12 +22,16 @@ class ConversationThreadsScreen extends StatefulWidget {
   final Anteproject? anteproject;
   /// Si es false, no usa Scaffold propio (para usar con PersistentScaffold)
   final bool useOwnScaffold;
+  /// Si es true, indica que el tutor está viendo datos históricos (año académico pasado)
+  /// y no puede crear nuevos temas ni enviar mensajes
+  final bool isHistoricalView;
 
   const ConversationThreadsScreen({
     super.key,
     this.project,
     this.anteproject,
     this.useOwnScaffold = true,
+    this.isHistoricalView = false,
   }) : assert(
           project != null || anteproject != null,
           'Debe proporcionar un proyecto o anteproyecto',
@@ -40,12 +46,15 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
   final ConversationThreadsService _threadsService =
       ConversationThreadsService();
   final AnteprojectsService _anteprojectsService = AnteprojectsService();
+  final AcademicPermissionsService _academicPermissionsService =
+      AcademicPermissionsService();
 
   List<ConversationThread> _threads = [];
   bool _isLoading = true;
   String? _errorMessage;
   User? _currentUser;
   bool? _hasApprovedAnteproject; // null = cargando, true/false = resultado
+  bool? _isReadOnly; // null = verificando, true/false = resultado
 
   @override
   void initState() {
@@ -82,10 +91,54 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
   Future<void> _loadCurrentUser() async {
     final authState = context.read<AuthBloc>().state;
     if (authState is AuthAuthenticated) {
+      final user = authState.user;
       setState(() {
-        _currentUser = authState.user;
+        _currentUser = user;
       });
+      // Verificar modo solo lectura (solo para estudiantes)
+      if (user.role == UserRole.student) {
+        final isReadOnly = await _academicPermissionsService.isReadOnly(user);
+        if (mounted) {
+          setState(() {
+            _isReadOnly = isReadOnly;
+          });
+        }
+      } else {
+        // Tutores y admins nunca están en modo solo lectura
+        if (mounted) {
+      setState(() {
+            _isReadOnly = false;
+          });
+        }
+      }
     }
+  }
+
+  /// Determina si se debe ocultar el botón de crear nuevo tema
+  bool _shouldHideCreateButton() {
+    // Ocultar si no hay usuario cargado todavía
+    if (_currentUser == null) {
+      return true;
+    }
+    
+    // Ocultar si es vista histórica (tutor viendo año pasado)
+    if (widget.isHistoricalView) {
+      return true;
+    }
+    
+    // Ocultar si es estudiante y aún no se ha verificado el estado de solo lectura
+    if (_currentUser?.role == UserRole.student && _isReadOnly == null) {
+      return true;
+    }
+    // Ocultar si está en modo solo lectura
+    if (_isReadOnly == true) {
+      return true;
+    }
+    // Ocultar si hay anteproyecto aprobado
+    if (widget.anteproject != null && (_hasApprovedAnteproject ?? false)) {
+      return true;
+    }
+    return false;
   }
 
   Future<void> _loadThreads() async {
@@ -123,9 +176,32 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
   }
 
   Future<void> _createNewThread() async {
+    final l10n = AppLocalizations.of(context)!;
+    
+    // Verificar si es vista histórica (tutor viendo año pasado)
+    if (widget.isHistoricalView) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.cannotPerformActionReadOnly),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+    
+    // Verificar si está en modo solo lectura
+    if (_isReadOnly == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.cannotPerformActionReadOnly),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+    
     // Verificar si hay anteproyecto aprobado antes de permitir crear hilo
     if (widget.anteproject != null && (_hasApprovedAnteproject ?? false)) {
-      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(l10n.cannotCreateThreadWithApprovedAnteproject),
@@ -196,6 +272,7 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
           project: widget.project,
           anteproject: widget.anteproject,
           useOwnScaffold: true, // Esta pantalla ahora gestiona su propio Scaffold
+          isHistoricalView: widget.isHistoricalView,
         ),
       ),
     ).then((_) {
@@ -205,13 +282,54 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
   }
 
   Widget _buildBody() {
-    return _isLoading
+    final content = _isLoading
         ? const Center(child: CircularProgressIndicator())
         : _errorMessage != null
             ? _buildErrorState()
             : _threads.isEmpty
                 ? _buildEmptyState()
                 : _buildThreadsList();
+
+    // Mostrar banner de solo lectura si aplica (estudiante en año pasado)
+    if (_isReadOnly == true && _currentUser?.role == UserRole.student) {
+      return Column(
+        children: [
+          ReadOnlyBanner(academicYear: _currentUser?.academicYear ?? ''),
+          Expanded(child: content),
+        ],
+      );
+    }
+
+    // Mostrar banner para vista histórica (tutor viendo año pasado)
+    if (widget.isHistoricalView) {
+      return Column(
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            color: Colors.orange.shade50,
+            child: Row(
+              children: [
+                Icon(Icons.visibility, size: 20, color: Colors.orange.shade700),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Modo solo lectura: Visualizando conversaciones históricas.',
+                    style: TextStyle(
+                      color: Colors.orange.shade900,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(child: content),
+        ],
+      );
+    }
+
+    return content;
   }
 
   @override
@@ -233,10 +351,11 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
           Positioned(
             bottom: 16,
             right: 16,
-            child: FloatingActionButton.extended(
-              onPressed: (widget.anteproject != null && (_hasApprovedAnteproject ?? false)) 
-                  ? null 
-                  : _createNewThread,
+            // Ocultar si hay anteproyecto aprobado, está en modo solo lectura, o aún se está verificando
+            child: _shouldHideCreateButton()
+                ? const SizedBox.shrink()
+                : FloatingActionButton.extended(
+                    onPressed: _createNewThread,
               backgroundColor: color,
               foregroundColor: Colors.white,
               icon: const Icon(Icons.add),
@@ -282,7 +401,10 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
               ],
       ),
       body: _buildBody(),
-      floatingActionButton: FloatingActionButton.extended(
+      // Ocultar FAB si hay anteproyecto aprobado, está en modo solo lectura, o aún se está verificando
+      floatingActionButton: _shouldHideCreateButton()
+          ? null
+          : FloatingActionButton.extended(
         onPressed: _createNewThread,
         backgroundColor: color,
         foregroundColor: Colors.white,

@@ -7,6 +7,7 @@ import '../utils/network_error_detector.dart';
 import 'supabase_interceptor.dart';
 import '../utils/notification_localizations.dart';
 import 'logging_service.dart';
+import 'academic_permissions_service.dart';
 
 /// Servicio para gestión de tareas y sistema Kanban.
 ///
@@ -40,6 +41,7 @@ import 'logging_service.dart';
 /// Ver también: [Task], [TaskStatus], [TaskComplexity]
 class TasksService {
   final supabase.SupabaseClient _supabase = supabase.Supabase.instance.client;
+  final AcademicPermissionsService _academicPermissionsService = AcademicPermissionsService();
   static const double _positionGapThreshold = 0.0001;
 
   /// Obtiene todas las tareas asignadas al usuario actual.
@@ -308,6 +310,26 @@ class TasksService {
         );
       }
 
+      // Verificar permisos de escritura por año académico para estudiantes
+      final userResponse = await _supabase
+          .from('users')
+          .select('role, academic_year')
+          .eq('email', user.email!)
+          .single();
+      final userRole = userResponse['role'] as String;
+      final studentAcademicYear = userResponse['academic_year'] as String?;
+
+      if (userRole == 'student') {
+        final canWrite = await _academicPermissionsService.canWriteByAcademicYear(studentAcademicYear);
+        if (!canWrite) {
+          throw ValidationException(
+            'read_only_mode',
+            technicalMessage:
+                'No puedes crear tareas porque tu año académico ya no está activo.',
+          );
+        }
+      }
+
       final data = task.toJson();
       // Remover campos que se generan automáticamente
       data.remove('id');
@@ -383,6 +405,26 @@ class TasksService {
           'not_authenticated',
           technicalMessage: 'User not authenticated',
         );
+      }
+
+      // Verificar permisos de escritura por año académico para estudiantes
+      final userResponse = await _supabase
+          .from('users')
+          .select('role, academic_year')
+          .eq('email', user.email!)
+          .single();
+      final userRole = userResponse['role'] as String;
+      final studentAcademicYear = userResponse['academic_year'] as String?;
+
+      if (userRole == 'student') {
+        final canWrite = await _academicPermissionsService.canWriteByAcademicYear(studentAcademicYear);
+        if (!canWrite) {
+          throw ValidationException(
+            'read_only_mode',
+            technicalMessage:
+                'No puedes editar tareas porque tu año académico ya no está activo.',
+          );
+        }
       }
 
       final data = task.toJson();
@@ -1101,6 +1143,26 @@ class TasksService {
           'not_authenticated',
           technicalMessage: 'User not authenticated',
         );
+      }
+
+      // Verificar permisos de escritura por año académico para estudiantes
+      final userResponse = await _supabase
+          .from('users')
+          .select('role, academic_year')
+          .eq('email', user.email!)
+          .single();
+      final userRole = userResponse['role'] as String;
+      final studentAcademicYear = userResponse['academic_year'] as String?;
+
+      if (userRole == 'student') {
+        final canWrite = await _academicPermissionsService.canWriteByAcademicYear(studentAcademicYear);
+        if (!canWrite) {
+          throw ValidationException(
+            'read_only_mode',
+            technicalMessage:
+                'No puedes eliminar tareas porque tu año académico ya no está activo.',
+          );
+        }
       }
 
       // Verificar que la tarea no esté completada

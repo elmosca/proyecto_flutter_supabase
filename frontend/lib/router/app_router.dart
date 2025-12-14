@@ -165,13 +165,16 @@ user = authState.user;
             '✅ Router: Navegando a AnteprojectsList para usuario: ${user.fullName}',
           );
 
+          // Leer el parámetro de filtro de la query string
+          final filter = state.uri.queryParameters['filter'];
+
           // Usar pantalla diferente según el rol
           Widget body;
           if (user.role == UserRole.student) {
             body = MyAnteprojectsList(user: user);
           } else {
             // Para tutores y admin - usar AnteprojectsReviewScreen sin Scaffold
-            body = const AnteprojectsReviewScreen();
+            body = AnteprojectsReviewScreen(initialFilter: filter);
           }
 
           return PersistentScaffold(

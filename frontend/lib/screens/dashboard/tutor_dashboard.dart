@@ -246,6 +246,57 @@ class _TutorDashboardState extends State<TutorDashboard> {
     }).toList();
   }
 
+  /// Obtiene todos los anteproyectos activos (draft, submitted, underReview)
+  /// Excluye los anteproyectos finalizados (approved, rejected)
+  List<Map<String, dynamic>> get _activeAnteprojects {
+    return _anteprojectsData.where((anteprojectData) {
+      try {
+        // Función auxiliar para convertir de forma segura objetos minificados de Supabase
+        Map<String, dynamic> safeConvert(dynamic data) {
+          if (data is Map<String, dynamic>) {
+            return data;
+          } else if (data is Map) {
+            final result = <String, dynamic>{};
+            data.forEach((key, value) {
+              result[key.toString()] = value;
+            });
+            return result;
+          } else {
+            try {
+              final map = data as Map;
+              final result = <String, dynamic>{};
+              map.forEach((key, value) {
+                result[key.toString()] = value;
+              });
+              return result;
+            } catch (e) {
+              return <String, dynamic>{};
+            }
+          }
+        }
+
+        // Convertir de forma segura
+        final anteprojectMap = safeConvert(anteprojectData);
+        anteprojectMap.remove('anteproject_students');
+
+        // Si el mapa está vacío, excluir este anteproyecto
+        if (anteprojectMap.isEmpty) {
+          return false;
+        }
+
+        final anteproject = Anteproject.fromJson(anteprojectMap);
+        // Incluir todos los estados activos: draft, submitted, underReview
+        return anteproject.status == AnteprojectStatus.draft ||
+            anteproject.status == AnteprojectStatus.submitted ||
+            anteproject.status == AnteprojectStatus.underReview;
+      } catch (e) {
+        debugPrint('Error parseando anteproyecto en _activeAnteprojects: $e');
+        debugPrint('   Tipo del dato: ${anteprojectData.runtimeType}');
+        return false;
+      }
+    }).toList();
+  }
+
   List<Map<String, dynamic>> get _reviewedAnteprojects {
     return _anteprojectsData.where((anteprojectData) {
       try {
@@ -510,7 +561,7 @@ class _TutorDashboardState extends State<TutorDashboard> {
             value: _pendingAnteprojects.length.toString(),
             icon: Icons.pending_actions,
             color: Colors.orange,
-            onTap: _reviewAnteprojects,
+            onTap: _handlePendingAnteprojectsTap,
           ),
         ),
         const SizedBox(width: 8),
@@ -526,7 +577,7 @@ class _TutorDashboardState extends State<TutorDashboard> {
         const SizedBox(width: 8),
         Expanded(
           child: _buildStatCard(
-            title: l10n.reviewed,
+            title: l10n.reviewedPlural,
             value: _reviewedAnteprojects.length.toString(),
             icon: Icons.check_circle,
             color: Colors.green,
@@ -686,13 +737,28 @@ class _TutorDashboardState extends State<TutorDashboard> {
   }
 
   void _reviewAnteprojects() {
-    // Navegar a la pantalla de anteproyectos (se abrirá con todos los filtros disponibles)
-    context.go('/anteprojects', extra: widget.user);
+    _handlePendingAnteprojectsTap();
   }
 
   void _viewAllAnteprojects() {
     // Navegar a la pantalla de anteproyectos (se abrirá con todos los filtros disponibles)
     context.go('/anteprojects', extra: widget.user);
+  }
+
+  void _handlePendingAnteprojectsTap() {
+    final l10n = AppLocalizations.of(context)!;
+    if (_pendingAnteprojects.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            l10n.noAnteprojectsWithStatus(l10n.pending),
+          ),
+        ),
+      );
+      return;
+    }
+
+    context.go('/anteprojects?filter=pending', extra: widget.user);
   }
 
   void _viewAllStudents() {

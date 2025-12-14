@@ -450,7 +450,8 @@ class AuthService {
         'email': user.email,
         'full_name': user.fullName,
         'role': user.role.name,
-        'status': user.status,
+        'status': user.status.name,
+        'academic_year': user.academicYear,
         'created_at': user.createdAt.toIso8601String(),
         'updated_at': user.updatedAt.toIso8601String(),
       });
@@ -474,7 +475,7 @@ class AuthService {
 
       final userData = jsonDecode(userJson) as Map<String, dynamic>;
       final user = User(
-        id: (userData['id'] as String).hashCode,
+        id: userData['id'] is int ? userData['id'] : (userData['id'] as String).hashCode,
         email: userData['email'] as String,
         fullName: userData['full_name'] as String,
         role: UserRole.values.firstWhere(
@@ -485,11 +486,12 @@ class AuthService {
           (status) => status.name == userData['status'],
           orElse: () => UserStatus.active,
         ),
+        academicYear: userData['academic_year'] as String?,
         createdAt: DateTime.parse(userData['created_at'] as String),
         updatedAt: DateTime.parse(userData['updated_at'] as String),
       );
 
-      print('✅ Sesión recuperada desde SharedPreferences');
+      print('✅ Sesión recuperada desde SharedPreferences (academicYear: ${user.academicYear})');
       return user;
     } catch (e) {
       print('❌ Error recuperando sesión: $e');

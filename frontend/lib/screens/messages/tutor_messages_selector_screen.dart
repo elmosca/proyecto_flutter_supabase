@@ -7,6 +7,7 @@ import '../../blocs/auth_bloc.dart';
 import '../../services/projects_service.dart';
 import '../../services/anteprojects_service.dart';
 import '../../services/conversation_threads_service.dart';
+import '../../services/academic_permissions_service.dart';
 import '../../widgets/navigation/persistent_scaffold.dart';
 import '../../l10n/app_localizations.dart';
 import 'conversation_threads_screen.dart';
@@ -29,11 +30,17 @@ class _TutorMessagesSelectorScreenState
   final AnteprojectsService _anteprojectsService = AnteprojectsService();
   final ConversationThreadsService _threadsService =
       ConversationThreadsService();
+  final AcademicPermissionsService _academicPermissionsService =
+      AcademicPermissionsService();
 
-  List<_StudentWithProjects> _studentsWithProjects = [];
+  List<_StudentWithProjects> _allStudentsWithProjects = []; // Todos los estudiantes
+  List<_StudentWithProjects> _filteredStudents = []; // Estudiantes filtrados por año
+  List<String> _availableYears = []; // Años académicos disponibles
   bool _isLoading = true;
   String? _errorMessage;
   User? _currentUser;
+  String? _activeAcademicYear;
+  String? _selectedYear; // Año seleccionado en el filtro
 
   @override
   void initState() {
@@ -377,9 +384,32 @@ class _TutorMessagesSelectorScreenState
         }
       }
 
+      // Obtener el año académico activo
+      final activeYear = await _academicPermissionsService.getActiveAcademicYear();
+      
+      // Guardar todos los estudiantes
+      final allStudents = studentMap.values.toList();
+      
+      // Extraer años académicos únicos disponibles
+      final yearsSet = <String>{};
+      for (final studentData in allStudents) {
+        final year = studentData.student.academicYear;
+        if (year != null && year.isNotEmpty) {
+          yearsSet.add(year);
+        }
+      }
+      final years = yearsSet.toList()..sort((a, b) => b.compareTo(a)); // Orden descendente
+      
+      // Si no hay año seleccionado, usar el activo
+      final selectedYear = _selectedYear ?? activeYear;
+
       if (mounted) {
         setState(() {
-          _studentsWithProjects = studentMap.values.toList();
+          _activeAcademicYear = activeYear;
+          _allStudentsWithProjects = allStudents;
+          _availableYears = years;
+          _selectedYear = selectedYear;
+          _applyYearFilter();
           _isLoading = false;
         });
       }
@@ -404,6 +434,32 @@ class _TutorMessagesSelectorScreenState
     }
   }
 
+  /// Aplica el filtro de año académico a la lista de estudiantes
+  void _applyYearFilter() {
+    if (_selectedYear == null || _selectedYear!.isEmpty) {
+      _filteredStudents = _allStudentsWithProjects;
+    } else {
+      _filteredStudents = _allStudentsWithProjects.where((studentData) {
+        final studentYear = studentData.student.academicYear;
+        return studentYear == _selectedYear;
+      }).toList();
+    }
+  }
+
+  /// Cambia el año seleccionado y aplica el filtro
+  void _onYearChanged(String? year) {
+    setState(() {
+      _selectedYear = year;
+      _applyYearFilter();
+    });
+  }
+
+  /// Verifica si el año seleccionado es el activo (permite escritura)
+  bool get _isSelectedYearActive {
+    if (_selectedYear == null || _activeAcademicYear == null) return true;
+    return _selectedYear == _activeAcademicYear;
+  }
+
   void _openProjectChat(Project project) {
     if (_currentUser == null) return;
 
@@ -418,6 +474,7 @@ class _TutorMessagesSelectorScreenState
             body: ConversationThreadsScreen(
               project: project,
               useOwnScaffold: false,
+              isHistoricalView: !_isSelectedYearActive,
             ),
           );
         },
@@ -439,6 +496,7 @@ class _TutorMessagesSelectorScreenState
             body: ConversationThreadsScreen(
               anteproject: anteproject,
               useOwnScaffold: false,
+              isHistoricalView: !_isSelectedYearActive,
             ),
           );
         },
@@ -456,7 +514,7 @@ class _TutorMessagesSelectorScreenState
         ? const Center(child: CircularProgressIndicator())
         : _errorMessage != null
         ? _buildErrorState()
-        : _studentsWithProjects.isEmpty
+        : _filteredStudents.isEmpty
         ? _buildEmptyState()
         : _buildStudentsList();
 
@@ -503,7 +561,7 @@ class _TutorMessagesSelectorScreenState
           Icon(Icons.people_outline, size: 64, color: Colors.grey.shade400),
           const SizedBox(height: 16),
           Text(
-            l10n.noStudentsAssigned,
+            'No hay estudiantes con conversaciones',
             style: TextStyle(
               fontSize: 18,
               color: Colors.grey.shade600,
@@ -512,10 +570,61 @@ class _TutorMessagesSelectorScreenState
           ),
           const SizedBox(height: 8),
           Text(
-            l10n.waitForStudentsAssignment,
+            _selectedYear != null 
+                ? 'No se encontraron estudiantes del año $_selectedYear con proyectos o anteproyectos que tengan hilos de conversación.'
+                : l10n.waitForStudentsAssignment,
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.grey.shade500),
           ),
+          if (_availableYears.isNotEmpty) ...[
+            const SizedBox(height: 24),
+            const Text('Selecciona otro año académico:'),
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  value: _selectedYear,
+                  items: _availableYears.map((year) {
+                    final isActive = year == _activeAcademicYear;
+                    return DropdownMenuItem(
+                      value: year,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(year),
+                          if (isActive) ...[
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: Colors.green.shade100,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                'Activo',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.green.shade800,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: _onYearChanged,
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -556,10 +665,98 @@ class _TutorMessagesSelectorScreenState
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 12),
+          
+          // Selector de año académico
+          if (_availableYears.isNotEmpty)
+            Row(
+              children: [
+                Icon(Icons.calendar_today, size: 18, color: Colors.grey.shade600),
+                const SizedBox(width: 8),
+                const Text(
+                  'Año académico:',
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(width: 12),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: _selectedYear,
+                      items: _availableYears.map((year) {
+                        final isActive = year == _activeAcademicYear;
+                        return DropdownMenuItem(
+                          value: year,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(year),
+                              if (isActive) ...[
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.green.shade100,
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Text(
+                                    'Activo',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.green.shade800,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: _onYearChanged,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          const SizedBox(height: 12),
+          
+          // Banner de solo lectura si el año seleccionado no es el activo
+          if (!_isSelectedYearActive)
+            Container(
+              padding: const EdgeInsets.all(12),
+              margin: const EdgeInsets.only(bottom: 12),
+              decoration: BoxDecoration(
+                color: Colors.orange.shade50,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.orange.shade200),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.visibility, size: 20, color: Colors.orange.shade700),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'Modo solo lectura: Visualizando conversaciones del año $_selectedYear. '
+                      'Solo puedes ver los mensajes históricos.',
+                      style: TextStyle(
+                        color: Colors.orange.shade900,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          const SizedBox(height: 12),
 
           // Lista de estudiantes
-          ..._studentsWithProjects.map(
+          ..._filteredStudents.map(
             (studentData) => _buildStudentCard(studentData),
           ),
         ],
@@ -568,6 +765,7 @@ class _TutorMessagesSelectorScreenState
   }
 
   Widget _buildStudentCard(_StudentWithProjects studentData) {
+    final studentYear = studentData.student.academicYear;
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 3,
@@ -576,9 +774,31 @@ class _TutorMessagesSelectorScreenState
           backgroundColor: Colors.green.shade100,
           child: Icon(Icons.person, color: Colors.green.shade700),
         ),
-        title: Text(
+        title: Row(
+          children: [
+            Expanded(
+              child: Text(
           studentData.student.fullName,
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+            ),
+            if (studentYear != null)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.green.shade100,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  studentYear,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.green.shade800,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+          ],
         ),
         subtitle: Text(
           studentData.student.email,

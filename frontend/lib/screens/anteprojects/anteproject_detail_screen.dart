@@ -11,6 +11,8 @@ import '../../services/anteprojects_service.dart';
 import '../../services/schedule_service.dart';
 import '../../services/auth_service.dart';
 import '../../services/anteproject_comments_service.dart';
+import '../../services/academic_permissions_service.dart';
+import '../../widgets/common/read_only_banner.dart';
 import 'anteproject_comments_screen.dart';
 import '../schedule/schedule_management_screen.dart';
 import '../forms/anteproject_edit_form.dart';
@@ -48,6 +50,8 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
   final AuthService _authService = AuthService();
   final AnteprojectCommentsService _commentsService =
       AnteprojectCommentsService();
+  final AcademicPermissionsService _academicPermissionsService =
+      AcademicPermissionsService();
   late Anteproject _anteproject;
   TabController? _tabController; // NUEVO
   bool _isLoading = false;
@@ -56,6 +60,7 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
   List<AnteprojectComment> _comments = [];
   bool _isLoadingComments = false;
   bool? _hasApprovedAnteproject; // null = cargando, true/false = resultado
+  bool _isReadOnly = false; // Modo solo lectura para años académicos anteriores
 
   @override
   void initState() {
@@ -85,6 +90,16 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
         setState(() {
           _currentUser = user;
         });
+        
+        // Verificar modo solo lectura después de cargar el usuario
+        if (user != null) {
+          final isReadOnly = await _academicPermissionsService.isReadOnly(user);
+          if (mounted) {
+            setState(() {
+              _isReadOnly = isReadOnly;
+            });
+          }
+        }
       }
     } catch (e) {
       // Error al cargar usuario, pero no interrumpir el flujo
@@ -272,12 +287,8 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
           )
         : _buildAnteprojectDetails();
 
-    return PersistentScaffold(
-      title: isProjectMode ? 'Proyecto' : 'Anteproyecto',
-      titleKey: isProjectMode ? 'projects' : 'anteprojects',
-      user: _currentUser!,
-      actions: topBarActions,
-      body: tabBar != null
+    // Construir el contenido principal con o sin tabs
+    Widget mainContent = tabBar != null
           ? Column(
               children: [
                 // TabBar como parte del contenido
@@ -289,7 +300,26 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
                 Expanded(child: bodyContent),
               ],
             )
-          : bodyContent,
+        : bodyContent;
+
+    // Envolver con banner de solo lectura si aplica
+    final bodyWithBanner = _isReadOnly
+        ? Column(
+            children: [
+              ReadOnlyBanner(
+                academicYear: _currentUser?.academicYear ?? '',
+              ),
+              Expanded(child: mainContent),
+            ],
+          )
+        : mainContent;
+
+    return PersistentScaffold(
+      title: isProjectMode ? 'Proyecto' : 'Anteproyecto',
+      titleKey: isProjectMode ? 'projects' : 'anteprojects',
+      user: _currentUser!,
+      actions: topBarActions,
+      body: bodyWithBanner,
     );
   }
 
@@ -340,8 +370,8 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
             ),
             const SizedBox(height: 16),
 
-            // Botón de editar (solo para anteproyectos en borrador)
-            if (_anteproject.status == AnteprojectStatus.draft) ...[
+            // Botón de editar (solo para anteproyectos en borrador y si no está en modo solo lectura)
+            if (_anteproject.status == AnteprojectStatus.draft && !_isReadOnly) ...[
               Row(
                 children: [
                   Icon(Icons.edit, color: Colors.blue[700], size: 20),
@@ -1087,12 +1117,12 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
             ),
             if (_anteproject.submittedAt != null)
               _buildInfoRow(
-                AppLocalizations.of(context)!.submitted,
+                AppLocalizations.of(context)!.submittedLabel,
                 _formatDate(_anteproject.submittedAt!),
               ),
             if (_anteproject.reviewedAt != null)
               _buildInfoRow(
-                AppLocalizations.of(context)!.reviewed,
+                AppLocalizations.of(context)!.reviewedLabel,
                 _formatDate(_anteproject.reviewedAt!),
               ),
           ],
@@ -1514,12 +1544,27 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
   }
 
   Future<void> _performSubmitForApproval() async {
+    final l10n = AppLocalizations.of(context)!;
+    
+    // Verificar si está en modo solo lectura
+    if (_isReadOnly) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.cannotPerformActionReadOnly),
+            duration: const Duration(seconds: 5),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+      return;
+    }
+    
     // Verificar si el estudiante ya tiene un anteproyecto aprobado
     final hasApproved = _hasApprovedAnteproject ?? 
         await _anteprojectsService.hasApprovedAnteproject();
     
     if (hasApproved) {
-      final l10n = AppLocalizations.of(context)!;
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -1601,9 +1646,10 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
           const SizedBox(height: 16),
 
           // Botón de enviar para aprobación (solo para anteproyectos en borrador)
-          // Ocultar si hay anteproyecto aprobado o si está cargando la verificación
+          // Ocultar si hay anteproyecto aprobado, si está cargando la verificación, o si es solo lectura
           if (_anteproject.status == AnteprojectStatus.draft &&
-              _hasApprovedAnteproject != null) ...[
+              _hasApprovedAnteproject != null &&
+              !_isReadOnly) ...[
             _buildSubmitForApprovalCard(),
             const SizedBox(height: 16),
           ],
@@ -2016,6 +2062,18 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
   }
 
   void _handleTaskAction(String action, Task task) {
+    // Verificar modo solo lectura para acciones de escritura
+    if (_isReadOnly && (action == 'edit' || action == 'delete')) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.cannotPerformActionReadOnly),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+    
     switch (action) {
       case 'view':
         _viewTaskDetails(task);

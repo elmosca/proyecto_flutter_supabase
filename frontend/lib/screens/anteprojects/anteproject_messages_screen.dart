@@ -6,6 +6,7 @@ import '../../models/anteproject_message.dart';
 import '../../models/user.dart';
 import '../../services/anteproject_messages_service.dart';
 import '../../services/anteprojects_service.dart';
+import '../../services/academic_permissions_service.dart';
 import '../../l10n/app_localizations.dart';
 
 class AnteprojectMessagesScreen extends StatefulWidget {
@@ -20,6 +21,7 @@ class AnteprojectMessagesScreen extends StatefulWidget {
 class _AnteprojectMessagesScreenState extends State<AnteprojectMessagesScreen> {
   final AnteprojectMessagesService _messagesService = AnteprojectMessagesService();
   final AnteprojectsService _anteprojectsService = AnteprojectsService();
+  final AcademicPermissionsService _academicPermissionsService = AcademicPermissionsService();
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   
@@ -27,6 +29,7 @@ class _AnteprojectMessagesScreenState extends State<AnteprojectMessagesScreen> {
   bool _isLoading = true;
   bool _isSubmitting = false;
   bool? _hasApprovedAnteproject; // null = cargando, true/false = resultado
+  bool _isReadOnly = false; // Modo solo lectura para años académicos anteriores
   User? _currentUser;
 
   @override
@@ -44,12 +47,18 @@ class _AnteprojectMessagesScreenState extends State<AnteprojectMessagesScreen> {
     super.dispose();
   }
 
-  void _loadCurrentUser() {
+  Future<void> _loadCurrentUser() async {
     final authState = context.read<AuthBloc>().state;
     if (authState is AuthAuthenticated) {
+      final user = authState.user;
+      // Verificar modo solo lectura
+      final isReadOnly = await _academicPermissionsService.isReadOnly(user);
+      if (mounted) {
       setState(() {
-        _currentUser = authState.user;
+          _currentUser = user;
+          _isReadOnly = isReadOnly;
       });
+      }
     }
   }
 
@@ -481,9 +490,11 @@ class _AnteprojectMessagesScreenState extends State<AnteprojectMessagesScreen> {
           Expanded(
             child: TextField(
               controller: _messageController,
-              enabled: !hasApproved,
+              enabled: !hasApproved && !_isReadOnly,
               decoration: InputDecoration(
-                hintText: 'Escribe tu mensaje...',
+                hintText: _isReadOnly 
+                    ? 'Modo solo lectura - No puedes enviar mensajes'
+                    : 'Escribe tu mensaje...',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
                 ),
@@ -499,7 +510,7 @@ class _AnteprojectMessagesScreenState extends State<AnteprojectMessagesScreen> {
           ),
           const SizedBox(width: 8),
           FloatingActionButton(
-            onPressed: (_isSubmitting || hasApproved) ? null : _submitMessage,
+            onPressed: (_isSubmitting || hasApproved || _isReadOnly) ? null : _submitMessage,
             backgroundColor: Colors.blue,
             mini: true,
             child: _isSubmitting

@@ -75,11 +75,23 @@ class _MessagesButtonState extends State<MessagesButton> {
   }
 
   void _openMessagesSelector() {
-    if (widget.user.role == UserRole.student) {
-      context.go('/student/messages', extra: widget.user);
-    } else if (widget.user.role == UserRole.tutor) {
-      context.go('/tutor/messages', extra: widget.user);
+    final targetRoute = widget.user.role == UserRole.student
+        ? '/student/messages'
+        : '/tutor/messages';
+    
+    // Verificar si hay pantallas en el stack de navegación que podemos cerrar
+    // para volver a la pantalla principal de mensajes
+    if (Navigator.of(context).canPop()) {
+      // Pop todas las pantallas superpuestas hasta llegar a la raíz
+      Navigator.of(context).popUntil((route) => route.isFirst);
     }
+    
+    // Navegar a la pantalla de mensajes (siempre, para asegurar que llegamos)
+    Future.microtask(() {
+      if (mounted) {
+        context.go(targetRoute, extra: widget.user);
+    }
+    });
   }
 
   String _getTooltip(BuildContext context) {

@@ -407,6 +407,26 @@
   "@pendingAnteprojects": {
     "description": "Título de sección para anteproyectos pendientes"
   },
+  "activeAnteprojects": "Anteproyectos Activos",
+  "@activeAnteprojects": {
+    "description": "Título de sección para anteproyectos activos (draft, submitted, underReview)"
+  },
+  "noActiveAnteprojects": "No hay anteproyectos activos en este momento",
+  "@noActiveAnteprojects": {
+    "description": "Mensaje cuando no hay anteproyectos activos"
+  },
+  "noActiveButApproved": "No hay anteproyectos activos, pero tienes {count} anteproyecto{plural} aprobado{plural}",
+  "@noActiveButApproved": {
+    "description": "Mensaje cuando no hay activos pero hay aprobados",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "plural": {
+        "type": "String"
+      }
+    }
+  },
   "assignedStudents": "Estudiantes Asignados",
   "@assignedStudents": {
     "description": "Título de sección para estudiantes asignados"
@@ -1103,8 +1123,8 @@
   "@tutorRole": {
     "description": "Rol de tutor"
   },
-  "reviewed": "Revisados",
-  "@reviewed": {
+  "reviewedPlural": "Revisados",
+  "@reviewedPlural": {
     "description": "Título de sección para elementos revisados"
   },
   "addStudents": "Añadir Estudiantes",
@@ -1291,17 +1311,25 @@
   "@created": {
     "description": "Etiqueta para fecha de creación"
   },
-  "submitted": "Enviado:",
-  "@submitted": {
+  "submittedLabel": "Enviado:",
+  "@submittedLabel": {
     "description": "Etiqueta para fecha de envío"
+  },
+  "statusSubmitted": "Enviado",
+  "@statusSubmitted": {
+    "description": "Estado de anteproyecto enviado"
   },
   "lastUpdate": "Última actualización:",
   "@lastUpdate": {
     "description": "Etiqueta para fecha de última actualización"
   },
-  "reviewed": "Revisado:",
-  "@reviewed": {
+  "reviewedLabel": "Revisado:",
+  "@reviewedLabel": {
     "description": "Etiqueta para fecha de revisión"
+  },
+  "statusReviewed": "Revisado",
+  "@statusReviewed": {
+    "description": "Estado de anteproyecto revisado"
   },
   "dates": "Fechas",
   "@dates": {
@@ -1354,6 +1382,52 @@
   "goToProject": "Ir al Proyecto",
   "@goToProject": {
     "description": "Botón para navegar al proyecto aprobado"
+  },
+  "goToDraft": "Ir al Borrador",
+  "@goToDraft": {
+    "description": "Botón para navegar al borrador existente"
+  },
+  "goBack": "Volver",
+  "@goBack": {
+    "description": "Botón para volver a la pantalla anterior"
+  },
+  "readOnlyModeTitle": "Modo solo lectura",
+  "@readOnlyModeTitle": {
+    "description": "Título del banner de modo solo lectura"
+  },
+  "readOnlyModeMessage": "Tu año académico ({year}) ya no está activo. Solo puedes consultar tus datos históricos.",
+  "@readOnlyModeMessage": {
+    "description": "Mensaje del banner de modo solo lectura",
+    "placeholders": {
+      "year": {
+        "type": "String",
+        "example": "2023-2024"
+      }
+    }
+  },
+  "cannotPerformActionReadOnly": "No puedes realizar esta acción porque tu año académico ya no está activo.",
+  "@cannotPerformActionReadOnly": {
+    "description": "Mensaje de error cuando se intenta una acción en modo solo lectura"
+  },
+  "cannotCreateAnteprojectWithDraftTitle": "Ya tienes un borrador",
+  "@cannotCreateAnteprojectWithDraftTitle": {
+    "description": "Título del diálogo cuando el estudiante intenta crear un anteproyecto con un borrador existente"
+  },
+  "cannotCreateAnteprojectWithDraft": "Ya tienes un borrador de anteproyecto. Complétalo o elimínalo antes de crear otro.",
+  "@cannotCreateAnteprojectWithDraft": {
+    "description": "Mensaje cuando el estudiante intenta crear un anteproyecto con un borrador existente"
+  },
+  "cannotSubmitAnteprojectWithActive": "Ya tienes un anteproyecto en revisión. Espera a que se complete su ciclo antes de enviar otro.",
+  "@cannotSubmitAnteprojectWithActive": {
+    "description": "Mensaje cuando el estudiante intenta enviar un anteproyecto pero ya tiene uno en proceso"
+  },
+  "cannotCreateAnteprojectWrongAcademicYearTitle": "Año académico incorrecto",
+  "@cannotCreateAnteprojectWrongAcademicYearTitle": {
+    "description": "Título del diálogo cuando el estudiante no está en el año académico activo"
+  },
+  "cannotCreateAnteprojectWrongAcademicYear": "Solo los estudiantes matriculados en el año académico activo pueden crear anteproyectos. Contacta con tu tutor o administrador.",
+  "@cannotCreateAnteprojectWrongAcademicYear": {
+    "description": "Mensaje cuando el estudiante no está en el año académico activo"
   },
   "cannotSubmitAnteprojectWithApprovedTitle": "No puedes enviar este anteproyecto",
   "@cannotSubmitAnteprojectWithApprovedTitle": {

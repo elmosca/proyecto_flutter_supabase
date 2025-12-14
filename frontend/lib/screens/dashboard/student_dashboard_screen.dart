@@ -16,8 +16,11 @@ import '../../services/user_service.dart';
 import '../../services/anteprojects_service.dart';
 import '../../services/projects_service.dart';
 import '../../services/tasks_service.dart';
+import '../../services/settings_service.dart';
+import '../../services/academic_permissions_service.dart';
 import '../../widgets/navigation/app_top_bar.dart';
 import '../../widgets/navigation/app_side_drawer.dart';
+import '../../widgets/common/read_only_banner.dart';
 
 class StudentDashboardScreen extends StatefulWidget {
   final User user;
@@ -46,8 +49,11 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   final ProjectsService _projectsService = ProjectsService();
   final TasksService _tasksService = TasksService();
   final UserService _userService = UserService();
+  final SettingsService _settingsService = SettingsService();
+  final AcademicPermissionsService _academicPermissionsService = AcademicPermissionsService();
   
   String? _tutorName;
+  bool _isReadOnly = false; // Modo solo lectura para años académicos anteriores
   // Estado local del usuario para mostrar información actualizada
   User? _currentUser; 
 
@@ -125,6 +131,10 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
         }
       }
 
+      // Verificar si el usuario está en modo solo lectura
+      final userForPermissions = refreshedUser ?? widget.user;
+      final isReadOnly = await _academicPermissionsService.isReadOnly(userForPermissions);
+
       if (mounted) {
         setState(() {
           _anteprojects = anteprojects;
@@ -134,6 +144,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
           _currentUser = refreshedUser ?? widget.user;
           _tutorName = tutorName;
           _isLoading = false;
+          _isReadOnly = isReadOnly;
         });
       }
     } catch (e, stackTrace) {
@@ -206,9 +217,21 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final body = _isLoading
+    final dashboardContent = _isLoading
         ? const Center(child: CircularProgressIndicator())
         : _buildDashboardContent();
+    
+    // Envolver con banner de solo lectura si aplica
+    final body = _isReadOnly && !_isLoading
+        ? Column(
+            children: [
+              ReadOnlyBanner(
+                academicYear: _currentUser?.academicYear ?? widget.user.academicYear ?? '',
+              ),
+              Expanded(child: dashboardContent),
+            ],
+          )
+        : dashboardContent;
 
     if (!widget.useOwnScaffold) {
       return body;
@@ -218,7 +241,8 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
       appBar: AppTopBar(user: widget.user, titleKey: 'dashboardStudent'),
       drawer: AppSideDrawer(user: widget.user),
       body: body,
-      floatingActionButton: Column(
+      // Ocultar FABs en modo solo lectura
+      floatingActionButton: _isReadOnly ? null : Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           FloatingActionButton(
@@ -418,9 +442,9 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
       children: [
         Expanded(
           child: _buildStatCard(
-            title: 'Anteproyectos Pendientes',
-            value: _pendingAnteprojects.length.toString(),
-            icon: Icons.pending_actions,
+            title: 'Mis Anteproyectos',
+            value: _anteprojects.length.toString(),
+            icon: Icons.description,
             color: Colors.orange,
             onTap: _viewAnteprojects,
           ),
@@ -920,12 +944,28 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   // Navegación
   Future<void> _createAnteproject() async {
     try {
+      final l10n = AppLocalizations.of(context)!;
+      
+      // Verificar si el estudiante está en el año académico activo
+      final activeAcademicYear = await _settingsService.getStringSetting('academic_year');
+      if (activeAcademicYear != null && 
+          activeAcademicYear.isNotEmpty &&
+          widget.user.academicYear != activeAcademicYear) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.cannotCreateAnteprojectWrongAcademicYear),
+              duration: const Duration(seconds: 5),
+            ),
+          );
+        }
+        return;
+      }
+      
       // Verificar si el estudiante ya tiene un anteproyecto aprobado
       final hasApproved = await _anteprojectsService.hasApprovedAnteproject();
       
       if (hasApproved) {
-        final l10n = AppLocalizations.of(context)!;
-        
         // Buscar el anteproyecto aprobado y su proyecto asociado
         final approvedAnteproject = _anteprojects.firstWhere(
           (ap) => ap.status == AnteprojectStatus.approved,
@@ -962,18 +1002,49 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
             ),
           );
         }
-      } else {
-        // Si no tiene aprobado, navegar normalmente
+        return;
+      }
+      
+      // Verificar si el estudiante ya tiene un borrador
+      final hasDraft = await _anteprojectsService.hasDraftAnteproject();
+      
+      if (hasDraft) {
+        // Buscar el borrador existente
+        final draftAnteproject = _anteprojects.firstWhere(
+          (ap) => ap.status == AnteprojectStatus.draft,
+          orElse: () => _anteprojects.first,
+        );
+        
+        // Mostrar SnackBar con mensaje y opción de ir al borrador
         if (mounted) {
-          context.go('/anteprojects', extra: widget.user);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.cannotCreateAnteprojectWithDraft),
+              duration: const Duration(seconds: 5),
+              action: SnackBarAction(
+                label: l10n.goToDraft,
+                onPressed: () {
+                  if (mounted) {
+                    context.go('/anteprojects/${draftAnteproject.id}');
+                  }
+                },
+              ),
+            ),
+          );
         }
+        return;
+      }
+      
+      // Si no tiene restricciones, navegar al formulario de creación
+      if (mounted) {
+        context.go('/anteprojects/new', extra: widget.user);
       }
     } catch (e) {
-      debugPrint('Error al verificar anteproyecto aprobado: $e');
+      debugPrint('Error al verificar restricciones de anteproyecto: $e');
       // Si hay error, permitir navegar de todas formas
-      // El servicio lanzará la excepción si realmente hay un aprobado
+      // El servicio lanzará la excepción si realmente hay restricciones
       if (mounted) {
-        context.go('/anteprojects', extra: widget.user);
+        context.go('/anteprojects/new', extra: widget.user);
       }
     }
   }

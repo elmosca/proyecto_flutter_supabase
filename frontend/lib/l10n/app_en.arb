@@ -247,6 +247,19 @@
   "myAnteprojects": "My Anteprojects",
   "viewAll": "View All",
   "pendingAnteprojects": "Pending Anteprojects",
+  "activeAnteprojects": "Active Anteprojects",
+  "noActiveAnteprojects": "No active anteproyectos at this time",
+  "noActiveButApproved": "No active anteproyectos, but you have {count} approved anteproyecto{plural}",
+  "@noActiveButApproved": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "plural": {
+        "type": "String"
+      }
+    }
+  },
   "assignedStudents": "Assigned Students",
   "noAnteprojects": "No Anteprojects",
   "pendingTasks": "Pending Tasks",
@@ -326,7 +339,7 @@
   "operationCompleted": "Operation completed",
   "operationFailed": "Operation failed",
   "tutorRole": "Tutor",
-  "reviewed": "Reviewed",
+  "reviewedPlural": "Reviewed",
   "addStudents": "Add Students",
   "studentsAssignedInfo": "You have {count} student{plural} assigned for {year}",
   "myStudents": "My Students",
@@ -361,9 +374,11 @@
   "noAssignedAnteprojects": "You have no anteproyectos assigned for review",
   "clearFilters": "Clear filters",
   "created": "Created:",
-  "submitted": "Submitted:",
+  "submittedLabel": "Submitted:",
+  "statusSubmitted": "Submitted",
   "lastUpdate": "Last update:",
-  "reviewed": "Reviewed:",
+  "reviewedLabel": "Reviewed:",
+  "statusReviewed": "Reviewed",
   "dates": "Dates",
   "reviewDates": "Review Dates",
   "projectMilestones": "Project Milestones",
@@ -541,6 +556,16 @@
   "cannotCreateAnteprojectWithApprovedTitle": "Cannot create a new anteproject",
   "cannotCreateAnteprojectWithApproved": "You cannot create a new anteproject because you already have one approved. You must develop the associated project.",
   "goToProject": "Go to Project",
+  "goToDraft": "Go to Draft",
+  "goBack": "Go Back",
+  "readOnlyModeTitle": "Read-only mode",
+  "readOnlyModeMessage": "Your academic year ({year}) is no longer active. You can only view your historical data.",
+  "cannotPerformActionReadOnly": "You cannot perform this action because your academic year is no longer active.",
+  "cannotCreateAnteprojectWithDraftTitle": "You already have a draft",
+  "cannotCreateAnteprojectWithDraft": "You already have a draft anteproject. Complete or delete it before creating another one.",
+  "cannotSubmitAnteprojectWithActive": "You already have an anteproject under review. Wait for it to complete its cycle before submitting another one.",
+  "cannotCreateAnteprojectWrongAcademicYearTitle": "Wrong academic year",
+  "cannotCreateAnteprojectWrongAcademicYear": "Only students enrolled in the active academic year can create anteprojects. Contact your tutor or administrator.",
   "cannotSubmitAnteprojectWithApprovedTitle": "Cannot submit this anteproject",
   "cannotSubmitAnteprojectWithApproved": "You cannot submit this anteproject because you already have one approved. You must develop the associated project.",
   "cannotSendMessageWithApprovedAnteproject": "You cannot send messages about anteprojects because you already have one approved. You must communicate through the associated project.",

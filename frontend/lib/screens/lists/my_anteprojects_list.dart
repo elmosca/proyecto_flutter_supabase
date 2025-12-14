@@ -6,9 +6,12 @@ import '../../models/anteproject.dart';
 import '../../models/user.dart';
 import '../../services/anteprojects_service.dart';
 import '../../services/projects_service.dart';
+import '../../services/settings_service.dart';
+import '../../services/academic_permissions_service.dart';
 import '../anteprojects/anteproject_detail_screen.dart';
 import '../forms/anteproject_form.dart';
 import '../../l10n/app_localizations.dart';
+import '../../widgets/common/read_only_banner.dart';
 
 class MyAnteprojectsList extends StatefulWidget {
   final User? user;
@@ -21,10 +24,15 @@ class MyAnteprojectsList extends StatefulWidget {
 
 class _MyAnteprojectsListState extends State<MyAnteprojectsList> {
   late AnteprojectsService _anteprojectsService;
+  final SettingsService _settingsService = SettingsService();
+  final AcademicPermissionsService _academicPermissionsService = AcademicPermissionsService();
   late Future<List<Anteproject>> _anteprojectsFuture;
   int _refreshKey = 0;
   List<Anteproject>? _cachedAnteprojects; // Cache para actualización optimista
   bool? _hasApprovedAnteproject; // null = cargando, true/false = resultado
+  bool? _hasDraftAnteproject; // null = cargando, true/false = resultado
+  bool? _isWrongAcademicYear; // null = cargando, true/false = resultado
+  bool _isReadOnly = false; // Modo solo lectura para años académicos anteriores
 
   @override
   void initState() {
@@ -57,7 +65,7 @@ class _MyAnteprojectsListState extends State<MyAnteprojectsList> {
         _anteprojectsFuture = _anteprojectsService.getStudentAnteprojects();
         _hasApprovedAnteproject = null; // Resetear estado
       });
-      _checkApprovedAnteproject();
+      _checkRestrictions();
     } else {
       // Fallback al AuthBloc si no se pasa usuario
       final authState = context.read<AuthBloc>().state;
@@ -76,7 +84,7 @@ class _MyAnteprojectsListState extends State<MyAnteprojectsList> {
           _anteprojectsFuture = _anteprojectsService.getStudentAnteprojects();
           _hasApprovedAnteproject = null; // Resetear estado
         });
-        _checkApprovedAnteproject();
+        _checkRestrictions();
       } else {
         debugPrint(
           '❌ MyAnteprojectsList: Usuario NO autenticado, authState: ${authState.runtimeType}',
@@ -91,19 +99,49 @@ class _MyAnteprojectsListState extends State<MyAnteprojectsList> {
     }
   }
 
-  Future<void> _checkApprovedAnteproject() async {
+  Future<void> _checkRestrictions() async {
     try {
-      final hasApproved = await _anteprojectsService.hasApprovedAnteproject();
+      // Verificar todas las restricciones en paralelo
+      final results = await Future.wait([
+        _anteprojectsService.hasApprovedAnteproject(),
+        _anteprojectsService.hasDraftAnteproject(),
+        _settingsService.getStringSetting('academic_year'),
+      ]);
+      
+      final hasApproved = results[0] as bool;
+      final hasDraft = results[1] as bool;
+      final activeAcademicYear = results[2] as String?;
+      
+      // Verificar año académico
+      bool wrongAcademicYear = false;
+      if (activeAcademicYear != null && 
+          activeAcademicYear.isNotEmpty &&
+          widget.user?.academicYear != activeAcademicYear) {
+        wrongAcademicYear = true;
+      }
+      
+      // Verificar si está en modo solo lectura usando el servicio
+      bool isReadOnly = false;
+      if (widget.user != null) {
+        isReadOnly = await _academicPermissionsService.isReadOnly(widget.user!);
+      }
+      
       if (mounted) {
         setState(() {
           _hasApprovedAnteproject = hasApproved;
+          _hasDraftAnteproject = hasDraft;
+          _isWrongAcademicYear = wrongAcademicYear;
+          _isReadOnly = isReadOnly;
         });
       }
     } catch (e) {
-      debugPrint('Error al verificar anteproyecto aprobado: $e');
+      debugPrint('Error al verificar restricciones de anteproyecto: $e');
       if (mounted) {
         setState(() {
           _hasApprovedAnteproject = false; // En caso de error, permitir crear
+          _hasDraftAnteproject = false;
+          _isWrongAcademicYear = false;
+          _isReadOnly = false;
         });
       }
     }
@@ -161,13 +199,26 @@ class _MyAnteprojectsListState extends State<MyAnteprojectsList> {
 
   Future<void> _navigateToCreateAnteproject(BuildContext context) async {
     try {
+      final l10n = AppLocalizations.of(context)!;
+      
+      // Verificar si el estudiante está en el año académico activo
+      if (_isWrongAcademicYear == true) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.cannotCreateAnteprojectWrongAcademicYear),
+              duration: const Duration(seconds: 5),
+            ),
+          );
+        }
+        return;
+      }
+      
       // Verificar si el estudiante ya tiene un anteproyecto aprobado
       final hasApproved = _hasApprovedAnteproject ?? 
           await _anteprojectsService.hasApprovedAnteproject();
       
       if (hasApproved) {
-        final l10n = AppLocalizations.of(context)!;
-        
         // Buscar el anteproyecto aprobado
         final anteprojects = _cachedAnteprojects ?? 
             await _anteprojectsService.getStudentAnteprojects();
@@ -201,8 +252,48 @@ class _MyAnteprojectsListState extends State<MyAnteprojectsList> {
             );
           }
         }
-      } else {
-        // Si no tiene aprobado, navegar normalmente
+        return;
+      }
+      
+      // Verificar si el estudiante ya tiene un borrador
+      final hasDraft = _hasDraftAnteproject ?? 
+          await _anteprojectsService.hasDraftAnteproject();
+      
+      if (hasDraft) {
+        // Buscar el borrador existente
+        final anteprojects = _cachedAnteprojects ?? 
+            await _anteprojectsService.getStudentAnteprojects();
+        final draftAnteproject = anteprojects.firstWhere(
+          (ap) => ap.status == AnteprojectStatus.draft,
+          orElse: () => anteprojects.first,
+        );
+        
+        // Mostrar SnackBar con mensaje
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.cannotCreateAnteprojectWithDraft),
+              duration: const Duration(seconds: 5),
+              action: SnackBarAction(
+                label: l10n.goToDraft,
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => AnteprojectDetailScreen(
+                        anteproject: draftAnteproject,
+                        project: null,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+        }
+        return;
+      }
+      
+      // Si no tiene restricciones, navegar al formulario de creación
         if (mounted) {
           Navigator.of(context).push(
             MaterialPageRoute(
@@ -212,12 +303,11 @@ class _MyAnteprojectsListState extends State<MyAnteprojectsList> {
             // Recargar la lista al volver
             _loadAnteprojects();
           });
-        }
       }
     } catch (e) {
-      debugPrint('Error al verificar anteproyecto aprobado: $e');
+      debugPrint('Error al verificar restricciones de anteproyecto: $e');
       // Si hay error, permitir navegar de todas formas
-      // El servicio lanzará la excepción si realmente hay un aprobado
+      // El servicio lanzará la excepción si realmente hay restricciones
       if (mounted) {
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -235,8 +325,7 @@ class _MyAnteprojectsListState extends State<MyAnteprojectsList> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     
-    return Scaffold(
-      body: FutureBuilder<List<Anteproject>>(
+    final listContent = FutureBuilder<List<Anteproject>>(
         key: ValueKey<int>(_refreshKey),
         future: _anteprojectsFuture,
         builder: (context, snapshot) {
@@ -389,7 +478,8 @@ class _MyAnteprojectsListState extends State<MyAnteprojectsList> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       // Botón de eliminar (solo para borradores)
-                      if (anteproject.status == AnteprojectStatus.draft)
+                      // Botón de eliminar solo para borradores y si no está en modo solo lectura
+                      if (anteproject.status == AnteprojectStatus.draft && !_isReadOnly)
                         IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () => _showDeleteDialog(anteproject),
@@ -424,9 +514,24 @@ class _MyAnteprojectsListState extends State<MyAnteprojectsList> {
           ),
         );
         },
-      ),
-      floatingActionButton: _hasApprovedAnteproject == true
-          ? null // Ocultar botón si hay anteproyecto aprobado
+    );
+    
+    // Envolver con banner de solo lectura si aplica
+    final body = _isReadOnly
+        ? Column(
+            children: [
+              ReadOnlyBanner(
+                academicYear: widget.user?.academicYear ?? '',
+              ),
+              Expanded(child: listContent),
+            ],
+          )
+        : listContent;
+    
+    return Scaffold(
+      body: body,
+      floatingActionButton: (_hasApprovedAnteproject == true || _hasDraftAnteproject == true || _isWrongAcademicYear == true || _isReadOnly)
+          ? null // Ocultar botón si hay restricciones o modo solo lectura
           : FloatingActionButton.extended(
               onPressed: () => _navigateToCreateAnteproject(context),
               icon: const Icon(Icons.add),

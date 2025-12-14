@@ -4,9 +4,11 @@ import '../utils/app_exception.dart';
 import '../utils/network_error_detector.dart';
 import 'supabase_interceptor.dart';
 import '../models/user.dart';
+import 'academic_permissions_service.dart';
 
 class CommentsService {
   final SupabaseClient _supabase = Supabase.instance.client;
+  final AcademicPermissionsService _academicPermissionsService = AcademicPermissionsService();
 
   /// Obtiene todos los comentarios de una tarea
   Future<List<Comment>> getCommentsByTaskId(int taskId) async {
@@ -41,6 +43,30 @@ class CommentsService {
     bool isInternal = false,
   }) async {
     try {
+      // Verificar permisos de escritura para estudiantes
+      final user = _supabase.auth.currentUser;
+      if (user != null) {
+        final userResponse = await _supabase
+            .from('users')
+            .select('role, academic_year')
+            .eq('email', user.email!)
+            .single();
+        
+        final userRole = userResponse['role'] as String;
+        final studentAcademicYear = userResponse['academic_year'] as String?;
+        
+        if (userRole == 'student') {
+          final canWrite = await _academicPermissionsService.canWriteByAcademicYear(studentAcademicYear);
+          if (!canWrite) {
+            throw ValidationException(
+              'read_only_mode',
+              technicalMessage:
+                  'No puedes añadir comentarios porque tu año académico ya no está activo.',
+            );
+          }
+        }
+      }
+
       final response = await _supabase
           .from('comments')
           .insert({
@@ -62,6 +88,7 @@ class CommentsService {
 
       return Comment.fromJson(response);
     } catch (e) {
+      if (e is ValidationException) rethrow;
       throw Exception('Error al añadir comentario: $e');
     }
   }
@@ -72,6 +99,30 @@ class CommentsService {
     required String content,
   }) async {
     try {
+      // Verificar permisos de escritura para estudiantes
+      final user = _supabase.auth.currentUser;
+      if (user != null) {
+        final userResponse = await _supabase
+            .from('users')
+            .select('role, academic_year')
+            .eq('email', user.email!)
+            .single();
+        
+        final userRole = userResponse['role'] as String;
+        final studentAcademicYear = userResponse['academic_year'] as String?;
+        
+        if (userRole == 'student') {
+          final canWrite = await _academicPermissionsService.canWriteByAcademicYear(studentAcademicYear);
+          if (!canWrite) {
+            throw ValidationException(
+              'read_only_mode',
+              technicalMessage:
+                  'No puedes editar comentarios porque tu año académico ya no está activo.',
+            );
+          }
+        }
+      }
+
       final response = await _supabase
           .from('comments')
           .update({
@@ -92,6 +143,7 @@ class CommentsService {
 
       return Comment.fromJson(response);
     } catch (e) {
+      if (e is ValidationException) rethrow;
       throw Exception('Error al actualizar comentario: $e');
     }
   }
@@ -99,11 +151,36 @@ class CommentsService {
   /// Elimina un comentario
   Future<void> deleteComment(int commentId) async {
     try {
+      // Verificar permisos de escritura para estudiantes
+      final user = _supabase.auth.currentUser;
+      if (user != null) {
+        final userResponse = await _supabase
+            .from('users')
+            .select('role, academic_year')
+            .eq('email', user.email!)
+            .single();
+        
+        final userRole = userResponse['role'] as String;
+        final studentAcademicYear = userResponse['academic_year'] as String?;
+        
+        if (userRole == 'student') {
+          final canWrite = await _academicPermissionsService.canWriteByAcademicYear(studentAcademicYear);
+          if (!canWrite) {
+            throw ValidationException(
+              'read_only_mode',
+              technicalMessage:
+                  'No puedes eliminar comentarios porque tu año académico ya no está activo.',
+            );
+          }
+        }
+      }
+
       await _supabase
           .from('comments')
           .delete()
           .eq('id', commentId);
     } catch (e) {
+      if (e is ValidationException) rethrow;
       throw Exception('Error al eliminar comentario: $e');
     }
   }

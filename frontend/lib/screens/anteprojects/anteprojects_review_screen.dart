@@ -5,6 +5,7 @@ import '../../l10n/app_localizations.dart';
 import '../../models/anteproject.dart';
 import '../../models/user.dart';
 import '../../services/anteprojects_service.dart';
+import '../../services/academic_permissions_service.dart';
 import '../../widgets/navigation/app_bar_actions.dart';
 import 'anteproject_detail_screen.dart';
 import 'anteproject_comments_screen.dart';
@@ -29,17 +30,26 @@ class AnteprojectsReviewScreen extends StatefulWidget {
 
 class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
   final AnteprojectsService _anteprojectsService = AnteprojectsService();
+  final AcademicPermissionsService _academicPermissionsService = AcademicPermissionsService();
   List<Map<String, dynamic>> _anteprojects = [];
   List<Map<String, dynamic>> _filteredAnteprojects = [];
   bool _isLoading = true;
   String _selectedStatus = 'all';
   String _selectedAcademicYear = 'all';
   List<String> _academicYears = [];
+  String? _activeAcademicYear;
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
   User? _currentUser;
 
   Map<String, String> _statusFilters = {};
+  
+  /// Verifica si el año seleccionado es el activo (permite acciones de escritura)
+  bool get _isSelectedYearActive {
+    if (_selectedAcademicYear == 'all') return true;
+    if (_activeAcademicYear == null) return true;
+    return _selectedAcademicYear == _activeAcademicYear;
+  }
 
   @override
   void initState() {
@@ -47,6 +57,7 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
     _loadCurrentUser();
     if (widget.initialFilter != null) {
       _selectedStatus = widget.initialFilter!;
+      debugPrint('🔍 AnteprojectsReviewScreen: Filtro inicial establecido: ${widget.initialFilter}');
     }
     _loadAnteprojects();
   }
@@ -55,9 +66,10 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
     final l10n = AppLocalizations.of(context)!;
     _statusFilters = {
       'all': l10n.all,
+      'active': l10n.activeAnteprojects,
       'pending': l10n.pending,
-      'reviewed': l10n.reviewed,
-      'submitted': l10n.submitted,
+      'reviewed': l10n.reviewedPlural,
+      'submitted': l10n.statusSubmitted,
       'under_review': l10n.underReview,
       'approved': l10n.approved,
       'rejected': l10n.rejected,
@@ -120,9 +132,13 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
         }
       }
 
+      // Obtener el año académico activo
+      final activeYear = await _academicPermissionsService.getActiveAcademicYear();
+
       if (mounted) {
         setState(() {
           _anteprojects = anteprojects;
+          _activeAcademicYear = activeYear;
           _isLoading = false;
         });
         _extractAcademicYears();
@@ -269,9 +285,27 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
               }
 
               // Filtro por estado
+              // IMPORTANTE: Los borradores (draft) NO deben aparecer en la revisión del tutor
+              // excepto cuando se filtra por "active" que incluye todos los estados activos
+              bool excludeDraft = true;
+              if (_selectedStatus == 'active') {
+                excludeDraft = false; // Incluir borradores cuando se filtra por activos
+              }
+              
+              if (excludeDraft && anteproject.status == AnteprojectStatus.draft) {
+                return false; // Excluir borradores en otros filtros
+              }
+
               bool statusMatch;
               if (_selectedStatus == 'all') {
+                // "Todos" excluye borradores (ya filtrados arriba)
                 statusMatch = true;
+              } else if (_selectedStatus == 'active') {
+                // Incluir todos los estados activos: draft, submitted, underReview
+                statusMatch =
+                    anteproject.status == AnteprojectStatus.draft ||
+                    anteproject.status == AnteprojectStatus.submitted ||
+                    anteproject.status == AnteprojectStatus.underReview;
               } else if (_selectedStatus == 'pending') {
                 statusMatch =
                     anteproject.status == AnteprojectStatus.submitted ||
@@ -373,6 +407,8 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
   String _getScreenTitle(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     switch (_selectedStatus) {
+      case 'active':
+        return l10n.activeAnteprojects;
       case 'pending':
         return l10n.pendingAnteprojectsTitle;
       case 'reviewed':
@@ -480,9 +516,33 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
                           child: Text(l10n.all),
                         ),
                         ..._academicYears.map((year) {
+                          final isActive = year == _activeAcademicYear;
                           return DropdownMenuItem<String>(
                             value: year,
-                            child: Text(year),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(year),
+                                if (isActive) ...[
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: Colors.green.shade100,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Text(
+                                      'Activo',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.green.shade800,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
                           );
                         }),
                       ],
@@ -511,6 +571,30 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
                     ),
                   ),
                 ],
+              ),
+            ],
+          ),
+        ),
+        
+        // Banner de solo lectura si el año seleccionado no es el activo
+        if (!_isSelectedYearActive)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            color: Colors.orange.shade50,
+            child: Row(
+              children: [
+                Icon(Icons.visibility, size: 20, color: Colors.orange.shade700),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Modo consulta: Visualizando anteproyectos del año $_selectedAcademicYear. '
+                    'Las acciones de aprobación/rechazo están deshabilitadas.',
+                    style: TextStyle(
+                      color: Colors.orange.shade900,
+                      fontSize: 13,
+                    ),
+                  ),
               ),
             ],
           ),
@@ -545,8 +629,68 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
   Widget _buildEmptyState(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     String message;
+    Widget? additionalInfo;
+    
     if (_searchQuery.isNotEmpty) {
       message = l10n.noAnteprojectsFound(_searchQuery);
+    } else if (_selectedStatus == 'active') {
+      // Cuando no hay anteproyectos activos, verificar si hay aprobados
+      final approvedCount = _anteprojects.where((anteprojectData) {
+        try {
+          Map<String, dynamic> safeConvertMap(dynamic data) {
+            if (data is Map<String, dynamic>) {
+              return data;
+            } else if (data is Map) {
+              final result = <String, dynamic>{};
+              data.forEach((key, value) {
+                result[key.toString()] = value;
+              });
+              return result;
+            } else {
+              try {
+                final map = data as Map;
+                final result = <String, dynamic>{};
+                map.forEach((key, value) {
+                  result[key.toString()] = value;
+                });
+                return result;
+              } catch (e) {
+                return <String, dynamic>{};
+              }
+            }
+          }
+
+          final anteprojectMap = safeConvertMap(anteprojectData);
+          anteprojectMap.remove('anteproject_students');
+          if (anteprojectMap.isEmpty) {
+            return false;
+          }
+
+          final anteproject = Anteproject.fromJson(anteprojectMap);
+          return anteproject.status == AnteprojectStatus.approved;
+        } catch (e) {
+          return false;
+        }
+      }).length;
+
+      if (approvedCount > 0) {
+        message = l10n.noActiveAnteprojects;
+        final plural = approvedCount == 1 ? '' : 's';
+        additionalInfo = Padding(
+          padding: const EdgeInsets.only(top: 16),
+          child: Text(
+            l10n.noActiveButApproved(approvedCount, plural),
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.green.shade700,
+              fontWeight: FontWeight.w500,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        );
+      } else {
+        message = l10n.noActiveAnteprojects;
+      }
     } else if (_selectedStatus != 'all') {
       message = l10n.noAnteprojectsWithStatus(
         _statusFilters[_selectedStatus] ?? '',
@@ -570,6 +714,7 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
             style: TextStyle(fontSize: 18, color: Colors.grey.shade600),
             textAlign: TextAlign.center,
           ),
+          if (additionalInfo != null) additionalInfo,
           if (_searchQuery.isNotEmpty || _selectedStatus != 'all' || _selectedAcademicYear != 'all') ...[
             const SizedBox(height: 16),
             ElevatedButton(
@@ -836,7 +981,7 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
                     Icon(Icons.send, size: 16, color: Colors.grey.shade500),
                     const SizedBox(width: 4),
                     Text(
-                      '${AppLocalizations.of(context)!.submitted} ${_formatDate(anteproject.submittedAt!)}',
+                      '${AppLocalizations.of(context)!.submittedLabel} ${_formatDate(anteproject.submittedAt!)}',
                       style: TextStyle(
                         color: Colors.grey.shade600,
                         fontSize: 12,
@@ -862,9 +1007,10 @@ class _AnteprojectsReviewScreenState extends State<AnteprojectsReviewScreen> {
                   ),
                   const SizedBox(width: 8),
 
-                  // Botones de aprobación/rechazo (solo para enviados/en revisión)
-                  if (anteproject.status == AnteprojectStatus.submitted ||
-                      anteproject.status == AnteprojectStatus.underReview) ...[
+                  // Botones de aprobación/rechazo (solo para enviados/en revisión y año activo)
+                  if (_isSelectedYearActive &&
+                      (anteproject.status == AnteprojectStatus.submitted ||
+                       anteproject.status == AnteprojectStatus.underReview)) ...[
                     TextButton.icon(
                       onPressed: () => _rejectAnteproject(anteproject),
                       icon: const Icon(Icons.cancel, color: Colors.red),

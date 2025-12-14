@@ -316,6 +316,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pendingAnteprojects => 'Pending Anteprojects';
 
   @override
+  String get activeAnteprojects => 'Active Anteprojects';
+
+  @override
+  String get noActiveAnteprojects => 'No active anteproyectos at this time';
+
+  @override
+  String noActiveButApproved(int count, String plural) {
+    return 'No active anteproyectos, but you have $count approved anteproyecto$plural';
+  }
+
+  @override
   String get assignedStudents => 'Assigned Students';
 
   @override
@@ -822,7 +833,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tutorRole => 'Tutor';
 
   @override
-  String get reviewed => 'Reviewed:';
+  String get reviewedPlural => 'Reviewed';
 
   @override
   String get addStudents => 'Add Students';
@@ -943,10 +954,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get created => 'Created:';
 
   @override
-  String get submitted => 'Submitted:';
+  String get submittedLabel => 'Submitted:';
+
+  @override
+  String get statusSubmitted => 'Submitted';
 
   @override
   String get lastUpdate => 'Last update:';
+
+  @override
+  String get reviewedLabel => 'Reviewed:';
+
+  @override
+  String get statusReviewed => 'Reviewed';
 
   @override
   String get dates => 'Dates';
@@ -990,6 +1010,44 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get goToProject => 'Go to Project';
+
+  @override
+  String get goToDraft => 'Go to Draft';
+
+  @override
+  String get goBack => 'Go Back';
+
+  @override
+  String get readOnlyModeTitle => 'Read-only mode';
+
+  @override
+  String readOnlyModeMessage(String year) {
+    return 'Your academic year ($year) is no longer active. You can only view your historical data.';
+  }
+
+  @override
+  String get cannotPerformActionReadOnly =>
+      'You cannot perform this action because your academic year is no longer active.';
+
+  @override
+  String get cannotCreateAnteprojectWithDraftTitle =>
+      'You already have a draft';
+
+  @override
+  String get cannotCreateAnteprojectWithDraft =>
+      'You already have a draft anteproject. Complete or delete it before creating another one.';
+
+  @override
+  String get cannotSubmitAnteprojectWithActive =>
+      'You already have an anteproject under review. Wait for it to complete its cycle before submitting another one.';
+
+  @override
+  String get cannotCreateAnteprojectWrongAcademicYearTitle =>
+      'Wrong academic year';
+
+  @override
+  String get cannotCreateAnteprojectWrongAcademicYear =>
+      'Only students enrolled in the active academic year can create anteprojects. Contact your tutor or administrator.';
 
   @override
   String get cannotSubmitAnteprojectWithApprovedTitle =>

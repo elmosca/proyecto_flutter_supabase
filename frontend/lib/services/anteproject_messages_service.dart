@@ -3,10 +3,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/anteproject_message.dart';
 import 'email_notification_service.dart';
 import 'anteprojects_service.dart';
+import 'academic_permissions_service.dart';
 import '../utils/app_exception.dart';
 
 class AnteprojectMessagesService {
   final SupabaseClient _supabase = Supabase.instance.client;
+  final AcademicPermissionsService _academicPermissionsService = AcademicPermissionsService();
 
   /// Convierte objetos minificados de Supabase a Map<String, dynamic>
   Map<String, dynamic> _safeConvertMap(dynamic data) {
@@ -110,19 +112,30 @@ class AnteprojectMessagesService {
         throw Exception('Usuario no autenticado');
       }
 
-      // Obtener el ID del usuario actual y su rol
+      // Obtener el ID del usuario actual, su rol y año académico
       final userResponse = await _supabase
           .from('users')
-          .select('id, role')
+          .select('id, role, academic_year')
           .eq('email', currentUser.email!)
           .single();
 
       final authorId = userResponse['id'] as int;
       final userRole = userResponse['role'] as String;
+      final studentAcademicYear = userResponse['academic_year'] as String?;
+
+      // Verificar permisos de escritura para estudiantes
+      if (userRole == 'student') {
+        // Verificar año académico activo
+        final canWrite = await _academicPermissionsService.canWriteByAcademicYear(studentAcademicYear);
+        if (!canWrite) {
+          throw ValidationException(
+            'read_only_mode',
+            technicalMessage:
+                'No puedes enviar mensajes porque tu año académico ya no está activo.',
+          );
+        }
 
       // Verificar si el estudiante ya tiene un anteproyecto aprobado
-      if (userRole == 'student') {
-        // Importar el servicio de anteproyectos para verificar
         final anteprojectsService = AnteprojectsService();
         final hasApproved = await anteprojectsService.hasApprovedAnteproject();
         if (hasApproved) {

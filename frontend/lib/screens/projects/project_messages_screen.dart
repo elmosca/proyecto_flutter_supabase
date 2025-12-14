@@ -5,6 +5,7 @@ import '../../models/project.dart';
 import '../../models/project_message.dart';
 import '../../models/user.dart';
 import '../../services/project_messages_service.dart';
+import '../../services/academic_permissions_service.dart';
 
 class ProjectMessagesScreen extends StatefulWidget {
   final Project project;
@@ -17,12 +18,14 @@ class ProjectMessagesScreen extends StatefulWidget {
 
 class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
   final ProjectMessagesService _messagesService = ProjectMessagesService();
+  final AcademicPermissionsService _academicPermissionsService = AcademicPermissionsService();
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   
   List<ProjectMessage> _messages = [];
   bool _isLoading = true;
   bool _isSubmitting = false;
+  bool _isReadOnly = false; // Modo solo lectura para años académicos anteriores
   User? _currentUser;
   int _unreadCount = 0;
 
@@ -41,12 +44,18 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
     super.dispose();
   }
 
-  void _loadCurrentUser() {
+  Future<void> _loadCurrentUser() async {
     final authState = context.read<AuthBloc>().state;
     if (authState is AuthAuthenticated) {
+      final user = authState.user;
+      // Verificar modo solo lectura
+      final isReadOnly = await _academicPermissionsService.isReadOnly(user);
+      if (mounted) {
       setState(() {
-        _currentUser = authState.user;
+          _currentUser = user;
+          _isReadOnly = isReadOnly;
       });
+      }
     }
   }
 
@@ -442,8 +451,11 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
           Expanded(
             child: TextField(
               controller: _messageController,
+              enabled: !_isReadOnly,
               decoration: InputDecoration(
-                hintText: 'Escribe tu mensaje...',
+                hintText: _isReadOnly
+                    ? 'Modo solo lectura - No puedes enviar mensajes'
+                    : 'Escribe tu mensaje...',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
                 ),
@@ -455,12 +467,12 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
               maxLines: null,
               minLines: 1,
               textCapitalization: TextCapitalization.sentences,
-              onSubmitted: (_) => _submitMessage(),
+              onSubmitted: _isReadOnly ? null : (_) => _submitMessage(),
             ),
           ),
           const SizedBox(width: 8),
           FloatingActionButton(
-            onPressed: _isSubmitting ? null : _submitMessage,
+            onPressed: (_isSubmitting || _isReadOnly) ? null : _submitMessage,
             backgroundColor: Colors.green,
             mini: true,
             child: _isSubmitting

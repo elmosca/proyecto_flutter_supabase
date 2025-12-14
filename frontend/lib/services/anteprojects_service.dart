@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import '../models/models.dart';
 import 'email_notification_service.dart';
+import 'settings_service.dart';
+import 'academic_permissions_service.dart';
 import '../utils/app_exception.dart';
 import '../utils/network_error_detector.dart';
 import 'supabase_interceptor.dart';
@@ -36,6 +38,8 @@ import 'supabase_interceptor.dart';
 /// Ver también: [ApprovalService], [Anteproject]
 class AnteprojectsService {
   final supabase.SupabaseClient _supabase = supabase.Supabase.instance.client;
+  final SettingsService _settingsService = SettingsService();
+  final AcademicPermissionsService _academicPermissionsService = AcademicPermissionsService();
 
   /// Obtiene todos los anteproyectos del usuario actual.
   ///
@@ -130,7 +134,8 @@ class AnteprojectsService {
                 full_name,
                 email,
                 nre,
-                tutor_id
+                tutor_id,
+                academic_year
               )
             )
           ''')
@@ -436,22 +441,45 @@ class AnteprojectsService {
       // Obtener información del usuario actual desde la tabla users
       final userResponse = await _supabase
           .from('users')
-          .select('id, role, tutor_id')
+          .select('id, role, tutor_id, academic_year')
           .eq('email', user.email!)
           .single();
 
       final userId = userResponse['id'] as int;
       final userRole = userResponse['role'] as String;
       final tutorId = userResponse['tutor_id'] as int?;
+      final studentAcademicYear = userResponse['academic_year'] as String?;
 
       // Verificar si el estudiante ya tiene un anteproyecto aprobado
       if (userRole == 'student') {
+        // Verificar que el estudiante esté matriculado en el año académico activo
+        final activeAcademicYear = await _settingsService.getStringSetting('academic_year');
+        if (activeAcademicYear != null && 
+            activeAcademicYear.isNotEmpty &&
+            studentAcademicYear != activeAcademicYear) {
+          throw ValidationException(
+            'cannot_create_anteproject_wrong_academic_year',
+            technicalMessage:
+                'Solo los estudiantes matriculados en el año académico activo ($activeAcademicYear) pueden crear anteproyectos. Tu año académico es: ${studentAcademicYear ?? "no asignado"}.',
+          );
+        }
+        
         final hasApproved = await hasApprovedAnteproject();
         if (hasApproved) {
           throw ValidationException(
             'cannot_create_anteproject_with_approved',
             technicalMessage:
                 'No puedes crear un nuevo anteproyecto porque ya tienes uno aprobado. Debes desarrollar el proyecto asociado.',
+          );
+        }
+
+        // Verificar si el estudiante ya tiene un borrador
+        final hasDraft = await hasDraftAnteproject();
+        if (hasDraft) {
+          throw ValidationException(
+            'cannot_create_anteproject_with_draft',
+            technicalMessage:
+                'Ya tienes un borrador de anteproyecto. Complétalo o elimínalo antes de crear otro.',
           );
         }
       }
@@ -557,13 +585,23 @@ class AnteprojectsService {
       // Obtener el rol del usuario
       final userResponse = await _supabase
           .from('users')
-          .select('role')
+          .select('role, academic_year')
           .eq('email', user.email!)
           .single();
       final userRole = userResponse['role'] as String;
+      final studentAcademicYear = userResponse['academic_year'] as String?;
 
-      // Verificar si el estudiante ya tiene un anteproyecto aprobado
+      // Verificar permisos de escritura por año académico
       if (userRole == 'student') {
+        final canWrite = await _academicPermissionsService.canWriteByAcademicYear(studentAcademicYear);
+        if (!canWrite) {
+          throw ValidationException(
+            'read_only_mode',
+            technicalMessage:
+                'No puedes editar anteproyectos porque tu año académico ya no está activo.',
+          );
+        }
+
         final hasApproved = await hasApprovedAnteproject();
         if (hasApproved) {
           throw ValidationException(
@@ -707,6 +745,16 @@ class AnteprojectsService {
             'cannot_submit_anteproject_with_approved',
             technicalMessage:
                 'No puedes enviar este anteproyecto porque ya tienes uno aprobado. Debes desarrollar el proyecto asociado.',
+          );
+        }
+
+        // Verificar si el estudiante ya tiene un anteproyecto en proceso
+        final hasActive = await hasActiveAnteproject();
+        if (hasActive) {
+          throw ValidationException(
+            'cannot_submit_anteproject_with_active',
+            technicalMessage:
+                'Ya tienes un anteproyecto en revisión. Espera a que se complete su ciclo antes de enviar otro.',
           );
         }
       }
@@ -910,7 +958,8 @@ class AnteprojectsService {
                 full_name,
                 email,
                 nre,
-                tutor_id
+                tutor_id,
+                academic_year
               )
             )
           ''')
@@ -1332,6 +1381,155 @@ class AnteprojectsService {
     }
   }
 
+  /// Verifica si el estudiante actual tiene un anteproyecto en proceso
+  /// (submitted o under_review)
+  Future<bool> hasActiveAnteproject() async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
+      }
+
+      // Obtener información del usuario actual desde la tabla users
+      final userResponse = await _supabase
+          .from('users')
+          .select('id, role')
+          .eq('email', user.email!)
+          .single();
+
+      final userId = userResponse['id'] as int;
+      final userRole = userResponse['role'] as String;
+
+      // Solo verificar para estudiantes
+      if (userRole != 'student') {
+        return false;
+      }
+
+      debugPrint('🔍 Verificando si estudiante ID: $userId tiene anteproyecto activo (submitted/under_review)');
+
+      // Consultar anteproject_students unido con anteprojects
+      // Filtrar por student_id del usuario actual y status IN (submitted, under_review)
+      final response = await _supabase
+          .from('anteproject_students')
+          .select('''
+            anteproject_id,
+            anteprojects!inner(
+              id,
+              status
+            )
+          ''')
+          .eq('student_id', userId)
+          .inFilter('anteprojects.status', ['submitted', 'under_review']);
+
+      final hasActive = response.isNotEmpty;
+      debugPrint(
+        '🔍 Estudiante ${hasActive ? "SÍ" : "NO"} tiene anteproyecto activo',
+      );
+
+      return hasActive;
+    } catch (e) {
+      debugPrint('❌ Error al verificar anteproyecto activo: $e');
+      
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      // Si es AuthenticationException, relanzarla
+      if (e is AuthenticationException) {
+        rethrow;
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error checking active anteproject: $e',
+        originalError: e,
+      );
+    }
+  }
+
+  /// Verifica si el estudiante actual tiene un anteproyecto en borrador (draft)
+  Future<bool> hasDraftAnteproject() async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        throw AuthenticationException(
+          'not_authenticated',
+          technicalMessage: 'User not authenticated',
+        );
+      }
+
+      // Obtener información del usuario actual desde la tabla users
+      final userResponse = await _supabase
+          .from('users')
+          .select('id, role')
+          .eq('email', user.email!)
+          .single();
+
+      final userId = userResponse['id'] as int;
+      final userRole = userResponse['role'] as String;
+
+      // Solo verificar para estudiantes
+      if (userRole != 'student') {
+        return false;
+      }
+
+      debugPrint('🔍 Verificando si estudiante ID: $userId tiene anteproyecto en borrador');
+
+      // Consultar anteproject_students unido con anteprojects
+      // Filtrar por student_id del usuario actual y status = 'draft'
+      final response = await _supabase
+          .from('anteproject_students')
+          .select('''
+            anteproject_id,
+            anteprojects!inner(
+              id,
+              status
+            )
+          ''')
+          .eq('student_id', userId)
+          .eq('anteprojects.status', 'draft');
+
+      final hasDraft = response.isNotEmpty;
+      debugPrint(
+        '🔍 Estudiante ${hasDraft ? "SÍ" : "NO"} tiene anteproyecto en borrador',
+      );
+
+      return hasDraft;
+    } catch (e) {
+      debugPrint('❌ Error al verificar anteproyecto en borrador: $e');
+      
+      // Interceptar errores de Supabase
+      if (SupabaseErrorInterceptor.isSupabaseError(e)) {
+        throw SupabaseErrorInterceptor.handleError(e);
+      }
+
+      // Interceptar errores de red
+      if (NetworkErrorDetector.isNetworkError(e)) {
+        throw NetworkErrorDetector.detectNetworkError(e);
+      }
+
+      // Si es AuthenticationException, relanzarla
+      if (e is AuthenticationException) {
+        rethrow;
+      }
+
+      throw DatabaseException(
+        'database_query_failed',
+        technicalMessage: 'Error checking draft anteproject: $e',
+        originalError: e,
+      );
+    }
+  }
+
   /// Obtiene el estudiante autor de un anteproyecto
   Future<User?> getAnteprojectStudent(int anteprojectId) async {
     try {
@@ -1436,17 +1634,28 @@ class AnteprojectsService {
       // Obtener información del usuario actual
       final userResponse = await _supabase
           .from('users')
-          .select('id, role')
+          .select('id, role, academic_year')
           .eq('email', user.email!)
           .single();
 
       final userId = userResponse['id'] as int;
       final userRole = userResponse['role'] as String;
+      final studentAcademicYear = userResponse['academic_year'] as String?;
 
       // Solo estudiantes pueden eliminar anteproyectos
       if (userRole != 'student') {
         throw const AnteprojectsException(
           'Solo los estudiantes pueden eliminar anteproyectos',
+        );
+      }
+
+      // Verificar permisos de escritura por año académico
+      final canWrite = await _academicPermissionsService.canWriteByAcademicYear(studentAcademicYear);
+      if (!canWrite) {
+        throw ValidationException(
+          'read_only_mode',
+          technicalMessage:
+              'No puedes eliminar anteproyectos porque tu año académico ya no está activo.',
         );
       }
 

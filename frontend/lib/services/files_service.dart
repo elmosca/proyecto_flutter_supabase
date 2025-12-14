@@ -1,8 +1,10 @@
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import '../utils/app_exception.dart';
 import '../utils/network_error_detector.dart';
 import 'supabase_interceptor.dart';
+import 'academic_permissions_service.dart';
 
 /// Servicio para gestión de archivos con Supabase Storage.
 ///
@@ -39,6 +41,7 @@ import 'supabase_interceptor.dart';
 /// Ver también: [FileUploadResult]
 class FilesService {
   final supabase.SupabaseClient _supabase = supabase.Supabase.instance.client;
+  final AcademicPermissionsService _academicPermissionsService = AcademicPermissionsService();
   static const String _bucketName = 'project-files';
 
   /// Sube un archivo a Supabase Storage con metadatos.
@@ -73,11 +76,25 @@ class FilesService {
       // Obtener el ID del usuario desde la tabla users
       final userResponse = await _supabase
           .from('users')
-          .select('id')
+          .select('id, role, academic_year')
           .eq('email', user.email!)
           .single();
 
       final userId = userResponse['id'] as int;
+      final userRole = userResponse['role'] as String;
+      final studentAcademicYear = userResponse['academic_year'] as String?;
+
+      // Verificar permisos de escritura para estudiantes
+      if (userRole == 'student') {
+        final canWrite = await _academicPermissionsService.canWriteByAcademicYear(studentAcademicYear);
+        if (!canWrite) {
+          throw ValidationException(
+            'read_only_mode',
+            technicalMessage:
+                'No puedes subir archivos porque tu año académico ya no está activo.',
+          );
+        }
+      }
 
       // Generar un nombre único para el archivo
       final timestamp = DateTime.now().millisecondsSinceEpoch;
@@ -198,11 +215,25 @@ class FilesService {
       // Obtener el ID del usuario desde la tabla users
       final userResponse = await _supabase
           .from('users')
-          .select('id')
+          .select('id, role, academic_year')
           .eq('email', user.email!)
           .single();
 
       final userId = userResponse['id'] as int;
+      final userRole = userResponse['role'] as String;
+      final studentAcademicYear = userResponse['academic_year'] as String?;
+
+      // Verificar permisos de escritura para estudiantes
+      if (userRole == 'student') {
+        final canWrite = await _academicPermissionsService.canWriteByAcademicYear(studentAcademicYear);
+        if (!canWrite) {
+          throw ValidationException(
+            'read_only_mode',
+            technicalMessage:
+                'No puedes eliminar archivos porque tu año académico ya no está activo.',
+          );
+        }
+      }
 
       // Obtener información del archivo
       final fileResponse = await _supabase

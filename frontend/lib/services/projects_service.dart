@@ -347,7 +347,8 @@ class ProjectsService {
                 full_name,
                 email,
                 nre,
-                tutor_id
+                tutor_id,
+                academic_year
               )
             ),
             anteprojects!projects_anteproject_id_fkey(
@@ -361,7 +362,8 @@ class ProjectsService {
                   full_name,
                   email,
                   nre,
-                  tutor_id
+                  tutor_id,
+                  academic_year
                 )
               )
             )
