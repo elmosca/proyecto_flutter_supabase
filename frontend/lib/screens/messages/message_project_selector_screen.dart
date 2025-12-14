@@ -274,6 +274,8 @@ class _MessageProjectSelectorScreenState
 
   Widget _buildProjectsList() {
     final l10n = AppLocalizations.of(context)!;
+    final hasApprovedProject = _projects.isNotEmpty;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -360,7 +362,19 @@ class _MessageProjectSelectorScreenState
                 subtitle: '${l10n.status}: ${anteproject.status.displayName}',
                 color: Colors.blue,
                 icon: Icons.description,
-                onTap: () => _openAnteprojectChat(anteproject),
+                enabled: !hasApprovedProject,
+                onTap: hasApprovedProject
+                    ? () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Ya tienes un proyecto aprobado. No puedes crear nuevas conversaciones en anteproyectos.',
+                            ),
+                            backgroundColor: Colors.orange,
+                          ),
+                        );
+                      }
+                    : () => _openAnteprojectChat(anteproject),
               ),
             ),
           ],
@@ -375,7 +389,10 @@ class _MessageProjectSelectorScreenState
     required Color color,
     required IconData icon,
     required VoidCallback onTap,
+    bool enabled = true,
   }) {
+    final effectiveColor = enabled ? color : Colors.grey;
+    
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 2,
@@ -389,10 +406,10 @@ class _MessageProjectSelectorScreenState
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: effectiveColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(icon, color: color, size: 28),
+                child: Icon(icon, color: effectiveColor, size: 28),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -401,9 +418,10 @@ class _MessageProjectSelectorScreenState
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
+                        color: enabled ? null : Colors.grey.shade600,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -412,18 +430,18 @@ class _MessageProjectSelectorScreenState
                     Text(
                       subtitle,
                       style: TextStyle(
-                        color: Colors.grey.shade600,
+                        color: enabled ? Colors.grey.shade600 : Colors.grey.shade400,
                         fontSize: 14,
                       ),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.chat_bubble, color: color, size: 24),
+              Icon(Icons.chat_bubble, color: effectiveColor, size: 24),
               const SizedBox(width: 8),
               Icon(
                 Icons.arrow_forward_ios,
-                color: Colors.grey.shade400,
+                color: enabled ? Colors.grey.shade400 : Colors.grey.shade300,
                 size: 16,
               ),
             ],

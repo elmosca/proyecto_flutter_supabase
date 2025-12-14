@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/auth_bloc.dart';
 import '../../models/conversation_thread.dart';
@@ -11,6 +12,7 @@ import '../../services/project_messages_service.dart';
 import '../../services/anteproject_messages_service.dart';
 import '../../services/anteprojects_service.dart';
 import '../../services/academic_permissions_service.dart';
+import '../../services/user_service.dart';
 import '../../widgets/navigation/app_bar_actions.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -49,6 +51,7 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
   final AnteprojectsService _anteprojectsService = AnteprojectsService();
   final AcademicPermissionsService _academicPermissionsService =
       AcademicPermissionsService();
+  final UserService _userService = UserService();
 
   List<dynamic> _messages = []; // Puede ser ProjectMessage o AnteprojectMessage
   bool _isLoading = true;
@@ -57,10 +60,31 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
   User? _currentUser;
   bool? _hasApprovedAnteproject; // null = cargando, true/false = resultado
   bool? _isReadOnly; // null = verificando, true/false = resultado
+  StreamSubscription<AuthState>? _authSubscription;
 
   @override
   void initState() {
     super.initState();
+    
+    // Configuración inicial del usuario
+    final authState = context.read<AuthBloc>().state;
+    if (authState is AuthAuthenticated) {
+      _currentUser = authState.user;
+      _checkReadOnlyMode(authState.user);
+    }
+
+    // Suscribirse a cambios del AuthBloc
+    _authSubscription = context.read<AuthBloc>().stream.listen((state) {
+      if (state is AuthAuthenticated && mounted) {
+        if (_currentUser != state.user) {
+          setState(() {
+            _currentUser = state.user;
+          });
+          _checkReadOnlyMode(state.user);
+        }
+      }
+    });
+
     _loadMessages();
     _checkApprovedAnteproject();
   }
@@ -89,18 +113,42 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
     }
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final authState = context.read<AuthBloc>().state;
-    if (authState is AuthAuthenticated) {
-      _currentUser = authState.user;
-      // Verificar modo solo lectura
-      _checkReadOnlyMode(authState.user);
-    }
-  }
+  // didChangeDependencies eliminado, lógica movida a initState
 
   Future<void> _checkReadOnlyMode(User user) async {
+    // Validación de seguridad para evitar falsos positivos de solo lectura
+    if (user.role == UserRole.student) {
+      if (user.academicYear == null || user.academicYear!.isEmpty) {
+        // SOLUCIÓN DE EMERGENCIA: Si no hay año académico, intentar recargarlo
+        debugPrint('⚠️ ThreadMessages: Usuario sin año académico, intentando recargar desde API...');
+        try {
+          final refreshedUser = await _userService.getUserById(user.id);
+          if (refreshedUser != null && mounted) {
+            debugPrint('✅ Usuario recargado con año académico: ${refreshedUser.academicYear}');
+            // Actualizar el usuario local y el AuthBloc
+            setState(() {
+              _currentUser = refreshedUser;
+            });
+            context.read<AuthBloc>().add(AuthUserChanged(user: refreshedUser));
+            // Ahora verificar permisos con el usuario completo
+            if (refreshedUser.academicYear != null && refreshedUser.academicYear!.isNotEmpty) {
+              final isReadOnly = await _academicPermissionsService.isReadOnly(refreshedUser);
+              if (mounted) {
+                setState(() {
+                  _isReadOnly = isReadOnly;
+                });
+              }
+            }
+          } else {
+            debugPrint('❌ No se pudo recargar el usuario');
+          }
+        } catch (e) {
+          debugPrint('❌ Error al recargar usuario: $e');
+        }
+        return;
+      }
+    }
+
     final isReadOnly = await _academicPermissionsService.isReadOnly(user);
     if (mounted) {
       setState(() {
@@ -111,6 +159,7 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
 
   @override
   void dispose() {
+    _authSubscription?.cancel();
     _messageController.dispose();
     _scrollController.dispose();
     super.dispose();

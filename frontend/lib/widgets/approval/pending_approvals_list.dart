@@ -49,6 +49,7 @@ class PendingApprovalsList extends StatelessWidget {
 
     return RefreshIndicator(
       onRefresh: () async {
+        // El refresh se maneja desde ApprovalScreen con el filtro de año académico
         context.read<ApprovalBloc>().add(const RefreshApprovals());
       },
       child: Padding(

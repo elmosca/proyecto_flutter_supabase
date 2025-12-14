@@ -4,6 +4,7 @@ import '../../blocs/approval_bloc.dart';
 import '../../blocs/auth_bloc.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/user.dart';
+import '../../services/settings_service.dart';
 import '../../widgets/common/loading_widget.dart';
 import '../../widgets/common/error_handler_widget.dart';
 import '../../widgets/approval/pending_approvals_list.dart';
@@ -32,6 +33,12 @@ class _ApprovalScreenState extends State<ApprovalScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   User? _currentUser;
+  final SettingsService _settingsService = SettingsService();
+  String _selectedAcademicYear = 'all';
+  List<String> _academicYears = [];
+  
+  // Filtro de estado para anteproyectos revisados
+  String _selectedReviewedStatus = 'all'; // 'all', 'approved', 'rejected'
 
   @override
   void initState() {
@@ -43,8 +50,12 @@ class _ApprovalScreenState extends State<ApprovalScreen>
     }
 
     // Cargar los datos iniciales
+    _loadAcademicYears();
     context.read<ApprovalBloc>().add(
-      LoadPendingApprovals(tutorId: widget.selectedTutorId),
+      LoadPendingApprovals(
+        tutorId: widget.selectedTutorId,
+        academicYear: _selectedAcademicYear == 'all' ? null : _selectedAcademicYear,
+      ),
     );
   }
 
@@ -55,6 +66,63 @@ class _ApprovalScreenState extends State<ApprovalScreen>
         _currentUser = authState.user;
       });
     }
+  }
+
+  Future<void> _loadAcademicYears() async {
+    // Extraer años académicos de los anteproyectos cargados
+    // Esto se actualizará cuando se carguen los datos
+    final years = <String>{};
+    
+    // También intentar obtener el año activo del sistema
+    try {
+      final activeYear = await _settingsService.getStringSetting('academic_year');
+      if (activeYear != null && activeYear.isNotEmpty) {
+        years.add(activeYear);
+      }
+    } catch (e) {
+      debugPrint('Error cargando año académico activo: $e');
+    }
+    
+    if (mounted) {
+      setState(() {
+        _academicYears = years.toList()..sort((a, b) => b.compareTo(a));
+      });
+    }
+  }
+
+  void _onAcademicYearChanged(String? value) {
+    if (value != null) {
+      setState(() {
+        _selectedAcademicYear = value;
+      });
+      // Recargar datos con el nuevo filtro
+      context.read<ApprovalBloc>().add(
+        LoadPendingApprovals(
+          tutorId: widget.selectedTutorId,
+          academicYear: value == 'all' ? null : value,
+        ),
+      );
+    }
+  }
+
+  void _onReviewedStatusChanged(String? value) {
+    if (value != null) {
+      setState(() {
+        _selectedReviewedStatus = value;
+      });
+    }
+  }
+
+  /// Filtra los anteproyectos revisados por estado
+  List<Map<String, dynamic>> _filterReviewedByStatus(List<Map<String, dynamic>> anteprojects) {
+    if (_selectedReviewedStatus == 'all') {
+      return anteprojects;
+    }
+    
+    return anteprojects.where((anteprojectData) {
+      final status = anteprojectData['status']?.toString();
+      return status == _selectedReviewedStatus;
+    }).toList();
   }
 
   @override
@@ -94,7 +162,12 @@ class _ApprovalScreenState extends State<ApprovalScreen>
                     IconButton(
                       icon: const Icon(Icons.refresh),
                       onPressed: () {
-                        context.read<ApprovalBloc>().add(const RefreshApprovals());
+                        context.read<ApprovalBloc>().add(
+                          LoadPendingApprovals(
+                            tutorId: widget.selectedTutorId,
+                            academicYear: _selectedAcademicYear == 'all' ? null : _selectedAcademicYear,
+                          ),
+                        );
                       },
                       tooltip: l10n.refresh,
                     ),
@@ -104,7 +177,12 @@ class _ApprovalScreenState extends State<ApprovalScreen>
                   IconButton(
                     icon: const Icon(Icons.refresh),
                     onPressed: () {
-                      context.read<ApprovalBloc>().add(const RefreshApprovals());
+                      context.read<ApprovalBloc>().add(
+                        LoadPendingApprovals(
+                          tutorId: widget.selectedTutorId,
+                          academicYear: _selectedAcademicYear == 'all' ? null : _selectedAcademicYear,
+                        ),
+                      );
                     },
                     tooltip: l10n.refresh,
                   ),
@@ -175,6 +253,9 @@ class _ApprovalScreenState extends State<ApprovalScreen>
               backgroundColor: Colors.red,
             ),
           );
+        } else if (state is ApprovalLoaded) {
+          // Extraer años académicos de los datos cargados (en el listener, no en el builder)
+          _updateAcademicYearsFromData(state.pendingApprovals, state.reviewedAnteprojects);
         }
       },
       child: TabBarView(
@@ -195,8 +276,9 @@ class _ApprovalScreenState extends State<ApprovalScreen>
                   },
                 );
               } else if (state is ApprovalLoaded) {
-                return PendingApprovalsList(
-                  anteprojects: state.pendingApprovals,
+                return _buildContentWithFilter(
+                  l10n,
+                  PendingApprovalsList(anteprojects: state.pendingApprovals),
                 );
               } else if (state is ApprovalProcessing) {
                 return const LoadingWidget();
@@ -221,8 +303,11 @@ class _ApprovalScreenState extends State<ApprovalScreen>
                   },
                 );
               } else if (state is ApprovalLoaded) {
-                return ReviewedAnteprojectsList(
-                  anteprojects: state.reviewedAnteprojects,
+                // Filtrar por estado
+                final filteredAnteprojects = _filterReviewedByStatus(state.reviewedAnteprojects);
+                return _buildReviewedContentWithFilters(
+                  l10n,
+                  filteredAnteprojects,
                 );
               } else if (state is ApprovalProcessing) {
                 return const LoadingWidget();
@@ -234,5 +319,169 @@ class _ApprovalScreenState extends State<ApprovalScreen>
         ],
       ),
     );
+  }
+
+  /// Construye el contenido con el filtro de año académico (para pendientes)
+  Widget _buildContentWithFilter(AppLocalizations l10n, Widget listWidget) {
+    return Column(
+      children: [
+        // Filtro de año académico
+        Container(
+          padding: const EdgeInsets.all(16),
+          color: Colors.grey.shade50,
+          child: Row(
+            children: [
+              Text(l10n.year),
+              const SizedBox(width: 8),
+              Expanded(
+                child: DropdownButton<String>(
+                  value: _selectedAcademicYear,
+                  isExpanded: true,
+                  items: [
+                    DropdownMenuItem<String>(
+                      value: 'all',
+                      child: Text(l10n.all),
+                    ),
+                    ..._academicYears.map((year) {
+                      return DropdownMenuItem<String>(
+                        value: year,
+                        child: Text(year),
+                      );
+                    }),
+                  ],
+                  onChanged: _onAcademicYearChanged,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(child: listWidget),
+      ],
+    );
+  }
+
+  /// Construye el contenido con filtros de año académico y estado (para revisados)
+  Widget _buildReviewedContentWithFilters(
+    AppLocalizations l10n,
+    List<Map<String, dynamic>> filteredAnteprojects,
+  ) {
+    return Column(
+      children: [
+        // Filtros: año académico y estado
+        Container(
+          padding: const EdgeInsets.all(16),
+          color: Colors.grey.shade50,
+          child: Column(
+            children: [
+              // Filtro de año académico
+              Row(
+                children: [
+                  Text(l10n.year),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: DropdownButton<String>(
+                      value: _selectedAcademicYear,
+                      isExpanded: true,
+                      items: [
+                        DropdownMenuItem<String>(
+                          value: 'all',
+                          child: Text(l10n.all),
+                        ),
+                        ..._academicYears.map((year) {
+                          return DropdownMenuItem<String>(
+                            value: year,
+                            child: Text(year),
+                          );
+                        }),
+                      ],
+                      onChanged: _onAcademicYearChanged,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              // Filtro de estado
+              Row(
+                children: [
+                  Text(l10n.filterByStatus),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: DropdownButton<String>(
+                      value: _selectedReviewedStatus,
+                      isExpanded: true,
+                      items: [
+                        DropdownMenuItem<String>(
+                          value: 'all',
+                          child: Text(l10n.all),
+                        ),
+                        DropdownMenuItem<String>(
+                          value: 'approved',
+                          child: Row(
+                            children: [
+                              const Icon(Icons.check_circle, color: Colors.green, size: 18),
+                              const SizedBox(width: 8),
+                              Text(l10n.approved),
+                            ],
+                          ),
+                        ),
+                        DropdownMenuItem<String>(
+                          value: 'rejected',
+                          child: Row(
+                            children: [
+                              const Icon(Icons.cancel, color: Colors.red, size: 18),
+                              const SizedBox(width: 8),
+                              Text(l10n.rejected),
+                            ],
+                          ),
+                        ),
+                      ],
+                      onChanged: _onReviewedStatusChanged,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: ReviewedAnteprojectsList(anteprojects: filteredAnteprojects),
+        ),
+      ],
+    );
+  }
+
+  /// Actualiza la lista de años académicos disponibles desde los datos cargados
+  void _updateAcademicYearsFromData(
+    List<Map<String, dynamic>> pendingApprovals,
+    List<Map<String, dynamic>> reviewedAnteprojects,
+  ) {
+    final years = <String>{};
+    
+    for (final anteprojectData in pendingApprovals) {
+      if (anteprojectData.containsKey('academic_year')) {
+        final year = anteprojectData['academic_year']?.toString();
+        if (year != null && year.isNotEmpty) {
+          years.add(year);
+        }
+      }
+    }
+    
+    for (final anteprojectData in reviewedAnteprojects) {
+      if (anteprojectData.containsKey('academic_year')) {
+        final year = anteprojectData['academic_year']?.toString();
+        if (year != null && year.isNotEmpty) {
+          years.add(year);
+        }
+      }
+    }
+    
+    final sortedYears = years.toList()..sort((a, b) => b.compareTo(a));
+    
+    // Solo actualizar si hay cambios
+    if (sortedYears.join(',') != _academicYears.join(',')) {
+      setState(() {
+        _academicYears = sortedYears;
+      });
+    }
   }
 }

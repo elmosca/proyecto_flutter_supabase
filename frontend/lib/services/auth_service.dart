@@ -182,6 +182,12 @@ class AuthService {
           (status) => status.name == response['status'],
           orElse: () => UserStatus.active,
         ),
+        nre: response['nre'] as String?,
+        phone: response['phone'] as String?,
+        biography: response['biography'] as String?,
+        specialty: response['specialty'] as String?,
+        tutorId: response['tutor_id'] as int?,
+        academicYear: response['academic_year'] as String?,
         createdAt: DateTime.parse(response['created_at'] as String),
         updatedAt: DateTime.parse(response['updated_at'] as String),
       );

@@ -28,11 +28,19 @@ CREATE TABLE users (
     phone VARCHAR(20) NULL,
     biography TEXT NULL,
     status user_status NOT NULL DEFAULT 'active',
+    specialty VARCHAR(100) NULL, -- Especialidad del estudiante (ej: DAM, DAW)
+    tutor_id INT NULL, -- FK al tutor asignado (solo para estudiantes)
+    academic_year VARCHAR(20) NULL, -- Año académico del estudiante (ej: "2025-2026"). Usado para control de permisos.
     password_hash VARCHAR(255) NULL, -- Deprecated: ahora se gestiona con Supabase Auth
     email_verified_at TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (tutor_id) REFERENCES users(id) ON DELETE SET NULL
 );
+
+-- Índice para optimizar consultas por año académico
+CREATE INDEX idx_users_academic_year ON users(academic_year);
 
 -- =====================================================
 -- 2. TABLA: dam_objectives (Objetivos del ciclo DAM)
@@ -559,6 +567,40 @@ CREATE TRIGGER update_users_updated_at
     BEFORE UPDATE ON users
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
+
+-- =====================================================
+-- FUNCIÓN Y TRIGGER PARA ASIGNAR AÑO ACADÉMICO AUTOMÁTICAMENTE
+-- =====================================================
+
+-- Función que asigna el año académico vigente a nuevos estudiantes
+CREATE OR REPLACE FUNCTION assign_academic_year_to_student()
+RETURNS TRIGGER AS $$
+DECLARE
+    active_academic_year TEXT;
+BEGIN
+    -- Solo procesar si es un estudiante y no tiene año académico asignado
+    IF NEW.role = 'student' AND (NEW.academic_year IS NULL OR NEW.academic_year = '') THEN
+        -- Obtener el año académico activo del sistema
+        SELECT setting_value INTO active_academic_year
+        FROM system_settings
+        WHERE setting_key = 'academic_year'
+        LIMIT 1;
+        
+        -- Si hay año activo, asignarlo al estudiante
+        IF active_academic_year IS NOT NULL AND active_academic_year != '' THEN
+            NEW.academic_year := active_academic_year;
+        END IF;
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger que se ejecuta antes de insertar un nuevo usuario
+CREATE TRIGGER assign_academic_year_trigger
+    BEFORE INSERT ON users
+    FOR EACH ROW
+    EXECUTE FUNCTION assign_academic_year_to_student();
 
 -- Trigger para anteprojects
 CREATE TRIGGER update_anteprojects_updated_at
@@ -2658,4 +2700,47 @@ SELECT cron.schedule(
 DO $$
 BEGIN
     RAISE NOTICE 'Automatización del año académico configurada para el 1 de septiembre';
+END $$;
+
+
+-- Fuente: 20251215000001_add_academic_year_to_users.sql
+-- =====================================================
+-- MIGRACIÓN: Agregar campo academic_year a la tabla users
+-- Fecha: 2025-12-15
+-- Descripción: Agrega el campo academic_year a la tabla users para
+--              permitir el control de permisos de escritura basado
+--              en el año académico.
+-- =====================================================
+
+-- Nota: La columna, índice, función y trigger ya están incluidos
+-- en las secciones anteriores del schema. Esta sección solo actualiza
+-- los estudiantes existentes que no tengan año académico asignado.
+
+-- Actualizar estudiantes existentes sin año académico
+DO $$
+DECLARE
+    active_academic_year TEXT;
+    updated_count INTEGER;
+BEGIN
+    -- Obtener el año académico activo del sistema
+    SELECT setting_value INTO active_academic_year
+    FROM system_settings
+    WHERE setting_key = 'academic_year'
+    LIMIT 1;
+    
+    -- Si hay año activo, actualizar estudiantes sin año asignado
+    IF active_academic_year IS NOT NULL AND active_academic_year != '' THEN
+        UPDATE users
+        SET academic_year = active_academic_year,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE role = 'student' 
+          AND (academic_year IS NULL OR academic_year = '');
+        
+        GET DIAGNOSTICS updated_count = ROW_COUNT;
+        
+        IF updated_count > 0 THEN
+            RAISE NOTICE 'Migración: % estudiantes actualizados con año académico %', 
+                updated_count, active_academic_year;
+        END IF;
+    END IF;
 END $$;

@@ -33,6 +33,7 @@ class _MyAnteprojectsListState extends State<MyAnteprojectsList> {
   bool? _hasDraftAnteproject; // null = cargando, true/false = resultado
   bool? _isWrongAcademicYear; // null = cargando, true/false = resultado
   bool _isReadOnly = false; // Modo solo lectura para años académicos anteriores
+  User? _currentUser; // Usuario actualizado con academicYear
 
   @override
   void initState() {
@@ -101,6 +102,23 @@ class _MyAnteprojectsListState extends State<MyAnteprojectsList> {
 
   Future<void> _checkRestrictions() async {
     try {
+      // Obtener el usuario más actualizado posible
+      // Prioridad: 1) AuthBloc (puede tener datos más frescos), 2) widget.user
+      User? currentUser = widget.user;
+      final authState = context.read<AuthBloc>().state;
+      if (authState is AuthAuthenticated) {
+        // Si el AuthBloc tiene el academicYear y widget.user no, usar AuthBloc
+        if ((currentUser?.academicYear == null || currentUser!.academicYear!.isEmpty) &&
+            authState.user.academicYear != null && 
+            authState.user.academicYear!.isNotEmpty) {
+          currentUser = authState.user;
+          debugPrint('🔄 MyAnteprojectsList: Usando usuario del AuthBloc con academicYear: ${currentUser.academicYear}');
+        }
+      }
+      
+      // Guardar referencia al usuario actualizado para el banner
+      _currentUser = currentUser;
+      
       // Verificar todas las restricciones en paralelo
       final results = await Future.wait([
         _anteprojectsService.hasApprovedAnteproject(),
@@ -112,18 +130,23 @@ class _MyAnteprojectsListState extends State<MyAnteprojectsList> {
       final hasDraft = results[1] as bool;
       final activeAcademicYear = results[2] as String?;
       
-      // Verificar año académico
+      // Verificar año académico - solo marcar como incorrecto si el usuario tiene año asignado
       bool wrongAcademicYear = false;
       if (activeAcademicYear != null && 
           activeAcademicYear.isNotEmpty &&
-          widget.user?.academicYear != activeAcademicYear) {
+          currentUser?.academicYear != null &&
+          currentUser!.academicYear!.isNotEmpty &&
+          currentUser.academicYear != activeAcademicYear) {
         wrongAcademicYear = true;
       }
       
       // Verificar si está en modo solo lectura usando el servicio
+      // Solo si el usuario tiene academicYear definido
       bool isReadOnly = false;
-      if (widget.user != null) {
-        isReadOnly = await _academicPermissionsService.isReadOnly(widget.user!);
+      if (currentUser != null && 
+          currentUser.academicYear != null && 
+          currentUser.academicYear!.isNotEmpty) {
+        isReadOnly = await _academicPermissionsService.isReadOnly(currentUser);
       }
       
       if (mounted) {
@@ -517,11 +540,16 @@ class _MyAnteprojectsListState extends State<MyAnteprojectsList> {
     );
     
     // Envolver con banner de solo lectura si aplica
-    final body = _isReadOnly
+    // Solo mostrar si _isReadOnly Y el usuario tiene academicYear definido
+    final showReadOnlyBanner = _isReadOnly && 
+        _currentUser?.academicYear != null && 
+        _currentUser!.academicYear!.isNotEmpty;
+    
+    final body = showReadOnlyBanner
         ? Column(
             children: [
               ReadOnlyBanner(
-                academicYear: widget.user?.academicYear ?? '',
+                academicYear: _currentUser?.academicYear ?? '',
               ),
               Expanded(child: listContent),
             ],

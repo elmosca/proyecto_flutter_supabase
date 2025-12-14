@@ -165,8 +165,26 @@ class ProjectsService {
 
       // Asegurar que la respuesta sea un Map<String, dynamic>
       final projectData = Map<String, dynamic>.from(response);
+
+      // Mapear campos snake_case a camelCase esperados por Project.fromJson
+      final mappedData = {
+        'id': projectData['id'],
+        'title': projectData['title'],
+        'description': projectData['description'],
+        'status': projectData['status'],
+        'startDate': projectData['start_date'],
+        'estimatedEndDate': projectData['estimated_end_date'],
+        'actualEndDate': projectData['actual_end_date'],
+        'tutorId': projectData['tutor_id'],
+        'anteprojectId': projectData['anteproject_id'],
+        'githubRepositoryUrl': projectData['github_repository_url'],
+        'githubMainBranch': projectData['github_main_branch'] ?? 'main',
+        'lastActivityAt': projectData['last_activity_at'],
+        'createdAt': projectData['created_at'],
+        'updatedAt': projectData['updated_at'],
+      };
       
-      return Project.fromJson(projectData);
+      return Project.fromJson(mappedData);
     } catch (e) {
       debugPrint('Error al obtener proyecto ID $id: $e');
       return null;

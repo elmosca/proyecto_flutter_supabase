@@ -68,23 +68,30 @@ class AcademicPermissionsService {
   Future<bool> canWriteByAcademicYear(String? studentAcademicYear) async {
     final activeYear = await getActiveAcademicYear();
 
+    debugPrint('========================================');
+    debugPrint('🔐 VERIFICACIÓN DE PERMISOS ACADÉMICOS');
+    debugPrint('   Año del estudiante: "${studentAcademicYear ?? "(null)"}"');
+    debugPrint('   Año activo del sistema: "${activeYear ?? "(null)"}"');
+
     // Si no hay año activo configurado en el sistema, permitir (configuración incompleta)
     if (activeYear == null || activeYear.isEmpty) {
-      debugPrint('⚠️ No hay año académico activo configurado en el sistema');
+      debugPrint('⚠️ No hay año académico activo configurado en el sistema -> PERMITIR ESCRITURA');
+      debugPrint('========================================');
       return true;
     }
 
     // Si el estudiante no tiene año académico asignado, DENEGAR escritura (modo seguro)
     // Esto evita que sesiones antiguas sin el campo tengan permisos de escritura
     if (studentAcademicYear == null || studentAcademicYear.isEmpty) {
-      debugPrint(
-          '🔐 Estudiante sin año académico asignado -> SOLO LECTURA (por seguridad)');
+      debugPrint('🔐 Estudiante sin año académico asignado -> SOLO LECTURA (por seguridad)');
+      debugPrint('========================================');
       return false;
     }
 
     final canWrite = studentAcademicYear == activeYear;
-    debugPrint(
-        '🔐 Verificación de permisos: Estudiante($studentAcademicYear) vs Activo($activeYear) = ${canWrite ? "ESCRITURA" : "SOLO LECTURA"}');
+    debugPrint('   Comparación: "$studentAcademicYear" == "$activeYear" -> $canWrite');
+    debugPrint('   Resultado: ${canWrite ? "✅ ESCRITURA PERMITIDA" : "❌ SOLO LECTURA"}');
+    debugPrint('========================================');
 
     return canWrite;
   }

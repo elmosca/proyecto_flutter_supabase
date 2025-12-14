@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../blocs/auth_bloc.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/user.dart';
 import '../../router/app_router.dart';
 import '../../services/projects_service.dart';
+import '../../services/user_service.dart';
 
 class AppSideDrawer extends StatefulWidget {
   final User user;
@@ -17,11 +20,40 @@ class AppSideDrawer extends StatefulWidget {
 
 class _AppSideDrawerState extends State<AppSideDrawer> {
   bool _hasApprovedProject = false;
+  User? _refreshedUser;
+  final UserService _userService = UserService();
 
   @override
   void initState() {
     super.initState();
     _checkApprovedProject();
+    _loadCompleteUserData();
+  }
+
+  /// Carga los datos completos del usuario desde la API si falta el año académico
+  Future<void> _loadCompleteUserData() async {
+    // Solo para estudiantes sin año académico
+    if (widget.user.role != UserRole.student) return;
+    if (widget.user.academicYear != null && widget.user.academicYear!.isNotEmpty) return;
+
+    try {
+      debugPrint('🔄 Drawer: Cargando datos completos del usuario ${widget.user.id}...');
+      final user = await _userService.getUserById(widget.user.id);
+      
+      if (user != null && mounted) {
+        debugPrint('✅ Drawer: Usuario cargado con año académico: ${user.academicYear}');
+        setState(() {
+          _refreshedUser = user;
+        });
+        
+        // Actualizar el AuthBloc para que otras pantallas también tengan los datos
+        if (user.academicYear != null && user.academicYear!.isNotEmpty) {
+          context.read<AuthBloc>().add(AuthUserChanged(user: user));
+        }
+      }
+    } catch (e) {
+      debugPrint('❌ Drawer: Error al cargar datos del usuario: $e');
+    }
   }
 
   Future<void> _checkApprovedProject() async {
@@ -55,13 +87,16 @@ class _AppSideDrawerState extends State<AppSideDrawer> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final items = _menuItemsForRole(l10n, widget.user.role, _hasApprovedProject);
+    // Usar el usuario refrescado si está disponible, sino el original
+    final currentUser = _refreshedUser ?? widget.user;
+    final items = _menuItemsForRole(l10n, currentUser.role, _hasApprovedProject);
 
     // Debug: Verificar que se está construyendo el AppSideDrawer - NUEVO DRAWER
     debugPrint(
-      '📱 AppSideDrawer: Construyendo Drawer para usuario: ${widget.user.fullName}',
+      '📱 AppSideDrawer: Construyendo Drawer para usuario: ${currentUser.fullName}',
     );
-    debugPrint('📱 AppSideDrawer: Rol del usuario: ${widget.user.role}');
+    debugPrint('📱 AppSideDrawer: Rol del usuario: ${currentUser.role}');
+    debugPrint('📱 AppSideDrawer: Año académico: ${currentUser.academicYear ?? "(no cargado)"}');
     debugPrint('📱 AppSideDrawer: Tiene proyecto aprobado: $_hasApprovedProject');
     debugPrint('📱 AppSideDrawer: Número de items del menú: ${items.length}');
 
@@ -70,7 +105,7 @@ class _AppSideDrawerState extends State<AppSideDrawer> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            _buildHeader(l10n, widget.user),
+            _buildHeader(l10n, currentUser),
             ...items.map(
               (item) => ListTile(
                 leading: Icon(item.icon),
@@ -91,14 +126,14 @@ class _AppSideDrawerState extends State<AppSideDrawer> {
                     // Pequeño delay para asegurar que las pantallas se cierren
                     Future.delayed(const Duration(milliseconds: 100), () {
                       if (context.mounted) {
-                        item.onTap(context, widget.user);
+                        item.onTap(context, currentUser);
                       }
                     });
                     return;
                   }
 
                   // Si no hay pantallas modales, navegar directamente
-                  item.onTap(context, widget.user);
+                  item.onTap(context, currentUser);
                 },
               ),
             ),

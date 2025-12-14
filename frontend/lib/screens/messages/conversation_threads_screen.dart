@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async'; // Para StreamSubscription
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/auth_bloc.dart';
 import '../../models/project.dart';
@@ -8,6 +9,7 @@ import '../../models/user.dart';
 import '../../services/conversation_threads_service.dart';
 import '../../services/anteprojects_service.dart';
 import '../../services/academic_permissions_service.dart';
+import '../../services/user_service.dart';
 import '../../widgets/navigation/app_bar_actions.dart';
 import '../../widgets/common/read_only_banner.dart';
 import '../../l10n/app_localizations.dart';
@@ -48,6 +50,7 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
   final AnteprojectsService _anteprojectsService = AnteprojectsService();
   final AcademicPermissionsService _academicPermissionsService =
       AcademicPermissionsService();
+  final UserService _userService = UserService();
 
   List<ConversationThread> _threads = [];
   bool _isLoading = true;
@@ -55,13 +58,33 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
   User? _currentUser;
   bool? _hasApprovedAnteproject; // null = cargando, true/false = resultado
   bool? _isReadOnly; // null = verificando, true/false = resultado
+  StreamSubscription<AuthState>? _authSubscription;
 
   @override
   void initState() {
     super.initState();
+    // Suscribirse a cambios del AuthBloc para mantener el usuario actualizado
+    _authSubscription = context.read<AuthBloc>().stream.listen((state) {
+      if (state is AuthAuthenticated && mounted) {
+        if (_currentUser != state.user) {
+          debugPrint('🔄 ConversationThreadsScreen: Usuario actualizado desde AuthBloc');
+          setState(() {
+            _currentUser = state.user;
+          });
+          _checkReadOnlyStatus(state.user);
+        }
+      }
+    });
+
     _loadCurrentUser();
     _loadThreads();
     _checkApprovedAnteproject();
+  }
+
+  @override
+  void dispose() {
+    _authSubscription?.cancel();
+    super.dispose();
   }
 
   Future<void> _checkApprovedAnteproject() async {
@@ -95,21 +118,54 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
       setState(() {
         _currentUser = user;
       });
-      // Verificar modo solo lectura (solo para estudiantes)
-      if (user.role == UserRole.student) {
-        final isReadOnly = await _academicPermissionsService.isReadOnly(user);
-        if (mounted) {
-          setState(() {
-            _isReadOnly = isReadOnly;
-          });
+      await _checkReadOnlyStatus(user);
+    }
+  }
+
+  Future<void> _checkReadOnlyStatus(User user) async {
+    if (user.role == UserRole.student) {
+      // Si el año académico es nulo o vacío, intentar recargarlo desde la API
+      if (user.academicYear == null || user.academicYear!.isEmpty) {
+        debugPrint('⚠️ ConversationThreads: Usuario sin año académico, intentando recargar desde API...');
+        try {
+          final refreshedUser = await _userService.getUserById(user.id);
+          if (refreshedUser != null && mounted) {
+            debugPrint('✅ Usuario recargado con año académico: ${refreshedUser.academicYear}');
+            // Actualizar el usuario local y el AuthBloc
+            setState(() {
+              _currentUser = refreshedUser;
+            });
+            context.read<AuthBloc>().add(AuthUserChanged(user: refreshedUser));
+            // Ahora verificar permisos con el usuario completo
+            if (refreshedUser.academicYear != null && refreshedUser.academicYear!.isNotEmpty) {
+              final isReadOnly = await _academicPermissionsService.isReadOnly(refreshedUser);
+              if (mounted) {
+                setState(() {
+                  _isReadOnly = isReadOnly;
+                });
+              }
+            }
+          } else {
+            debugPrint('❌ No se pudo recargar el usuario');
+          }
+        } catch (e) {
+          debugPrint('❌ Error al recargar usuario: $e');
         }
-      } else {
-        // Tutores y admins nunca están en modo solo lectura
-        if (mounted) {
-      setState(() {
-            _isReadOnly = false;
-          });
-        }
+        return; 
+      }
+
+      final isReadOnly = await _academicPermissionsService.isReadOnly(user);
+      if (mounted) {
+        setState(() {
+          _isReadOnly = isReadOnly;
+        });
+      }
+    } else {
+      // Tutores y admins nunca están en modo solo lectura
+      if (mounted) {
+        setState(() {
+          _isReadOnly = false;
+        });
       }
     }
   }

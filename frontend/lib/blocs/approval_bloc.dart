@@ -14,15 +14,21 @@ abstract class ApprovalEvent extends Equatable {
 
 class LoadPendingApprovals extends ApprovalEvent {
   final int? tutorId;
+  final String? academicYear;
 
-  const LoadPendingApprovals({this.tutorId});
+  const LoadPendingApprovals({this.tutorId, this.academicYear});
 
   @override
-  List<Object?> get props => [tutorId];
+  List<Object?> get props => [tutorId, academicYear];
 }
 
 class LoadReviewedAnteprojects extends ApprovalEvent {
-  const LoadReviewedAnteprojects();
+  final String? academicYear;
+
+  const LoadReviewedAnteprojects({this.academicYear});
+
+  @override
+  List<Object?> get props => [academicYear];
 }
 
 class ApproveAnteproject extends ApprovalEvent {
@@ -82,11 +88,13 @@ class ApprovalLoaded extends ApprovalState {
   final List<Map<String, dynamic>> pendingApprovals;
   final List<Map<String, dynamic>> reviewedAnteprojects;
   final int? selectedTutorId;
+  final String? selectedAcademicYear;
 
   const ApprovalLoaded({
     required this.pendingApprovals,
     required this.reviewedAnteprojects,
     this.selectedTutorId,
+    this.selectedAcademicYear,
   });
 
   @override
@@ -94,17 +102,20 @@ class ApprovalLoaded extends ApprovalState {
     pendingApprovals,
     reviewedAnteprojects,
     selectedTutorId,
+    selectedAcademicYear,
   ];
 
   ApprovalLoaded copyWith({
     List<Map<String, dynamic>>? pendingApprovals,
     List<Map<String, dynamic>>? reviewedAnteprojects,
     int? selectedTutorId,
+    String? selectedAcademicYear,
   }) {
     return ApprovalLoaded(
       pendingApprovals: pendingApprovals ?? this.pendingApprovals,
       reviewedAnteprojects: reviewedAnteprojects ?? this.reviewedAnteprojects,
       selectedTutorId: selectedTutorId ?? this.selectedTutorId,
+      selectedAcademicYear: selectedAcademicYear ?? this.selectedAcademicYear,
     );
   }
 }
@@ -166,15 +177,20 @@ class ApprovalBloc extends Bloc<ApprovalEvent, ApprovalState> {
 
       final pendingApprovals = await _approvalService.getPendingApprovals(
         tutorId: event.tutorId,
+        academicYear: event.academicYear,
       );
       final reviewedAnteprojects = await _approvalService
-          .getReviewedAnteprojects(tutorId: event.tutorId);
+          .getReviewedAnteprojects(
+        tutorId: event.tutorId,
+        academicYear: event.academicYear,
+      );
 
       emit(
         ApprovalLoaded(
           pendingApprovals: pendingApprovals,
           reviewedAnteprojects: reviewedAnteprojects,
           selectedTutorId: event.tutorId,
+          selectedAcademicYear: event.academicYear,
         ),
       );
     } catch (e) {
@@ -196,7 +212,10 @@ class ApprovalBloc extends Bloc<ApprovalEvent, ApprovalState> {
       if (state is ApprovalLoaded) {
         final currentState = state as ApprovalLoaded;
         final reviewedAnteprojects = await _approvalService
-            .getReviewedAnteprojects(tutorId: currentState.selectedTutorId);
+            .getReviewedAnteprojects(
+          tutorId: currentState.selectedTutorId,
+          academicYear: event.academicYear,
+        );
 
         emit(currentState.copyWith(reviewedAnteprojects: reviewedAnteprojects));
       } else {
@@ -211,6 +230,7 @@ class ApprovalBloc extends Bloc<ApprovalEvent, ApprovalState> {
             pendingApprovals: pendingApprovals,
             reviewedAnteprojects: reviewedAnteprojects,
             selectedTutorId: null,
+            selectedAcademicYear: event.academicYear,
           ),
         );
       }
@@ -318,21 +338,29 @@ class ApprovalBloc extends Bloc<ApprovalEvent, ApprovalState> {
   ) async {
     try {
       int? tutorId;
+      String? academicYear;
       if (state is ApprovalLoaded) {
-        tutorId = (state as ApprovalLoaded).selectedTutorId;
+        final currentState = state as ApprovalLoaded;
+        tutorId = currentState.selectedTutorId;
+        academicYear = currentState.selectedAcademicYear;
       }
 
       final pendingApprovals = await _approvalService.getPendingApprovals(
         tutorId: tutorId,
+        academicYear: academicYear,
       );
       final reviewedAnteprojects = await _approvalService
-          .getReviewedAnteprojects(tutorId: tutorId);
+          .getReviewedAnteprojects(
+        tutorId: tutorId,
+        academicYear: academicYear,
+      );
 
       emit(
         ApprovalLoaded(
           pendingApprovals: pendingApprovals,
           reviewedAnteprojects: reviewedAnteprojects,
           selectedTutorId: tutorId,
+          selectedAcademicYear: academicYear,
         ),
       );
     } catch (e) {

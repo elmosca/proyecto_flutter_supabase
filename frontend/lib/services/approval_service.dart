@@ -234,7 +234,11 @@ class ApprovalService {
 
   /// Obtiene anteproyectos pendientes de aprobación para el tutor actual con información de estudiantes
   /// Retorna una lista de mapas que incluyen el anteproyecto y la información del estudiante
-  Future<List<Map<String, dynamic>>> getPendingApprovals({int? tutorId}) async {
+  /// [academicYear]: Filtro opcional por año académico (null = todos los años)
+  Future<List<Map<String, dynamic>>> getPendingApprovals({
+    int? tutorId,
+    String? academicYear,
+  }) async {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
@@ -264,7 +268,7 @@ class ApprovalService {
       
       // Obtener anteproyectos con información de estudiantes
       // Usamos relaciones opcionales para no excluir anteproyectos sin estudiantes
-      final response = await _supabase
+      var query = _supabase
           .from('anteprojects')
           .select('''
             *,
@@ -281,8 +285,14 @@ class ApprovalService {
             )
           ''')
           .inFilter('status', ['submitted', 'under_review'])
-          .eq('tutor_id', userIdToFilter)
-          .order('submitted_at', ascending: true);
+          .eq('tutor_id', userIdToFilter);
+      
+      // Filtrar por año académico si se proporciona
+      if (academicYear != null && academicYear.isNotEmpty && academicYear != 'all') {
+        query = query.eq('academic_year', academicYear);
+      }
+      
+      final response = await query.order('submitted_at', ascending: true);
       
       debugPrint('🔍 ApprovalService: Respuesta recibida - ${response.length} anteproyectos encontrados');
 
@@ -383,7 +393,10 @@ class ApprovalService {
 
   /// Obtiene anteproyectos ya revisados por el tutor actual con información de estudiantes
   /// Retorna una lista de mapas que incluyen el anteproyecto y la información del estudiante
-  Future<List<Map<String, dynamic>>> getReviewedAnteprojects({int? tutorId}) async {
+  Future<List<Map<String, dynamic>>> getReviewedAnteprojects({
+    int? tutorId,
+    String? academicYear,
+  }) async {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
@@ -410,7 +423,7 @@ class ApprovalService {
 
       // Obtener anteproyectos con información de estudiantes
       // Usamos relaciones opcionales para no excluir anteproyectos sin estudiantes
-      final response = await _supabase
+      var query = _supabase
           .from('anteprojects')
           .select('''
             *,
@@ -427,8 +440,14 @@ class ApprovalService {
             )
           ''')
           .inFilter('status', ['approved', 'rejected'])
-          .eq('tutor_id', userIdToFilter)
-          .order('reviewed_at', ascending: false);
+          .eq('tutor_id', userIdToFilter);
+      
+      // Filtrar por año académico si se proporciona
+      if (academicYear != null && academicYear.isNotEmpty && academicYear != 'all') {
+        query = query.eq('academic_year', academicYear);
+      }
+      
+      final response = await query.order('reviewed_at', ascending: false);
 
       // Función auxiliar para convertir objetos minificados de Supabase
       Map<String, dynamic> safeConvertMap(dynamic data) {

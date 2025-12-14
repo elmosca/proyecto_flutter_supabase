@@ -21,6 +21,7 @@ import '../../services/academic_permissions_service.dart';
 import '../../widgets/navigation/app_top_bar.dart';
 import '../../widgets/navigation/app_side_drawer.dart';
 import '../../widgets/common/read_only_banner.dart';
+import '../forms/anteproject_form.dart';
 
 class StudentDashboardScreen extends StatefulWidget {
   final User user;
@@ -146,6 +147,12 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
           _isLoading = false;
           _isReadOnly = isReadOnly;
         });
+
+        // Actualizar el AuthBloc si obtuvimos un usuario más fresco
+        // Esto asegura que otras pantallas (como Mensajes) tengan los datos actualizados (ej. año académico)
+        if (refreshedUser != null) {
+          context.read<AuthBloc>().add(AuthUserChanged(user: refreshedUser));
+        }
       }
     } catch (e, stackTrace) {
       debugPrint('❌ Error crítico al cargar datos del dashboard: $e');
@@ -1072,14 +1079,18 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
       
       // Si no tiene restricciones, navegar al formulario de creación
       if (mounted) {
-        context.go('/anteprojects/new', extra: widget.user);
+        await Navigator.of(context)
+            .push(MaterialPageRoute(builder: (_) => const AnteprojectForm()))
+            .then((_) => _loadData());
       }
     } catch (e) {
       debugPrint('Error al verificar restricciones de anteproyecto: $e');
       // Si hay error, permitir navegar de todas formas
       // El servicio lanzará la excepción si realmente hay restricciones
       if (mounted) {
-        context.go('/anteprojects/new', extra: widget.user);
+        await Navigator.of(context)
+            .push(MaterialPageRoute(builder: (_) => const AnteprojectForm()))
+            .then((_) => _loadData());
       }
     }
   }

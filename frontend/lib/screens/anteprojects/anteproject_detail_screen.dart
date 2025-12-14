@@ -494,6 +494,10 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
   }
 
   Widget _buildExpectedResultsCard() {
+    // Convertir expectedResults a una lista normalizada de items para mostrar
+    final List<Map<String, String>> normalizedResults =
+        _normalizeExpectedResults(_anteproject.expectedResults);
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -505,84 +509,52 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
-            if (_anteproject.expectedResults.isNotEmpty)
-              ..._anteproject.expectedResults.entries.map((entry) {
-                // Verificar si el valor es un Map (estructura de hito) o String
-                if (entry.value is Map<String, dynamic>) {
-                  final hitoData = entry.value as Map<String, dynamic>;
-                  final title = hitoData['title'] ?? entry.key;
-                  final description = hitoData['description'] ?? '';
+            if (normalizedResults.isNotEmpty)
+              ...normalizedResults.map((item) {
+                final title = item['title'] ?? '';
+                final description = item['description'] ?? '';
 
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 8,
-                          height: 8,
-                          margin: const EdgeInsets.only(top: 6, right: 8),
-                          decoration: const BoxDecoration(
-                            color: Colors.blue,
-                            shape: BoxShape.circle,
-                          ),
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 8,
+                        height: 8,
+                        margin: const EdgeInsets.only(top: 6, right: 8),
+                        decoration: const BoxDecoration(
+                          color: Colors.blue,
+                          shape: BoxShape.circle,
                         ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              title,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                              ),
+                            ),
+                            if (description.isNotEmpty) ...[
+                              const SizedBox(height: 4),
                               Text(
-                                title,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
+                                description,
+                                style: TextStyle(
+                                  color: Colors.grey.shade600,
+                                  fontSize: 14,
                                 ),
                               ),
-                              if (description.isNotEmpty) ...[
-                                const SizedBox(height: 4),
-                                Text(
-                                  description,
-                                  style: TextStyle(
-                                    color: Colors.grey.shade600,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
                             ],
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
-                  );
-                } else {
-                  // Formato legacy: solo texto
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 8,
-                          height: 8,
-                          margin: const EdgeInsets.only(top: 6, right: 8),
-                          decoration: const BoxDecoration(
-                            color: Colors.blue,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            entry.value.toString(),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
+                      ),
+                    ],
+                  ),
+                );
               })
             else
               Text(
@@ -596,6 +568,103 @@ class _AnteprojectDetailScreenState extends State<AnteprojectDetailScreen>
         ),
       ),
     );
+  }
+
+  /// Normaliza los diferentes formatos de expectedResults a una lista uniforme
+  List<Map<String, String>> _normalizeExpectedResults(
+    Map<String, dynamic> expectedResults,
+  ) {
+    final List<Map<String, String>> results = [];
+
+    if (expectedResults.isEmpty) {
+      return results;
+    }
+
+    // Formato antiguo de BD: {hitos: [{numero, nombre, descripcion, ...}], objetivos: [...]}
+    if (expectedResults.containsKey('hitos') &&
+        expectedResults['hitos'] is List) {
+      final hitosArray = expectedResults['hitos'] as List;
+      for (final hitoData in hitosArray) {
+        if (hitoData is Map) {
+          final title = (hitoData['nombre'] ?? hitoData['title'] ?? '').toString();
+          final description =
+              (hitoData['descripcion'] ?? hitoData['description'] ?? '').toString();
+          
+          // Agregar información adicional si existe (fechas, duración)
+          final fechaInicio = hitoData['fecha_inicio']?.toString();
+          final fechaFin = hitoData['fecha_fin']?.toString();
+          final duracion = hitoData['duracion']?.toString();
+          
+          String fullDescription = description;
+          if (fechaInicio != null || fechaFin != null || duracion != null) {
+            final List<String> extras = [];
+            if (fechaInicio != null) extras.add('Inicio: $fechaInicio');
+            if (fechaFin != null) extras.add('Fin: $fechaFin');
+            if (duracion != null) extras.add('Duración: $duracion');
+            if (fullDescription.isNotEmpty) {
+              fullDescription = '$fullDescription\n${extras.join(' | ')}';
+            } else {
+              fullDescription = extras.join(' | ');
+            }
+          }
+          
+          if (title.isNotEmpty) {
+            results.add({'title': title, 'description': fullDescription});
+          }
+        }
+      }
+
+      // También procesar objetivos si existen
+      if (expectedResults.containsKey('objetivos') &&
+          expectedResults['objetivos'] is List) {
+        final objetivosArray = expectedResults['objetivos'] as List;
+        for (final objetivo in objetivosArray) {
+          if (objetivo is String && objetivo.isNotEmpty) {
+            results.add({'title': objetivo, 'description': ''});
+          }
+        }
+      }
+
+      return results;
+    }
+
+    // Formato nuevo del formulario: {hito_id: {title, description}}
+    // o formato legacy: {key: "texto"}
+    for (final entry in expectedResults.entries) {
+      // Ignorar claves especiales
+      if (entry.key == 'objetivos' || entry.key == 'hitos') continue;
+
+      if (entry.value is Map) {
+        // Formato nuevo: {hito_id: {title: "...", description: "..."}}
+        final Map<dynamic, dynamic> valueMap = entry.value as Map;
+        final title =
+            (valueMap['title'] ?? valueMap['nombre'] ?? entry.key).toString();
+        final description =
+            (valueMap['description'] ?? valueMap['descripcion'] ?? '').toString();
+        results.add({'title': title, 'description': description});
+      } else if (entry.value is String) {
+        // Formato legacy simple: {key: "texto"}
+        results.add({'title': entry.value.toString(), 'description': ''});
+      } else if (entry.value is List) {
+        // Lista de items (ej: objetivos como array de strings)
+        final list = entry.value as List;
+        for (final item in list) {
+          if (item is String && item.isNotEmpty) {
+            results.add({'title': item, 'description': ''});
+          } else if (item is Map) {
+            final title =
+                (item['nombre'] ?? item['title'] ?? '').toString();
+            final description =
+                (item['descripcion'] ?? item['description'] ?? '').toString();
+            if (title.isNotEmpty) {
+              results.add({'title': title, 'description': description});
+            }
+          }
+        }
+      }
+    }
+
+    return results;
   }
 
   Widget _buildTimelineCard() {
