@@ -60,6 +60,13 @@ El dashboard muestra tarjetas con las métricas más importantes:
 - **Anteproyectos Pendientes:** Cuántos anteproyectos tiene que revisar.
 - **Proyectos Activos:** Cuántos proyectos de sus estudiantes están en desarrollo.
 
+### 1.4. Filtrado por Año Académico
+
+El dashboard incluye un selector de **Año Académico** en la parte superior derecha de la sección de estudiantes.
+- Permite filtrar la lista de estudiantes y las estadísticas mostradas.
+- Se cargan dinámicamente los años académicos disponibles basados en los estudiantes asignados.
+- Por defecto selecciona el año académico más reciente con datos.
+
 ---
 
 ## 2. Gestión de Estudiantes
@@ -91,7 +98,15 @@ Desde el dashboard, el tutor puede ir a la pantalla de revisión de anteproyecto
 
 La pantalla muestra una lista de los anteproyectos que sus estudiantes han enviado para revisión (estado `submitted`).
 
-### 3.3. Revisar un anteproyecto
+### 3.3. Filtrado y Búsqueda
+
+La pantalla de revisión de anteproyectos incluye herramientas avanzadas de filtrado:
+- **Búsqueda:** Por título, descripción, nombre del estudiante o email.
+- **Año Académico:** Selector para filtrar anteproyectos por año académico específico.
+- **Estado:** Filtros rápidos para ver anteproyectos `Pendientes`, `En Revisión`, `Aprobados`, etc.
+- **Modo Consulta:** Si se selecciona un año académico anterior (no activo), la pantalla entra en modo consulta, deshabilitando las acciones de modificación.
+
+### 3.4. Revisar un anteproyecto
 
 El tutor puede abrir un anteproyecto para ver todos sus detalles. Desde aquí, puede hacer tres cosas:
 

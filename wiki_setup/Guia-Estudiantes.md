@@ -121,7 +121,7 @@ Tu vista inicial que te da la bienvenida y te orienta sobre los siguientes pasos
    - Tu nombre completo
    - Tu email
    - Tu especialidad (si está asignada)
-   - Tu año académico
+   - Tu año académico (Si no es el actual, verás un aviso de "Modo Solo Lectura")
 
 3. **Sección de Estadísticas (3 tarjetas):**
    - 📋 **Anteproyectos Pendientes**: Cuántos anteproyectos tienes esperando revisión
@@ -757,4 +757,3 @@ Ahora que conoces todas las herramientas y mejores prácticas, ¡es momento de c
 **📅 Última actualización**: Diciembre 2025  
 **⏱️ Tiempo de lectura**: 15 minutos  
 **📧 Soporte**: Contacta a tu tutor o administrador del sistema
-

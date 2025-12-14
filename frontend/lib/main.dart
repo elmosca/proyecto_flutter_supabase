@@ -163,6 +163,8 @@ class _MyAppState extends State<MyApp> {
               locale: _languageService.currentLocale,
 
               theme: _themeService.currentTheme,
+              darkTheme: _themeService.currentDarkTheme,
+              themeMode: ThemeMode.system, // Usa la configuración del sistema
               routerConfig: AppRouter.router,
 
               // Configuración adicional para internacionalización

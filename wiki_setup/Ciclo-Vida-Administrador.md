@@ -151,7 +151,14 @@ El administrador puede ver los anteproyectos pendientes de revisión de cualquie
 
 ## 5. Configuración del Sistema
 
-Hay una sección de configuración (`/admin/settings`) donde el administrador puede ajustar parámetros globales de la aplicación. Por ahora está en desarrollo, pero la idea es que desde aquí se puedan cambiar cosas como el año académico actual, los plazos de entrega, etc.
+Hay una sección de configuración (`/admin/settings`) donde el administrador puede ajustar parámetros globales de la aplicación.
+
+### 5.1. Automatización del Año Académico
+
+El sistema ahora gestiona la creación de años académicos de forma automática directamente desde la base de datos.
+- Se ha implementado un trigger en la base de datos que detecta cambios de fecha y asegura que el año académico actual exista.
+- Esto elimina la necesidad de crear manualmente los años académicos al inicio de cada curso.
+- El sistema utiliza el formato `YYYY-YYYY` (ej. `2025-2026`) para los años académicos.
 
 ---
 

@@ -102,18 +102,6 @@ Documentación detallada de los flujos de trabajo y procesos del sistema:
 
 ---
 
-## 🆕 Novedades y Actualizaciones
-
-### Versión 1.0 - Noviembre 2025
-- ✅ Sistema de autenticación por roles
-- ✅ Gestión de anteproyectos
-- ✅ Sistema de tareas y seguimiento (para estudiantes)
-- ✅ Tablero Kanban (para estudiantes)
-- ✅ Sistema de notificaciones
-- ✅ Flujo de aprobación
-
----
-
 ## 📖 Glosario de Términos
 
 - **Anteproyecto**: Propuesta inicial de proyecto que debe ser aprobada
@@ -159,12 +147,10 @@ Documentación detallada de los flujos de trabajo y procesos del sistema:
 ### Recursos Externos
 - [Documentación de Flutter](https://flutter.dev/docs)
 - [Documentación de Supabase](https://supabase.com/docs)
-- [Centro Educativo](https://www.cifpcarlos3.es/)
+- [Centro Educativo](https://cifpcarlos3.es/es)
 
-### Plantillas Descargables
-- [Plantilla de Anteproyecto (PDF)](plantillas/anteproyecto_template.pdf)
-- [Checklist de Proyecto (PDF)](plantillas/checklist_proyecto.pdf)
-- [Guía de Buenas Prácticas (PDF)](plantillas/buenas_practicas.pdf)
+### Plantillas
+- [Estructura del Anteproyecto](Guia-Estudiantes#fase-1-creación-del-anteproyecto)
 
 ---
 

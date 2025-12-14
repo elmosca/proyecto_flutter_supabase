@@ -3,7 +3,7 @@ import '../models/user.dart';
 
 /// Sistema de temas específicos por rol de usuario
 class RoleThemes {
-  /// Obtiene el tema específico para un rol
+  /// Obtiene el tema específico para un rol (modo claro)
   static ThemeData getThemeForRole(UserRole role) {
     switch (role) {
       case UserRole.student:
@@ -12,6 +12,18 @@ class RoleThemes {
         return _tutorTheme;
       case UserRole.admin:
         return _adminTheme;
+    }
+  }
+
+  /// Obtiene el tema específico para un rol (modo oscuro)
+  static ThemeData getDarkThemeForRole(UserRole role) {
+    switch (role) {
+      case UserRole.student:
+        return _studentDarkTheme;
+      case UserRole.tutor:
+        return _tutorDarkTheme;
+      case UserRole.admin:
+        return _adminDarkTheme;
     }
   }
 
@@ -87,95 +99,132 @@ class RoleThemes {
     }
   }
 
-  /// Tema para estudiantes (Azul)
-  static ThemeData get _studentTheme => ThemeData(
-    useMaterial3: true,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color(0xFF2196F3),
-      brightness: Brightness.light,
-    ),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFF2196F3),
-      foregroundColor: Colors.white,
-      elevation: 2,
-    ),
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: Color(0xFF2196F3),
-      foregroundColor: Colors.white,
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF2196F3),
-        foregroundColor: Colors.white,
-      ),
-    ),
-    cardTheme: CardThemeData(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-    ),
-  );
+  /// Construye un tema completo basado en un color semilla y brillo
+  static ThemeData _buildThemeForRole(Color seedColor, {Brightness brightness = Brightness.light}) {
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: seedColor,
+      brightness: brightness,
+    );
 
-  /// Tema para tutores (Verde)
-  static ThemeData get _tutorTheme => ThemeData(
-    useMaterial3: true,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color(0xFF4CAF50),
-      brightness: Brightness.light,
-    ),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFF4CAF50),
-      foregroundColor: Colors.white,
-      elevation: 2,
-    ),
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: Color(0xFF4CAF50),
-      foregroundColor: Colors.white,
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF4CAF50),
-        foregroundColor: Colors.white,
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: colorScheme,
+      textTheme: _buildTextTheme(colorScheme),
+      appBarTheme: AppBarTheme(
+        backgroundColor: colorScheme.primary, // Usar color primario del esquema
+        foregroundColor: colorScheme.onPrimary, // Color de texto/iconos sobre primario
+        elevation: 2,
       ),
-    ),
-    cardTheme: CardThemeData(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: colorScheme.primary,
+        foregroundColor: colorScheme.onPrimary,
       ),
-    ),
-  );
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: colorScheme.primary,
+          foregroundColor: colorScheme.onPrimary,
+        ),
+      ),
+      cardTheme: CardThemeData(
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+      // Añadir más configuraciones de tema comunes aquí si es necesario
+    );
+  }
 
-  /// Tema para administradores (Púrpura)
-  static ThemeData get _adminTheme => ThemeData(
-    useMaterial3: true,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color(0xFF9C27B0),
-      brightness: Brightness.light,
-    ),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFF9C27B0),
-      foregroundColor: Colors.white,
-      elevation: 2,
-    ),
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: Color(0xFF9C27B0),
-      foregroundColor: Colors.white,
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF9C27B0),
-        foregroundColor: Colors.white,
+  /// Construye la escala tipográfica Material 3
+  static TextTheme _buildTextTheme(ColorScheme colorScheme) {
+    return TextTheme(
+      displayLarge: TextStyle(
+        fontSize: 57,
+        fontWeight: FontWeight.w400,
+        color: colorScheme.onSurface,
       ),
-    ),
-    cardTheme: CardThemeData(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+      displayMedium: TextStyle(
+        fontSize: 45,
+        fontWeight: FontWeight.w400,
+        color: colorScheme.onSurface,
       ),
-    ),
-  );
+      displaySmall: TextStyle(
+        fontSize: 36,
+        fontWeight: FontWeight.w400,
+        color: colorScheme.onSurface,
+      ),
+      headlineLarge: TextStyle(
+        fontSize: 32,
+        fontWeight: FontWeight.w400,
+        color: colorScheme.onSurface,
+      ),
+      headlineMedium: TextStyle(
+        fontSize: 28,
+        fontWeight: FontWeight.w400,
+        color: colorScheme.onSurface,
+      ),
+      headlineSmall: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.w400,
+        color: colorScheme.onSurface,
+      ),
+      titleLarge: TextStyle(
+        fontSize: 22,
+        fontWeight: FontWeight.w500,
+        color: colorScheme.onSurface,
+      ),
+      titleMedium: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+        color: colorScheme.onSurface,
+      ),
+      titleSmall: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: colorScheme.onSurface,
+      ),
+      bodyLarge: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w400,
+        color: colorScheme.onSurface,
+      ),
+      bodyMedium: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        color: colorScheme.onSurface,
+      ),
+      bodySmall: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w400,
+        color: colorScheme.onSurface,
+      ),
+      labelLarge: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: colorScheme.onSurface,
+      ),
+      labelMedium: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        color: colorScheme.onSurface,
+      ),
+      labelSmall: TextStyle(
+        fontSize: 11,
+        fontWeight: FontWeight.w500,
+        color: colorScheme.onSurface,
+      ),
+    );
+  }
+
+  /// Temas Claros
+  static ThemeData get _studentTheme => _buildThemeForRole(const Color(0xFF2196F3));
+  static ThemeData get _tutorTheme => _buildThemeForRole(const Color(0xFF4CAF50));
+  static ThemeData get _adminTheme => _buildThemeForRole(const Color(0xFF9C27B0));
+
+  /// Temas Oscuros
+  static ThemeData get _studentDarkTheme => _buildThemeForRole(const Color(0xFF2196F3), brightness: Brightness.dark);
+  static ThemeData get _tutorDarkTheme => _buildThemeForRole(const Color(0xFF4CAF50), brightness: Brightness.dark);
+  static ThemeData get _adminDarkTheme => _buildThemeForRole(const Color(0xFF9C27B0), brightness: Brightness.dark);
 }
 
 /// Widget para mostrar información del rol con estilo
@@ -198,12 +247,13 @@ class RoleInfoWidget extends StatelessWidget {
     final primaryColor = RoleThemes.getPrimaryColorForRole(role);
     final emoji = RoleThemes.getEmojiForRole(role);
     final gradient = RoleThemes.getGradientForRole(role);
+    final textTheme = Theme.of(context).textTheme;
 
     final Widget content = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         if (showEmoji) ...[
-          Text(emoji, style: const TextStyle(fontSize: 20)),
+          Text(emoji, style: textTheme.headlineSmall?.copyWith(fontSize: 20)),
           const SizedBox(width: 8),
         ],
         Column(
@@ -212,15 +262,13 @@ class RoleInfoWidget extends StatelessWidget {
           children: [
             Text(
               userName,
-              style: const TextStyle(
-                fontSize: 16,
+              style: textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             Text(
               role.displayName,
-              style: TextStyle(
-                fontSize: 14,
+              style: textTheme.bodyMedium?.copyWith(
                 color: primaryColor,
                 fontWeight: FontWeight.w500,
               ),
@@ -260,6 +308,7 @@ class RoleBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final primaryColor = RoleThemes.getPrimaryColorForRole(role);
     final icon = RoleThemes.getIconForRole(role);
+    final textTheme = Theme.of(context).textTheme;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -277,7 +326,7 @@ class RoleBadge extends StatelessWidget {
           ],
           Text(
             role.displayName,
-            style: TextStyle(
+            style: textTheme.labelSmall?.copyWith(
               color: primaryColor,
               fontWeight: FontWeight.w600,
               fontSize: 12,

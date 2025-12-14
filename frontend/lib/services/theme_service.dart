@@ -16,8 +16,16 @@ class ThemeService extends ChangeNotifier {
   /// Obtiene el rol actual
   UserRole? get currentRole => _currentRole;
 
-  /// Obtiene el tema actual
+  /// Obtiene el tema actual (Modo Claro)
   ThemeData get currentTheme => _currentTheme;
+
+  /// Obtiene el tema oscuro actual
+  ThemeData get currentDarkTheme {
+    if (_currentRole != null) {
+      return RoleThemes.getDarkThemeForRole(_currentRole!);
+    }
+    return ThemeData.dark();
+  }
 
   /// Obtiene el color primario actual
   Color get currentPrimaryColor {

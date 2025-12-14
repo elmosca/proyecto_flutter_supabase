@@ -44,7 +44,6 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
   void initState() {
     super.initState();
     // 2 pestañas: Detalles, Archivos
-    // (Tareas, Kanban y Lista de Tareas ahora están en el AppBar, sin Comentarios porque las tareas pertenecen a proyectos que usan mensajes)
     _tabController = TabController(length: 2, vsync: this);
     _currentTask = widget.task;
     _descriptionController = TextEditingController(
@@ -102,14 +101,11 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
-    // TabBar sin Tareas y Kanban (ahora están en el AppBar)
     final tabBar = TabBar(
       controller: _tabController,
       indicatorColor: theme.colorScheme.onPrimary,
       labelColor: theme.colorScheme.onPrimary,
-      unselectedLabelColor: theme.colorScheme.onPrimary.withValues(
-        alpha: 0.7,
-      ),
+      unselectedLabelColor: theme.colorScheme.onPrimary.withOpacity(0.7),
       tabs: [
         Tab(text: l10n.details),
         Tab(text: l10n.filesAttached),
@@ -119,36 +115,28 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
     final body = TabBarView(
       controller: _tabController,
       children: [
-        // Tab de Detalles
         _buildDetailsTab(context),
-
-        // Tab de Archivos
         _buildFilesTab(context),
       ],
     );
 
-    // Siempre usar PersistentScaffold para mantener la navegación consistente
     if (_currentUser != null) {
       return PersistentScaffold(
         title: l10n.taskDetails,
         titleKey: 'tasks',
         user: _currentUser!,
-        // TabBar se muestra en el body, no en el AppBar
         body: Column(
           children: [
-            // TabBar como parte del contenido
             Container(
-              color: ThemeService.instance.currentPrimaryColor,
+              color: theme.primaryColor,
               child: tabBar,
             ),
-            // Contenido de las pestañas
             Expanded(child: body),
           ],
         ),
       );
     }
 
-    // Fallback solo si no hay usuario (no debería pasar en uso normal)
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.taskDetails),
@@ -223,21 +211,21 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
                               _isEditingDescription = true;
                             });
                           },
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.edit,
                             size: 18,
-                            color: Colors.white,
+                            color: theme.colorScheme.onPrimary,
                           ),
-                          label: const Text(
+                          label: Text(
                             'Editar Descripción',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: theme.colorScheme.onPrimary,
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
+                            backgroundColor: theme.colorScheme.primary,
                             padding: const EdgeInsets.symmetric(
                               horizontal: 16,
                               vertical: 8,
@@ -501,38 +489,33 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
 
   void _saveDescription() async {
     try {
-      // Crear una copia de la tarea con la nueva descripción
       final updatedTask = _currentTask.copyWith(
         description: _descriptionController.text,
         updatedAt: DateTime.now(),
       );
 
-      // Actualizar la tarea en el backend
       final tasksService = TasksService();
       await tasksService.updateTask(_currentTask.id, updatedTask);
 
-      // Actualizar el estado local
       setState(() {
         _currentTask = updatedTask;
         _isEditingDescription = false;
       });
 
-      // Mostrar mensaje de éxito
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Descripción actualizada correctamente'),
-            backgroundColor: Colors.green,
+          SnackBar(
+            content: const Text('Descripción actualizada correctamente'),
+            backgroundColor: Theme.of(context).colorScheme.primary,
           ),
         );
       }
     } catch (e) {
-      // Mostrar mensaje de error
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error al actualizar la descripción: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
@@ -541,6 +524,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
 
   Widget _buildKanbanTab() {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
     
     if (_currentTask.projectId == null) {
       return Center(
@@ -549,12 +533,14 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.info_outline, size: 64, color: Colors.grey.shade400),
+              Icon(Icons.info_outline, size: 64, color: theme.colorScheme.onSurfaceVariant),
               const SizedBox(height: 16),
               Text(
                 l10n.kanbanOnlyForProjects,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
           ),
@@ -570,6 +556,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
 
   Widget _buildTasksListTab() {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
     
     if (_currentTask.projectId == null) {
       return Center(
@@ -578,12 +565,14 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.info_outline, size: 64, color: Colors.grey.shade400),
+              Icon(Icons.info_outline, size: 64, color: theme.colorScheme.onSurfaceVariant),
               const SizedBox(height: 16),
               Text(
                 l10n.kanbanOnlyForProjects,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
           ),
@@ -591,7 +580,6 @@ class _TaskDetailScreenState extends State<TaskDetailScreen>
       );
     }
 
-    // Envolver con BlocProvider para TasksBloc
     return BlocProvider<TasksBloc>(
       create: (context) =>
           TasksBloc(tasksService: TasksService())

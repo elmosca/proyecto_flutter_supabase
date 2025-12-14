@@ -38,6 +38,7 @@ El Tutor es el responsable de validar la viabilidad de las propuestas de TFG.
     *   Revise el **Título**, **Descripción** y **Tipo de Proyecto**.
     *   Verifique la alineación de los **Objetivos** con las competencias DAM.
     *   Evalúe el **Realismo de la Temporalización** y los **Hitos** propuestos.
+    *   Utilice los filtros de **Año Académico** y **Estado** para localizar rápidamente propuestas específicas.
 4.  **Descarga del PDF**: Descargue el PDF generado automáticamente para una revisión formal.
 
 ### 2.2. Decisión Final
@@ -59,6 +60,8 @@ Desde la sección **"Mis Estudiantes"** puede ver todos los estudiantes asignado
 *   Nombre y datos de contacto
 *   Estado de su anteproyecto (si tiene)
 *   Estado de su proyecto (si fue aprobado)
+
+Puede utilizar el **selector de Año Académico** en el Dashboard para filtrar la lista de estudiantes por curso escolar.
 
 ### 3.2. Comunicación
 

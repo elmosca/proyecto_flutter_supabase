@@ -8,6 +8,7 @@ import '../../config/app_config.dart';
 import '../../models/user.dart';
 import '../../services/theme_service.dart';
 import '../../services/admin_stats_service.dart';
+import '../../themes/role_themes.dart';
 import '../../widgets/navigation/app_top_bar.dart';
 import '../../widgets/navigation/app_side_drawer.dart';
 
@@ -129,87 +130,91 @@ class _AdminDashboardState extends State<AdminDashboard> {
     ),
   );
 
-  Widget _buildUserInfo() => Card(
-    child: Padding(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 30,
-            backgroundColor: const Color(AppConfig.platformColor),
-            child: Text(
-              widget.user.email.substring(0, 1).toUpperCase(),
-              style: const TextStyle(fontSize: 24, color: Colors.white),
+  Widget _buildUserInfo() {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 30,
+              backgroundColor: const Color(AppConfig.platformColor),
+              child: Text(
+                widget.user.email.substring(0, 1).toUpperCase(),
+                style: textTheme.headlineSmall?.copyWith(color: Colors.white),
+              ),
             ),
-          ),
-          const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.user.email,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'ID: ${widget.user.id}',
-                    style: const TextStyle(color: Colors.grey, fontSize: 12),
-                  ),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 4,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: const Color(AppConfig.platformColor).withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(4),
-                          border: Border.all(
-                            color: const Color(AppConfig.platformColor).withOpacity(0.5),
-                          ),
-                        ),
-                        child: const Text(
-                          'Administrador',
-                          style: TextStyle(
-                            color: Color(AppConfig.platformColor),
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+            const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.user.email,
+                      style: textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
                       ),
-                      if (widget.user.academicYear != null &&
-                          widget.user.academicYear!.isNotEmpty)
+                    ),
+                    Text(
+                      'ID: ${widget.user.id}',
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 4,
+                      children: [
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
-                            color: Colors.blue.withOpacity(0.1),
+                            color: const Color(AppConfig.platformColor).withOpacity(0.1),
                             borderRadius: BorderRadius.circular(4),
                             border: Border.all(
-                              color: Colors.blue.withOpacity(0.5),
+                              color: const Color(AppConfig.platformColor).withOpacity(0.5),
                             ),
                           ),
                           child: Text(
-                            'Curso ${widget.user.academicYear}',
-                            style: const TextStyle(
-                              color: Colors.blue,
-                              fontSize: 12,
+                            'Administrador',
+                            style: textTheme.labelSmall?.copyWith(
+                              color: const Color(AppConfig.platformColor),
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
-                    ],
-                  ),
-                ],
+                        if (widget.user.academicYear != null &&
+                            widget.user.academicYear!.isNotEmpty)
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.blue.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(
+                                color: Colors.blue.withOpacity(0.5),
+                              ),
+                            ),
+                            child: Text(
+                              'Curso ${widget.user.academicYear}',
+                              style: textTheme.labelSmall?.copyWith(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 
   Widget _buildStatistics() {
     final l10n = AppLocalizations.of(context)!;
@@ -256,6 +261,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
     Color color, {
     VoidCallback? onTap,
   }) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Card(
       child: InkWell(
         onTap: onTap,
@@ -268,14 +276,15 @@ class _AdminDashboardState extends State<AdminDashboard> {
               const SizedBox(height: 8),
               Text(
                 value,
-                style: const TextStyle(
-                  fontSize: 24,
+                style: textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Text(
                 title,
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
+                style: textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -287,13 +296,14 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
   Widget _buildQuickAccessSection() {
     final l10n = AppLocalizations.of(context)!;
+    final textTheme = Theme.of(context).textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Accesos Rápidos',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         Row(
@@ -336,6 +346,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
     required Color color,
     required VoidCallback onTap,
   }) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Card(
       child: InkWell(
         onTap: onTap,
@@ -348,8 +360,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
               const SizedBox(height: 8),
               Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 12,
+                style: textTheme.labelSmall?.copyWith(
                   fontWeight: FontWeight.w500,
                 ),
                 textAlign: TextAlign.center,
@@ -364,15 +375,17 @@ class _AdminDashboardState extends State<AdminDashboard> {
   }
 
   Widget _buildSystemSection() {
+    final textTheme = Theme.of(context).textTheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+            Text(
               'Estado del Sistema',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             TextButton(
               onPressed: _viewSystemStatus,
@@ -399,6 +412,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
   }
 
   Widget _buildStatusRow(String service, String status, Color color) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -409,7 +424,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
             children: [
               Icon(Icons.circle, color: color, size: 12),
               const SizedBox(width: 8),
-              Text(status, style: TextStyle(color: color)),
+              Text(status, style: textTheme.bodyMedium?.copyWith(color: color)),
             ],
           ),
         ],
@@ -419,13 +434,15 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
   Widget _buildSupabaseSection() {
     final l10n = AppLocalizations.of(context)!;
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           l10n.supabaseStudio,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         Card(
@@ -436,7 +453,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
               children: [
                 Text(
                   l10n.supabaseStudioDescription,
-                  style: const TextStyle(color: Colors.grey),
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Row(
@@ -468,9 +487,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 const SizedBox(height: 8),
                 Text(
                   'URL: ${AppConfig.supabaseStudioUrl}',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
                     fontFamily: 'monospace',
                   ),
                 ),
@@ -484,6 +502,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
   Widget _buildUsersSection() {
     final l10n = AppLocalizations.of(context)!;
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -493,7 +513,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
           children: [
             Text(
               l10n.dashboardAdminUsersManagement,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             TextButton(onPressed: _viewAllUsers, child: Text(l10n.viewAll)),
           ],
@@ -506,7 +526,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
               child: Text(
                 l10n.noUsers,
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.grey),
+                style: textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
               ),
             ),
           )
@@ -517,6 +539,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
   }
 
   Widget _buildUserPreview(User user) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
@@ -524,7 +548,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
           backgroundColor: _getRoleColor(user.role),
           child: Text(
             user.email.substring(0, 1).toUpperCase(),
-            style: const TextStyle(
+            style: textTheme.headlineSmall?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
@@ -542,36 +566,15 @@ class _AdminDashboardState extends State<AdminDashboard> {
   }
 
   Color _getRoleColor(UserRole role) {
-    switch (role) {
-      case UserRole.admin:
-        return Colors.red;
-      case UserRole.tutor:
-        return Colors.blue;
-      case UserRole.student:
-        return Colors.green;
-    }
+    return RoleThemes.getPrimaryColorForRole(role);
   }
 
   IconData _getRoleIcon(UserRole role) {
-    switch (role) {
-      case UserRole.admin:
-        return Icons.admin_panel_settings;
-      case UserRole.tutor:
-        return Icons.school;
-      case UserRole.student:
-        return Icons.person;
-    }
+    return RoleThemes.getIconForRole(role);
   }
 
   String _getRoleDisplayName(UserRole role) {
-    switch (role) {
-      case UserRole.admin:
-        return 'Administrador';
-      case UserRole.tutor:
-        return 'Tutor';
-      case UserRole.student:
-        return 'Estudiante';
-    }
+    return role.displayName;
   }
 
   // Logout ahora gestionado por AppTopBar
@@ -589,6 +592,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
   }
 
   void _viewSystemStatus() {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -603,7 +609,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
             const SizedBox(height: 16),
             Text(
               'Última actualización: ${DateTime.now().toString().substring(0, 19)}',
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
+              style: textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
             ),
           ],
         ),

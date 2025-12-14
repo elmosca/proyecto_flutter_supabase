@@ -74,5 +74,9 @@ El Administrador gestiona los parámetros globales del sistema.
 
 *   **Parámetros de Email**: Revisión y ajuste de la configuración de envío de correos electrónicos (ej. plantillas de bienvenida, restablecimiento de contraseña).
 
+### 4.4. Automatización del Año Académico
+
+*   **Gestión Automática**: El sistema crea y gestiona automáticamente los años académicos en la base de datos, eliminando la necesidad de configuración manual al inicio de cada curso.
+
 ---
 *Esta guía se basa en la Especificación Funcional del proyecto TFG.*

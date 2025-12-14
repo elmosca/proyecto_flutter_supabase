@@ -95,7 +95,7 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error al cargar mensajes: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
@@ -134,9 +134,9 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
   Future<void> _submitMessage() async {
     if (_messageController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Por favor, escribe un mensaje'),
-          backgroundColor: Colors.orange,
+        SnackBar(
+          content: const Text('Por favor, escribe un mensaje'),
+          backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
       return;
@@ -171,10 +171,10 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Mensaje enviado exitosamente'),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 2),
+          SnackBar(
+            content: const Text('Mensaje enviado exitosamente'),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            duration: const Duration(seconds: 2),
           ),
         );
       }
@@ -186,7 +186,7 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error al enviar mensaje: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
@@ -195,6 +195,8 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Scaffold(
       appBar: AppBar(
         title: Column(
@@ -203,12 +205,14 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
             const Text('Mensajes con el Tutor'),
             Text(
               widget.project.title,
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onPrimary.withOpacity(0.8),
+                fontWeight: FontWeight.normal,
+              ),
             ),
           ],
         ),
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white,
+        // Los colores del AppBar ya se manejan en el tema
         actions: [
           if (_unreadCount > 0)
             Padding(
@@ -216,12 +220,12 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
               child: Chip(
                 label: Text(
                   '$_unreadCount',
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.onError,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                backgroundColor: Colors.red,
+                backgroundColor: theme.colorScheme.error,
                 padding: EdgeInsets.zero,
               ),
             ),
@@ -240,12 +244,12 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
           // Información del proyecto
           Container(
             padding: const EdgeInsets.all(16),
-            color: Colors.green.shade50,
+            color: theme.colorScheme.surfaceContainer,
             child: Row(
               children: [
                 Icon(
                   Icons.chat,
-                  color: Colors.green.shade600,
+                  color: theme.colorScheme.primary,
                   size: 32,
                 ),
                 const SizedBox(width: 12),
@@ -253,18 +257,16 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'Conversación con el Tutor',
-                        style: TextStyle(
+                        style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
                         ),
                       ),
                       Text(
                         'Aquí puedes hacer consultas sobre tu proyecto',
-                        style: TextStyle(
-                          color: Colors.grey.shade600,
-                          fontSize: 14,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -299,6 +301,7 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
   }
 
   Widget _buildEmptyState() {
+    final theme = Theme.of(context);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -306,21 +309,20 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
           Icon(
             Icons.chat_bubble_outline,
             size: 64,
-            color: Colors.grey.shade400,
+            color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5),
           ),
           const SizedBox(height: 16),
           Text(
             'No hay mensajes aún',
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.grey.shade600,
+            style: theme.textTheme.titleLarge?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Inicia la conversación con tu tutor',
-            style: TextStyle(
-              color: Colors.grey.shade500,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
         ],
@@ -332,6 +334,7 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
     final isMyMessage = message.senderId == _currentUser?.id;
     final senderName = message.sender?.fullName ?? 'Usuario desconocido';
     final senderRole = message.sender?.role ?? UserRole.student;
+    final theme = Theme.of(context);
 
     return Align(
       alignment: isMyMessage ? Alignment.centerRight : Alignment.centerLeft,
@@ -342,7 +345,9 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
           maxWidth: MediaQuery.of(context).size.width * 0.75,
         ),
         decoration: BoxDecoration(
-          color: isMyMessage ? Colors.green.shade100 : Colors.grey.shade200,
+          color: isMyMessage 
+              ? theme.colorScheme.primaryContainer 
+              : theme.colorScheme.surfaceContainer,
           borderRadius: BorderRadius.only(
             topLeft: const Radius.circular(12),
             topRight: const Radius.circular(12),
@@ -359,12 +364,11 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
                 children: [
                   CircleAvatar(
                     radius: 12,
-                    backgroundColor: _getRoleColor(senderRole),
+                    backgroundColor: theme.colorScheme.primary,
                     child: Text(
                       senderName.isNotEmpty ? senderName[0].toUpperCase() : '?',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.onPrimary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -372,24 +376,22 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
                   const SizedBox(width: 8),
                   Text(
                     senderName,
-                    style: const TextStyle(
+                    style: theme.textTheme.labelMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      fontSize: 12,
                     ),
                   ),
                   const SizedBox(width: 4),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
-                      color: _getRoleColor(senderRole).withOpacity(0.2),
+                      color: theme.colorScheme.primary.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       _getRoleName(senderRole),
-                      style: TextStyle(
-                        color: _getRoleColor(senderRole),
-                        fontSize: 10,
-                        fontWeight: FontWeight.w500,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -401,7 +403,11 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
             // Contenido del mensaje
             Text(
               message.content,
-              style: const TextStyle(fontSize: 14),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: isMyMessage 
+                    ? theme.colorScheme.onPrimaryContainer 
+                    : theme.colorScheme.onSurface,
+              ),
             ),
 
             const SizedBox(height: 4),
@@ -412,9 +418,10 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
               children: [
                 Text(
                   _formatDate(message.createdAt),
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 11,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: isMyMessage 
+                        ? theme.colorScheme.onPrimaryContainer.withOpacity(0.7)
+                        : theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
                 if (isMyMessage) ...[
@@ -422,7 +429,9 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
                   Icon(
                     message.isRead ? Icons.done_all : Icons.done,
                     size: 14,
-                    color: message.isRead ? Colors.blue : Colors.grey,
+                    color: message.isRead 
+                        ? theme.colorScheme.primary 
+                        : theme.colorScheme.onSurfaceVariant,
                   ),
                 ],
               ],
@@ -434,13 +443,15 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
   }
 
   Widget _buildMessageForm() {
+    final theme = Theme.of(context);
+    
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.shade300,
+            color: theme.shadowColor.withOpacity(0.1),
             blurRadius: 4,
             offset: const Offset(0, -2),
           ),
@@ -473,35 +484,26 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
           const SizedBox(width: 8),
           FloatingActionButton(
             onPressed: (_isSubmitting || _isReadOnly) ? null : _submitMessage,
-            backgroundColor: Colors.green,
+            backgroundColor: theme.colorScheme.primary,
             mini: true,
             child: _isSubmitting
-                ? const SizedBox(
+                ? SizedBox(
                     width: 20,
                     height: 20,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: Colors.white,
+                      color: theme.colorScheme.onPrimary,
                     ),
                   )
-                : const Icon(Icons.send, color: Colors.white),
+                : Icon(Icons.send, color: theme.colorScheme.onPrimary),
           ),
         ],
       ),
     );
   }
 
-  Color _getRoleColor(UserRole role) {
-    switch (role) {
-      case UserRole.admin:
-        return Colors.red;
-      case UserRole.tutor:
-        return Colors.blue;
-      case UserRole.student:
-        return Colors.green;
-    }
-  }
-
+  // Helper colors removed as we now use theme
+  
   String _getRoleName(UserRole role) {
     switch (role) {
       case UserRole.admin:
@@ -528,4 +530,3 @@ class _ProjectMessagesScreenState extends State<ProjectMessagesScreen> {
     }
   }
 }
-

@@ -301,6 +301,8 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
     final l10n = AppLocalizations.of(context)!;
     // Usar _currentUser en lugar de widget.user para asegurar datos frescos
     final user = _currentUser ?? widget.user;
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Card(
       child: Padding(
@@ -312,7 +314,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
               backgroundColor: const Color(AppConfig.platformColor),
               child: Text(
                 (user.fullName.isNotEmpty ? user.fullName[0] : '?').toUpperCase(),
-                style: const TextStyle(fontSize: 24, color: Colors.white),
+                style: textTheme.headlineSmall?.copyWith(color: Colors.white),
               ),
             ),
             const SizedBox(width: 16),
@@ -322,19 +324,22 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
                 children: [
                   Text(
                     user.fullName,
-                    style: const TextStyle(
-                      fontSize: 18,
+                    style: textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
                     user.email,
-                    style: const TextStyle(color: Colors.grey, fontSize: 14),
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
                   if (user.nre != null && user.nre!.isNotEmpty)
                     Text(
                       'NRE: ${user.nre}',
-                      style: const TextStyle(color: Colors.grey, fontSize: 12),
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   const SizedBox(height: 8),
                   Wrap(
@@ -352,9 +357,8 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
                         ),
                         child: Text(
                           user.role.displayName,
-                          style: const TextStyle(
-                            color: Color(AppConfig.platformColor),
-                            fontSize: 12,
+                          style: textTheme.labelSmall?.copyWith(
+                            color: const Color(AppConfig.platformColor),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -372,9 +376,8 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
                           ),
                           child: Text(
                             '${l10n.academicYear}: ${user.academicYear}',
-                            style: const TextStyle(
+                            style: textTheme.labelSmall?.copyWith(
                               color: Colors.blue,
-                              fontSize: 12,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -392,9 +395,8 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
                           ),
                           child: Text(
                             user.specialty!,
-                            style: const TextStyle(
+                            style: textTheme.labelSmall?.copyWith(
                               color: Colors.orange,
-                              fontSize: 12,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -417,9 +419,8 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
                               const SizedBox(width: 4),
                               Text(
                                 '${l10n.tutor}: $_tutorName',
-                                style: const TextStyle(
+                                style: textTheme.labelSmall?.copyWith(
                                   color: Colors.purple,
-                                  fontSize: 12,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -480,6 +481,9 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
     required Color color,
     VoidCallback? onTap,
   }) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Card(
       child: InkWell(
         onTap: onTap,
@@ -492,14 +496,15 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
               const SizedBox(height: 8),
               Text(
                 value,
-                style: const TextStyle(
-                  fontSize: 24,
+                style: textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Text(
                 title,
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
+                style: textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -512,12 +517,14 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   }
 
   Widget _buildQuickActions() {
+    final textTheme = Theme.of(context).textTheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Acciones Rápidas',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         Row(
@@ -561,6 +568,8 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
     required Color color,
     required VoidCallback onTap,
   }) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Card(
       child: InkWell(
         onTap: onTap,
@@ -573,8 +582,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
               const SizedBox(height: 8),
               Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 12,
+                style: textTheme.labelSmall?.copyWith(
                   fontWeight: FontWeight.w500,
                 ),
                 textAlign: TextAlign.center,
@@ -589,15 +597,17 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   }
 
   Widget _buildPendingAnteprojectsSection() {
+    final textTheme = Theme.of(context).textTheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+            Text(
               'Anteproyectos Pendientes de Revisión',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             TextButton(
               onPressed: _viewAnteprojects,
@@ -614,15 +624,18 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   }
 
   Widget _buildProjectsSection() {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+            Text(
               'Proyectos Activos',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             TextButton(
               onPressed: _viewProjects,
@@ -638,7 +651,9 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
               child: Text(
                 'No tienes proyectos activos aún. Cuando tu anteproyecto sea aprobado, aparecerá aquí.',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey.shade600),
+                style: textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
               ),
             ),
           )
@@ -649,15 +664,17 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   }
 
   Widget _buildUpcomingTasksSection() {
+    final textTheme = Theme.of(context).textTheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+            Text(
               'Tareas Próximas (7 días)',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             TextButton(onPressed: _viewTasks, child: const Text('Ver todas')),
           ],
@@ -669,15 +686,18 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   }
 
   Widget _buildAnteprojectsSection() {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+            Text(
               'Mis Anteproyectos',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             TextButton(
               onPressed: _viewAnteprojects,
@@ -692,21 +712,21 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  Icon(Icons.assignment, size: 48, color: Colors.grey.shade400),
+                  Icon(Icons.assignment, size: 48, color: colorScheme.onSurfaceVariant.withOpacity(0.5)),
                   const SizedBox(height: 8),
                   Text(
                     'No tienes anteproyectos aún',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.grey.shade700,
+                    style: textTheme.titleMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Crea tu primer anteproyecto para comenzar',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.grey.shade600),
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton.icon(
@@ -727,15 +747,18 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   }
 
   Widget _buildTasksSection() {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+            Text(
               'Mis Tareas',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             TextButton(onPressed: _viewTasks, child: const Text('Ver todas')),
           ],
@@ -747,21 +770,21 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  Icon(Icons.task_alt, size: 48, color: Colors.grey.shade400),
+                  Icon(Icons.task_alt, size: 48, color: colorScheme.onSurfaceVariant.withOpacity(0.5)),
                   const SizedBox(height: 8),
                   Text(
                     'No tienes tareas aún',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.grey.shade700,
+                    style: textTheme.titleMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Crea tareas para organizar tu trabajo en el proyecto',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.grey.shade600),
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
                   if (_approvedAnteprojects.isNotEmpty) ...[
                     const SizedBox(height: 16),
@@ -814,6 +837,9 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
         break;
     }
 
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
@@ -823,21 +849,26 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
         ),
         title: Text(
           anteproject.title,
-          style: const TextStyle(fontWeight: FontWeight.w500),
+          style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w500),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               statusText,
-              style: TextStyle(color: statusColor, fontWeight: FontWeight.w500),
+              style: textTheme.bodyMedium?.copyWith(
+                color: statusColor,
+                fontWeight: FontWeight.w500,
+              ),
             ),
             if (anteproject.description.isNotEmpty)
               Text(
                 anteproject.description.length > 50
                     ? '${anteproject.description.substring(0, 50)}...'
                     : anteproject.description,
-                style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                style: textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -850,6 +881,8 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   }
 
   Widget _buildProjectCard(Project project) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
@@ -859,11 +892,11 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
         ),
         title: Text(
           project.title,
-          style: const TextStyle(fontWeight: FontWeight.w500),
+          style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w500),
         ),
         subtitle: Text(
           'Proyecto activo',
-          style: TextStyle(color: Colors.green.shade700),
+          style: textTheme.bodyMedium?.copyWith(color: Colors.green.shade700),
         ),
         trailing: const Icon(Icons.chevron_right),
         onTap: () => _viewProjectDetail(project),
@@ -890,6 +923,9 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
         break;
     }
 
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
@@ -899,23 +935,22 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
         ),
         title: Text(
           task.title,
-          style: const TextStyle(fontWeight: FontWeight.w500),
+          style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w500),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               _getTaskStatusText(task.status),
-              style: TextStyle(color: statusColor, fontSize: 12),
+              style: textTheme.bodySmall?.copyWith(color: statusColor),
             ),
             if (task.dueDate != null)
               Text(
                 'Vence: ${_formatDate(task.dueDate!)}',
-                style: TextStyle(
+                style: textTheme.bodySmall?.copyWith(
                   color: task.dueDate!.isBefore(DateTime.now())
                       ? Colors.red
-                      : Colors.grey.shade600,
-                  fontSize: 12,
+                      : colorScheme.onSurfaceVariant,
                 ),
               ),
           ],

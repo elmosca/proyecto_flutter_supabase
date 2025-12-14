@@ -466,6 +466,8 @@ class _TutorDashboardState extends State<TutorDashboard> {
 
   Widget _buildUserInfo() {
     final l10n = AppLocalizations.of(context)!;
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Card(
       child: Padding(
@@ -477,7 +479,7 @@ class _TutorDashboardState extends State<TutorDashboard> {
               backgroundColor: const Color(AppConfig.platformColor),
               child: Text(
                 widget.user.email.substring(0, 1).toUpperCase(),
-                style: const TextStyle(fontSize: 24, color: Colors.white),
+                style: textTheme.headlineSmall?.copyWith(color: Colors.white),
               ),
             ),
             const SizedBox(width: 16),
@@ -487,14 +489,15 @@ class _TutorDashboardState extends State<TutorDashboard> {
                 children: [
                   Text(
                     widget.user.email,
-                    style: const TextStyle(
-                      fontSize: 18,
+                    style: textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
                     'ID: ${widget.user.id}',
-                    style: const TextStyle(color: Colors.grey, fontSize: 12),
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Wrap(
@@ -512,9 +515,8 @@ class _TutorDashboardState extends State<TutorDashboard> {
                         ),
                         child: Text(
                           l10n.tutor,
-                          style: const TextStyle(
-                            color: Color(AppConfig.platformColor),
-                            fontSize: 12,
+                          style: textTheme.labelSmall?.copyWith(
+                            color: const Color(AppConfig.platformColor),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -532,9 +534,8 @@ class _TutorDashboardState extends State<TutorDashboard> {
                           ),
                           child: Text(
                             'Curso ${widget.user.academicYear}',
-                            style: const TextStyle(
+                            style: textTheme.labelSmall?.copyWith(
                               color: Colors.blue,
-                              fontSize: 12,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -595,6 +596,9 @@ class _TutorDashboardState extends State<TutorDashboard> {
     required Color color,
     VoidCallback? onTap,
   }) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Card(
       child: InkWell(
         onTap: onTap,
@@ -607,14 +611,15 @@ class _TutorDashboardState extends State<TutorDashboard> {
               const SizedBox(height: 8),
               Text(
                 value,
-                style: const TextStyle(
-                  fontSize: 24,
+                style: textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Text(
                 title,
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
+                style: textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -625,6 +630,9 @@ class _TutorDashboardState extends State<TutorDashboard> {
   }
 
   Widget _buildStudentsSection() {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -634,8 +642,7 @@ class _TutorDashboardState extends State<TutorDashboard> {
             Expanded(
               child: Text(
                 AppLocalizations.of(context)!.assignedStudents,
-                style: const TextStyle(
-                  fontSize: 20,
+                style: textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
                 overflow: TextOverflow.ellipsis,
@@ -712,7 +719,9 @@ class _TutorDashboardState extends State<TutorDashboard> {
                       _filteredStudents.length == 1 ? '' : 's',
                       _selectedAcademicYear,
                     ),
-                    style: TextStyle(color: Colors.grey.shade700, fontSize: 14),
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ),
               ],

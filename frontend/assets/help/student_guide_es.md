@@ -85,17 +85,14 @@ Una vez aprobado tu anteproyecto:
 ```mermaid
 graph LR
     A[Pendiente] --> B[En Progreso]
-    B --> C[En Revisión]
-    C --> D[Completada]
-    C --> B
+    B --> D[Completada]
 ```
 
 **Tus responsabilidades:**
 1. **Crear tus propias tareas**: Define el trabajo que necesitas realizar
 2. **Cambiar estado**: Cuando empieces a trabajar, marca como "En Progreso"
-3. **Revisar tu trabajo**: Cuando termines, marca como "En Revisión" para revisarlo tú mismo
-4. **Marcar como completada**: Una vez revisada y satisfecho con el resultado, marca como "Completada"
-5. **Actualizar progreso**: Mantén informado a tu tutor sobre el avance general del proyecto
+3. **Completar tareas**: Cuando termines, marca como "Completada"
+4. **Actualizar progreso**: Mantén informado a tu tutor sobre el avance general del proyecto
 
 ---
 
@@ -192,7 +189,7 @@ Crea y gestiona todas tus propias tareas del proyecto.
 3. **Editar tarea**: Modifica título, descripción, fecha límite o prioridad
 4. **Cambiar estado**: 
    - Pendiente → En Progreso
-   - En Progreso → En Revisión
+   - En Progreso → Completada
 5. **Agregar comentarios**: Comunícate con tu tutor sobre la tarea
 6. **Eliminar tarea**: Si ya no es necesaria
 
@@ -204,7 +201,6 @@ Visualización ágil de tus tareas.
 **Columnas del tablero:**
 - 📥 **Pendiente**: Tareas por empezar
 - 🔄 **En Progreso**: Tareas en las que estás trabajando
-- 👀 **En Revisión**: Tareas que has completado y quieres revisar antes de marcarlas como finalizadas
 - ✅ **Completada**: Tareas finalizadas
 
 **¿Cómo usarlo?**
@@ -254,7 +250,7 @@ Revisa tus notificaciones al menos una vez al día.
 
 4. **Mantén actualizado el estado de tus tareas**
    - Cambia a "En Progreso" cuando empieces
-   - Envía a "En Revisión" cuando termines
+   - Mueve a "Completada" cuando termines
    - No dejes tareas estancadas sin actualizar
 
 5. **Sé profesional en tu comunicación**

@@ -534,15 +534,17 @@ class _TutorMessagesSelectorScreenState
 
   Widget _buildErrorState() {
     final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.error_outline, size: 64, color: Colors.red.shade300),
+          Icon(Icons.error_outline, size: 64, color: colorScheme.error),
           const SizedBox(height: 16),
           Text(
             _errorMessage!,
-            style: TextStyle(color: Colors.red.shade700),
+            style: TextStyle(color: colorScheme.error),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
@@ -554,18 +556,19 @@ class _TutorMessagesSelectorScreenState
 
   Widget _buildEmptyState() {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.people_outline, size: 64, color: Colors.grey.shade400),
+          Icon(Icons.people_outline, size: 64, color: theme.colorScheme.onSurfaceVariant),
           const SizedBox(height: 16),
           Text(
             'No hay estudiantes con conversaciones',
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.grey.shade600,
+            style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 8),
@@ -574,22 +577,25 @@ class _TutorMessagesSelectorScreenState
                 ? 'No se encontraron estudiantes del año $_selectedYear con proyectos o anteproyectos que tengan hilos de conversación.'
                 : l10n.waitForStudentsAssignment,
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.grey.shade500),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
           ),
           if (_availableYears.isNotEmpty) ...[
             const SizedBox(height: 24),
-            const Text('Selecciona otro año académico:'),
+            Text('Selecciona otro año académico:', style: theme.textTheme.bodyMedium),
             const SizedBox(height: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: theme.cardColor,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade300),
+                border: Border.all(color: theme.dividerColor),
               ),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
                   value: _selectedYear,
+                  dropdownColor: theme.cardColor,
                   items: _availableYears.map((year) {
                     final isActive = year == _activeAcademicYear;
                     return DropdownMenuItem(
@@ -597,20 +603,19 @@ class _TutorMessagesSelectorScreenState
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(year),
+                          Text(year, style: theme.textTheme.bodyMedium),
                           if (isActive) ...[
                             const SizedBox(width: 8),
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
-                                color: Colors.green.shade100,
+                                color: theme.colorScheme.primaryContainer,
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
                                 'Activo',
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.green.shade800,
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: theme.colorScheme.onPrimaryContainer,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -632,6 +637,8 @@ class _TutorMessagesSelectorScreenState
 
   Widget _buildStudentsList() {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -641,24 +648,19 @@ class _TutorMessagesSelectorScreenState
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.green.shade50, Colors.green.shade100],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+              color: theme.colorScheme.primaryContainer.withOpacity(0.3),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.green.shade200),
+              border: Border.all(color: theme.colorScheme.primary.withOpacity(0.2)),
             ),
             child: Row(
               children: [
-                Icon(Icons.info_outline, color: Colors.green.shade700),
+                Icon(Icons.info_outline, color: theme.colorScheme.primary),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     l10n.selectProjectOrAnteprojectMessage,
-                    style: TextStyle(
-                      color: Colors.green.shade900,
-                      fontSize: 14,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -671,23 +673,24 @@ class _TutorMessagesSelectorScreenState
           if (_availableYears.isNotEmpty)
             Row(
               children: [
-                Icon(Icons.calendar_today, size: 18, color: Colors.grey.shade600),
+                Icon(Icons.calendar_today, size: 18, color: theme.colorScheme.onSurfaceVariant),
                 const SizedBox(width: 8),
-                const Text(
+                Text(
                   'Año académico:',
-                  style: TextStyle(fontWeight: FontWeight.w500),
+                  style: theme.textTheme.labelLarge,
                 ),
                 const SizedBox(width: 12),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: theme.cardColor,
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey.shade300),
+                    border: Border.all(color: theme.dividerColor),
                   ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
                       value: _selectedYear,
+                      dropdownColor: theme.cardColor,
                       items: _availableYears.map((year) {
                         final isActive = year == _activeAcademicYear;
                         return DropdownMenuItem(
@@ -695,20 +698,19 @@ class _TutorMessagesSelectorScreenState
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text(year),
+                              Text(year, style: theme.textTheme.bodyMedium),
                               if (isActive) ...[
                                 const SizedBox(width: 8),
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                   decoration: BoxDecoration(
-                                    color: Colors.green.shade100,
+                                    color: theme.colorScheme.primaryContainer,
                                     borderRadius: BorderRadius.circular(4),
                                   ),
                                   child: Text(
                                     'Activo',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.green.shade800,
+                                    style: theme.textTheme.labelSmall?.copyWith(
+                                      color: theme.colorScheme.onPrimaryContainer,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -732,21 +734,20 @@ class _TutorMessagesSelectorScreenState
               padding: const EdgeInsets.all(12),
               margin: const EdgeInsets.only(bottom: 12),
               decoration: BoxDecoration(
-                color: Colors.orange.shade50,
+                color: theme.colorScheme.tertiaryContainer.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.orange.shade200),
+                border: Border.all(color: theme.colorScheme.tertiary.withOpacity(0.3)),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.visibility, size: 20, color: Colors.orange.shade700),
+                  Icon(Icons.visibility, size: 20, color: theme.colorScheme.tertiary),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       'Modo solo lectura: Visualizando conversaciones del año $_selectedYear. '
                       'Solo puedes ver los mensajes históricos.',
-                      style: TextStyle(
-                        color: Colors.orange.shade900,
-                        fontSize: 13,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onTertiaryContainer,
                       ),
                     ),
                   ),
@@ -766,34 +767,37 @@ class _TutorMessagesSelectorScreenState
 
   Widget _buildStudentCard(_StudentWithProjects studentData) {
     final studentYear = studentData.student.academicYear;
+    final theme = Theme.of(context);
+    
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
-      elevation: 3,
+      elevation: 2,
       child: ExpansionTile(
         leading: CircleAvatar(
-          backgroundColor: Colors.green.shade100,
-          child: Icon(Icons.person, color: Colors.green.shade700),
+          backgroundColor: theme.colorScheme.primaryContainer,
+          child: Icon(Icons.person, color: theme.colorScheme.onPrimaryContainer),
         ),
         title: Row(
           children: [
             Expanded(
               child: Text(
-          studentData.student.fullName,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                studentData.student.fullName,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             if (studentYear != null)
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: Colors.green.shade100,
+                  color: theme.colorScheme.surfaceContainer,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
                   studentYear,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: Colors.green.shade800,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -802,7 +806,9 @@ class _TutorMessagesSelectorScreenState
         ),
         subtitle: Text(
           studentData.student.email,
-          style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
         ),
         children: [
           const Divider(),
@@ -815,13 +821,15 @@ class _TutorMessagesSelectorScreenState
                 children: [
                   Icon(
                     Icons.check_circle,
-                    color: Colors.green.shade700,
+                    color: theme.colorScheme.primary,
                     size: 20,
                   ),
                   const SizedBox(width: 8),
-                  const Text(
+                  Text(
                     'Proyectos Aprobados',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
@@ -832,10 +840,10 @@ class _TutorMessagesSelectorScreenState
                 leading: const SizedBox(width: 24),
                 title: Text(
                   project.title,
-                  style: const TextStyle(fontSize: 14),
+                  style: theme.textTheme.bodyMedium,
                 ),
                 trailing: IconButton(
-                  icon: const Icon(Icons.chat_bubble, color: Colors.green),
+                  icon: Icon(Icons.chat_bubble, color: theme.colorScheme.primary),
                   onPressed: () => _openProjectChat(project),
                   tooltip: 'Ver mensajes',
                 ),
@@ -851,13 +859,15 @@ class _TutorMessagesSelectorScreenState
                 children: [
                   Icon(
                     Icons.description,
-                    color: Colors.green.shade700,
+                    color: theme.colorScheme.primary,
                     size: 20,
                   ),
                   const SizedBox(width: 8),
-                  const Text(
+                  Text(
                     'Anteproyectos',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
@@ -868,14 +878,14 @@ class _TutorMessagesSelectorScreenState
                 leading: const SizedBox(width: 24),
                 title: Text(
                   anteproject.title,
-                  style: const TextStyle(fontSize: 14),
+                  style: theme.textTheme.bodyMedium,
                 ),
                 subtitle: Text(
                   'Estado: ${anteproject.status.displayName}',
-                  style: const TextStyle(fontSize: 12),
+                  style: theme.textTheme.bodySmall,
                 ),
                 trailing: IconButton(
-                  icon: const Icon(Icons.chat_bubble, color: Colors.green),
+                  icon: Icon(Icons.chat_bubble, color: theme.colorScheme.primary),
                   onPressed: () => _openAnteprojectChat(anteproject),
                   tooltip: 'Ver mensajes',
                 ),

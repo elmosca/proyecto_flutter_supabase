@@ -254,6 +254,8 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     // Para tutores, siempre usar verde. Para estudiantes, usar verde para proyectos y azul para anteproyectos
     final color = _currentUser?.role == UserRole.tutor 
         ? Colors.green 
@@ -269,11 +271,11 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(widget.thread.title, style: const TextStyle(fontSize: 16)),
+            Text(widget.thread.title, style: textTheme.titleMedium?.copyWith(color: Colors.white)),
             Text(
               widget.project?.title ?? widget.anteproject?.title ?? '',
-              style: const TextStyle(
-                fontSize: 12,
+              style: textTheme.bodySmall?.copyWith(
+                color: Colors.white70,
                 fontWeight: FontWeight.normal,
               ),
             ),
@@ -306,6 +308,9 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
   }
 
   Widget _buildErrorState() {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -314,7 +319,7 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
           const SizedBox(height: 16),
           Text(
             _errorMessage!,
-            style: TextStyle(color: Colors.red.shade700),
+            style: textTheme.bodyMedium?.copyWith(color: colorScheme.error),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
@@ -328,6 +333,9 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
   }
 
   Widget _buildEmptyState() {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -340,16 +348,17 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
           const SizedBox(height: 16),
           Text(
             'No hay mensajes aún',
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.grey.shade600,
+            style: textTheme.titleLarge?.copyWith(
+              color: colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Sé el primero en escribir',
-            style: TextStyle(color: Colors.grey.shade500),
+            style: textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
           ),
         ],
       ),
@@ -377,6 +386,9 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
   }
 
   Widget _buildMessageBubble(dynamic message, bool isMyMessage) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     // Para tutores, siempre usar verde. Para estudiantes, usar verde para proyectos y azul para anteproyectos
     final color = _currentUser?.role == UserRole.tutor 
         ? Colors.green 
@@ -421,14 +433,16 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(content, style: const TextStyle(fontSize: 15)),
+            Text(content, style: textTheme.bodyLarge),
             const SizedBox(height: 4),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   _formatTime(createdAt),
-                  style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+                  style: textTheme.labelSmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
                 ),
                 if (isMyMessage) ...[
                   const SizedBox(width: 4),
@@ -437,7 +451,7 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
                     size: 14,
                     color: isRead 
                         ? (_currentUser?.role == UserRole.tutor ? Colors.green : Colors.blue)
-                        : Colors.grey.shade600,
+                        : colorScheme.onSurfaceVariant,
                   ),
                 ],
               ],
@@ -456,6 +470,7 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
     // También bloquear si es estudiante y aún se está verificando (_isReadOnly == null)
     final isStudentPendingCheck = _currentUser?.role == UserRole.student && _isReadOnly == null;
     final isBlocked = hasApproved || (_isReadOnly == true) || isStudentPendingCheck || widget.isHistoricalView;
+    final textTheme = Theme.of(context).textTheme;
     
     // Mostrar mensaje informativo si está bloqueado
     if (isBlocked) {
@@ -486,9 +501,8 @@ class _ThreadMessagesScreenState extends State<ThreadMessagesScreen> {
             Expanded(
               child: Text(
                 message,
-                style: TextStyle(
+                style: textTheme.bodyMedium?.copyWith(
                   color: Colors.orange[900],
-                  fontSize: 14,
                 ),
               ),
             ),

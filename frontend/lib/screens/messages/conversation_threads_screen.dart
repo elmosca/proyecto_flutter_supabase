@@ -282,6 +282,8 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
   }
 
   Widget _buildBody() {
+    final textTheme = Theme.of(context).textTheme;
+
     final content = _isLoading
         ? const Center(child: CircularProgressIndicator())
         : _errorMessage != null
@@ -315,9 +317,8 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
                 Expanded(
                   child: Text(
                     'Modo solo lectura: Visualizando conversaciones históricas.',
-                    style: TextStyle(
+                    style: textTheme.bodySmall?.copyWith(
                       color: Colors.orange.shade900,
-                      fontSize: 13,
                     ),
                   ),
                 ),
@@ -334,6 +335,8 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     final title = widget.project != null
         ? widget.project!.title
         : widget.anteproject!.title;
@@ -374,7 +377,10 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
             Text(AppLocalizations.of(context)!.conversations),
             Text(
               title,
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+              style: textTheme.bodySmall?.copyWith(
+                color: Colors.white70,
+                fontWeight: FontWeight.normal,
+              ),
             ),
           ],
         ),
@@ -416,6 +422,9 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
 
   Widget _buildErrorState() {
     final l10n = AppLocalizations.of(context)!;
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -428,7 +437,7 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
           const SizedBox(height: 16),
           Text(
             _errorMessage!,
-            style: TextStyle(color: Colors.red.shade700),
+            style: textTheme.bodyMedium?.copyWith(color: colorScheme.error),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
@@ -443,6 +452,9 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
 
   Widget _buildEmptyState() {
     final l10n = AppLocalizations.of(context)!;
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -455,9 +467,8 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
           const SizedBox(height: 16),
           Text(
             l10n.noConversationsYet,
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.grey.shade600,
+            style: textTheme.titleLarge?.copyWith(
+              color: colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -465,16 +476,15 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
           Text(
             l10n.createNewTopicToStart,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.grey.shade500,
+            style: textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 24),
           Text(
             l10n.useButtonBelow,
-            style: TextStyle(
-              color: Colors.grey.shade400,
-              fontSize: 12,
+            style: textTheme.bodySmall?.copyWith(
+              color: colorScheme.onSurfaceVariant,
             ),
           ),
         ],
@@ -499,6 +509,9 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
     final color = _currentUser?.role == UserRole.tutor 
         ? Colors.green 
         : (widget.project != null ? Colors.green : Colors.blue);
+    
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -533,8 +546,7 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
                     // Título
                     Text(
                       thread.title,
-                      style: TextStyle(
-                        fontSize: 16,
+                      style: textTheme.titleMedium?.copyWith(
                         fontWeight: hasUnread ? FontWeight.bold : FontWeight.w600,
                       ),
                       maxLines: 2,
@@ -545,9 +557,8 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
                     // Fecha último mensaje
                     Text(
                       _formatDate(context, thread.lastMessageAt),
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontSize: 12,
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -570,9 +581,8 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
                       ),
                       child: Text(
                         '${thread.unreadCount}',
-                        style: const TextStyle(
+                        style: textTheme.labelSmall?.copyWith(
                           color: Colors.white,
-                          fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -610,4 +620,3 @@ class _ConversationThreadsScreenState extends State<ConversationThreadsScreen> {
     }
   }
 }
-

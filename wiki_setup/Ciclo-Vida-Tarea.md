@@ -34,7 +34,7 @@ Una tarea puede estar en uno de estos estados:
 | **En Progreso** | `in_progress` | La tarea está siendo trabajada actualmente. |
 | **Completada** | `completed` | La tarea ha sido completada. |
 
-El enum en el código está en `frontend/lib/models/task.dart` (líneas 158-175).
+El enum en el código está en `frontend/lib/models/task.dart`.
 
 ---
 
