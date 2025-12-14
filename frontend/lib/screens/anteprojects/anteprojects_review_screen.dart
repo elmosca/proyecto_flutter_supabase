@@ -1186,7 +1186,7 @@ class _ApprovalDialogState extends State<_ApprovalDialog> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Descripción de la fecha'),
+        title: Text(AppLocalizations.of(context)!.dateDescription),
         content: TextField(
           controller: descriptionController,
           decoration: const InputDecoration(
@@ -1199,11 +1199,11 @@ class _ApprovalDialogState extends State<_ApprovalDialog> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Añadir'),
+            child: Text(AppLocalizations.of(context)!.add),
           ),
         ],
       ),

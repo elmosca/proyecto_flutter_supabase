@@ -533,7 +533,7 @@ class _TutorDashboardState extends State<TutorDashboard> {
                             ),
                           ),
                           child: Text(
-                            'Curso ${widget.user.academicYear}',
+                            l10n.courseYear(widget.user.academicYear!),
                             style: textTheme.labelSmall?.copyWith(
                               color: Colors.blue,
                               fontWeight: FontWeight.w500,

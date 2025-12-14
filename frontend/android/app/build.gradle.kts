@@ -64,6 +64,21 @@ android {
             isUniversalApk = true
         }
     }
+
+    // Renombrar el archivo APK de salida
+    applicationVariants.all {
+        val variant = this
+        variant.outputs
+            .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
+            .forEach { output ->
+                val abi = output.getFilter(com.android.build.OutputFile.ABI)
+                if (abi != null) {
+                    output.outputFileName = "SistemaTFG_v${variant.versionName}_$abi.apk"
+                } else {
+                    output.outputFileName = "SistemaTFG_v${variant.versionName}.apk"
+                }
+            }
+    }
 }
 
 flutter {

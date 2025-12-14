@@ -131,6 +131,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
   );
 
   Widget _buildUserInfo() {
+    final l10n = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -178,13 +179,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
                               color: const Color(AppConfig.platformColor).withOpacity(0.5),
                             ),
                           ),
-                          child: Text(
-                            'Administrador',
-                            style: textTheme.labelSmall?.copyWith(
-                              color: const Color(AppConfig.platformColor),
-                              fontWeight: FontWeight.w500,
-                            ),
+                        child: Text(
+                          l10n.administrator,
+                          style: textTheme.labelSmall?.copyWith(
+                            color: const Color(AppConfig.platformColor),
+                            fontWeight: FontWeight.w500,
                           ),
+                        ),
                         ),
                         if (widget.user.academicYear != null &&
                             widget.user.academicYear!.isNotEmpty)
@@ -197,13 +198,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                 color: Colors.blue.withOpacity(0.5),
                               ),
                             ),
-                            child: Text(
-                              'Curso ${widget.user.academicYear}',
-                              style: textTheme.labelSmall?.copyWith(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.w500,
-                              ),
+                          child: Text(
+                            l10n.courseYear(widget.user.academicYear!),
+                            style: textTheme.labelSmall?.copyWith(
+                              color: Colors.blue,
+                              fontWeight: FontWeight.w500,
                             ),
+                          ),
                           ),
                       ],
                     ),
@@ -302,7 +303,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Accesos Rápidos',
+          l10n.quickActions,
           style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
@@ -328,7 +329,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
             const SizedBox(width: 8),
             Expanded(
               child: _buildQuickAccessCard(
-                title: 'Configuración',
+                title: l10n.configuration,
                 icon: Icons.settings,
                 color: Colors.green,
                 onTap: _navigateToSettings,
@@ -375,6 +376,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
   }
 
   Widget _buildSystemSection() {
+    final l10n = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
 
     return Column(
@@ -384,12 +386,12 @@ class _AdminDashboardState extends State<AdminDashboard> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Estado del Sistema',
+              l10n.systemStatus,
               style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             TextButton(
               onPressed: _viewSystemStatus,
-              child: Text(AppLocalizations.of(context)!.viewDetails),
+              child: Text(l10n.viewDetails),
             ),
           ],
         ),
@@ -399,10 +401,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                _buildStatusRow('Base de datos', 'Operativo', Colors.green),
-                _buildStatusRow('API REST', 'Operativo', Colors.green),
-                _buildStatusRow('Autenticación', 'Operativo', Colors.green),
-                _buildStatusRow('Almacenamiento', 'Operativo', Colors.green),
+                _buildStatusRow(l10n.databaseService, l10n.operational, Colors.green),
+                _buildStatusRow(l10n.apiRestService, l10n.operational, Colors.green),
+                _buildStatusRow(l10n.authenticationService, l10n.operational, Colors.green),
+                _buildStatusRow(l10n.storageService, l10n.operational, Colors.green),
               ],
             ),
           ),
@@ -597,31 +599,34 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.systemStatus),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildStatusRow('Base de datos', 'Operativo', Colors.green),
-            _buildStatusRow('API REST', 'Operativo', Colors.green),
-            _buildStatusRow('Autenticación', 'Operativo', Colors.green),
-            _buildStatusRow('Almacenamiento', 'Operativo', Colors.green),
-            const SizedBox(height: 16),
-            Text(
-              'Última actualización: ${DateTime.now().toString().substring(0, 19)}',
-              style: textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
+      builder: (context) {
+        final dialogL10n = AppLocalizations.of(context)!;
+        return AlertDialog(
+          title: Text(dialogL10n.systemStatus),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildStatusRow(dialogL10n.databaseService, dialogL10n.operational, Colors.green),
+              _buildStatusRow(dialogL10n.apiRestService, dialogL10n.operational, Colors.green),
+              _buildStatusRow(dialogL10n.authenticationService, dialogL10n.operational, Colors.green),
+              _buildStatusRow(dialogL10n.storageService, dialogL10n.operational, Colors.green),
+              const SizedBox(height: 16),
+              Text(
+                dialogL10n.lastUpdateTime(DateTime.now().toString().substring(0, 19)),
+                style: textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
               ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(dialogL10n.close),
             ),
           ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(AppLocalizations.of(context)!.close),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -642,24 +647,27 @@ class _AdminDashboardState extends State<AdminDashboard> {
   void _viewUserDetails(User user) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(user.email),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Rol: ${_getRoleDisplayName(user.role)}'),
-            Text('ID: ${user.id}'),
-            Text('Creado: ${user.createdAt.toString().substring(0, 19)}'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(AppLocalizations.of(context)!.close),
+      builder: (context) {
+        final dialogL10n = AppLocalizations.of(context)!;
+        return AlertDialog(
+          title: Text(user.email),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(dialogL10n.roleLabel(_getRoleDisplayName(user.role))),
+              Text(dialogL10n.idLabel(user.id.toString())),
+              Text(dialogL10n.createdLabel(user.createdAt.toString().substring(0, 19))),
+            ],
           ),
-        ],
-      ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(dialogL10n.close),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -682,7 +690,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('No se pudo abrir Supabase Studio: $url'),
+              content: Text(AppLocalizations.of(context)!.couldNotOpenUrl(url.toString())),
               backgroundColor: Colors.red,
             ),
           );
@@ -693,7 +701,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error al abrir Supabase Studio: $e'),
+            content: Text(AppLocalizations.of(context)!.errorOpeningUrl(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -718,7 +726,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('No se pudo abrir Inbucket/Resend: $url'),
+              content: Text(AppLocalizations.of(context)!.couldNotOpenUrl(url.toString())),
               backgroundColor: Colors.red,
             ),
           );
@@ -729,7 +737,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error al abrir Inbucket/Resend: $e'),
+            content: Text(AppLocalizations.of(context)!.errorOpeningUrl(e.toString())),
             backgroundColor: Colors.red,
           ),
         );

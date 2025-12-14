@@ -2367,4 +2367,131 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get generalInformation => 'General Information';
+
+  @override
+  String get quickActions => 'Quick Actions';
+
+  @override
+  String get createAnteproject => 'Create Anteproject';
+
+  @override
+  String get pendingReviewAnteprojects => 'Anteprojects Pending Review';
+
+  @override
+  String upcomingTasksDays(int days) {
+    return 'Upcoming Tasks ($days days)';
+  }
+
+  @override
+  String get noActiveProjectsYet =>
+      'You don\'t have active projects yet. When your anteproject is approved, it will appear here.';
+
+  @override
+  String get noAnteprojectsYet => 'You don\'t have anteprojects yet';
+
+  @override
+  String get createFirstAnteproject =>
+      'Create your first anteproject to get started';
+
+  @override
+  String get noTasksYet => 'You don\'t have tasks yet';
+
+  @override
+  String get organizeTasksHint => 'Create tasks to organize your project work';
+
+  @override
+  String get myTasks => 'My Tasks';
+
+  @override
+  String get viewAllFem => 'View all';
+
+  @override
+  String get statusUnderReview => 'Under Review';
+
+  @override
+  String get statusApproved => 'Approved';
+
+  @override
+  String get statusRejected => 'Rejected';
+
+  @override
+  String get statusDraft => 'Draft';
+
+  @override
+  String get projectActive => 'Active project';
+
+  @override
+  String dueDate(String date) {
+    return 'Due Date';
+  }
+
+  @override
+  String get administrator => 'Administrator';
+
+  @override
+  String courseYear(String year) {
+    return 'Year $year';
+  }
+
+  @override
+  String get configuration => 'Configuration';
+
+  @override
+  String get databaseService => 'Database';
+
+  @override
+  String get apiRestService => 'REST API';
+
+  @override
+  String get authenticationService => 'Authentication';
+
+  @override
+  String get storageService => 'Storage';
+
+  @override
+  String get operational => 'Operational';
+
+  @override
+  String lastUpdateTime(String time) {
+    return 'Last update: $time';
+  }
+
+  @override
+  String roleLabel(String role) {
+    return 'Role: $role';
+  }
+
+  @override
+  String idLabel(String id) {
+    return 'ID: $id';
+  }
+
+  @override
+  String createdLabel(String date) {
+    return 'Created: $date';
+  }
+
+  @override
+  String errorLoadingSomeData(String error) {
+    return 'Error loading some data: $error';
+  }
+
+  @override
+  String couldNotOpenUrl(String url) {
+    return 'Could not open: $url';
+  }
+
+  @override
+  String errorOpeningUrl(String error) {
+    return 'Error opening: $error';
+  }
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get featureInDevelopment => 'Feature in development...';
+
+  @override
+  String get dateDescription => 'Date description';
 }

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
+import '../../l10n/app_localizations.dart';
 import '../../services/user_management_service.dart';
 import '../../services/settings_service.dart';
 import '../../utils/validators.dart';
@@ -99,7 +100,7 @@ class _ImportStudentsCSVScreenState extends State<ImportStudentsCSVScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error al seleccionar archivo: $e'),
+            content: Text(AppLocalizations.of(context)!.errorSelectingFile(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -271,8 +272,8 @@ class _ImportStudentsCSVScreenState extends State<ImportStudentsCSVScreen> {
   Future<void> _importStudents() async {
     if (_csvData.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No hay datos válidos para importar'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.noValidDataToImport),
           backgroundColor: Colors.orange,
         ),
       );
@@ -383,7 +384,7 @@ class _ImportStudentsCSVScreenState extends State<ImportStudentsCSVScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error durante la importación: $e'),
+            content: Text(AppLocalizations.of(context)!.errorDuringImport(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -626,7 +627,7 @@ class _ImportStudentsCSVScreenState extends State<ImportStudentsCSVScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cerrar'),
+              child: Text(AppLocalizations.of(context)!.close),
             ),
           ],
         );

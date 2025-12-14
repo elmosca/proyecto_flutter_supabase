@@ -174,7 +174,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error al cargar algunos datos: ${e.toString()}'),
+            content: Text(AppLocalizations.of(context)!.errorLoadingSomeData(e.toString())),
             backgroundColor: Colors.orange,
             duration: const Duration(seconds: 5),
           ),
@@ -255,7 +255,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
           FloatingActionButton(
             onPressed: _createAnteproject,
             backgroundColor: ThemeService.instance.currentPrimaryColor,
-            tooltip: 'Crear Anteproyecto',
+            tooltip: AppLocalizations.of(context)!.createAnteproject,
             heroTag: 'create_anteproject',
             child: const Icon(Icons.add, color: Colors.white),
           ),
@@ -264,7 +264,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
             FloatingActionButton(
               onPressed: _createTask,
               backgroundColor: ThemeService.instance.currentAccentColor,
-              tooltip: 'Crear Tarea',
+              tooltip: AppLocalizations.of(context)!.createTask,
               heroTag: 'create_task',
               child: const Icon(Icons.task, color: Colors.white),
             ),
@@ -446,11 +446,12 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   }
 
   Widget _buildStatistics() {
+    final l10n = AppLocalizations.of(context)!;
     return Row(
       children: [
         Expanded(
           child: _buildStatCard(
-            title: 'Mis Anteproyectos',
+            title: l10n.myAnteprojects,
             value: _anteprojects.length.toString(),
             icon: Icons.description,
             color: Colors.orange,
@@ -460,7 +461,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
         const SizedBox(width: 8),
         Expanded(
           child: _buildStatCard(
-            title: 'Proyectos Activos',
+            title: l10n.activeProjects,
             value: _projects.length.toString(),
             icon: Icons.work,
             color: Colors.green,
@@ -470,7 +471,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
         const SizedBox(width: 8),
         Expanded(
           child: _buildStatCard(
-            title: 'Tareas Pendientes',
+            title: l10n.pendingTasks,
             value: _pendingTasks.length.toString(),
             icon: Icons.task_alt,
             color: Colors.blue,
@@ -524,13 +525,14 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   }
 
   Widget _buildQuickActions() {
+    final l10n = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Acciones Rápidas',
+          l10n.quickActions,
           style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
@@ -538,7 +540,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
           children: [
             Expanded(
               child: _buildQuickActionCard(
-                title: 'Crear Anteproyecto',
+                title: l10n.createAnteproject,
                 icon: Icons.add_circle,
                 color: Colors.blue,
                 onTap: _createAnteproject,
@@ -548,7 +550,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
             if (_approvedAnteprojects.isNotEmpty)
               Expanded(
                 child: _buildQuickActionCard(
-                  title: 'Crear Tarea',
+                  title: l10n.createTask,
                   icon: Icons.task,
                   color: Colors.green,
                   onTap: _createTask,
@@ -557,7 +559,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
             const SizedBox(width: 8),
             Expanded(
               child: _buildQuickActionCard(
-                title: 'Tablero Kanban',
+                title: l10n.kanbanBoard,
                 icon: Icons.view_kanban,
                 color: Colors.purple,
                 onTap: _viewKanban,
@@ -604,6 +606,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   }
 
   Widget _buildPendingAnteprojectsSection() {
+    final l10n = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
 
     return Column(
@@ -613,12 +616,12 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Anteproyectos Pendientes de Revisión',
+              l10n.pendingReviewAnteprojects,
               style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             TextButton(
               onPressed: _viewAnteprojects,
-              child: const Text('Ver todos'),
+              child: Text(l10n.viewAll),
             ),
           ],
         ),
@@ -631,6 +634,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   }
 
   Widget _buildProjectsSection() {
+    final l10n = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -641,12 +645,12 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Proyectos Activos',
+              l10n.activeProjects,
               style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             TextButton(
               onPressed: _viewProjects,
-              child: const Text('Ver todos'),
+              child: Text(l10n.viewAll),
             ),
           ],
         ),
@@ -656,7 +660,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Text(
-                'No tienes proyectos activos aún. Cuando tu anteproyecto sea aprobado, aparecerá aquí.',
+                l10n.noActiveProjectsYet,
                 textAlign: TextAlign.center,
                 style: textTheme.bodyMedium?.copyWith(
                   color: colorScheme.onSurfaceVariant,
@@ -671,6 +675,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   }
 
   Widget _buildUpcomingTasksSection() {
+    final l10n = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
 
     return Column(
@@ -680,10 +685,10 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Tareas Próximas (7 días)',
+              l10n.upcomingTasksDays(7),
               style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
-            TextButton(onPressed: _viewTasks, child: const Text('Ver todas')),
+            TextButton(onPressed: _viewTasks, child: Text(l10n.viewAllFem)),
           ],
         ),
         const SizedBox(height: 8),
@@ -693,6 +698,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   }
 
   Widget _buildAnteprojectsSection() {
+    final l10n = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -703,12 +709,12 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Mis Anteproyectos',
+              l10n.myAnteprojects,
               style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             TextButton(
               onPressed: _viewAnteprojects,
-              child: const Text('Ver todos'),
+              child: Text(l10n.viewAll),
             ),
           ],
         ),
@@ -722,14 +728,14 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
                   Icon(Icons.assignment, size: 48, color: colorScheme.onSurfaceVariant.withOpacity(0.5)),
                   const SizedBox(height: 8),
                   Text(
-                    'No tienes anteproyectos aún',
+                    l10n.noAnteprojectsYet,
                     style: textTheme.titleMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Crea tu primer anteproyecto para comenzar',
+                    l10n.createFirstAnteproject,
                     textAlign: TextAlign.center,
                     style: textTheme.bodyMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
@@ -739,7 +745,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
                   ElevatedButton.icon(
                     onPressed: _createAnteproject,
                     icon: const Icon(Icons.add),
-                    label: const Text('Crear Anteproyecto'),
+                    label: Text(l10n.createAnteproject),
                   ),
                 ],
               ),
@@ -754,6 +760,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   }
 
   Widget _buildTasksSection() {
+    final l10n = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -764,10 +771,10 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Mis Tareas',
+              l10n.myTasks,
               style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
-            TextButton(onPressed: _viewTasks, child: const Text('Ver todas')),
+            TextButton(onPressed: _viewTasks, child: Text(l10n.viewAllFem)),
           ],
         ),
         const SizedBox(height: 8),
@@ -780,14 +787,14 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
                   Icon(Icons.task_alt, size: 48, color: colorScheme.onSurfaceVariant.withOpacity(0.5)),
                   const SizedBox(height: 8),
                   Text(
-                    'No tienes tareas aún',
+                    l10n.noTasksYet,
                     style: textTheme.titleMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Crea tareas para organizar tu trabajo en el proyecto',
+                    l10n.organizeTasksHint,
                     textAlign: TextAlign.center,
                     style: textTheme.bodyMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
@@ -798,7 +805,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
                     ElevatedButton.icon(
                       onPressed: _createTask,
                       icon: const Icon(Icons.add),
-                      label: const Text('Crear Tarea'),
+                      label: Text(l10n.createTask),
                     ),
                   ],
                 ],
@@ -812,6 +819,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   }
 
   Widget _buildAnteprojectCard(Anteproject anteproject) {
+    final l10n = AppLocalizations.of(context)!;
     Color statusColor;
     IconData statusIcon;
     String statusText;
@@ -820,27 +828,27 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
       case AnteprojectStatus.submitted:
         statusColor = Colors.orange;
         statusIcon = Icons.pending;
-        statusText = 'Enviado';
+        statusText = l10n.statusSubmitted;
         break;
       case AnteprojectStatus.underReview:
         statusColor = Colors.blue;
         statusIcon = Icons.reviews;
-        statusText = 'En Revisión';
+        statusText = l10n.statusUnderReview;
         break;
       case AnteprojectStatus.approved:
         statusColor = Colors.green;
         statusIcon = Icons.check_circle;
-        statusText = 'Aprobado';
+        statusText = l10n.statusApproved;
         break;
       case AnteprojectStatus.rejected:
         statusColor = Colors.red;
         statusIcon = Icons.cancel;
-        statusText = 'Rechazado';
+        statusText = l10n.statusRejected;
         break;
       case AnteprojectStatus.draft:
         statusColor = Colors.grey;
         statusIcon = Icons.edit;
-        statusText = 'Borrador';
+        statusText = l10n.statusDraft;
         break;
     }
 
@@ -888,6 +896,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   }
 
   Widget _buildProjectCard(Project project) {
+    final l10n = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
 
     return Card(
@@ -902,7 +911,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
           style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w500),
         ),
         subtitle: Text(
-          'Proyecto activo',
+          l10n.projectActive,
           style: textTheme.bodyMedium?.copyWith(color: Colors.green.shade700),
         ),
         trailing: const Icon(Icons.chevron_right),
@@ -953,7 +962,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
             ),
             if (task.dueDate != null)
               Text(
-                'Vence: ${_formatDate(task.dueDate!)}',
+                AppLocalizations.of(context)!.dueDate(_formatDate(task.dueDate!)),
                 style: textTheme.bodySmall?.copyWith(
                   color: task.dueDate!.isBefore(DateTime.now())
                       ? Colors.red
@@ -973,13 +982,14 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
   }
 
   String _getTaskStatusText(TaskStatus status) {
+    final l10n = AppLocalizations.of(context)!;
     switch (status) {
       case TaskStatus.pending:
-        return 'Pendiente';
+        return l10n.taskStatusPending;
       case TaskStatus.inProgress:
-        return 'En Progreso';
+        return l10n.taskStatusInProgress;
       case TaskStatus.completed:
-        return 'Completada';
+        return l10n.taskStatusCompleted;
     }
   }
 

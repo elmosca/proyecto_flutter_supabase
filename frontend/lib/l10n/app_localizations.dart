@@ -4195,6 +4195,216 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Información General'**
   String get generalInformation;
+
+  /// Título de sección de acciones rápidas en dashboard
+  ///
+  /// In es, this message translates to:
+  /// **'Acciones Rápidas'**
+  String get quickActions;
+
+  /// Botón para crear un nuevo anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Crear Anteproyecto'**
+  String get createAnteproject;
+
+  /// Título de sección de anteproyectos pendientes
+  ///
+  /// In es, this message translates to:
+  /// **'Anteproyectos Pendientes de Revisión'**
+  String get pendingReviewAnteprojects;
+
+  /// Título de sección de tareas próximas
+  ///
+  /// In es, this message translates to:
+  /// **'Tareas Próximas ({days} días)'**
+  String upcomingTasksDays(int days);
+
+  /// Mensaje cuando no hay proyectos activos
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes proyectos activos aún. Cuando tu anteproyecto sea aprobado, aparecerá aquí.'**
+  String get noActiveProjectsYet;
+
+  /// Mensaje cuando no hay anteproyectos
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes anteproyectos aún'**
+  String get noAnteprojectsYet;
+
+  /// Sugerencia para crear primer anteproyecto
+  ///
+  /// In es, this message translates to:
+  /// **'Crea tu primer anteproyecto para comenzar'**
+  String get createFirstAnteproject;
+
+  /// Mensaje cuando no hay tareas
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes tareas aún'**
+  String get noTasksYet;
+
+  /// Sugerencia para crear tareas
+  ///
+  /// In es, this message translates to:
+  /// **'Crea tareas para organizar tu trabajo en el proyecto'**
+  String get organizeTasksHint;
+
+  /// Título de sección mis tareas
+  ///
+  /// In es, this message translates to:
+  /// **'Mis Tareas'**
+  String get myTasks;
+
+  /// Ver todas (femenino)
+  ///
+  /// In es, this message translates to:
+  /// **'Ver todas'**
+  String get viewAllFem;
+
+  /// Estado de anteproyecto en revisión
+  ///
+  /// In es, this message translates to:
+  /// **'En Revisión'**
+  String get statusUnderReview;
+
+  /// Estado aprobado
+  ///
+  /// In es, this message translates to:
+  /// **'Aprobado'**
+  String get statusApproved;
+
+  /// Estado rechazado
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazado'**
+  String get statusRejected;
+
+  /// Estado borrador
+  ///
+  /// In es, this message translates to:
+  /// **'Borrador'**
+  String get statusDraft;
+
+  /// Etiqueta de proyecto activo
+  ///
+  /// In es, this message translates to:
+  /// **'Proyecto activo'**
+  String get projectActive;
+
+  /// Fecha de vencimiento
+  ///
+  /// In es, this message translates to:
+  /// **'Vence: {date}'**
+  String dueDate(String date);
+
+  /// Rol de administrador
+  ///
+  /// In es, this message translates to:
+  /// **'Administrador'**
+  String get administrator;
+
+  /// Año académico del curso
+  ///
+  /// In es, this message translates to:
+  /// **'Curso {year}'**
+  String courseYear(String year);
+
+  /// Configuración del sistema
+  ///
+  /// In es, this message translates to:
+  /// **'Configuración'**
+  String get configuration;
+
+  /// Servicio de base de datos
+  ///
+  /// In es, this message translates to:
+  /// **'Base de datos'**
+  String get databaseService;
+
+  /// Servicio API REST
+  ///
+  /// In es, this message translates to:
+  /// **'API REST'**
+  String get apiRestService;
+
+  /// Servicio de autenticación
+  ///
+  /// In es, this message translates to:
+  /// **'Autenticación'**
+  String get authenticationService;
+
+  /// Servicio de almacenamiento
+  ///
+  /// In es, this message translates to:
+  /// **'Almacenamiento'**
+  String get storageService;
+
+  /// Estado operativo
+  ///
+  /// In es, this message translates to:
+  /// **'Operativo'**
+  String get operational;
+
+  /// Última actualización con hora
+  ///
+  /// In es, this message translates to:
+  /// **'Última actualización: {time}'**
+  String lastUpdateTime(String time);
+
+  /// Etiqueta de rol
+  ///
+  /// In es, this message translates to:
+  /// **'Rol: {role}'**
+  String roleLabel(String role);
+
+  /// Etiqueta de ID
+  ///
+  /// In es, this message translates to:
+  /// **'ID: {id}'**
+  String idLabel(String id);
+
+  /// Etiqueta de fecha de creación
+  ///
+  /// In es, this message translates to:
+  /// **'Creado: {date}'**
+  String createdLabel(String date);
+
+  /// Error al cargar datos parciales
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar algunos datos: {error}'**
+  String errorLoadingSomeData(String error);
+
+  /// Error al abrir URL
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo abrir: {url}'**
+  String couldNotOpenUrl(String url);
+
+  /// Error al abrir recurso externo
+  ///
+  /// In es, this message translates to:
+  /// **'Error al abrir: {error}'**
+  String errorOpeningUrl(String error);
+
+  /// Botón añadir
+  ///
+  /// In es, this message translates to:
+  /// **'Añadir'**
+  String get add;
+
+  /// Mensaje de función en desarrollo
+  ///
+  /// In es, this message translates to:
+  /// **'Función en desarrollo...'**
+  String get featureInDevelopment;
+
+  /// Título de diálogo para descripción de fecha
+  ///
+  /// In es, this message translates to:
+  /// **'Descripción de la fecha'**
+  String get dateDescription;
 }
 
 class _AppLocalizationsDelegate

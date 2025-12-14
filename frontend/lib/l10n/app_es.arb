@@ -3293,5 +3293,195 @@
   "generalInformation": "Información General",
   "@generalInformation": {
     "description": "Título de la sección de información general"
+  },
+  "quickActions": "Acciones Rápidas",
+  "@quickActions": {
+    "description": "Título de sección de acciones rápidas en dashboard"
+  },
+  "createAnteproject": "Crear Anteproyecto",
+  "@createAnteproject": {
+    "description": "Botón para crear un nuevo anteproyecto"
+  },
+  "pendingReviewAnteprojects": "Anteproyectos Pendientes de Revisión",
+  "@pendingReviewAnteprojects": {
+    "description": "Título de sección de anteproyectos pendientes"
+  },
+  "upcomingTasksDays": "Tareas Próximas ({days} días)",
+  "@upcomingTasksDays": {
+    "description": "Título de sección de tareas próximas",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "noActiveProjectsYet": "No tienes proyectos activos aún. Cuando tu anteproyecto sea aprobado, aparecerá aquí.",
+  "@noActiveProjectsYet": {
+    "description": "Mensaje cuando no hay proyectos activos"
+  },
+  "noAnteprojectsYet": "No tienes anteproyectos aún",
+  "@noAnteprojectsYet": {
+    "description": "Mensaje cuando no hay anteproyectos"
+  },
+  "createFirstAnteproject": "Crea tu primer anteproyecto para comenzar",
+  "@createFirstAnteproject": {
+    "description": "Sugerencia para crear primer anteproyecto"
+  },
+  "noTasksYet": "No tienes tareas aún",
+  "@noTasksYet": {
+    "description": "Mensaje cuando no hay tareas"
+  },
+  "organizeTasksHint": "Crea tareas para organizar tu trabajo en el proyecto",
+  "@organizeTasksHint": {
+    "description": "Sugerencia para crear tareas"
+  },
+  "myTasks": "Mis Tareas",
+  "@myTasks": {
+    "description": "Título de sección mis tareas"
+  },
+  "viewAllFem": "Ver todas",
+  "@viewAllFem": {
+    "description": "Ver todas (femenino)"
+  },
+  "statusUnderReview": "En Revisión",
+  "@statusUnderReview": {
+    "description": "Estado de anteproyecto en revisión"
+  },
+  "statusApproved": "Aprobado",
+  "@statusApproved": {
+    "description": "Estado aprobado"
+  },
+  "statusRejected": "Rechazado",
+  "@statusRejected": {
+    "description": "Estado rechazado"
+  },
+  "statusDraft": "Borrador",
+  "@statusDraft": {
+    "description": "Estado borrador"
+  },
+  "projectActive": "Proyecto activo",
+  "@projectActive": {
+    "description": "Etiqueta de proyecto activo"
+  },
+  "dueDate": "Vence: {date}",
+  "@dueDate": {
+    "description": "Fecha de vencimiento",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "administrator": "Administrador",
+  "@administrator": {
+    "description": "Rol de administrador"
+  },
+  "courseYear": "Curso {year}",
+  "@courseYear": {
+    "description": "Año académico del curso",
+    "placeholders": {
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "configuration": "Configuración",
+  "@configuration": {
+    "description": "Configuración del sistema"
+  },
+  "databaseService": "Base de datos",
+  "@databaseService": {
+    "description": "Servicio de base de datos"
+  },
+  "apiRestService": "API REST",
+  "@apiRestService": {
+    "description": "Servicio API REST"
+  },
+  "authenticationService": "Autenticación",
+  "@authenticationService": {
+    "description": "Servicio de autenticación"
+  },
+  "storageService": "Almacenamiento",
+  "@storageService": {
+    "description": "Servicio de almacenamiento"
+  },
+  "operational": "Operativo",
+  "@operational": {
+    "description": "Estado operativo"
+  },
+  "lastUpdateTime": "Última actualización: {time}",
+  "@lastUpdateTime": {
+    "description": "Última actualización con hora",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "roleLabel": "Rol: {role}",
+  "@roleLabel": {
+    "description": "Etiqueta de rol",
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "idLabel": "ID: {id}",
+  "@idLabel": {
+    "description": "Etiqueta de ID",
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "createdLabel": "Creado: {date}",
+  "@createdLabel": {
+    "description": "Etiqueta de fecha de creación",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "errorLoadingSomeData": "Error al cargar algunos datos: {error}",
+  "@errorLoadingSomeData": {
+    "description": "Error al cargar datos parciales",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "couldNotOpenUrl": "No se pudo abrir: {url}",
+  "@couldNotOpenUrl": {
+    "description": "Error al abrir URL",
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "errorOpeningUrl": "Error al abrir: {error}",
+  "@errorOpeningUrl": {
+    "description": "Error al abrir recurso externo",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "add": "Añadir",
+  "@add": {
+    "description": "Botón añadir"
+  },
+  "featureInDevelopment": "Función en desarrollo...",
+  "@featureInDevelopment": {
+    "description": "Mensaje de función en desarrollo"
+  },
+  "dateDescription": "Descripción de la fecha",
+  "@dateDescription": {
+    "description": "Título de diálogo para descripción de fecha"
   }
 }
