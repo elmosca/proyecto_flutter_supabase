@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'dart:math';
+import 'dart:io' show File, Platform, FileSystemException;
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/user_management_service.dart';
 import '../../services/settings_service.dart';
 import '../../utils/validators.dart';
-
-// No necesitamos dart:io porque usamos bytes directamente desde file_picker
 
 class ImportStudentsCSVScreen extends StatefulWidget {
   final int? tutorId;
@@ -79,6 +79,7 @@ class _ImportStudentsCSVScreenState extends State<ImportStudentsCSVScreen> {
         type: FileType.custom,
         allowedExtensions: ['csv'],
         allowMultiple: false,
+        withData: true, // Asegurar que los bytes estén disponibles
       );
 
       if (result != null && result.files.isNotEmpty) {
@@ -87,12 +88,29 @@ class _ImportStudentsCSVScreenState extends State<ImportStudentsCSVScreen> {
           _selectedFileName = file.name;
         });
 
-        // Usar bytes directamente (disponible en todas las plataformas)
+        // Intentar usar bytes primero (más eficiente y disponible en todas las plataformas)
         if (file.bytes != null) {
           await _parseCSVFromBytes(file.bytes!);
-        } else {
+        } 
+        // Si bytes no está disponible (puede pasar en escritorio/móvil con archivos grandes),
+        // leer desde el path del sistema de archivos
+        else if (!kIsWeb && file.path != null) {
+          try {
+            final fileData = await File(file.path!).readAsBytes();
+            await _parseCSVFromBytes(fileData);
+          } catch (e) {
+            // Proporcionar un mensaje de error más descriptivo
+            final errorMsg = e is FileSystemException
+                ? 'No se pudo acceder al archivo. Verifica los permisos de lectura.'
+                : 'Error al leer el archivo desde el sistema de archivos: $e';
+            throw Exception(errorMsg);
+          }
+        } 
+        // Si estamos en web y no hay bytes, mostrar error
+        else {
           throw Exception(
-            'No se pudieron leer los bytes del archivo. Por favor, intenta de nuevo.',
+            'No se pudieron leer los bytes del archivo. '
+            'Por favor, intenta seleccionar el archivo de nuevo.',
           );
         }
       }
