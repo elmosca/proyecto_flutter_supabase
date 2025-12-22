@@ -106,4 +106,4 @@ Para cualquier duda o colaboración, contactar con el equipo de desarrollo.
 
 *   **Autor**: Juan Antonio Francés Pérez
 *   **Email**: jualas@jualas.es
-*   **Repositorio**: https://github.com/elmosca/proyecto_flutter_supabase
+*   **Repositorio**: https://github.com/jualas/proyecto_flutter_supabase
